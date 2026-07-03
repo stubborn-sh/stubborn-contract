@@ -1,11 +1,14 @@
 
 # Contributing
 
-Spring Cloud is released under the non-restrictive Apache 2.0 license,
-and follows a very standard Github development process, using Github
-tracker for issues and merging pull requests into master. If you want
-to contribute even something trivial please do not hesitate, but
-follow the guidelines below.
+Stubborn Contract is the official continuation of Spring Cloud Contract. Community
+contributions are welcome. See [GOVERNANCE.md](../GOVERNANCE.md) for how the project
+is run and funded.
+
+The project is released under the non-restrictive Apache 2.0 license, and follows a
+standard GitHub development process, using GitHub issues for tracking and pull requests
+for merging changes. If you want to contribute even something trivial please do not
+hesitate, but follow the guidelines below.
 
 ## Sign the Contributor License Agreement
 Before we accept a non-trivial patch or pull request we will need you to sign the

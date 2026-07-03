@@ -1,6 +1,11 @@
-[[spring-cloud-contract]]
-= Spring Cloud Contract
+[[stubborn-contract]]
+= Stubborn Contract
 
+
+Stubborn Contract is the official continuation of Spring Cloud Contract, led by
+https://toomuchcoding.com[Marcin Grzejszczak], one of its original creators. Following
+the transition from the Spring Cloud portfolio, future development continues under the
+Stubborn organization.
 
 You always need confidence when pushing new features into a new application or service in
 a distributed system. To that end, this project provides support for consumer-driven
@@ -8,15 +13,31 @@ contracts and service schemas in Spring applications, covering a range of option
 writing tests, publishing them as assets, and asserting that a contract is kept by
 producers and consumers -- for both HTTP and message-based interactions.
 
+[[current-status]]
+= Current status
+
+
+The repository has been established as the new home of the project. The first
+Stubborn-branded release, including package and Maven coordinate changes, is planned.
+Existing Spring Cloud Contract users can continue using their current versions --
+migration instructions will be published with the first Stubborn Contract release. See
+the https://stubborn.sh/transition-guide[Transition Guide] for details.
+
 [[project-page]]
 = Project page
 
 
-You can read more about Spring Cloud Contract by going to https://spring.io/projects/spring-cloud-contract[the project page]
+* https://stubborn.sh[Website]
+* https://stubborn.sh/transition-guide[Transition Guide]
+* https://stubborn.sh/roadmap[Roadmap]
+* https://stubborn.sh/governance[Governance]
+* https://stubborn.sh/enterprise[Enterprise Partnerships]
 
 [[contributing]]
 = Contributing
 
 
-include::https://raw.githubusercontent.com/spring-cloud/spring-cloud-build/4.0.x/docs/src/main/asciidoc/contributing.adoc[]
+Community contributions are welcome -- see link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING.md]
+for how to get involved. Major roadmap initiatives and dedicated attention are handled
+through https://stubborn.sh/enterprise[Enterprise Partnerships].
 
