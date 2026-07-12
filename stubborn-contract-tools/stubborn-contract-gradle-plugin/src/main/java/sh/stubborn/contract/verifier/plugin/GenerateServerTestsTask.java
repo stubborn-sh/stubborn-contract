@@ -46,7 +46,6 @@ import org.gradle.process.ExecOperations;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
-
 import tools.jackson.databind.ObjectMapper;
 
 /**

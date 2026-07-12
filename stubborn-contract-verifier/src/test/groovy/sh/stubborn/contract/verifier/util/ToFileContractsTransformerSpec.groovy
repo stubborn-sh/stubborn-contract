@@ -18,10 +18,8 @@ package sh.stubborn.contract.verifier.util
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
-
 import sh.stubborn.contract.verifier.converter.YamlContractConverter
-
+import spock.lang.Specification
 /**
  * @author Marcin Grzejszczak
  * @since

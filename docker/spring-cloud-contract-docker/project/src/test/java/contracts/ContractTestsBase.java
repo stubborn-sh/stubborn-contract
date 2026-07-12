@@ -24,12 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.restclient.RestTemplateBuilder;
-import org.springframework.boot.test.context.SpringBootTest;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.amqp.AmqpMetadata;
@@ -37,6 +31,12 @@ import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier
 import sh.stubborn.contract.verifier.messaging.camel.StandaloneMetadata;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessageMetadata;
 import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.restclient.RestTemplateBuilder;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.StringUtils;

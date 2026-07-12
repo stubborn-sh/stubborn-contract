@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.Header;
@@ -33,6 +32,7 @@ import sh.stubborn.contract.spec.internal.OutputMessage;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.util.ContentType;
+
 import org.springframework.util.Assert;
 
 import static sh.stubborn.contract.verifier.util.ContentType.DEFINED;

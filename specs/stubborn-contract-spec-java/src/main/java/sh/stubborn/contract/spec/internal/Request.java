@@ -26,7 +26,6 @@ import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.spec.util.RegexpUtils;
 
 /**

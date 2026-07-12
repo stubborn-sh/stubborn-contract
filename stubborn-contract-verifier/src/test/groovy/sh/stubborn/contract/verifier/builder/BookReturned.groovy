@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.builder
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import groovy.transform.CompileStatic
-
 @CompileStatic
 class BookReturned implements Serializable {
 	final String bookName

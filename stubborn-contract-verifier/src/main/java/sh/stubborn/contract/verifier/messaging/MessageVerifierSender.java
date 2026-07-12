@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.messaging;
 import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
-
 import sh.stubborn.contract.verifier.converter.YamlContract;
 
 /**

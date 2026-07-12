@@ -22,12 +22,12 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.stubrunner.AetherStubDownloader;
 import sh.stubborn.contract.stubrunner.StubDownloader;
 import sh.stubborn.contract.stubrunner.StubDownloaderBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;

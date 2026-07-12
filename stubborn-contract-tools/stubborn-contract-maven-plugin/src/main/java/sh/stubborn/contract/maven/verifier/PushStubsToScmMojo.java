@@ -24,12 +24,12 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-
 import sh.stubborn.contract.stubrunner.ContractProjectUpdater;
 import sh.stubborn.contract.stubrunner.ScmStubDownloaderBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.util.StringUtils;
 
 /**

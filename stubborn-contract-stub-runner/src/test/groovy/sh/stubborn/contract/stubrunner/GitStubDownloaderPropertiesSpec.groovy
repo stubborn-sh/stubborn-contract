@@ -20,7 +20,6 @@ import spock.lang.Specification
 
 import org.springframework.core.io.AbstractResource
 import org.springframework.core.io.Resource
-
 /**
  * @author Marcin Grzejszczak
  */

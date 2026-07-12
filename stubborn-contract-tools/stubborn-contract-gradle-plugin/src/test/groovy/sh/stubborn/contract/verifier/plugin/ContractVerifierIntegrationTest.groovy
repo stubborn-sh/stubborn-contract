@@ -29,9 +29,7 @@ import org.gradle.testkit.runner.BuildTask
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.BeforeEach
-
 import static java.nio.charset.StandardCharsets.UTF_8
-
 abstract class ContractVerifierIntegrationTest {
 
 	public static final String SPOCK = "testFramework = 'Spock'"

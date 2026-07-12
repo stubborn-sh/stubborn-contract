@@ -19,12 +19,10 @@ package sh.stubborn.contract.stubrunner.junit4
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.ClassRule
-import spock.lang.Shared
-import spock.lang.Specification
-
 import sh.stubborn.contract.stubrunner.junit.StubRunnerRule
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
-
+import spock.lang.Shared
+import spock.lang.Specification
 /**
  * @author Marcin Grzejszczak
  */

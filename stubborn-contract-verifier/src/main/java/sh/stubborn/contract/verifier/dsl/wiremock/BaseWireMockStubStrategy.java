@@ -23,9 +23,6 @@ import java.util.Map;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import groovy.lang.GString;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.json.JsonMapper;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.DslProperty;
@@ -36,6 +33,8 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.MapConverter;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import static sh.stubborn.contract.verifier.util.ContentType.UNKNOWN;
 import static sh.stubborn.contract.verifier.util.ContentUtils.extractValue;

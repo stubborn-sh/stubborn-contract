@@ -18,13 +18,13 @@ package sh.stubborn.contract.stubrunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -64,20 +64,16 @@ public class StubRunnerSliceTests {
 		assertThat(this.fraudDetectionServerPort).isBetween(10001, 10020);
 		assertThat(this.loanIssuancePort).isBetween(10001, 10020);
 
-		assertThat(this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"))
-			.isNotNull();
+		assertThat(this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance")).isNotNull();
 		assertThat(this.stubFinder.findStubUrl("loanIssuance")).isNotNull();
-		assertThat(this.stubFinder.findStubUrl("loanIssuance")).isEqualTo(
-				this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"));
+		assertThat(this.stubFinder.findStubUrl("loanIssuance"))
+			.isEqualTo(this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"));
 		assertThat(this.stubFinder.findStubUrl("loanIssuance"))
 			.isEqualTo(this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs:loanIssuance"));
-		assertThat(this.stubFinder
-			.findStubUrl("sh.stubborn.contract.verifier.stubs:loanIssuance:0.0.1-SNAPSHOT"))
+		assertThat(this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs:loanIssuance:0.0.1-SNAPSHOT"))
 			.isEqualTo(this.stubFinder
 				.findStubUrl("sh.stubborn.contract.verifier.stubs:loanIssuance:0.0.1-SNAPSHOT:stubs"));
-		assertThat(
-				this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer"))
-			.isNotNull();
+		assertThat(this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")).isNotNull();
 		assertThat(this.properties.getProperties()).containsEntry("hello", "world").containsEntry("foo", "bar");
 	}
 

@@ -17,11 +17,6 @@
 package sh.stubborn.contract.verifier.builder
 
 import org.junit.Rule
-import spock.lang.Issue
-import spock.lang.Shared
-import spock.lang.Specification
-
-import org.springframework.boot.test.system.OutputCaptureRule
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties
 import sh.stubborn.contract.verifier.config.TestFramework
@@ -29,7 +24,11 @@ import sh.stubborn.contract.verifier.config.TestMode
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubVerifier
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.util.SyntaxChecker
+import spock.lang.Issue
+import spock.lang.Shared
+import spock.lang.Specification
 
+import org.springframework.boot.test.system.OutputCaptureRule
 class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements WireMockStubVerifier {
 
 	@Rule

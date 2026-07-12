@@ -24,12 +24,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.wiremock.WiremockServerRestDocsHypermediaApplicationTests.TestConfiguration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import sh.stubborn.contract.wiremock.WiremockServerRestDocsHypermediaApplicationTests.TestConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.test.web.servlet.MockMvc;

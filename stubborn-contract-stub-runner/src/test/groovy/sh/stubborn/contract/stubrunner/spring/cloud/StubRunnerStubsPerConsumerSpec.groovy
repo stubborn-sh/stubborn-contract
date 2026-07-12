@@ -21,17 +21,16 @@ import java.util.function.Function
 import org.assertj.core.api.BDDAssertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import sh.stubborn.contract.stubrunner.StubFinder
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
+import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.boot.resttestclient.TestRestTemplate
 import org.springframework.boot.test.context.SpringBootTest
-
-import sh.stubborn.contract.stubrunner.StubFinder
-import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
-import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

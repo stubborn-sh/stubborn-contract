@@ -20,20 +20,19 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 
 /**
  * Stub downloader that picks stubs and contracts from the provided resource. If
- * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties#stubsMode}
- * is set to
+ * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties#stubsMode} is set to
  * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties.StubsMode#CLASSPATH}
  * then classpath is searched according to what has been passed in
- * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties#ids}.
- * The pattern to search for stubs looks like this
+ * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties#ids}. The pattern to
+ * search for stubs looks like this
  *
  * <ul>
  * <li>{@code META-INF/group.id/artifactid/ ** /*.* }</li>

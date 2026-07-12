@@ -21,11 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import sh.stubborn.contract.stubrunner.BatchStubRunner;
 import sh.stubborn.contract.stubrunner.BatchStubRunnerFactory;
 import sh.stubborn.contract.stubrunner.RunningStubs;
@@ -37,6 +32,12 @@ import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -47,8 +48,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Configuration that initializes a {@link BatchStubRunner} that runs
- * {@link sh.stubborn.contract.stubrunner.StubRunner} instance for each
- * stub.
+ * {@link sh.stubborn.contract.stubrunner.StubRunner} instance for each stub.
  *
  * @author Marcin Grzejszczak
  * @author Eddú Meléndez

@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.builder;
 
 import org.apache.commons.text.StringEscapeUtils;
-
 import sh.stubborn.contract.verifier.template.TemplateProcessor;
 
 interface GroovyBodyParser extends BodyParser {

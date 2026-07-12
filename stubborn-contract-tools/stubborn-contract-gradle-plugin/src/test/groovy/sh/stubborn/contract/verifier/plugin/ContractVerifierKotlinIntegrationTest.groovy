@@ -20,7 +20,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 import static java.nio.charset.StandardCharsets.UTF_8
-
 abstract class ContractVerifierKotlinIntegrationTest extends ContractVerifierIntegrationTest {
 	public static final String SPOCK = "testFramework.set(TestFramework.SPOCK)"
 	public static final String JUNIT = "testFramework.set(TestFramework.JUNIT)"

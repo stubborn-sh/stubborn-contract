@@ -18,8 +18,8 @@ package sh.stubborn.contract.stubrunner.provider.wiremock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;

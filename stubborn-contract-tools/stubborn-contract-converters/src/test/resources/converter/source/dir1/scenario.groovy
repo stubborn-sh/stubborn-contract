@@ -15,7 +15,6 @@
  */
 
 import sh.stubborn.contract.spec.Contract
-
 [
 	Contract.make {
 		name("1_scenario_multiple")

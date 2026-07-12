@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.messaging.stream
 
 import spock.lang.Specification
-
 /**
  * @author Marcin Grzejszczak
  */

@@ -25,7 +25,6 @@ import org.apache.maven.project.MavenProject;
 import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
 import sh.stubborn.contract.stubrunner.ContractDownloader;
 import sh.stubborn.contract.stubrunner.InclusionPropertiesAccessor;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;

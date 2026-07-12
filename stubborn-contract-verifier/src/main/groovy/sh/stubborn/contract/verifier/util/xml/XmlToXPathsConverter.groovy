@@ -34,13 +34,11 @@ import org.w3c.dom.NamedNodeMap
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
-
 import sh.stubborn.contract.spec.internal.BodyMatcher
 import sh.stubborn.contract.spec.internal.BodyMatchers
 import sh.stubborn.contract.spec.internal.MatchingType
 import sh.stubborn.contract.spec.internal.MatchingTypeValue
 import sh.stubborn.contract.spec.internal.PathBodyMatcher
-
 import static java.util.stream.Collectors.toList
 import static javax.xml.xpath.XPathConstants.NODESET
 import static org.apache.commons.lang3.StringUtils.isBlank

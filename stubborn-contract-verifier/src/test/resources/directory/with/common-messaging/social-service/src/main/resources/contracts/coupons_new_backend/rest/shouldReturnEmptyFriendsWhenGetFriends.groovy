@@ -15,7 +15,6 @@
  */
 
 import sh.stubborn.contract.spec.Contract
-
 Contract.make {
 	description("""
 Should return empty array if user has no friends

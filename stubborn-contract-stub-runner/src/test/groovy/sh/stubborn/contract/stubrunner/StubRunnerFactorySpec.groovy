@@ -18,10 +18,8 @@ package sh.stubborn.contract.stubrunner
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
-
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages
-
+import spock.lang.Specification
 class StubRunnerFactorySpec extends Specification {
 
 	static final String MAPPING = '''

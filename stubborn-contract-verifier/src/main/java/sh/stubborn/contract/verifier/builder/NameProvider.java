@@ -21,12 +21,12 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
 import sh.stubborn.contract.verifier.util.NamesUtil;
+
 import org.springframework.util.StringUtils;
 
 class NameProvider {

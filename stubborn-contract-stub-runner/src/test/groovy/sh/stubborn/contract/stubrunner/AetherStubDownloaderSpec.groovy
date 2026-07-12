@@ -20,12 +20,11 @@ import org.eclipse.aether.RepositorySystemSession
 import org.eclipse.aether.repository.Authentication
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
 import spock.lang.Specification
 import spock.util.environment.RestoreSystemProperties
 
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
 import org.springframework.util.ResourceUtils
-
 class AetherStubDownloaderSpec extends Specification {
 
 	@Rule

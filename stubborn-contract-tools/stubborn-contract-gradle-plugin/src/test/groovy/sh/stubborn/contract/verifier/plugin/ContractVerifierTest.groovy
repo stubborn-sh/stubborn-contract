@@ -29,9 +29,7 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
 import sh.stubborn.contract.verifier.config.TestFramework
-
 class ContractVerifierTest {
 	DefaultProject project
 

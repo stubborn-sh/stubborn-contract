@@ -22,7 +22,6 @@ import com.toomuchcoding.jsonassert.JsonAssertion
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import spock.lang.Specification
-
 /**
  * Tests for {@link JsonPathTraverser}.
  *

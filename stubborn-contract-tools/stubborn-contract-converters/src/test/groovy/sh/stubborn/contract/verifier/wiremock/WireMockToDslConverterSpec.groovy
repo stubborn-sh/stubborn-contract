@@ -18,14 +18,13 @@ package sh.stubborn.contract.verifier.wiremock
 
 import java.util.regex.Pattern
 
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.spec.internal.RegexProperty
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubMapping
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter
-import org.springframework.util.StringUtils
+import spock.lang.Specification
 
+import org.springframework.util.StringUtils
 class WireMockToDslConverterSpec extends Specification {
 
 	def 'should produce a Groovy DSL from WireMock stub'() {

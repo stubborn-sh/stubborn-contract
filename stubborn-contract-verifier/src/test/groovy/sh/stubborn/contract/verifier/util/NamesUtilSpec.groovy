@@ -21,7 +21,6 @@ import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
 import org.springframework.util.FileSystemUtils
-
 /**
  * @author Marcin Grzejszczak
  */

@@ -17,13 +17,11 @@
 package sh.stubborn.contract.verifier.builder
 
 
-import spock.lang.Issue
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.file.SingleContractMetadata
-
+import spock.lang.Issue
+import spock.lang.Specification
 class MethodBuilderSpec extends Specification {
 
 	@Issue('#518')

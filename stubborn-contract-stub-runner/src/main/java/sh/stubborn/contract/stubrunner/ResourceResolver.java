@@ -30,9 +30,9 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
 /**
  * Uses {@code META-INF/spring.factories} to read {@link ProtocolResolver} list that gets
  * added to {@link DefaultResourceLoader}. Each implementor of a new
- * {@link sh.stubborn.contract.stubrunner.StubDownloaderBuilder}, if one
- * uses a new protocol, should register their own {@link ProtocolResolver} so that Stub
- * Runner can convert a {@link String} version of a URI to a {@link Resource}.
+ * {@link sh.stubborn.contract.stubrunner.StubDownloaderBuilder}, if one uses a new
+ * protocol, should register their own {@link ProtocolResolver} so that Stub Runner can
+ * convert a {@link String} version of a URI to a {@link Resource}.
  *
  * IMPORTANT! Internal tool. Do not use.
  *

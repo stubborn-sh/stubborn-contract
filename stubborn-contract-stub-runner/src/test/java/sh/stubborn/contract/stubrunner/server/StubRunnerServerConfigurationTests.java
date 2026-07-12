@@ -17,11 +17,11 @@
 package sh.stubborn.contract.stubrunner.server;
 
 import org.junit.Test;
+import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -23,6 +23,7 @@ import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
+
 import org.springframework.util.StringUtils;
 
 class JaxRsRequestMethodWhen implements When, JaxRsBodyParser {

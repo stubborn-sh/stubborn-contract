@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.dsl.wiremock
 
 import com.github.tomakehurst.wiremock.extension.Extension
-
 /**
  * Extension that registers the default transformer and the custom one
  */

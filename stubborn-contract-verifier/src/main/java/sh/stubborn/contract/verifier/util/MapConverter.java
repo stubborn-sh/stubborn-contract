@@ -26,13 +26,12 @@ import java.util.stream.Collectors;
 import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
 import groovy.lang.GString;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.json.JsonMapper;
-
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
 import sh.stubborn.contract.verifier.template.TemplateProcessor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Converts an object into either client or server side representation. Iterates over the

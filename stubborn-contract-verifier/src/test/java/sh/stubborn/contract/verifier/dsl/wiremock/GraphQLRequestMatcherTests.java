@@ -21,7 +21,6 @@ import com.github.tomakehurst.wiremock.matching.MatchResult;
 import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
-
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 
 class GraphQLRequestMatcherTests {

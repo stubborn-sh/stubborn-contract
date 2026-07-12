@@ -16,26 +16,26 @@
 
 package com.example
 
+import jakarta.jms.JMSException
+import jakarta.jms.Message
+
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import com.toomuchcoding.jsonassert.JsonAssertion
-import jakarta.jms.JMSException
-import jakarta.jms.Message
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledForJreRange
 import org.junit.jupiter.api.condition.JRE
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.jms.core.MessagePostProcessor
-
 /**
  * SPIKE ON TESTS FROM NOTES IN MessagingSpec
  */

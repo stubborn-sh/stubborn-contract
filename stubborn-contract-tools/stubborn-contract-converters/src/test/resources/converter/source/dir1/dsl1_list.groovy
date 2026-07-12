@@ -15,7 +15,6 @@
  */
 
 import sh.stubborn.contract.spec.Contract
-
 (1..2).collect { int index ->
 	Contract.make {
 		request {

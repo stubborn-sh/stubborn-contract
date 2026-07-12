@@ -24,9 +24,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-
 import sh.stubborn.contract.stubrunner.junit.StubRunnerRule;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.util.StreamUtils;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -72,10 +72,9 @@ public class StubRunnerRuleCustomPortJUnitTest {
 		then(rule.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")).isNotNull();
 		// and:
 		then(rule.findAllRunningStubs().isPresent("loanIssuance")).isTrue();
-		then(rule.findAllRunningStubs()
-			.isPresent("sh.stubborn.contract.verifier.stubs", "fraudDetectionServer")).isTrue();
-		then(rule.findAllRunningStubs()
-			.isPresent("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")).isTrue();
+		then(rule.findAllRunningStubs().isPresent("sh.stubborn.contract.verifier.stubs", "fraudDetectionServer"))
+			.isTrue();
+		then(rule.findAllRunningStubs().isPresent("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")).isTrue();
 		// and: 'Stubs were registered'
 		then(httpGet(rule.findStubUrl("loanIssuance").toString() + "/name")).isEqualTo("loanIssuance");
 		then(httpGet(rule.findStubUrl("fraudDetectionServer").toString() + "/name")).isEqualTo("fraudDetectionServer");

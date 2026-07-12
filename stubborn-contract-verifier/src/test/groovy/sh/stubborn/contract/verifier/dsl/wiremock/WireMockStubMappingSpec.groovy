@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.dsl.wiremock
 
 import spock.lang.Specification
-
 /**
  * @author Marcin Grzejszczak
  */

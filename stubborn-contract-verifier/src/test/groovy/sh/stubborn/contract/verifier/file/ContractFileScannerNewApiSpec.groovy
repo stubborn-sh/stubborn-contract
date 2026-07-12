@@ -21,13 +21,12 @@ import java.nio.file.Path
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.spec.ContractConverter
+import spock.lang.Specification
+
 import org.springframework.util.FileSystemUtils
 import org.springframework.util.MultiValueMap
-
 /**
  * @author Jakub Kubrynski, codearte.io
  */

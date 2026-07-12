@@ -27,11 +27,11 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.support.DefaultExchange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessageMetadata;
+
 import org.springframework.util.StringUtils;
 
 /**

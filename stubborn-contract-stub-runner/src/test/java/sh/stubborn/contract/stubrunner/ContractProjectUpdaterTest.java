@@ -26,9 +26,9 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
 import org.springframework.boot.test.system.OutputCaptureRule;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
 import static org.assertj.core.api.BDDAssertions.then;
 

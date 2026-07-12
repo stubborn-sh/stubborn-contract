@@ -17,9 +17,8 @@
 package sh.stubborn.contract.verifier.util
 
 
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.internal.BodyMatchers
+import spock.lang.Specification
 /**
  * Tests for {@link JsonPathMatcherUtils}.
  *

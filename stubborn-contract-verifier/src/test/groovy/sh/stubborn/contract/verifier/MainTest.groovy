@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties
 import sh.stubborn.contract.verifier.config.TestFramework
 import sh.stubborn.contract.verifier.config.TestMode
-
 class MainTest {
 
 	static void main(String[] args) {

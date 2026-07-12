@@ -17,7 +17,6 @@ package hello
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import spock.lang.Specification
-
 class BaseAccurest extends Specification {
 
 	def setup() {

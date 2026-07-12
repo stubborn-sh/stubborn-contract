@@ -31,7 +31,6 @@ import org.springframework.cloud.frauddetection.model.LoanApplication
 import org.springframework.cloud.frauddetection.model.LoanApplicationResult
 import org.springframework.cloud.frauddetection.model.LoanApplicationStatus
 import org.springframework.test.context.ContextConfiguration
-
 @ContextConfiguration(loader = SpringBootContextLoader, classes = Application)
 @Stepwise
 class LoanApplicationServiceSpec extends Specification {

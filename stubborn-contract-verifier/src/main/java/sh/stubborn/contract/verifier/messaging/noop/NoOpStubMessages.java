@@ -24,8 +24,7 @@ import sh.stubborn.contract.verifier.converter.YamlContract;
 /**
  * @author Marcin Grzejszczak
  */
-public class NoOpStubMessages<U>
-		implements sh.stubborn.contract.verifier.messaging.MessageVerifierSender<U>,
+public class NoOpStubMessages<U> implements sh.stubborn.contract.verifier.messaging.MessageVerifierSender<U>,
 		sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver<U> {
 
 	@Override

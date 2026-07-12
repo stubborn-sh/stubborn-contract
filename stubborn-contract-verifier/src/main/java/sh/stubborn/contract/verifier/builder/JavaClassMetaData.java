@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import sh.stubborn.contract.verifier.config.TestFramework;
+
 import org.springframework.util.StringUtils;
 
 class JavaClassMetaData implements ClassMetaData, DefaultClassMetadata {

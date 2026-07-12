@@ -18,7 +18,6 @@ package sh.stubborn.contract.stubrunner
 
 import spock.lang.Specification
 import spock.lang.Unroll
-
 /**
  * @author Marcin Grzejszczak
  */

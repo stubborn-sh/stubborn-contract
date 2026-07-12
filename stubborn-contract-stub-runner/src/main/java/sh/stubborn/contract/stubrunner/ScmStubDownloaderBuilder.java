@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;

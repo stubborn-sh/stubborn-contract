@@ -22,7 +22,6 @@ import java.util.Collection;
 
 import org.assertj.core.api.BDDAssertions;
 import org.junit.Test;
-
 import sh.stubborn.contract.spec.Contract;
 
 /**

@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.util
 
 import sh.stubborn.contract.spec.internal.FromFileProperty
 import spock.lang.Specification
-
 /**
  * @author Adam Białas
  */

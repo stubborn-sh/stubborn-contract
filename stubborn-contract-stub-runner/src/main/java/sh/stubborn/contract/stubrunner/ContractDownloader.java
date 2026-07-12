@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
+
 import org.springframework.util.StringUtils;
 
 /**

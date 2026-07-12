@@ -16,13 +16,10 @@
 
 package sh.stubborn.contract.verifier
 
-import spock.lang.Specification
-
 import sh.stubborn.contract.verifier.builder.SingleTestGenerator
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties
-
+import spock.lang.Specification
 import static sh.stubborn.contract.verifier.config.TestFramework.SPOCK
-
 class GeneratorScannerSpec extends Specification {
 
 	private SingleTestGenerator classGenerator = Mock(SingleTestGenerator)

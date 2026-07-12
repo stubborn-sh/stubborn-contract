@@ -23,7 +23,6 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata
 import sh.stubborn.contract.verifier.util.ContentType
 import spock.lang.Issue
 import spock.lang.Specification
-
 class WireMockRequestStubStrategySpec extends Specification {
 
 	@Issue("#1666")

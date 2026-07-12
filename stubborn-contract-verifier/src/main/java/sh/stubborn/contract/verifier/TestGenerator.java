@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sh.stubborn.contract.spec.ContractVerifierException;
 import sh.stubborn.contract.verifier.builder.JavaTestGenerator;
 import sh.stubborn.contract.verifier.builder.SingleTestGenerator;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.file.ContractFileScanner;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
+
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.MultiValueMap;
 

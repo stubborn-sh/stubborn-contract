@@ -16,11 +16,10 @@
 
 package sh.stubborn.contract.stubrunner
 
+import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStub
 import spock.lang.Specification
 
-import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStub
 import org.springframework.cloud.test.TestSocketUtils
-
 class StubServerSpec extends Specification {
 	static final int STUB_SERVER_PORT = TestSocketUtils.findAvailableTcpPort()
 	static final URL EXPECTED_URL = new URL("http://localhost:$STUB_SERVER_PORT")

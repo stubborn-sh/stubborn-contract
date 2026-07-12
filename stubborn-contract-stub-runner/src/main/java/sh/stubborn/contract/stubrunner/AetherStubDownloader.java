@@ -42,9 +42,9 @@ import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
-
 import sh.stubborn.contract.stubrunner.StubRunnerOptions.StubRunnerProxyOptions;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.util.StringUtils;
 
 import static sh.stubborn.contract.stubrunner.AetherFactories.newSession;

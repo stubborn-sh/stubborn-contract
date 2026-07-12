@@ -19,11 +19,9 @@ package sh.stubborn.contract.verifier.wiremock
 import java.nio.file.Path
 import java.nio.file.Paths
 
-import spock.lang.Specification
-
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter
-
+import spock.lang.Specification
 class WiremockScenarioConverterSpec extends Specification {
 
 	def "should generate first scenario step"() {

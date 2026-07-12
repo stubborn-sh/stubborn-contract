@@ -16,9 +16,8 @@
 
 package sh.stubborn.contract.verifier;
 
-import tools.jackson.databind.json.JsonMapper;
-
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
+import tools.jackson.databind.json.JsonMapper;
 
 public final class TestGeneratorApplication {
 

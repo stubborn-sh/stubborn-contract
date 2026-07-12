@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner
 
 import spock.lang.Specification
-
 /**
  * @author Marcin Grzejszczak
  */

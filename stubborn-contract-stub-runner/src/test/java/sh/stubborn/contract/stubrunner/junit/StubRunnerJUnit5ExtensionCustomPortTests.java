@@ -24,8 +24,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.util.StreamUtils;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -61,13 +61,11 @@ class StubRunnerJUnit5ExtensionCustomPortTests {
 
 	@Test
 	void should_start_wiremock_servers() throws Exception {
-		then(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"))
-			.isNotNull();
+		then(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance")).isNotNull();
 		then(stubRunnerExtension.findStubUrl("loanIssuance")).isNotNull();
-		then(stubRunnerExtension.findStubUrl("loanIssuance")).isEqualTo(
-				stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"));
-		then(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer"))
-			.isNotNull();
+		then(stubRunnerExtension.findStubUrl("loanIssuance"))
+			.isEqualTo(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"));
+		then(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")).isNotNull();
 		then(stubRunnerExtension.findAllRunningStubs().isPresent("loanIssuance")).isTrue();
 		then(stubRunnerExtension.findAllRunningStubs()
 			.isPresent("sh.stubborn.contract.verifier.stubs", "fraudDetectionServer")).isTrue();

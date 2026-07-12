@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.builder
 
 import spock.lang.Issue
 import spock.lang.Specification
-
 /**
  * @author Marcin Grzejszczak
  */

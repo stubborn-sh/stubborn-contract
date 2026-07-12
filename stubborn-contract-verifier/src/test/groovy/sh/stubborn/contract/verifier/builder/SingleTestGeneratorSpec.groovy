@@ -19,16 +19,14 @@ package sh.stubborn.contract.verifier.builder
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Issue
-import spock.lang.Specification
-
 import sh.stubborn.contract.verifier.TestGenerator
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties
 import sh.stubborn.contract.verifier.config.TestFramework
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.util.SyntaxChecker
-import org.springframework.util.FileSystemUtils
-
+import spock.lang.Issue
+import spock.lang.Specification
+import static org.springframework.util.StringUtils.countOccurrencesOf
 import static sh.stubborn.contract.verifier.config.TestFramework.JUNIT
 import static sh.stubborn.contract.verifier.config.TestFramework.JUNIT5
 import static sh.stubborn.contract.verifier.config.TestFramework.SPOCK
@@ -37,8 +35,8 @@ import static sh.stubborn.contract.verifier.config.TestMode.EXPLICIT
 import static sh.stubborn.contract.verifier.config.TestMode.JAXRSCLIENT
 import static sh.stubborn.contract.verifier.config.TestMode.MOCKMVC
 import static sh.stubborn.contract.verifier.util.ContractVerifierDslConverter.convertAsCollection
-import static org.springframework.util.StringUtils.countOccurrencesOf
 
+import org.springframework.util.FileSystemUtils
 class SingleTestGeneratorSpec extends Specification {
 
 	@Rule

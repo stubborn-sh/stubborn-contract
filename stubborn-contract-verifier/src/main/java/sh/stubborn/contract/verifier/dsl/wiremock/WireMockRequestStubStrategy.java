@@ -39,9 +39,6 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import groovy.lang.GString;
 import org.apache.commons.text.StringEscapeUtils;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.json.JsonMapper;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.Body;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
@@ -70,6 +67,9 @@ import sh.stubborn.contract.verifier.util.JsonToJsonPathsConverter;
 import sh.stubborn.contract.verifier.util.MapConverter;
 import sh.stubborn.contract.verifier.util.MethodBufferingJsonVerifiable;
 import sh.stubborn.contract.verifier.util.xml.XmlToXPathsConverter;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
+
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 

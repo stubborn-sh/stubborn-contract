@@ -23,11 +23,6 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import groovy.json.JsonBuilder
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import spock.lang.Issue
-import spock.lang.Specification
-import wiremock.com.github.jknack.handlebars.Helper
-
-import org.springframework.boot.resttestclient.TestRestTemplate
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsEscapeHelper
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsJsonPathHelper
@@ -35,10 +30,14 @@ import sh.stubborn.contract.verifier.converter.YamlContractConverter
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.util.AssertionUtil
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter
+import spock.lang.Issue
+import spock.lang.Specification
+import wiremock.com.github.jknack.handlebars.Helper
+
+import org.springframework.boot.resttestclient.TestRestTemplate
 import org.springframework.cloud.test.TestSocketUtils
 import org.springframework.http.RequestEntity
 import org.springframework.http.ResponseEntity
-
 class WireMockGroovyDslSpec extends Specification implements WireMockStubVerifier {
 
 	def 'should convert groovy dsl stub to wireMock stub for the client side'() {

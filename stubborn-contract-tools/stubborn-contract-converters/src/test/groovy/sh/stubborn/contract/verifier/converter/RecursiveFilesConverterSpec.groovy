@@ -22,12 +22,11 @@ import java.nio.file.Paths
 import groovy.io.FileType
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.file.ContractMetadata
-import org.springframework.util.FileSystemUtils
+import spock.lang.Specification
 
+import org.springframework.util.FileSystemUtils
 class RecursiveFilesConverterSpec extends Specification {
 
 	private static

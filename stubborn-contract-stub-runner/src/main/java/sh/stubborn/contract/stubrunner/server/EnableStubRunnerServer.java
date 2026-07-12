@@ -24,6 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
+
 import org.springframework.context.annotation.Import;
 
 /**

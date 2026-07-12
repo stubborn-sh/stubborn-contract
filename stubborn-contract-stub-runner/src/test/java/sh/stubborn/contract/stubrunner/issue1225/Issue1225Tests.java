@@ -18,13 +18,13 @@ package sh.stubborn.contract.stubrunner.issue1225;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+import sh.stubborn.contract.stubrunner.spring.StubRunnerPort;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerPort;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;

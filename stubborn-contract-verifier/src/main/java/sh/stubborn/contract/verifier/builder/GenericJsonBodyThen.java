@@ -23,7 +23,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.commons.text.StringEscapeUtils;
-
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -34,6 +33,7 @@ import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
 import sh.stubborn.contract.verifier.template.TemplateProcessor;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.MapConverter;
+
 import org.springframework.util.StringUtils;
 
 import static sh.stubborn.contract.verifier.util.ContentType.DEFINED;

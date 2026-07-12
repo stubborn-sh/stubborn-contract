@@ -18,7 +18,6 @@
 import java.nio.charset.Charset
 
 import sh.stubborn.contract.spec.Contract
-
 Contract.make {
 	request {
 		method('PUT')

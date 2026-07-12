@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner.provider.wiremock;
 
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
 
 /**

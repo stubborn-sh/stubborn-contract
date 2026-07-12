@@ -2,13 +2,11 @@ package sh.stubborn.contract.verifier.util.xml
 
 import javax.xml.xpath.XPathExpressionException
 
+import sh.stubborn.contract.spec.internal.BodyMatchers
 import spock.lang.Issue
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
-
-import sh.stubborn.contract.spec.internal.BodyMatchers
-
 /**
  * @author Chris Bono
  * @since 2.1.0

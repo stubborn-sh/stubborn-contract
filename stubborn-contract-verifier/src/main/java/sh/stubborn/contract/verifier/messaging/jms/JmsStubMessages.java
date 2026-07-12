@@ -25,8 +25,8 @@ import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.Session;
-
 import sh.stubborn.contract.verifier.converter.YamlContract;
+
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessagePostProcessor;
 

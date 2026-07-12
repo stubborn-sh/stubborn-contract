@@ -17,11 +17,9 @@
 package sh.stubborn.contract.verifier.dsl.wiremock
 
 
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.file.ContractMetadata
-
+import spock.lang.Specification
 /**
  * @author Olga Maciaszek-Sharma
  */

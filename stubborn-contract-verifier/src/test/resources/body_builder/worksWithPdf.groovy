@@ -1,5 +1,4 @@
 import sh.stubborn.contract.spec.Contract
-
 Contract.make {
 	request {
 		url("/1")

@@ -19,23 +19,21 @@ package sh.stubborn.contract.stubrunner.spring.cloud
 import java.util.function.Function
 
 import org.junit.jupiter.api.Test
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner
+import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
+import static org.assertj.core.api.Assertions.assertThat
 
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.boot.test.context.runner.ApplicationContextRunner
-import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner
-import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
-
-import static org.assertj.core.api.Assertions.assertThat
-
 @AutoConfigureStubRunner(ids = "sh.stubborn.contract.verifier.stubs:producerWithMultipleConsumers",
 		repositoryRoot = "classpath:m2repo/repository/",
 		stubsMode = StubRunnerProperties.StubsMode.REMOTE,

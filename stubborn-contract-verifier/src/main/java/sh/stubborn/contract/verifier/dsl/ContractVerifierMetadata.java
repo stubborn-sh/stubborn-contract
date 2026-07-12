@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.dsl;
 import java.util.Map;
 
 import org.jspecify.annotations.NonNull;
-
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 

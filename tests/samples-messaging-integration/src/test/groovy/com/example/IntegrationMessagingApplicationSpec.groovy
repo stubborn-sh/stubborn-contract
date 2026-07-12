@@ -21,15 +21,14 @@ import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import com.toomuchcoding.jsonassert.JsonAssertion
 import org.junit.jupiter.api.Test
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
-import org.springframework.messaging.Message
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.messaging.Message
 // Context configuration would end up in base class
 @AutoConfigureMessageVerifier
 @SpringBootTest(classes = IntegrationMessagingApplication)

@@ -20,6 +20,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import sh.stubborn.contract.stubrunner.StubConfiguration;
+import sh.stubborn.contract.stubrunner.StubRunning;
+import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
+import sh.stubborn.contract.stubrunner.spring.cloud.ConditionalOnStubbedDiscoveryDisabled;
+import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
+import sh.stubborn.contract.stubrunner.spring.cloud.StubsRegistrar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -27,12 +33,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.cloud.commons.util.InetUtils;
-import sh.stubborn.contract.stubrunner.StubConfiguration;
-import sh.stubborn.contract.stubrunner.StubRunning;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
-import sh.stubborn.contract.stubrunner.spring.cloud.ConditionalOnStubbedDiscoveryDisabled;
-import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
-import sh.stubborn.contract.stubrunner.spring.cloud.StubsRegistrar;
 import org.springframework.cloud.netflix.eureka.CloudEurekaClient;
 import org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;

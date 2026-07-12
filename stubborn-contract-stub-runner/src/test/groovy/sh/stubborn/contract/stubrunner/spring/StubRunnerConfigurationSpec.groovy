@@ -24,21 +24,20 @@ import org.assertj.core.api.BDDAssertions
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-import org.springframework.boot.test.context.SpringBootTest
 import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration
 import sh.stubborn.contract.stubrunner.StubFinder
 import sh.stubborn.contract.stubrunner.StubNotFoundException
 import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStubAccessor
 import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStubConfigurer
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.test.TestSocketUtils
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.test.context.ActiveProfiles
-
 /**
  * @author Marcin Grzejszczak
  */

@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.builder;
 
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
+
 import org.springframework.util.StringUtils;
 
 class GroovyClassMetaData implements ClassMetaData, DefaultClassMetadata {

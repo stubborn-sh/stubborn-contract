@@ -25,11 +25,6 @@ import org.apache.camel.Message;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.spring.boot.CamelAutoConfiguration;
 import org.jspecify.annotations.Nullable;
-
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -37,6 +32,11 @@ import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.jms.ContractVerifierJmsConfiguration;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
+
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

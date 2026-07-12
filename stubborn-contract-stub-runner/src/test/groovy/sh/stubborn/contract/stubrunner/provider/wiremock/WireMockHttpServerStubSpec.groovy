@@ -19,18 +19,17 @@ package sh.stubborn.contract.stubrunner.provider.wiremock
 import com.github.tomakehurst.wiremock.http.RequestMethod
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.junit.Rule
+import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration
+import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer
 import spock.lang.Ignore
 import spock.lang.Specification
 
 import org.springframework.boot.resttestclient.TestRestTemplate
 import org.springframework.boot.test.system.OutputCaptureRule
-import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration
-import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer
 import org.springframework.cloud.test.TestSocketUtils
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestTemplate
-
 class WireMockHttpServerStubSpec extends Specification {
 	public static
 	final File MAPPING_DESCRIPTOR = new File('src/test/resources/transformers.json')

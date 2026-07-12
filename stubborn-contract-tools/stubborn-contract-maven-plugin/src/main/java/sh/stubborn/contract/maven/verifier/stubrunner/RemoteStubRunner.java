@@ -19,13 +19,13 @@ package sh.stubborn.contract.maven.verifier.stubrunner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.aether.RepositorySystemSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.stubrunner.BatchStubRunner;
 import sh.stubborn.contract.stubrunner.BatchStubRunnerFactory;
 import sh.stubborn.contract.stubrunner.RunningStubs;
 import sh.stubborn.contract.stubrunner.StubDownloader;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**

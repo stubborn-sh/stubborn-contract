@@ -17,7 +17,6 @@
 package sh.stubborn.contract.spec.internal
 
 import spock.lang.Specification
-
 /**
  * @author Tim Ysewyn
  */

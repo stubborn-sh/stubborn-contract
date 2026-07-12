@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
-
 import sh.stubborn.contract.verifier.converter.YamlContract;
 
 class SpringCloudContractRequestMatcherTests {

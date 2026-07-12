@@ -16,8 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
-import java.math.BigDecimal;
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,6 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import groovy.json.JsonOutput;
-import org.springframework.beans.BeanWrapperImpl;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
@@ -40,6 +39,8 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
 import sh.stubborn.contract.verifier.util.JsonPaths;
 import sh.stubborn.contract.verifier.util.JsonToJsonPathsConverter;
 import sh.stubborn.contract.verifier.util.MapConverter;
+
+import org.springframework.beans.BeanWrapperImpl;
 
 /**
  * @author Marcin Grzejszczak

@@ -31,7 +31,6 @@ import groovy.json.JsonOutput;
 import groovy.lang.GString;
 import groovy.transform.CompileStatic;
 import org.apache.commons.text.StringEscapeUtils;
-
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.QueryParameter;

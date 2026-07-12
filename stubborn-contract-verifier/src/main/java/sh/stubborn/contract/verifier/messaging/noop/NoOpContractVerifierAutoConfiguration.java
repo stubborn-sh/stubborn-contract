@@ -20,16 +20,16 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.jspecify.annotations.Nullable;
-import tools.jackson.databind.json.JsonMapper;
-
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;

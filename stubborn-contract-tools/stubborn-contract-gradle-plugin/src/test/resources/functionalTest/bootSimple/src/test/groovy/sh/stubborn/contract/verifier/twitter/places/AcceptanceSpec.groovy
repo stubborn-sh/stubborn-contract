@@ -16,16 +16,14 @@
 
 package sh.stubborn.contract.verifier.twitter.places
 
-import spock.lang.Specification
-
 import sh.stubborn.contract.verifier.twitter.place.PairIdController
-import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-
+import spock.lang.Specification
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
 class AcceptanceSpec extends Specification {
 
 	def "should have controller up and running"() {

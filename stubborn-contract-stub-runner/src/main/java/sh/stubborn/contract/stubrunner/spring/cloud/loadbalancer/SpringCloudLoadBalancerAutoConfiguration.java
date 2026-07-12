@@ -23,6 +23,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import reactor.core.publisher.Mono;
+import sh.stubborn.contract.stubrunner.RunningStubs;
+import sh.stubborn.contract.stubrunner.StubConfiguration;
+import sh.stubborn.contract.stubrunner.StubFinder;
+import sh.stubborn.contract.stubrunner.spring.cloud.ConditionalOnStubbedDiscoveryEnabled;
+import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
+import sh.stubborn.contract.stubrunner.spring.cloud.StubRunnerSpringCloudAutoConfiguration;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -40,12 +46,6 @@ import org.springframework.cloud.client.loadbalancer.LoadBalancerLifecycle;
 import org.springframework.cloud.client.loadbalancer.Request;
 import org.springframework.cloud.client.loadbalancer.Response;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactiveLoadBalancer;
-import sh.stubborn.contract.stubrunner.RunningStubs;
-import sh.stubborn.contract.stubrunner.StubConfiguration;
-import sh.stubborn.contract.stubrunner.StubFinder;
-import sh.stubborn.contract.stubrunner.spring.cloud.ConditionalOnStubbedDiscoveryEnabled;
-import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
-import sh.stubborn.contract.stubrunner.spring.cloud.StubRunnerSpringCloudAutoConfiguration;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClientConfiguration;
 import org.springframework.cloud.loadbalancer.config.LoadBalancerAutoConfiguration;
 import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBalancer;

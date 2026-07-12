@@ -16,15 +16,14 @@
 
 package sh.stubborn.contract.verifier.builder
 
+import java.util.regex.Pattern
+
 import sh.stubborn.contract.spec.internal.DslProperty
 import sh.stubborn.contract.spec.internal.MatchingStrategy
 import sh.stubborn.contract.spec.internal.OptionalProperty
 import sh.stubborn.contract.spec.internal.QueryParameter
 import sh.stubborn.contract.spec.internal.RegexProperty
 import spock.lang.Specification
-
-import java.util.regex.Pattern
-
 class QueryParamsResolverSpec extends Specification {
 
 	def 'should return serverValue for QueryParameter'() {

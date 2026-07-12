@@ -42,8 +42,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wiremock.com.github.jknack.handlebars.Helper;
-
 import sh.stubborn.contract.stubrunner.HttpServerStub;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
@@ -53,6 +51,8 @@ import sh.stubborn.contract.verifier.dsl.wiremock.DefaultResponseTransformer;
 import sh.stubborn.contract.verifier.dsl.wiremock.SpringCloudContractRequestMatcher;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions;
 import sh.stubborn.contract.wiremock.WireMockSpring;
+import wiremock.com.github.jknack.handlebars.Helper;
+
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StreamUtils;

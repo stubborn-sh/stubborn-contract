@@ -25,8 +25,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.util.FileSystemUtils;
 
 import static org.assertj.core.api.BDDAssertions.then;

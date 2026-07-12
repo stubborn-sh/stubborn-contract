@@ -15,7 +15,6 @@
  */
 
 import sh.stubborn.contract.spec.Contract
-
 Contract.make {
 	description('Should return bet ranges array')
 	request {

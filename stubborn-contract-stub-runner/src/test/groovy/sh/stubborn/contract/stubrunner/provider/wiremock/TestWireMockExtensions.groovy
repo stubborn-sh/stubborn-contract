@@ -26,10 +26,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders
 import com.github.tomakehurst.wiremock.http.Request
 import com.github.tomakehurst.wiremock.http.Response
 import groovy.transform.CompileStatic
-
 import sh.stubborn.contract.verifier.dsl.wiremock.DefaultResponseTransformer
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions
-
 /**
  * Extension that registers the default response transformer and a custom one too
  */

@@ -27,8 +27,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -36,8 +36,8 @@ import org.springframework.util.StringUtils;
 
 /**
  * Allows to read stubs and contracts from a given location. Contrary to
- * {@link sh.stubborn.contract.stubrunner.AetherStubDownloaderBuilder},
- * doesn't require the location to be a maven repository.
+ * {@link sh.stubborn.contract.stubrunner.AetherStubDownloaderBuilder}, doesn't require
+ * the location to be a maven repository.
  *
  * @author Marcin Grzejszczak
  */

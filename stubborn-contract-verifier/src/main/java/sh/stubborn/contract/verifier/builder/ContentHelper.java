@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.builder;
 
 import org.apache.commons.text.StringEscapeUtils;
-
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.verifier.util.MapConverter;
 

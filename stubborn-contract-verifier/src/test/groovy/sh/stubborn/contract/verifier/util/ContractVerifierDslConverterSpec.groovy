@@ -16,10 +16,8 @@
 
 package sh.stubborn.contract.verifier.util
 
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.Contract
-
+import spock.lang.Specification
 /**
  * @author Marcin Grzejszczak
  */

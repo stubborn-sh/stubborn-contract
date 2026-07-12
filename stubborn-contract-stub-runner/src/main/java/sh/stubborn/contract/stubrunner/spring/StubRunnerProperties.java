@@ -21,10 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer.NoOpHttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.ResourceResolver;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 

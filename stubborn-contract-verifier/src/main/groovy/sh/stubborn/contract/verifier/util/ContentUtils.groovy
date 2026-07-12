@@ -30,7 +30,6 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.runtime.GStringImpl
 import org.xml.sax.helpers.DefaultHandler
-
 import sh.stubborn.contract.spec.internal.DslProperty
 import sh.stubborn.contract.spec.internal.ExecutionProperty
 import sh.stubborn.contract.spec.internal.FromFileProperty
@@ -40,8 +39,6 @@ import sh.stubborn.contract.spec.internal.MatchingStrategy
 import sh.stubborn.contract.spec.internal.NamedProperty
 import sh.stubborn.contract.spec.internal.OptionalProperty
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor
-import org.springframework.util.StringUtils
-
 import static org.apache.commons.text.StringEscapeUtils.escapeJava
 import static org.apache.commons.text.StringEscapeUtils.escapeJson
 import static org.apache.commons.text.StringEscapeUtils.escapeXml11
@@ -51,6 +48,7 @@ import static sh.stubborn.contract.verifier.util.ContentType.JSON
 import static sh.stubborn.contract.verifier.util.ContentType.UNKNOWN
 import static sh.stubborn.contract.verifier.util.ContentType.XML
 
+import org.springframework.util.StringUtils
 /**
  * A utility class that can operate on a message body basing on the provided Content Type.
  *

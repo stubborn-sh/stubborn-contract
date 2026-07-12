@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.junit.Test;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;

@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.converter
 
 import spock.lang.Specification
-
 class YamlContractSpec extends Specification {
 
 	def "should convert to matching type from string"() {

@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.converter;
 import java.util.List;
 
 import sh.stubborn.contract.spec.Contract;
+
 import org.springframework.core.io.support.SpringFactoriesLoader;
 
 /**

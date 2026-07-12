@@ -21,7 +21,6 @@ import spock.lang.Issue
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
-
 class XmlAssertionSpec extends Specification {
 
 	@Shared

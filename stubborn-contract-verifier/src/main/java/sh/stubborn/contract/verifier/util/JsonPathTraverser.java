@@ -24,7 +24,6 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import groovy.lang.GString;
-
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.OptionalProperty;
 

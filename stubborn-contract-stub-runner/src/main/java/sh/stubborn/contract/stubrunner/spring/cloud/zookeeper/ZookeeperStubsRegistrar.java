@@ -28,11 +28,11 @@ import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.UriSpec;
-
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 import sh.stubborn.contract.stubrunner.StubRunning;
 import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
 import sh.stubborn.contract.stubrunner.spring.cloud.StubsRegistrar;
+
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.util.StringUtils;
 

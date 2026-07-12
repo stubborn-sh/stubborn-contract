@@ -17,6 +17,11 @@
 package sh.stubborn.contract.stubrunner.spring.cloud.consul;
 
 import com.ecwid.consul.v1.ConsulClient;
+import sh.stubborn.contract.stubrunner.StubRunning;
+import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
+import sh.stubborn.contract.stubrunner.spring.cloud.ConditionalOnStubbedDiscoveryDisabled;
+import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
+import sh.stubborn.contract.stubrunner.spring.cloud.StubsRegistrar;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -24,11 +29,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.commons.util.InetUtils;
 import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import org.springframework.cloud.consul.serviceregistry.ConsulServiceRegistryAutoConfiguration;
-import sh.stubborn.contract.stubrunner.StubRunning;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
-import sh.stubborn.contract.stubrunner.spring.cloud.ConditionalOnStubbedDiscoveryDisabled;
-import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
-import sh.stubborn.contract.stubrunner.spring.cloud.StubsRegistrar;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

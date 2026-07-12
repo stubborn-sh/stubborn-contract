@@ -33,12 +33,12 @@ import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
-import sh.stubborn.contract.verifier.converter.YamlContract;
-import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;

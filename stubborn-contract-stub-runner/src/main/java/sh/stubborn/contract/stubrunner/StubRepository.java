@@ -32,11 +32,11 @@ import java.util.List;
 import io.micrometer.common.lang.Nullable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStub;
 import sh.stubborn.contract.verifier.util.ContractScanner;
+
 import org.springframework.core.io.support.SpringFactoriesLoader;
 
 /**

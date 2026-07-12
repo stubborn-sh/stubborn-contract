@@ -20,11 +20,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.jspecify.annotations.Nullable;
-
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -32,6 +27,11 @@ import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
 import sh.stubborn.contract.verifier.messaging.stream.ContractVerifierStreamAutoConfiguration;
+
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

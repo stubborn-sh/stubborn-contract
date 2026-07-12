@@ -17,12 +17,12 @@
 package sh.stubborn.contract.verifier.messaging.boot;
 
 import org.junit.Test;
+import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
-import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 import org.springframework.cloud.stream.binder.Binder;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner
 
 import spock.lang.Specification
-
 class StubRepositorySpec extends Specification {
 	public static
 	final File REPOSITORY_LOCATION = new File('src/test/resources/repository')

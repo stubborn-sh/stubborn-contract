@@ -17,12 +17,11 @@
 package sh.stubborn.contract.stubrunner
 
 
-import spock.lang.Specification
-
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages
-import org.springframework.cloud.test.TestSocketUtils
+import spock.lang.Specification
 
+import org.springframework.cloud.test.TestSocketUtils
 class StubRunnerSpec extends Specification {
 
 	private static final int MIN_PORT = TestSocketUtils.findAvailableTcpPort()

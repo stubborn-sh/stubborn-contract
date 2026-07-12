@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.dsl.wiremock
 
+import java.util.function.Function
+
 import groovy.json.JsonSlurper
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.converter.YamlContractConverter
@@ -25,9 +27,6 @@ import sh.stubborn.contract.verifier.util.MapConverter
 import spock.lang.Issue
 import spock.lang.Shared
 import spock.lang.Specification
-
-import java.util.function.Function
-
 class WireMockResponseStubStrategySpec extends Specification {
 
 	def "should not quote floating point numbers"() {

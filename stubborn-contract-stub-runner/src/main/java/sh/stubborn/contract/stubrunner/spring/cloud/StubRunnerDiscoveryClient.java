@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import sh.stubborn.contract.stubrunner.RunningStubs;
+import sh.stubborn.contract.stubrunner.StubFinder;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import sh.stubborn.contract.stubrunner.RunningStubs;
-import sh.stubborn.contract.stubrunner.StubFinder;
 import org.springframework.util.StringUtils;
 
 /**

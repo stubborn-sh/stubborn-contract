@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
-
 import sh.stubborn.contract.spec.util.ValidateUtils;
 
 /**

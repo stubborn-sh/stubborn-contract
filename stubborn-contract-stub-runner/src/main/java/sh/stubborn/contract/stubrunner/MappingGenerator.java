@@ -26,12 +26,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.converter.StubGenerator;
 import sh.stubborn.contract.verifier.converter.StubGeneratorProvider;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
+
 import org.springframework.util.StringUtils;
 
 final class MappingGenerator {

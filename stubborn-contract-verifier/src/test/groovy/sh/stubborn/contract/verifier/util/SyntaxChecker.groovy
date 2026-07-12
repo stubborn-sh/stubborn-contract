@@ -46,16 +46,15 @@ import org.junit.Rule
 import org.junit.Test
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
-
-import org.springframework.beans.factory.annotation.Autowired
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil
-import org.springframework.util.ReflectionUtils
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.util.ReflectionUtils
 /**
  * checking the syntax of produced scripts
  */

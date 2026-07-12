@@ -23,8 +23,7 @@ package sh.stubborn.contract.verifier.config.framework;
  * @author Olga Maciaszek-Sharma
  * @since 2.1.0
  * @deprecated appropriate implementations of
- * <code>sh.stubborn.contract.verifier.builder.Visitor</code> should be used
- * instead.
+ * <code>sh.stubborn.contract.verifier.builder.Visitor</code> should be used instead.
  */
 @Deprecated
 public interface TestFrameworkDefinition {

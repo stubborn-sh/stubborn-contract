@@ -17,12 +17,6 @@
 package sh.stubborn.contract.verifier.builder
 
 import org.junit.Rule
-import spock.lang.Issue
-import spock.lang.Shared
-import spock.lang.Specification
-import spock.util.environment.RestoreSystemProperties
-
-import org.springframework.boot.test.system.OutputCaptureRule
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties
 import sh.stubborn.contract.verifier.config.TestFramework
@@ -31,7 +25,12 @@ import sh.stubborn.contract.verifier.converter.YamlContractConverter
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubVerifier
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.util.SyntaxChecker
+import spock.lang.Issue
+import spock.lang.Shared
+import spock.lang.Specification
+import spock.util.environment.RestoreSystemProperties
 
+import org.springframework.boot.test.system.OutputCaptureRule
 /**
  * @author Jakub Kubrynski, codearte.io
  * @author Tim Ysewyn

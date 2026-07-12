@@ -24,6 +24,7 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.beans.factory.ObjectProvider;
@@ -31,16 +32,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
 /**
- * Auto-configuration for Avro support in Spring Cloud Contract.
- * Activates when {@code org.apache.avro.specific.SpecificRecordBase}
- * is on the classpath.
+ * Auto-configuration for Avro support in Spring Cloud Contract. Activates when
+ * {@code org.apache.avro.specific.SpecificRecordBase} is on the classpath.
  *
  * @author Emanuel Trandafir
  * @since 4.2.0
@@ -49,62 +48,52 @@ import org.springframework.kafka.core.KafkaTemplate;
 @ConditionalOnClass(name = "org.apache.avro.specific.SpecificRecordBase")
 public final class KafkaAvroContractVerifierConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    ContractVerifierObjectMapper avroContractVerifierObjectMapper(
-            final ObjectProvider<JsonMapper> jsonMapper) {
-        JsonMapper mapper = jsonMapper.getIfAvailable(JsonMapper::new)
-            .rebuild()
-            .addMixIn(SpecificRecordBase.class, IgnoreAvroMixin.class)
-            .build();
-        return new ContractVerifierObjectMapper(mapper);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	ContractVerifierObjectMapper avroContractVerifierObjectMapper(final ObjectProvider<JsonMapper> jsonMapper) {
+		JsonMapper mapper = jsonMapper.getIfAvailable(JsonMapper::new)
+			.rebuild()
+			.addMixIn(SpecificRecordBase.class, IgnoreAvroMixin.class)
+			.build();
+		return new ContractVerifierObjectMapper(mapper);
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(name = "avroKafkaTemplate")
-    KafkaTemplate<String, Object> avroKafkaTemplate(
-            @Value("${spring.kafka.bootstrap-servers}")
-            final String bootstrapServers,
-            @Value("${spring.kafka.properties.schema.registry.url:}")
-            final String schemaRegistryUrl) {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                KafkaAvroSerializer.class);
-        props.put("schema.registry.url", schemaRegistryUrl);
-        return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
-    }
+	@Bean
+	@ConditionalOnMissingBean(name = "avroKafkaTemplate")
+	KafkaTemplate<String, Object> avroKafkaTemplate(
+			@Value("${spring.kafka.bootstrap-servers}") final String bootstrapServers,
+			@Value("${spring.kafka.properties.schema.registry.url:}") final String schemaRegistryUrl) {
+		Map<String, Object> props = new HashMap<>();
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
+		props.put("schema.registry.url", schemaRegistryUrl);
+		return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
+	}
 
-    @Bean
-    @ConditionalOnMissingBean
-    KafkaAvroMessageVerifierSender kafkaAvroMessageVerifierSender(
-            @Qualifier("avroKafkaTemplate")
-            final KafkaTemplate<String, Object> avroKafkaTemplate) {
-        return new KafkaAvroMessageVerifierSender(avroKafkaTemplate);
-    }
+	@Bean
+	@ConditionalOnMissingBean
+	KafkaAvroMessageVerifierSender kafkaAvroMessageVerifierSender(
+			@Qualifier("avroKafkaTemplate") final KafkaTemplate<String, Object> avroKafkaTemplate) {
+		return new KafkaAvroMessageVerifierSender(avroKafkaTemplate);
+	}
 
-    /**
-     * Jackson mixin applied to
-     * {@link org.apache.avro.specific.SpecificRecordBase} to suppress
-     * Avro-internal fields ({@code schema}, {@code specificData},
-     * {@code classSchema}, {@code conversion}) during contract body
-     * verification.
-     *
-     * <p>
-     * {@link ContractVerifierObjectMapper} serializes received Avro
-     * records to JSON so SCC can compare them against the contract's
-     * expected body. {@code SpecificRecordBase} exposes those fields as
-     * getters, but they are Avro runtime metadata — not part of the
-     * message payload. Without this mixin, Jackson either fails on
-     * non-serializable types or includes Avro internals in the output,
-     * causing false contract mismatches.
-     */
-    @JsonIgnoreProperties({ "schema", "specificData", "classSchema",
-            "conversion" })
-    interface IgnoreAvroMixin {
+	/**
+	 * Jackson mixin applied to {@link org.apache.avro.specific.SpecificRecordBase} to
+	 * suppress Avro-internal fields ({@code schema}, {@code specificData},
+	 * {@code classSchema}, {@code conversion}) during contract body verification.
+	 *
+	 * <p>
+	 * {@link ContractVerifierObjectMapper} serializes received Avro records to JSON so
+	 * SCC can compare them against the contract's expected body.
+	 * {@code SpecificRecordBase} exposes those fields as getters, but they are Avro
+	 * runtime metadata — not part of the message payload. Without this mixin, Jackson
+	 * either fails on non-serializable types or includes Avro internals in the output,
+	 * causing false contract mismatches.
+	 */
+	@JsonIgnoreProperties({ "schema", "specificData", "classSchema", "conversion" })
+	interface IgnoreAvroMixin {
 
-    }
+	}
 
 }

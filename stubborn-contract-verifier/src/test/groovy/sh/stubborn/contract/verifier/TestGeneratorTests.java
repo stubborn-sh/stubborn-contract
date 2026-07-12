@@ -23,12 +23,12 @@ import java.util.LinkedHashMap;
 import org.assertj.core.api.BDDAssertions;
 import org.junit.Test;
 import org.mockito.BDDMockito;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.builder.SingleTestGenerator;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.file.ContractFileScanner;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
+
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 

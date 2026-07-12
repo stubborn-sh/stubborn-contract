@@ -33,7 +33,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-
 import sh.stubborn.contract.stubrunner.AetherStubDownloader;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;

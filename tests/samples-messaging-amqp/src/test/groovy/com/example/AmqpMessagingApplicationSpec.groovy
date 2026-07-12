@@ -22,14 +22,13 @@ import com.jayway.jsonpath.JsonPath
 import com.toomuchcoding.jsonassert.JsonAssertion
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 // Context configuration would end up in base class
 @AutoConfigureMessageVerifier
 @SpringBootTest(classes = AmqpMessagingApplication, properties = "spring.cloud.contract.stubrunner.amqp.enabled=true")

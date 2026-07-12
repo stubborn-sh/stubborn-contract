@@ -25,16 +25,15 @@ import org.junit.jupiter.api.Test
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
-
 /**
  * SPIKE ON TESTS FROM NOTES IN MessagingSpec
  */

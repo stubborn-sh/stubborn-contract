@@ -23,7 +23,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import sh.stubborn.contract.stubrunner.junit4.StubRunnerRuleJUnitTest;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
@@ -63,13 +62,12 @@ class StubRunnerJUnit5MethodExtensionTests {
 
 	@Test
 	void should_start_WireMock_servers() {
-		assertThat(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"))
-			.isNotNull();
+		assertThat(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance")).isNotNull();
 		assertThat(stubRunnerExtension.findStubUrl("loanIssuance")).isNotNull();
-		assertThat(stubRunnerExtension.findStubUrl("loanIssuance")).isEqualTo(
-				stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"));
-		assertThat(stubRunnerExtension
-			.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")).isNotNull();
+		assertThat(stubRunnerExtension.findStubUrl("loanIssuance"))
+			.isEqualTo(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"));
+		assertThat(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer"))
+			.isNotNull();
 	}
 
 	@Test

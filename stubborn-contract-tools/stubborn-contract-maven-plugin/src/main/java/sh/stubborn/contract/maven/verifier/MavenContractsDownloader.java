@@ -22,7 +22,6 @@ import java.util.Map;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-
 import sh.stubborn.contract.stubrunner.ContractDownloader;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 import sh.stubborn.contract.stubrunner.StubDownloader;
@@ -31,6 +30,7 @@ import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
+
 import org.springframework.util.StringUtils;
 
 /**

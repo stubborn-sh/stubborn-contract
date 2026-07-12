@@ -36,6 +36,7 @@ import sh.stubborn.contract.stubrunner.ScmStubDownloaderBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+
 import org.springframework.util.StringUtils;
 
 /**

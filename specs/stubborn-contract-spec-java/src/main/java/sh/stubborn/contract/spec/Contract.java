@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
-
 import sh.stubborn.contract.spec.internal.Input;
 import sh.stubborn.contract.spec.internal.OutputMessage;
 import sh.stubborn.contract.spec.internal.Request;

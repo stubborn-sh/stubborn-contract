@@ -31,13 +31,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStub;
 import sh.stubborn.contract.verifier.converter.RecursiveFilesConverter;
 import sh.stubborn.contract.verifier.converter.StubGenerator;
 import sh.stubborn.contract.verifier.converter.StubGeneratorProvider;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 

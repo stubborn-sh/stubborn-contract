@@ -16,8 +16,9 @@
 
 package sh.stubborn.contract.stubrunner.server;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

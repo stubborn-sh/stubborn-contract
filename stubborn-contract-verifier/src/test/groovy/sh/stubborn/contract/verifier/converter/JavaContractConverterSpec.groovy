@@ -17,10 +17,6 @@
 package sh.stubborn.contract.verifier.converter
 
 import groovy.json.JsonSlurper
-import spock.lang.Issue
-import spock.lang.Shared
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.spec.internal.ExecutionProperty
 import sh.stubborn.contract.spec.internal.FromFileProperty
@@ -28,7 +24,9 @@ import sh.stubborn.contract.spec.internal.RegexProperty
 import sh.stubborn.contract.spec.internal.Url
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter
 import sh.stubborn.contract.verifier.util.MapConverter
-
+import spock.lang.Issue
+import spock.lang.Shared
+import spock.lang.Specification
 import static sh.stubborn.contract.spec.internal.MatchingType.COMMAND
 import static sh.stubborn.contract.spec.internal.MatchingType.NULL
 import static sh.stubborn.contract.spec.internal.MatchingType.REGEX

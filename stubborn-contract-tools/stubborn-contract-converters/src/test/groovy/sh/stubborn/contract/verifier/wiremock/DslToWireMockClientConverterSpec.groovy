@@ -25,21 +25,20 @@ import groovy.json.JsonOutput
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.skyscreamer.jsonassert.JSONAssert
-import spock.lang.Issue
-import spock.lang.Specification
-
-import org.springframework.boot.resttestclient.TestRestTemplate
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubMapping
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter
+import spock.lang.Issue
+import spock.lang.Specification
+
+import org.springframework.boot.resttestclient.TestRestTemplate
 import org.springframework.cloud.test.TestSocketUtils
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.RequestEntity
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
-
 class DslToWireMockClientConverterSpec extends Specification {
 
 	int port = TestSocketUtils.findAvailableTcpPort()

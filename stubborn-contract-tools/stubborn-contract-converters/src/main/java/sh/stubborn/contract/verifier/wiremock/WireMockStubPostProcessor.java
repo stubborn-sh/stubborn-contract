@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.wiremock;
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-
 import sh.stubborn.contract.verifier.converter.StubPostProcessor;
 
 /**

@@ -18,10 +18,10 @@ package sh.stubborn.contract.maven.verifier.stubrunner;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 import sh.stubborn.contract.stubrunner.StubRunner;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
+
 import org.springframework.stereotype.Component;
 
 /**

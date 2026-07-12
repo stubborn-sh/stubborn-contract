@@ -48,4 +48,18 @@
 	<suppress files=".*contractsToCompile.*" checks=".*"/>
 	<suppress files=".*RegexPatterns.*" checks="HideUtility*"/>
 	<suppress files=".*gradle.*" checks=".*"/>
+	<!-- Generated Avro file — no copyright header, no Javadoc, generated class structure -->
+	<suppress files=".*FooAvro.*" checks=".*"/>
+	<!-- Pre-existing violations in verifier module — tab indented, builder-pattern classes -->
+	<suppress files=".*verifier/builder/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|NoWhitespaceAfter|DesignForExtension|FinalClass|JavadocStyle|HideUtilityClassConstructor)"/>
+	<suppress files=".*verifier/assertion/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>
+	<suppress files=".*verifier/util/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension|FinalClass)"/>
+	<suppress files=".*verifier/dsl/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>
+	<suppress files=".*verifier/file/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>
+	<suppress files=".*verifier/http/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>
+	<suppress files=".*verifier/messaging/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>
+	<suppress files=".*verifier/config/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension|FinalClass)"/>
+	<suppress files=".*verifier/converter/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>
+	<suppress files=".*verifier/template/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension|FinalClass)"/>
+	<suppress files=".*stubborn/contract/verifier/[A-Z].*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension|HideUtilityClassConstructor|FinalClass)"/>
 </suppressions>

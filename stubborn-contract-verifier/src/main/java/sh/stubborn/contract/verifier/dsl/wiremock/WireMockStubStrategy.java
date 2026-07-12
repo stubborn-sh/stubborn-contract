@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.dsl.wiremock;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;

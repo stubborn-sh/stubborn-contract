@@ -20,6 +20,10 @@ import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import sh.stubborn.contract.stubrunner.StubFinder
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
+import sh.stubborn.contract.stubrunner.spring.cloud.loadbalancer.StubRunnerLoadBalancerClientFactory
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -28,10 +32,6 @@ import org.springframework.cloud.client.ServiceInstance
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.cloud.consul.ConsulAutoConfiguration
-import sh.stubborn.contract.stubrunner.StubFinder
-import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
-import sh.stubborn.contract.stubrunner.spring.cloud.loadbalancer.StubRunnerLoadBalancerClientFactory
 import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory
 import org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration
 import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration
@@ -39,7 +39,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
-
 /**
  * @author Marcin Grzejszczak
  */

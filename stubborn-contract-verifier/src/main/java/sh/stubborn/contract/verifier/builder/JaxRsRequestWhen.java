@@ -20,6 +20,7 @@ import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.MapConverter;
+
 import org.springframework.util.StringUtils;
 
 class JaxRsRequestWhen implements When, JaxRsAcceptor, QueryParamsResolver {

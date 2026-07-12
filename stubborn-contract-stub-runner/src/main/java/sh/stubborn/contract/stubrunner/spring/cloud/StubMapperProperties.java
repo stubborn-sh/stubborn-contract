@@ -19,8 +19,9 @@ package sh.stubborn.contract.stubrunner.spring.cloud;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
 /**

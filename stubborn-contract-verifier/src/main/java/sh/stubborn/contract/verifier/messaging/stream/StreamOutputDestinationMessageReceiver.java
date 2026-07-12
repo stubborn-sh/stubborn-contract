@@ -20,9 +20,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
+
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.Message;

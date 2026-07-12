@@ -25,7 +25,6 @@ import java.util.Map;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.stubrunner.BatchStubRunner;
 import sh.stubborn.contract.stubrunner.BatchStubRunnerFactory;

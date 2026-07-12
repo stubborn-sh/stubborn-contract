@@ -25,11 +25,11 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubStrategy;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.NamesUtil;
+
 import org.springframework.util.StringUtils;
 
 /**

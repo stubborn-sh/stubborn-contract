@@ -23,9 +23,8 @@ import java.util.stream.Collectors;
 import com.github.tomakehurst.wiremock.extension.PostServeActionDefinition;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.jupiter.api.Test;
-import tools.jackson.databind.json.JsonMapper;
-
 import sh.stubborn.contract.spec.Contract;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.assertj.core.api.BDDAssertions.then;
 

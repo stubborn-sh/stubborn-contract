@@ -38,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.util.xml.DOMNamespaceContext;

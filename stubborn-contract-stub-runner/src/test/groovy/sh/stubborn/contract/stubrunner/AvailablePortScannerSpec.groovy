@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner
 
 import spock.lang.Specification
-
 class AvailablePortScannerSpec extends Specification {
 
 	private static final int MIN_PORT = 8989

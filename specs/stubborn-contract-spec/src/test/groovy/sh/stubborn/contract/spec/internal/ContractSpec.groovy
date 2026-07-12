@@ -16,10 +16,9 @@
 
 package sh.stubborn.contract.spec.internal
 
+import sh.stubborn.contract.spec.Contract
 import spock.lang.Issue
 import spock.lang.Specification
-
-import sh.stubborn.contract.spec.Contract
 /**
  * @author Marcin Grzejszczak
  */

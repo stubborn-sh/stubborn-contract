@@ -17,11 +17,10 @@
 package sh.stubborn.contract.stubrunner
 
 import org.apache.avro.generic.GenericRecord
+import sh.stubborn.contract.verifier.messaging.avro.KafkaAvroMessageVerifierSender
 import spock.lang.Specification
 
-import sh.stubborn.contract.verifier.messaging.avro.KafkaAvroMessageVerifierSender
 import org.springframework.kafka.core.KafkaTemplate
-
 class StubRunnerExecutorAvroSpec extends Specification {
 
 	private KafkaTemplate<String, Object> kafkaTemplate = Mock()

@@ -27,7 +27,6 @@ import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import groovy.lang.GString;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Request;
@@ -35,6 +34,7 @@ import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.MapConverter;
+
 import org.springframework.core.io.support.SpringFactoriesLoader;
 
 import static java.util.stream.Collectors.collectingAndThen;

@@ -24,10 +24,9 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tools.jackson.dataformat.yaml.YAMLMapper;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toMap;

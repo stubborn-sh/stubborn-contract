@@ -28,14 +28,14 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.eclipse.aether.RepositorySystemSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.maven.verifier.stubrunner.LocalStubRunner;
 import sh.stubborn.contract.maven.verifier.stubrunner.RemoteStubRunner;
 import sh.stubborn.contract.stubrunner.BatchStubRunner;
 import sh.stubborn.contract.stubrunner.StubRunner;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 /**

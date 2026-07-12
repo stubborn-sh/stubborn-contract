@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner;
 
 import org.junit.Test;
-
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
 import static org.assertj.core.api.BDDAssertions.then;

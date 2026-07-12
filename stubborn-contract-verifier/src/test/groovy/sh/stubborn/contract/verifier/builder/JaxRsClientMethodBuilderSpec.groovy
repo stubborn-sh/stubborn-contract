@@ -18,12 +18,6 @@ package sh.stubborn.contract.verifier.builder
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
-import spock.lang.Issue
-import spock.lang.Shared
-import spock.lang.Specification
-import spock.lang.Unroll
-import spock.util.environment.RestoreSystemProperties
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties
 import sh.stubborn.contract.verifier.config.TestFramework
@@ -32,7 +26,11 @@ import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubStrategy
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubVerifier
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.util.SyntaxChecker
-
+import spock.lang.Issue
+import spock.lang.Shared
+import spock.lang.Specification
+import spock.lang.Unroll
+import spock.util.environment.RestoreSystemProperties
 class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStubVerifier {
 
 	@Shared
@@ -978,18 +976,17 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 // tag::jaxrs[]
 package com.example;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
-import org.junit.Rule;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
-import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
-import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.Rule;
+import org.junit.Test;
 import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
 import static javax.ws.rs.client.Entity.*;
-
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
 @SuppressWarnings("rawtypes")
 public class FooTest {
   WebTarget webTarget;

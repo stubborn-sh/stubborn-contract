@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 

@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import groovy.json.JsonOutput;
 import groovy.lang.GString;
 import org.apache.commons.text.StringEscapeUtils;
-
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;

@@ -236,8 +236,7 @@ public class FooAvro extends org.apache.avro.specific.SpecificRecordBase
 		 * @param value The value of 'fooAvro'.
 		 * @return This builder.
 		 */
-		public sh.stubborn.contract.verifier.messaging.internal.FooAvro.Builder setFooAvro(
-				java.lang.String value) {
+		public sh.stubborn.contract.verifier.messaging.internal.FooAvro.Builder setFooAvro(java.lang.String value) {
 			validate(fields()[0], value);
 			this.fooAvro = value;
 			fieldSetFlags()[0] = true;

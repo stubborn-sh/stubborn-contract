@@ -29,10 +29,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
+
 import org.springframework.util.FileSystemUtils;
 
 import static sh.stubborn.contract.verifier.util.ContractVerifierDslConverter.convertAsCollection;

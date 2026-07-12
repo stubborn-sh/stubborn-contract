@@ -20,9 +20,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.integration.support.channel.BeanFactoryChannelResolver;
 import org.springframework.messaging.Message;

@@ -20,10 +20,8 @@ import java.util.regex.Pattern
 
 import com.github.tomakehurst.wiremock.matching.RegexPattern
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.file.ContractMetadata
-
 trait WireMockStubVerifier {
 
 	void stubMappingIsValidWireMockStub(String mappingDefinition) {

@@ -28,12 +28,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
+
 import org.springframework.util.Assert;
 
 class BodyReader {

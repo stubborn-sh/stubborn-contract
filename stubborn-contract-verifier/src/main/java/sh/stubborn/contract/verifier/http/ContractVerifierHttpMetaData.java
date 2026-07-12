@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 

@@ -15,7 +15,6 @@
  */
 
 import sh.stubborn.contract.spec.Contract
-
 Contract.make {
 	description("""
 User's information should be update if has appropriate age

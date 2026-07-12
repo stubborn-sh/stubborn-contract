@@ -21,7 +21,6 @@ import com.jayway.jsonpath.JsonPath
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import spock.lang.Specification
-
 /**
  * Tests for {@link JsonToJsonPathsConverter} with ordered array verification enabled.
  * All tests in this class run with `spring.cloud.contract.verifier.assert.size` set to true,

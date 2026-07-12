@@ -16,11 +16,9 @@
 
 package sh.stubborn.contract.verifier.messaging.avro
 
+import sh.stubborn.contract.verifier.messaging.kafka.KafkaMetadata
 import spock.lang.Specification
 import tools.jackson.dataformat.yaml.YAMLMapper
-
-import sh.stubborn.contract.verifier.messaging.kafka.KafkaMetadata
-
 class AvroMetadataSpec extends Specification {
 
 	YAMLMapper mapper = new YAMLMapper()

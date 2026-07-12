@@ -16,10 +16,11 @@
 
 package sh.stubborn.contract.stubrunner.serverexamples;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import sh.stubborn.contract.stubrunner.server.EnableStubRunnerServer;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author Marcin Grzejszczak

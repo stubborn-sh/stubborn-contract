@@ -25,13 +25,13 @@ import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.agent.model.NewService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.springframework.cloud.commons.util.InetUtils;
-import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 import sh.stubborn.contract.stubrunner.StubRunning;
 import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
 import sh.stubborn.contract.stubrunner.spring.cloud.StubsRegistrar;
+
+import org.springframework.cloud.commons.util.InetUtils;
+import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import org.springframework.util.StringUtils;
 
 /**

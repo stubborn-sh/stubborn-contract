@@ -16,14 +16,13 @@
 
 package sh.stubborn.contract.stubrunner
 
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
 import spock.lang.Issue
 import spock.lang.Specification
 import spock.util.environment.RestoreSystemProperties
 
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.FileSystemResource
-
 class StubRunnerOptionsBuilderSpec extends Specification {
 
 	private StubRunnerOptionsBuilder builder = new StubRunnerOptionsBuilder()

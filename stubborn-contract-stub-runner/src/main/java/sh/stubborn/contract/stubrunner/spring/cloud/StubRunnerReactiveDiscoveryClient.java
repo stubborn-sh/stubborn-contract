@@ -19,11 +19,11 @@ package sh.stubborn.contract.stubrunner.spring.cloud;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Flux;
+import sh.stubborn.contract.stubrunner.StubFinder;
 
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
-import sh.stubborn.contract.stubrunner.StubFinder;
 
 /**
  * Custom version of {@link DiscoveryClient} that tries to find an instance in one of the

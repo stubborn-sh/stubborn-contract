@@ -53,21 +53,20 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::http_dsl[]
 
-	sh.stubborn.contract.spec.Contract methodDsl = sh.stubborn.contract.spec.Contract
-		.make(c -> {
-			c.request(r -> {
-				// tag::method[]
-				r.method(r.GET());
-				// end::method[]
-				r.url("/foo");
-			});
-
-			c.response(r -> {
-				r.status(200);
-			});
-
-			c.priority(1);
+	sh.stubborn.contract.spec.Contract methodDsl = sh.stubborn.contract.spec.Contract.make(c -> {
+		c.request(r -> {
+			// tag::method[]
+			r.method(r.GET());
+			// end::method[]
+			r.url("/foo");
 		});
+
+		c.response(r -> {
+			r.status(200);
+		});
+
+		c.priority(1);
+	});
 
 	sh.stubborn.contract.spec.Contract request =
 			// tag::request[]

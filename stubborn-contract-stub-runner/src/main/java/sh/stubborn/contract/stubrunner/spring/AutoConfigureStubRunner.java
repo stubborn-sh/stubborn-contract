@@ -22,11 +22,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.test.context.PropertyMapping;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer.NoOpHttpServerStubConfigurer;
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
+
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.context.PropertyMapping;
 
 import static org.springframework.boot.test.context.PropertyMapping.Skip.ON_DEFAULT_VALUE;
 

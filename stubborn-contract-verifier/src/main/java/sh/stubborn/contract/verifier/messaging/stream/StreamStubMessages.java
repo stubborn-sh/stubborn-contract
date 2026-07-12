@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+
 import org.springframework.messaging.Message;
 
 /**

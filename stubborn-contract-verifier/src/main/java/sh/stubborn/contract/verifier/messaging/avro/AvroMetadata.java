@@ -36,29 +36,26 @@ package sh.stubborn.contract.verifier.messaging.avro;
  */
 public final class AvroMetadata {
 
-    /**
-     * Classpath or filesystem path to the Avro schema file
-     * ({@code .avsc}), e.g. {@code classpath:avro/Book.avsc}.
-     * May also be an inline JSON schema string.
-     */
-    private String schema;
+	/**
+	 * Classpath or filesystem path to the Avro schema file ({@code .avsc}), e.g.
+	 * {@code classpath:avro/Book.avsc}. May also be an inline JSON schema string.
+	 */
+	private String schema;
 
-    /**
-     * Returns the Avro schema path or inline schema JSON.
-     *
-     * @return the schema
-     */
-    public String getSchema() {
-        return this.schema;
-    }
+	/**
+	 * Returns the Avro schema path or inline schema JSON.
+	 * @return the schema
+	 */
+	public String getSchema() {
+		return this.schema;
+	}
 
-    /**
-     * Sets the Avro schema path or inline schema JSON.
-     *
-     * @param value the schema
-     */
-    public void setSchema(final String value) {
-        this.schema = value;
-    }
+	/**
+	 * Sets the Avro schema path or inline schema JSON.
+	 * @param value the schema
+	 */
+	public void setSchema(final String value) {
+		this.schema = value;
+	}
 
 }

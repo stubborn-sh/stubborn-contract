@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.dsl.wiremock;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
-
 import sh.stubborn.contract.spec.internal.MatchingType;
 
 /**

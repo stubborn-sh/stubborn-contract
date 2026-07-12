@@ -20,7 +20,6 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc
 import spock.lang.Specification
 
 import org.springframework.cloud.frauddetection.FraudDetectionController
-
 class MvcSpec extends Specification {
 	def setup() {
 		RestAssuredMockMvc.standaloneSetup(new FraudDetectionController())

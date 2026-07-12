@@ -50,9 +50,9 @@ import groovy.lang.GroovyShell;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
+
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;

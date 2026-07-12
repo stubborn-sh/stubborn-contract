@@ -19,10 +19,10 @@ package sh.stubborn.contract.verifier.messaging.avro
 
 import org.apache.kafka.clients.producer.ProducerRecord
 import sh.stubborn.contract.verifier.converter.YamlContract
-import org.springframework.kafka.core.KafkaTemplate
 import spock.lang.Specification
 import tools.jackson.dataformat.yaml.YAMLMapper
 
+import org.springframework.kafka.core.KafkaTemplate
 class KafkaAvroMessageVerifierSenderSpec extends Specification {
 
 	static final String DUMMY_ISBN = "978-1234567890"

@@ -17,15 +17,15 @@
 package sh.stubborn.contract.stubrunner.spring.cloud.zookeeper;
 
 import org.apache.curator.framework.CuratorFramework;
-
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import sh.stubborn.contract.stubrunner.StubRunning;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
 import sh.stubborn.contract.stubrunner.spring.cloud.ConditionalOnStubbedDiscoveryDisabled;
 import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
 import sh.stubborn.contract.stubrunner.spring.cloud.StubsRegistrar;
+
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.zookeeper.discovery.ConditionalOnZookeeperDiscoveryEnabled;
 import org.springframework.cloud.zookeeper.discovery.ZookeeperDiscoveryProperties;
 import org.springframework.cloud.zookeeper.support.CuratorServiceDiscoveryAutoConfiguration;

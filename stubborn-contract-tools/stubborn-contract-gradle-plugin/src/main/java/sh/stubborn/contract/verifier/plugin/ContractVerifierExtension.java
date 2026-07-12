@@ -37,6 +37,7 @@ import org.gradle.api.provider.Property;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
+
 import org.springframework.util.Assert;
 
 /**

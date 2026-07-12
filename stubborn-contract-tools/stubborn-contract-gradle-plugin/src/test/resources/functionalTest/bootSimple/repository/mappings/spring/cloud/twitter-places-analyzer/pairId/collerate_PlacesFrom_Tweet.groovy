@@ -16,7 +16,6 @@
 
 
 import sh.stubborn.contract.spec.Contract
-
 Contract.make {
 	priority 2
 	request {

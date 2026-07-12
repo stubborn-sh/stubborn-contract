@@ -15,7 +15,6 @@
  */
 
 import sh.stubborn.contract.spec.Contract
-
 Contract.make {
 
 	description("""Should send a message in topic coupon_sent""")

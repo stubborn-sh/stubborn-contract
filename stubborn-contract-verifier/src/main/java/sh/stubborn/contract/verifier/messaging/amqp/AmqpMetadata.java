@@ -20,9 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.amqp.core.MessageProperties;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
+
+import org.springframework.amqp.core.MessageProperties;
 
 /**
  * Represents metadata for AMQP based communication.

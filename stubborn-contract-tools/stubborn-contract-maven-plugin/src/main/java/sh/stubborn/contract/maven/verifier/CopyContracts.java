@@ -28,7 +28,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.maven.shared.filtering.MavenResourcesExecution;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
-
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 
 class CopyContracts {

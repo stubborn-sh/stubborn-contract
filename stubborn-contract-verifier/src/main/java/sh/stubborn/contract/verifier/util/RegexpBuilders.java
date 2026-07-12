@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 
 import groovy.lang.GString;
 import org.codehaus.groovy.runtime.GStringImpl;
-
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.util.RegexpUtils;
 
@@ -87,8 +86,8 @@ public final class RegexpBuilders {
 	}
 
 	/**
-	 * Converts the {@link sh.stubborn.contract.spec.internal.DslProperty}
-	 * passed values into their stub side String representations.
+	 * Converts the {@link sh.stubborn.contract.spec.internal.DslProperty} passed values
+	 * into their stub side String representations.
 	 */
 	static String buildGStringRegexpForStubSide(DslProperty<?> dslProperty) {
 		return buildGStringRegexpForStubSide(dslProperty.getClientValue());

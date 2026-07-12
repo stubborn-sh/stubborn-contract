@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.messaging.internal
 
 
 import spock.lang.Specification
-
 class ContractVerifierObjectMapperSpec extends Specification {
 
 	ContractVerifierObjectMapper mapper = new ContractVerifierObjectMapper()

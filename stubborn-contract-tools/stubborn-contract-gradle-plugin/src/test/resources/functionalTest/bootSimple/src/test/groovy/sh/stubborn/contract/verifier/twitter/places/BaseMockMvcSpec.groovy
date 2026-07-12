@@ -17,10 +17,8 @@
 package sh.stubborn.contract.verifier.twitter.places
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc
-import spock.lang.Specification
-
 import sh.stubborn.contract.verifier.twitter.place.PairIdController
-
+import spock.lang.Specification
 // tag::base_class[]
 abstract class BaseMockMvcSpec extends Specification {
 

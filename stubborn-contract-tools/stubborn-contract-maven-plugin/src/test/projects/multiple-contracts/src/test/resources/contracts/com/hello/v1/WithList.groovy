@@ -16,7 +16,6 @@
  */
 
 import sh.stubborn.contract.spec.Contract
-
 [
 	Contract.make {
 		name("should post a user")

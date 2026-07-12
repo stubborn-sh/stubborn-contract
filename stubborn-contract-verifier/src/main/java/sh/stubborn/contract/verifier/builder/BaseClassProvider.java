@@ -22,8 +22,8 @@ import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.verifier.util.NamesUtil;
+
 import org.springframework.util.StringUtils;
 
 class BaseClassProvider {

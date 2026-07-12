@@ -29,10 +29,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.assertj.core.api.Assertions;
-import tools.jackson.databind.json.JsonMapper;
-
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Provides custom matching for WireMock's stub requests.

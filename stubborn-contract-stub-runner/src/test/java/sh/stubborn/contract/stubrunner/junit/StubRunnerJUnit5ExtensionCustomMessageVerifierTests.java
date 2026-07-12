@@ -23,7 +23,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import sh.stubborn.contract.stubrunner.junit4.StubRunnerRuleCustomPortJUnitTest;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import sh.stubborn.contract.verifier.converter.YamlContract;

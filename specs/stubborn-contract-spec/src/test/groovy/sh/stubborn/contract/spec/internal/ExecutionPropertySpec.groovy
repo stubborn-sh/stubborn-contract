@@ -17,7 +17,6 @@
 package sh.stubborn.contract.spec.internal
 
 import spock.lang.Specification
-
 class ExecutionPropertySpec extends Specification {
 
 	def 'should insert passed value in place of $it placeholder'() {

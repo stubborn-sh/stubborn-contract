@@ -21,14 +21,11 @@ import java.util.regex.Pattern
 import groovy.json.JsonOutput
 import groovy.json.StringEscapeUtils
 import groovy.transform.CompileStatic
-
 import sh.stubborn.contract.spec.internal.CanBeDynamic
 import sh.stubborn.contract.spec.internal.DslProperty
 import sh.stubborn.contract.spec.internal.FromFileProperty
 import sh.stubborn.contract.spec.internal.RegexProperty
-
 import static ContentUtils.extractValue
-
 /**
  * Class that constructs a String from a body. The body can be a GString
  * or a map.

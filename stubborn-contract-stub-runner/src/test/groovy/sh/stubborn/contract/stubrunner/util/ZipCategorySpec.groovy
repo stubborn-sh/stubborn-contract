@@ -18,7 +18,6 @@ package sh.stubborn.contract.stubrunner.util
 
 
 import spock.lang.Specification
-
 class ZipCategorySpec extends Specification {
 
 	def 'should unzip a file to the specified location'() {

@@ -26,8 +26,8 @@ import com.github.tomakehurst.wiremock.common.JsonException;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.verifier.converter.StubGenerator;
+
 import org.springframework.util.StreamUtils;
 
 /**

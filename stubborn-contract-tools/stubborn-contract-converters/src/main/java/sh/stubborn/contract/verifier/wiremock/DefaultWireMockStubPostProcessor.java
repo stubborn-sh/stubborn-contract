@@ -28,10 +28,9 @@ import com.github.tomakehurst.wiremock.http.DelayDistribution;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import sh.stubborn.contract.spec.Contract;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
-
-import sh.stubborn.contract.spec.Contract;
 
 class DefaultWireMockStubPostProcessor implements WireMockStubPostProcessor {
 

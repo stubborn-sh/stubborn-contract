@@ -36,7 +36,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
-
 import sh.stubborn.contract.spec.ContractVerifierException;
 import sh.stubborn.contract.stubrunner.AetherStubDownloader;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
@@ -44,6 +43,7 @@ import sh.stubborn.contract.verifier.TestGenerator;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
+
 import org.springframework.util.StringUtils;
 
 /**

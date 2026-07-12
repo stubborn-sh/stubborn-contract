@@ -28,10 +28,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
+
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.util.StringUtils;
 

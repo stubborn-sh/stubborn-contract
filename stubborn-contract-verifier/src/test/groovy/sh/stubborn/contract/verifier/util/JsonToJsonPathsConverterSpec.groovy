@@ -26,12 +26,10 @@ import com.toomuchcoding.jsonassert.JsonAssertion
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import net.minidev.json.JSONArray
-import spock.lang.Specification
-import spock.util.environment.RestoreSystemProperties
-
 import sh.stubborn.contract.spec.internal.BodyMatcher
 import sh.stubborn.contract.spec.internal.MatchingType
-
+import spock.lang.Specification
+import spock.util.environment.RestoreSystemProperties
 class JsonToJsonPathsConverterSpec extends Specification {
 
 	def 'should convert a json with list as root to a map of path to value'() {

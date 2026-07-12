@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.util.xml
 
 import spock.lang.Specification
 import spock.lang.Unroll
-
 /**
  * @author Marcin Grzejszczak
  */

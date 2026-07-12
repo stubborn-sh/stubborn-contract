@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.stubrunner.spring.cloud;
 
+import sh.stubborn.contract.stubrunner.StubFinder;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -24,7 +26,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
-import sh.stubborn.contract.stubrunner.StubFinder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;

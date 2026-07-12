@@ -19,11 +19,6 @@ package sh.stubborn.contract.verifier.converter
 import java.util.regex.Pattern
 
 import groovy.json.JsonSlurper
-import spock.lang.Issue
-import spock.lang.Shared
-import spock.lang.Specification
-import spock.lang.Unroll
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.spec.internal.ExecutionProperty
 import sh.stubborn.contract.spec.internal.FromFileProperty
@@ -34,7 +29,10 @@ import sh.stubborn.contract.spec.internal.RegexPatterns
 import sh.stubborn.contract.spec.internal.Url
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter
 import sh.stubborn.contract.verifier.util.MapConverter
-
+import spock.lang.Issue
+import spock.lang.Shared
+import spock.lang.Specification
+import spock.lang.Unroll
 import static sh.stubborn.contract.spec.internal.MatchingType.COMMAND
 import static sh.stubborn.contract.spec.internal.MatchingType.DATE
 import static sh.stubborn.contract.spec.internal.MatchingType.EQUALITY
@@ -43,7 +41,6 @@ import static sh.stubborn.contract.spec.internal.MatchingType.REGEX
 import static sh.stubborn.contract.spec.internal.MatchingType.TIME
 import static sh.stubborn.contract.spec.internal.MatchingType.TIMESTAMP
 import static sh.stubborn.contract.spec.internal.MatchingType.TYPE
-
 /**
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn

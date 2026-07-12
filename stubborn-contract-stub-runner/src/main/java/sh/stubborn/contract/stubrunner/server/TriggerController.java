@@ -20,8 +20,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.stubrunner.StubFinder;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

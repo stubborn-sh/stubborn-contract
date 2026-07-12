@@ -33,12 +33,12 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.file.ContractFileScanner;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.NamesUtil;
 import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
+
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 

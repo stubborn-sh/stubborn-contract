@@ -16,11 +16,11 @@
 
 package sh.stubborn.contract.verifier.messaging.internal
 
-import org.springframework.beans.factory.annotation.Autowired
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration
-import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
 @ContextConfiguration(classes = [NoOpContractVerifierAutoConfiguration])
 class ContractVerifierObjectMapperAvroSpec extends Specification {
 

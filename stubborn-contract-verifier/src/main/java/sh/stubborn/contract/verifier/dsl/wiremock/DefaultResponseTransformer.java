@@ -21,10 +21,9 @@ import java.util.Map;
 
 import com.github.tomakehurst.wiremock.extension.TemplateHelperProviderExtension;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import wiremock.com.github.jknack.handlebars.Helper;
-
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsEscapeHelper;
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsJsonPathHelper;
+import wiremock.com.github.jknack.handlebars.Helper;
 
 /**
  * . Default implementation of {@link ResponseTemplateTransformer} that contains default

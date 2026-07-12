@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner
 
 import spock.lang.Specification
-
 class BatchStubRunnerSpec extends Specification {
 
 	static final String KNOWN_STUB_PATH = 'group:knownArtifact'

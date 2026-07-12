@@ -19,14 +19,13 @@ package sh.stubborn.contract.stubrunner
 import java.util.concurrent.TimeUnit
 
 import groovy.json.JsonOutput
-import spock.lang.Specification
-
 import sh.stubborn.contract.stubrunner.util.StubsParser
 import sh.stubborn.contract.verifier.converter.YamlContract
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender
-import org.springframework.cloud.test.TestSocketUtils
+import spock.lang.Specification
 
+import org.springframework.cloud.test.TestSocketUtils
 class StubRunnerExecutorSpec extends Specification {
 
 	static final int MIN_PORT = 18999

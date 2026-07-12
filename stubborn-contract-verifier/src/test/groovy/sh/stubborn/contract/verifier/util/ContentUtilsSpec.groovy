@@ -17,11 +17,10 @@
 package sh.stubborn.contract.verifier.util
 
 
+import groovy.xml.XmlSlurper
+import org.xml.sax.helpers.DefaultHandler
 import sh.stubborn.contract.spec.internal.DslProperty
 import spock.lang.Specification
-import org.xml.sax.helpers.DefaultHandler
-import groovy.xml.XmlSlurper
-
 /**
  * @author Marcin Grzejszczak
  * @author Konstantin Shevchuk

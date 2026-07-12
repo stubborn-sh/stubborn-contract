@@ -17,7 +17,6 @@
 package sh.stubborn.contract.spec.internal
 
 import spock.lang.Specification
-
 class RegexPatternsSpec extends Specification {
 
 	def "should generate a regex for ip address [#textToMatch] that is a match [#shouldMatch]"() {

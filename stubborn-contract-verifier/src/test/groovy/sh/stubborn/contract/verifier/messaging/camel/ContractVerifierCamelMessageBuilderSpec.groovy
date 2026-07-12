@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.messaging.camel
 import org.apache.camel.CamelContext
 import org.apache.camel.impl.DefaultCamelContext
 import spock.lang.Specification
-
 /**
  * @author Marcin Grzejszczak
  * @since

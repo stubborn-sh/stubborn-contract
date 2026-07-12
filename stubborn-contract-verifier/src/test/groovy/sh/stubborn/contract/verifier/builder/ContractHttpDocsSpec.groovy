@@ -16,16 +16,14 @@
 
 package sh.stubborn.contract.verifier.builder
 
-import spock.lang.Shared
-import spock.lang.Specification
-
 import sh.stubborn.contract.spec.Contract
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties
 import sh.stubborn.contract.verifier.config.TestFramework
 import sh.stubborn.contract.verifier.config.TestMode
 import sh.stubborn.contract.verifier.file.ContractMetadata
 import sh.stubborn.contract.verifier.util.SyntaxChecker
-
+import spock.lang.Shared
+import spock.lang.Specification
 /**
  * Tests used for the documentation
  *
@@ -374,15 +372,13 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
-import spock.lang.Specification
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification
 import io.restassured.response.ResponseOptions
-
-import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
-import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import spock.lang.Specification
 import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.*
-
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 

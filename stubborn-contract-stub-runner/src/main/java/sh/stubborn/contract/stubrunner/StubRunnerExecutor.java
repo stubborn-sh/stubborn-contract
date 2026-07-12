@@ -31,8 +31,6 @@ import java.util.Set;
 import groovy.json.JsonOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.springframework.beans.BeanUtils;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
@@ -46,6 +44,8 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessageMetadata;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 import sh.stubborn.contract.verifier.util.BodyExtractor;
+
+import org.springframework.beans.BeanUtils;
 
 /**
  * Runs stubs for a particular {@link StubServer}.
@@ -269,14 +269,12 @@ class StubRunnerExecutor implements StubFinder {
 				.toJson(BodyExtractor.extractClientValueFromBody(body == null ? null : body.getClientValue()));
 		}
 
-		this.messageVerifierSender.send(payload,
-				headers == null ? null : headers.asStubSideMap(),
+		this.messageVerifierSender.send(payload, headers == null ? null : headers.asStubSideMap(),
 				outputMessage.getSentTo().getClientValue(), contract);
 	}
 
 	private boolean isFromFileProperty(final DslProperty<?> body) {
-		return body != null
-				&& body.getClientValue() instanceof FromFileProperty;
+		return body != null && body.getClientValue() instanceof FromFileProperty;
 	}
 
 	private boolean isAvroContract(final YamlContract contract) {

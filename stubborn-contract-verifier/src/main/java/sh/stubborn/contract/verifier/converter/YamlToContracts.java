@@ -39,11 +39,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.yaml.snakeyaml.Yaml;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.exc.MismatchedInputException;
-import tools.jackson.dataformat.yaml.YAMLMapper;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -59,6 +54,11 @@ import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.spec.internal.Url;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.NamesUtil;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.exc.MismatchedInputException;
+import tools.jackson.dataformat.yaml.YAMLMapper;
+
 import org.springframework.util.StringUtils;
 
 import static java.util.stream.Collectors.toSet;

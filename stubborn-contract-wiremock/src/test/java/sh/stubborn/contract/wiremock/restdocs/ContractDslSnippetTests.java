@@ -28,13 +28,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.QueryParameter;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -48,12 +48,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.assertj.core.api.BDDAssertions.then;
-import static sh.stubborn.contract.wiremock.restdocs.SpringCloudContractRestDocs.dslContract;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static sh.stubborn.contract.wiremock.restdocs.SpringCloudContractRestDocs.dslContract;
 
 /**
  * @author Marcin Grzejszczak
