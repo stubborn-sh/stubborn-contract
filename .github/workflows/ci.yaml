@@ -40,8 +40,8 @@ jobs:
           find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
           ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
 
-      - name: Build & verify
-        run: ./mvnw clean verify --no-transfer-progress
+      - name: Build & test
+        run: ./mvnw clean install --no-transfer-progress
 
       - name: Publish test results
         if: always()

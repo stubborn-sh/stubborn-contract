@@ -13,8 +13,8 @@ env:
   JAVA_DISTRIBUTION: 'liberica'
 
 jobs:
-  publish:
-    name: Publish Snapshots to Maven Central
+  test:
+    name: Build & Test
     runs-on: ubuntu-latest
 
     steps:
@@ -26,9 +26,6 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: maven
-          server-id: central
-          server-username: CENTRAL_USERNAME
-          server-password: CENTRAL_PASSWORD
 
       - name: Verify version is SNAPSHOT
         run: |
@@ -47,7 +44,36 @@ jobs:
           find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
           ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
 
-      - name: Build & install (skip tests)
+      - name: Build & test
+        run: ./mvnw clean install --no-transfer-progress
+
+  publish:
+    name: Publish Snapshots to Maven Central
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+
+      - name: Build stubborn-build parent
+        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Install BOM (stubborn-contract-dependencies)
+        run: |
+          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Build & install (skip tests — already tested in test job)
         run: ./mvnw clean install -DskipTests --no-transfer-progress
 
       - name: Deploy stubborn-build to Maven Central
