@@ -1,4 +1,4 @@
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
 	label 'return_book_1'
 	input {
 		triggeredBy('bookReturnedTriggered()')

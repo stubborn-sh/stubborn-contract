@@ -25,7 +25,7 @@ pluginManagement {
         eachPlugin {
             if (requested.id.id == "org.springframework.boot") {
                 useModule("org.springframework.boot:spring-boot-gradle-plugin:${bootVersion}")
-            } else if (requested.id.id == "org.springframework.cloud.contract") {
+            } else if (requested.id.id == "sh.stubborn.contract") {
                 useModule("org.springframework.cloud:spring-cloud-contract-gradle-plugin:${verifierVersion}")
             }
         }

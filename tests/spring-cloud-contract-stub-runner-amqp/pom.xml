@@ -4,31 +4,31 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-tests</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-tests</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>spring-cloud-contract-stub-runner-amqp</artifactId>
+	<artifactId>stubborn-stub-runner-amqp</artifactId>
 	<packaging>jar</packaging>
-	<name>Spring Cloud Contract Stub Runner AMQP</name>
-	<description>Spring Cloud Contract Stub Runner AMQP</description>
+	<name>Stubborn Contract Stub Runner AMQP</name>
+	<description>Stubborn Contract Stub Runner AMQP</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-stub-runner</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-contract-stub-runner-jetty</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.amqp</groupId>

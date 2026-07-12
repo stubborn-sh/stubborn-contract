@@ -12,7 +12,7 @@ to work with WebFlux. The following example shows how to configure using explici
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>

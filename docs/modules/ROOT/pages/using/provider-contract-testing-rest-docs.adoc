@@ -3,7 +3,7 @@
 
 include::partial$_attributes.adoc[]
 
-In this flow, we do not use a Spring Cloud Contract plugin to generate tests and stubs. We write https://spring.io/projects/spring-restdocs[Spring RESTDocs], and, from them, we automatically generate stubs. Finally, we set up our builds to package the stubs and upload them to the stub storage site -- in our case, Nexus or Artifactory.
+In this flow, we do not use a Stubborn Contract plugin to generate tests and stubs. We write https://spring.io/projects/spring-restdocs[Spring RESTDocs], and, from them, we automatically generate stubs. Finally, we set up our builds to package the stubs and upload them to the stub storage site -- in our case, Nexus or Artifactory.
 
 [[flows-provider-rest-docs-producer]]
 == Producer Flow
@@ -11,7 +11,7 @@ In this flow, we do not use a Spring Cloud Contract plugin to generate tests and
 As a producer, we:
 
 . Write RESTDocs tests of our API.
-. Add Spring Cloud Contract Stub Runner starter to our build (`spring-cloud-starter-contract-stub-runner`), as follows:
+. Add Stubborn Contract Stub Runner starter to our build (`spring-cloud-starter-contract-stub-runner`), as follows:
 +
 Maven::
 +
@@ -146,4 +146,4 @@ The following UML diagram shows the producer flow:
 [[flows-provider-rest-docs-consumer]]
 == Consumer Flow
 
-Since the consumer flow is not affected by the tool used to generate the stubs, you can read xref:getting-started/first-application.adoc#getting-started-first-application-consumer[Developing Your First Spring Cloud Contract-based Application] to see the flow for consumer side of the provider contract testing with stubs in Nexus or Artifactory.
+Since the consumer flow is not affected by the tool used to generate the stubs, you can read xref:getting-started/first-application.adoc#getting-started-first-application-consumer[Developing Your First Stubborn Contract-based Application] to see the flow for consumer side of the provider contract testing with stubs in Nexus or Artifactory.

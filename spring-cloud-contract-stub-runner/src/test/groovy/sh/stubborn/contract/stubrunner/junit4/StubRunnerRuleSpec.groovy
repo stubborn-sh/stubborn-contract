@@ -1,0 +1,73 @@
+/*
+ * Copyright 2013-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package sh.stubborn.contract.stubrunner.junit4
+
+import org.junit.AfterClass
+import org.junit.BeforeClass
+import org.junit.ClassRule
+import spock.lang.Shared
+import spock.lang.Specification
+
+import sh.stubborn.contract.stubrunner.junit.StubRunnerRule
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
+
+/**
+ * @author Marcin Grzejszczak
+ */
+class StubRunnerRuleSpec extends Specification {
+
+	@BeforeClass
+	@AfterClass
+	void setupProps() {
+		System.clearProperty("spring.cloud.contract.stubrunner.repository.root")
+		System.clearProperty("spring.cloud.contract.stubrunner.classifier")
+	}
+
+	// tag::classrule[]
+	@ClassRule
+	@Shared
+	StubRunnerRule rule = new StubRunnerRule()
+			.stubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.repoRoot(StubRunnerRuleSpec.getResource("/m2repo/repository").toURI().toString())
+			.downloadStub("sh.stubborn.contract.verifier.stubs", "loanIssuance")
+			.downloadStub("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")
+			.withMappingsOutputFolder("target/outputmappingsforrule")
+
+
+	def 'should start WireMock servers'() {
+		expect: 'WireMocks are running'
+			rule.findStubUrl('sh.stubborn.contract.verifier.stubs', 'loanIssuance') != null
+			rule.findStubUrl('loanIssuance') != null
+			rule.findStubUrl('loanIssuance') == rule.findStubUrl('sh.stubborn.contract.verifier.stubs', 'loanIssuance')
+			rule.findStubUrl('sh.stubborn.contract.verifier.stubs:fraudDetectionServer') != null
+		and:
+			rule.findAllRunningStubs().isPresent('loanIssuance')
+			rule.findAllRunningStubs().isPresent('sh.stubborn.contract.verifier.stubs', 'fraudDetectionServer')
+			rule.findAllRunningStubs().isPresent('sh.stubborn.contract.verifier.stubs:fraudDetectionServer')
+		and: 'Stubs were registered'
+			"${rule.findStubUrl('loanIssuance').toString()}/name".toURL().text == 'loanIssuance'
+			"${rule.findStubUrl('fraudDetectionServer').toString()}/name".toURL().text == 'fraudDetectionServer'
+	}
+
+	def 'should output mappings to output folder'() {
+		when:
+			def url = rule.findStubUrl('fraudDetectionServer')
+		then:
+			new File("target/outputmappingsforrule", "fraudDetectionServer_${url.port}").exists()
+	}
+	// end::classrule[]
+}

@@ -1,5 +1,5 @@
 [[how-to-build-spring-cloud-contract]]
-= How to Build Spring Cloud Contract
+= How to Build Stubborn Contract
 
 [[cloning-the-repository-on-windows]]
 == Cloning the repository on Windows
@@ -7,7 +7,7 @@
 While cloning this project on Windows, some files in the git repository may exceed the Windows maximum file path limit of 255 characters, which may
 result in an incorrectly (probably partially) checked out repository.
 
-To resolve this issue, you can set the `core.longPaths` attribute to `true` or clone the Spring Cloud Contract repository.
+To resolve this issue, you can set the `core.longPaths` attribute to `true` or clone the Stubborn Contract repository.
 
 To set the `core.longPaths` attribute to `true`, you have three options:
 
@@ -40,7 +40,7 @@ installed for your IDE to properly resolve the sources. For example, in
 Intellij IDEA, having both the Eclipse Groovy Compiler Plugin and the GMavenPlus Intellij
 Plugin results in properly imported project.
 
-IMPORTANT: Spring Cloud Contract builds Docker images. Remember to
+IMPORTANT: Stubborn Contract builds Docker images. Remember to
 have Docker installed.
 
 IMPORTANT: If you want to run the build in offline mode, you must have Maven 3.5.2+ installed.
@@ -48,7 +48,7 @@ IMPORTANT: If you want to run the build in offline mode, you must have Maven 3.5
 [[project-structure]]
 == Project structure
 
-The following listing shows the Spring Cloud Contract folder structure:
+The following listing shows the Stubborn Contract folder structure:
 
 ```
 ├── config
@@ -56,14 +56,14 @@ The following listing shows the Spring Cloud Contract folder structure:
 ├── samples
 ├── scripts
 ├── specs
-├── spring-cloud-contract-dependencies
+├── stubborn-dependencies
 ├── spring-cloud-contract-shade
-├── spring-cloud-contract-starters
-├── spring-cloud-contract-stub-runner
-├── spring-cloud-contract-stub-runner-boot
+├── stubborn-starters
+├── stubborn-stub-runner
+├── stubborn-stub-runner-boot
 ├── spring-cloud-contract-tools
-├── spring-cloud-contract-verifier
-├── spring-cloud-contract-wiremock
+├── stubborn-verifier
+├── stubborn-wiremock
 └── tests
 ```
 
@@ -71,17 +71,17 @@ The following list describes each of the top-level folders in the project struct
 
 - `config`: Folder contains setup for Spring Cloud Release Tools automated release process
 - `docker`: Folder contains docker images
-- `scripts`: Contains scripts to build and test `Spring Cloud Contract` with Maven, Gradle
+- `scripts`: Contains scripts to build and test `Stubborn Contract` with Maven, Gradle
 - `specs`: Contains specifications for the Contract DSL.
-- `spring-cloud-contract-dependencies`: Contains Spring Cloud Contract BOM
+- `stubborn-dependencies`: Contains Stubborn Contract BOM
 - `spring-cloud-contract-shade`: Shaded dependencies used by the plugins
-- `spring-cloud-contract-starters`: Contains Spring Cloud Contract Starters
+- `stubborn-starters`: Contains Stubborn Contract Starters
 - `spring-cloud-contract-spec`: Contains specification modules (contains concept of a Contract)
-- `spring-cloud-contract-stub-runner`: Contains Stub Runner related modules
-- `spring-cloud-contract-stub-runner-boot`: Contains Stub Runner Boot app
-- `spring-cloud-contract-tools`: Gradle and Maven plugin for `Spring Cloud Contract Verifier`
-- `spring-cloud-contract-verifier`: Core of the `Spring Cloud Contract Verifier` functionality
-- `spring-cloud-contract-wiremock`: All WireMock related functionality
+- `stubborn-stub-runner`: Contains Stub Runner related modules
+- `stubborn-stub-runner-boot`: Contains Stub Runner Boot app
+- `spring-cloud-contract-tools`: Gradle and Maven plugin for `Stubborn Contract Verifier`
+- `stubborn-verifier`: Core of the `Stubborn Contract Verifier` functionality
+- `stubborn-wiremock`: All WireMock related functionality
 - `tests`: Integration tests for different messaging technologies
 
 [[commands]]
@@ -99,7 +99,7 @@ Calling that function builds the core, the Maven plugin, and the Gradle plugin.
 To build only the Gradle Plugin, you can run the following commands:
 
 ```
-cd spring-cloud-contract-tools/spring-cloud-contract-gradle-plugin
+cd spring-cloud-contract-tools/stubborn-gradle-plugin
 ./gradlew clean build
 ```
 

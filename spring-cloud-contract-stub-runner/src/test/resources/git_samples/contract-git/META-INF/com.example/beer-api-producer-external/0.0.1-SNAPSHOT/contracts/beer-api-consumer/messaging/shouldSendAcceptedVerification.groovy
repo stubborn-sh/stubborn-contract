@@ -16,7 +16,7 @@
 
 package contracts.beer.messaging
 
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
 	description("""
 Sends a positive verification message when person is eligible to get the beer
 

@@ -3,7 +3,7 @@
 
 include::partial$_attributes.adoc[]
 
-Spring Cloud Contract supports context paths.
+Stubborn Contract supports context paths.
 
 [IMPORTANT]
 =====
@@ -18,7 +18,7 @@ mode. The following example shows how to set the test mode to `EXPLICIT`:
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>

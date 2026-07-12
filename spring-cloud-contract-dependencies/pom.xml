@@ -9,11 +9,11 @@
 		<version>5.0.3-SNAPSHOT</version>
 		<relativePath/>
 	</parent>
-	<artifactId>spring-cloud-contract-dependencies</artifactId>
-	<version>5.0.4-SNAPSHOT</version>
+	<artifactId>stubborn-dependencies</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>spring-cloud-contract-dependencies</name>
-	<description>Spring Cloud Contract Dependencies</description>
+	<name>stubborn-contract-dependencies</name>
+	<description>Stubborn Contract Dependencies</description>
 	<properties>
 		<wiremock.version>3.13.2</wiremock.version>
 		<jsonassert.version>0.8.0</jsonassert.version>
@@ -21,73 +21,73 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-wiremock</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-wiremock</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-spec</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-spec</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-spec-java</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-spec-java</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-spec-groovy</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-spec-groovy</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-spec-kotlin</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-spec-kotlin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-verifier</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-verifier</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-converters</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-converters</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-stub-runner</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-stub-runner</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-stub-runner-boot</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-stub-runner-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-contract-verifier</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-starter-verifier</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-starter-stub-runner</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-contract-stub-runner-jetty</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-maven-plugin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-gradle-plugin</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-gradle-plugin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

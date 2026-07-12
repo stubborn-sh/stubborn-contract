@@ -87,7 +87,7 @@
     },
     {
       "name": "stubrunner.stubsMode",
-      "type": "org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties$StubsMode",
+      "type": "sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode",
       "description": "Pick where the stubs should come from.",
       "deprecation": {
         "replacement": "spring.cloud.contract.stubrunner.stubsMode",

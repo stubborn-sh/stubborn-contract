@@ -4,23 +4,23 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>spring-cloud-contract-stub-runner-boot</artifactId>
+	<artifactId>stubborn-stub-runner-boot</artifactId>
 	<packaging>jar</packaging>
-	<name>Spring Cloud Contract Stub Runner Boot</name>
-	<description>Spring Cloud Contract Stub Runner Boot</description>
+	<name>Stubborn Contract Stub Runner Boot</name>
+	<description>Stubborn Contract Stub Runner Boot</description>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-starter-stub-runner</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-spec-kotlin</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-spec-kotlin</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

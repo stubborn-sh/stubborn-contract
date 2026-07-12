@@ -154,7 +154,7 @@ include::{contract_kotlin_spec_path}/src/test/kotlin/org/springframework/cloud/c
 ----
 ====
 
-You can set the value of the `failOnInProgress` Spring Cloud Contract plugin property to ensure that your build breaks when at least one contract in progress remains in your sources.
+You can set the value of the `failOnInProgress` Stubborn Contract plugin property to ensure that your build breaks when at least one contract in progress remains in your sources.
 
 [[contract-dsl-passing-values-from-files]]
 == Passing Values from Files
@@ -259,7 +259,7 @@ both for HTTP and messaging.
 == Metadata
 
 You can add `metadata` to your contract. Via the metadata you can pass in configuration to extensions. Below you can find
-an example of using the `wiremock` key. Its value is a map whose key is `stubMapping` and value being WireMock's `StubMapping` object. Spring Cloud Contract is able to
+an example of using the `wiremock` key. Its value is a map whose key is `stubMapping` and value being WireMock's `StubMapping` object. Stubborn Contract is able to
 patch parts of your generated stub mapping with your custom code. You may want to do that in order to add webhooks, custom
 delays or integrate with third party WireMock extensions.
 
@@ -290,8 +290,8 @@ include::{project-root}/docs/target/metadata.adoc[indent=0]
 [[features-http]]
 == Contracts for HTTP
 
-Spring Cloud Contract lets you verify applications that use REST or HTTP as a
-means of communication. Spring Cloud Contract verifies that, for a request that matches the
+Stubborn Contract lets you verify applications that use REST or HTTP as a
+means of communication. Stubborn Contract verifies that, for a request that matches the
 criteria from the `request` part of the contract, the server provides a response that is in
 keeping with the `response` part of the contract. Subsequently, the contracts are used to
 generate WireMock stubs that, for any request matching the provided criteria, provide a

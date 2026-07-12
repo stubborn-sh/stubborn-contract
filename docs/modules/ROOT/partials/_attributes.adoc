@@ -1,8 +1,8 @@
 :sc-ext: java
-:project-full-name: Spring Cloud Contract
+:project-full-name: Stubborn Contract
 
 // project-specific attributes
-:converters_path: example$tools-src/spring-cloud-contract-converters
+:converters_path: example$tools-src/stubborn-converters
 :verifier_root_path: example$verifier-src
 :contract_spec_path: example$specs-src/spring-cloud-contract-spec-java
 :contract_spec_tests_path: example$specs-src/spring-cloud-contract-spec

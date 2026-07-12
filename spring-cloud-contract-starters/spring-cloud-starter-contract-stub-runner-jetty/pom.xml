@@ -4,21 +4,21 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-starters</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-starters</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>spring-cloud-starter-contract-stub-runner-jetty</artifactId>
+	<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
 	<packaging>jar</packaging>
-	<name>Spring Cloud Contract Stub Runner Starter Jetty</name>
-	<description>Spring Cloud Contract Stub Runner Jetty runs wiremock stubs with "native"
+	<name>Stubborn Contract Stub Runner Starter Jetty</name>
+	<description>Stubborn Contract Stub Runner Jetty runs wiremock stubs with "native"
 		jetty. Don't use this in a Spring Boot app with its own embedded container.
 	</description>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-stub-runner</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.ee10</groupId>

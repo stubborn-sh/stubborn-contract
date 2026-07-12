@@ -3,9 +3,9 @@
 
 include::partial$_attributes.adoc[]
 
-https://grpc.io/[GRPC] is an RPC framework built on top of HTTP/2 for which Spring Cloud Contract has basic support.
+https://grpc.io/[GRPC] is an RPC framework built on top of HTTP/2 for which Stubborn Contract has basic support.
 
-IMPORTANT: Spring Cloud Contract has an experimental support for basic use cases of GRPC. Unfortunately, due to GRPC's tweaking of the HTTP/2 Header frames, it's impossible to assert the `grpc-status` header.
+IMPORTANT: Stubborn Contract has an experimental support for basic use cases of GRPC. Unfortunately, due to GRPC's tweaking of the HTTP/2 Header frames, it's impossible to assert the `grpc-status` header.
 
 Let's look at the following contract.
 
@@ -16,8 +16,8 @@ Let's look at the following contract.
 package contracts.beer.rest
 
 
-import org.springframework.cloud.contract.spec.Contract
-import org.springframework.cloud.contract.verifier.http.ContractVerifierHttpMetaData
+import sh.stubborn.contract.spec.Contract
+import sh.stubborn.contract.verifier.http.ContractVerifierHttpMetaData
 
 Contract.make {
 	description("""
@@ -71,7 +71,7 @@ In order to leverage the HTTP/2 support you must set the `CUSTOM` test mode as f
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>
@@ -91,7 +91,7 @@ contracts {
 ----
 ====
 
-The base class would set up the application running on a random port. It will also set the `HttpVerifier` implementation to one that can use the HTTP/2 protocol. Spring Cloud Contract comes with the `OkHttpHttpVerifier` implementation.
+The base class would set up the application running on a random port. It will also set the `HttpVerifier` implementation to one that can use the HTTP/2 protocol. Stubborn Contract comes with the `OkHttpHttpVerifier` implementation.
 
 ====
 [source,java,indent=0,subs="verbatim"]

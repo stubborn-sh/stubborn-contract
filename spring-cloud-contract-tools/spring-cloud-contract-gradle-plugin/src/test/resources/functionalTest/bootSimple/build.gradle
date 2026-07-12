@@ -47,7 +47,7 @@ dependencies {
 
 contracts {
 	contractsMode = "REMOTE"
-	baseClassForTests = 'org.springframework.cloud.contract.verifier.twitter.places.BaseMockMvcSpec'
+	baseClassForTests = 'sh.stubborn.contract.verifier.twitter.places.BaseMockMvcSpec'
 	basePackageForTests = 'contracts'
 	contractsDslDir = contractsDir
 //	generatedTestSourcesDir = file("${project.rootDir}/src/test/groovy/")

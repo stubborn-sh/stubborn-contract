@@ -11,7 +11,7 @@ provide an `async()` method in the `response` section. The following code shows 
 [source,groovy,indent=0,subs="verbatim",role="primary"]
 .Groovy
 ----
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
     request {
         method GET()
         url '/get'
@@ -55,7 +55,7 @@ class contract implements Supplier<Collection<Contract>> {
 [source,kotlin,indent=0,subs="verbatim",role="secondary"]
 .Kotlin
 ----
-import org.springframework.cloud.contract.spec.ContractDsl.Companion.contract
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
 
 contract {
     request {
@@ -76,7 +76,7 @@ The following example shows how to do so:
 [source,groovy,indent=0,subs="verbatim",role="primary"]
 .Groovy
 ----
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
     request {
         method GET()
         url '/get'
@@ -120,7 +120,7 @@ class contract implements Supplier<Collection<Contract>> {
 [source,kotlin,indent=0,subs="verbatim",role="secondary"]
 .Kotlin
 ----
-import org.springframework.cloud.contract.spec.ContractDsl.Companion.contract
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
 
 contract {
     request {

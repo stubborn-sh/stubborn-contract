@@ -21,9 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-import org.springframework.cloud.contract.spec.Contract;
-import org.springframework.cloud.contract.verifier.util.ContractVerifierUtil;
-import org.springframework.cloud.contract.verifier.util.MetadataUtil;
+import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
+import sh.stubborn.contract.verifier.util.MetadataUtil;
 
 // tag::class[]
 class contract_rest_with_tags implements Supplier<Collection<Contract>> {

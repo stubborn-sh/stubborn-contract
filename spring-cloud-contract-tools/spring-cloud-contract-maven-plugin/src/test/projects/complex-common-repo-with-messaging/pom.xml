@@ -29,8 +29,8 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-maven-plugin</artifactId>
 				<version>2.0.0.BUILD-SNAPSHOT</version>
 				<configuration>
 					<contractsMode>REMOTE</contractsMode>

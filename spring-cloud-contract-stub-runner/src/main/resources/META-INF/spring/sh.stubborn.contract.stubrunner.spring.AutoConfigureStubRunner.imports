@@ -1,0 +1,6 @@
+sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration
+sh.stubborn.contract.stubrunner.spring.cloud.StubRunnerSpringCloudAutoConfiguration
+sh.stubborn.contract.stubrunner.spring.cloud.loadbalancer.SpringCloudLoadBalancerAutoConfiguration
+sh.stubborn.contract.stubrunner.spring.cloud.eureka.StubRunnerSpringCloudEurekaAutoConfiguration
+sh.stubborn.contract.stubrunner.spring.cloud.zookeeper.StubRunnerSpringCloudZookeeperAutoConfiguration
+sh.stubborn.contract.stubrunner.spring.cloud.consul.StubRunnerSpringCloudConsulAutoConfiguration

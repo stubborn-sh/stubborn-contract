@@ -45,7 +45,7 @@ Example for Maven
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <configuration>
         <!-- url not required for working locally -->
         <contractsWorkOffline>true<contractsWorkOffline>

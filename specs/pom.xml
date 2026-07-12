@@ -5,27 +5,27 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>spring-cloud-contract-specs</artifactId>
+	<artifactId>stubborn-specs</artifactId>
 	<packaging>pom</packaging>
-	<version>5.0.4-SNAPSHOT</version>
-	<name>Spring Cloud Contract Specs</name>
-	<description>Spring Cloud Contract Specs</description>
+	<version>0.1.0-SNAPSHOT</version>
+	<name>Stubborn Contract Specs</name>
+	<description>Stubborn Contract Specs</description>
 
 	<properties>
 		<main.basedir>${basedir}/..</main.basedir>
 	</properties>
 
 	<modules>
-		<module>spring-cloud-contract-spec-java</module>
-		<module>spring-cloud-contract-spec-groovy</module>
-		<module>spring-cloud-contract-spec-kotlin</module>
-		<module>spring-cloud-contract-spec</module>
+		<module>stubborn-contract-spec-java</module>
+		<module>stubborn-contract-spec-groovy</module>
+		<module>stubborn-contract-spec-kotlin</module>
+		<module>stubborn-contract-spec</module>
 	</modules>
 
 	<build>

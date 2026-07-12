@@ -1,6 +1,6 @@
 == Configuration snippets
 
-Here you'll be able to see different Spring Cloud Contract Maven plugin configuration
+Here you'll be able to see different Stubborn Contract Maven plugin configuration
 
 === Base class from mappings
 

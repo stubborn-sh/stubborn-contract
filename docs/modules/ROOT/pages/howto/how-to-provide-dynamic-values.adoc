@@ -86,7 +86,7 @@ you might want the following response:
 ----
 
 How can you then provide a matcher for the consumer and a concrete value for the producer (and the opposite at some other time)?
-Spring Cloud Contract lets you provide a dynamic value. That means that it can differ for both
+Stubborn Contract lets you provide a dynamic value. That means that it can differ for both
 sides of the communication.
 
 You can read more about this in the xref:project-features-contract.adoc[Contract DSL] section.

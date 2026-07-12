@@ -5,8 +5,8 @@ include::partial$_attributes.adoc[]
 
 IMPORTANT: This mode is experimental and can change in the future.
 
-The Spring Cloud Contract lets you provide your own, custom, implementation of the
-`org.springframework.cloud.contract.verifier.http.HttpVerifier`. That way, you can use any client you want to send and receive a request. The default implementation in Spring Cloud Contract is `OkHttpHttpVerifier` and it uses OkHttp3 http client.
+The Stubborn Contract lets you provide your own, custom, implementation of the
+`sh.stubborn.contract.verifier.http.HttpVerifier`. That way, you can use any client you want to send and receive a request. The default implementation in Stubborn Contract is `OkHttpHttpVerifier` and it uses OkHttp3 http client.
 
 To get started, set `testMode` to `CUSTOM`:
 
@@ -26,15 +26,15 @@ package com.example.beer;
 
 import com.example.BeerRestBase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.contract.verifier.http.HttpVerifier;
-import org.springframework.cloud.contract.verifier.http.Request;
-import org.springframework.cloud.contract.verifier.http.Response;
+import sh.stubborn.contract.verifier.http.HttpVerifier;
+import sh.stubborn.contract.verifier.http.Request;
+import sh.stubborn.contract.verifier.http.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.springframework.cloud.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
-import static org.springframework.cloud.contract.verifier.util.ContractVerifierUtil.*;
-import static org.springframework.cloud.contract.verifier.http.Request.given;
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static sh.stubborn.contract.verifier.http.Request.given;
 
 @SuppressWarnings("rawtypes")
 public class RestTest extends BeerRestBase {

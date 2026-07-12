@@ -101,7 +101,7 @@ include::{verifier_root_path}/src/test/groovy/org/springframework/cloud/contract
 In the preceding example, the opposite side of the communication has the respective data
 generated for request and response.
 
-Spring Cloud Contract comes with a series of predefined regular expressions that you can
+Stubborn Contract comes with a series of predefined regular expressions that you can
 use in your contracts, as the following example shows:
 
 [source,java,indent=0]
@@ -203,7 +203,7 @@ The following stub would also be generated:
 
 [source,groovy,indent=0]
 ----
-include::{plugins_path}/spring-cloud-contract-converters/src/test/groovy/org/springframework/cloud/contract/verifier/wiremock/DslToWireMockClientConverterSpec.groovy[tags=wiremock,indent=0]
+include::{plugins_path}/stubborn-converters/src/test/groovy/org/springframework/cloud/contract/verifier/wiremock/DslToWireMockClientConverterSpec.groovy[tags=wiremock,indent=0]
 ----
 
 [[contract-dsl-custom-methods]]
@@ -240,7 +240,7 @@ The following code shows the base class portion of the test case:
 
 [source,groovy,indent=0]
 ----
-include::{plugins_path}/spring-cloud-contract-gradle-plugin/src/test/resources/functionalTest/bootSimple/src/test/groovy/org/springframework/cloud/contract/verifier/twitter/places/BaseMockMvcSpec.groovy[tags=base_class,indent=0]
+include::{plugins_path}/stubborn-gradle-plugin/src/test/resources/functionalTest/bootSimple/src/test/groovy/org/springframework/cloud/contract/verifier/twitter/places/BaseMockMvcSpec.groovy[tags=base_class,indent=0]
 ----
 
 IMPORTANT: You cannot use both a `String` and `execute` to perform concatenation. For
@@ -310,7 +310,7 @@ given name.
 matches the JSON Path.
 
 If you use the YAML contract definition or the Java one, you have to use the
-https://handlebarsjs.com/[Handlebars] `{{{ }}}` notation with custom Spring Cloud Contract
+https://handlebarsjs.com/[Handlebars] `{{{ }}}` notation with custom Stubborn Contract
 functions to achieve this. In that case, you can use the following options:
 
 * `{{{ request.url }}}`: Returns the request URL and query parameters.
@@ -347,9 +347,9 @@ package contracts.beer.rest;
 
 import java.util.function.Supplier;
 
-import org.springframework.cloud.contract.spec.Contract;
+import sh.stubborn.contract.spec.Contract;
 
-import static org.springframework.cloud.contract.verifier.util.ContractVerifierUtil.map;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.map;
 
 class shouldReturnStatsForAUser implements Supplier<Contract> {
 
@@ -385,7 +385,7 @@ class shouldReturnStatsForAUser implements Supplier<Contract> {
 ----
 package contracts.beer.rest
 
-import org.springframework.cloud.contract.spec.ContractDsl.Companion.contract
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
 
 contract {
     request {
@@ -510,7 +510,7 @@ in sending the following response body:
 ====
 
 IMPORTANT: This feature works only with WireMock versions greater than or equal
-to 2.5.1. The Spring Cloud Contract Verifier uses WireMock's
+to 2.5.1. The Stubborn Contract Verifier uses WireMock's
 `response-template` response transformer. It uses Handlebars to convert the Mustache `{{{ }}}` templates into
 proper values. Additionally, it registers two helper functions:
 
@@ -532,7 +532,7 @@ You can set it in the `request` part of your contract.
 This section is present in the `response` or `outputMessage` side of the
 contract.
 
-Currently, Spring Cloud Contract Verifier supports only JSON path-based matchers with the
+Currently, Stubborn Contract Verifier supports only JSON path-based matchers with the
 following matching possibilities:
 
 [[coded-dsl]]
@@ -733,7 +733,7 @@ The resulting WireMock stub is in the following example:
 
 [source,json,indent=0]
 ----
-include::{plugins_path}/spring-cloud-contract-converters/src/test/groovy/org/springframework/cloud/contract/verifier/wiremock/DslToWireMockClientConverterSpec.groovy[tags=matchers,indent=0]
+include::{plugins_path}/stubborn-converters/src/test/groovy/org/springframework/cloud/contract/verifier/wiremock/DslToWireMockClientConverterSpec.groovy[tags=matchers,indent=0]
 ----
 
 IMPORTANT: If you use a `matcher`, the part of the request and response that the

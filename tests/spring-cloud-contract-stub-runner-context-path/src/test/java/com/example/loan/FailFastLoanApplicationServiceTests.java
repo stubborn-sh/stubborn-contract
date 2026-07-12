@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.contract.stubrunner.spring.StubRunnerConfiguration;
+import sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -41,14 +41,14 @@ public class FailFastLoanApplicationServiceTests {
 					.properties(Map.of("spring.cloud.contract.stubrunner.stubsMode", "REMOTE",
 							"spring.cloud.contract.stubrunner.repositoryRoot", "classpath:m2repo/repository/",
 							"spring.cloud.contract.stubrunner.ids",
-							new String[] { "org.springframework.cloud.contract.verifier.stubs:should-not-be-found" }))
+							new String[] { "sh.stubborn.contract.verifier.stubs:should-not-be-found" }))
 					.run());
 
 		// Then
 		assertThat(throwable).isInstanceOf(BeanCreationException.class);
 		assertThat(throwable.getCause().getCause()).isInstanceOf(BeanInstantiationException.class)
 			.hasMessageContaining(
-					"No stubs or contracts were found for [org.springframework.cloud.contract.verifier.stubs:should-not-be-found:+:stubs] and the switch to fail on no stubs was set.");
+					"No stubs or contracts were found for [sh.stubborn.contract.verifier.stubs:should-not-be-found:+:stubs] and the switch to fail on no stubs was set.");
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class FailFastLoanApplicationServiceTests {
 				() -> new SpringApplicationBuilder(Application.class, StubRunnerConfiguration.class)
 					.properties(Map.of("spring.cloud.contract.stubrunner.stubsMode", "CLASSPATH",
 							"spring.cloud.contract.stubrunner.ids",
-							new String[] { "org.springframework.cloud.contract.verifier.stubs:should-not-be-found" }))
+							new String[] { "sh.stubborn.contract.verifier.stubs:should-not-be-found" }))
 					.run());
 
 		// Then

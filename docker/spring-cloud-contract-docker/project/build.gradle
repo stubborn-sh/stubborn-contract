@@ -59,7 +59,7 @@ repositories {
 apply plugin: 'groovy'
 apply plugin: "io.spring.dependency-management"
 apply plugin: "org.springframework.boot"
-apply plugin: 'org.springframework.cloud.contract'
+apply plugin: 'sh.stubborn.contract'
 apply plugin: 'maven-publish'
 
 tasks.named("bootJar") {

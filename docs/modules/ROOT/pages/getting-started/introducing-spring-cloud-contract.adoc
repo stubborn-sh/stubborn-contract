@@ -1,15 +1,15 @@
 [[getting-started-introducing-spring-cloud-contract]]
-= Introducing Spring Cloud Contract
+= Introducing Stubborn Contract
 
 include::partial$_attributes.adoc[]
 
-Spring Cloud Contract moves TDD to the level of software architecture.
+Stubborn Contract moves TDD to the level of software architecture.
 It lets you perform consumer-driven and producer-driven contract testing.
 
 [[getting-started-introducing-spring-cloud-contract-history]]
 == History
 
-Before becoming Spring Cloud Contract, this project was called https://github.com/Codearte/accurest[Accurest].
+Before becoming Stubborn Contract, this project was called https://github.com/Codearte/accurest[Accurest].
 It was created by https://twitter.com/mgrzejszczak[Marcin Grzejszczak] and https://twitter.com/jkubrynski[Jakub Kubrynski]
 from (https://github.com/Codearte[Codearte]).
 
@@ -65,7 +65,7 @@ Disadvantages:
 reality.
 - You can go to production with passing tests and failing production.
 
-To solve the aforementioned issues, Spring Cloud Contract was created. The main idea is to
+To solve the aforementioned issues, Stubborn Contract was created. The main idea is to
 give you very fast feedback, without the need to set up the
 whole world of microservices. If you work on stubs, then the only applications you need
 are those that your application directly uses. The following image shows the relationship
@@ -73,14 +73,14 @@ of stubs to an application:
 
 image::Stubs2.png[Stubbed Services]
 
-Spring Cloud Contract gives you the certainty that the stubs that you use were
+Stubborn Contract gives you the certainty that the stubs that you use were
 created by the service that you call. Also, if you can use them, it means that they
 were tested against the producer's side. In short, you can trust those stubs.
 
 [[getting-started-introducing-spring-cloud-contract-purposes]]
 == Purposes
 
-The main purposes of Spring Cloud Contract are:
+The main purposes of Stubborn Contract are:
 
 - To ensure that HTTP and messaging stubs (used when developing the client) do exactly
 what the actual server-side implementation does.
@@ -88,9 +88,9 @@ what the actual server-side implementation does.
 - To provide a way to publish changes in contracts that are immediately visible on both sides.
 - To generate boilerplate test code to be used on the server side.
 
-By default, Spring Cloud Contract integrates with http://wiremock.org[Wiremock] as the HTTP server stub.
+By default, Stubborn Contract integrates with http://wiremock.org[Wiremock] as the HTTP server stub.
 
-IMPORTANT: Spring Cloud Contract's purpose is NOT to start writing business
+IMPORTANT: Stubborn Contract's purpose is NOT to start writing business
 features in the contracts. Assume that we have a business use case of fraud check. If a
 user can be a fraud for 100 different reasons, we would assume that you would create two
 contracts, one for the positive case and one for the negative case. Contract tests are

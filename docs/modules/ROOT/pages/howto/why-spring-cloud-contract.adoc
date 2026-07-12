@@ -1,12 +1,12 @@
 [[why-spring-cloud-contract]]
-= Why use Spring Cloud Contract?
+= Why use Stubborn Contract?
 
 
 include::partial$_attributes.adoc[]
 
-Spring Cloud Contract works great in a polyglot environment. This project has a lot of
+Stubborn Contract works great in a polyglot environment. This project has a lot of
 really interesting features. Quite a few of these features definitely make
-Spring Cloud Contract Verifier stand out on the market of Consumer Driven Contract
+Stubborn Contract Verifier stand out on the market of Consumer Driven Contract
 (CDC) tooling. The most interesting features include the following:
 
 - Ability to do CDC with messaging.

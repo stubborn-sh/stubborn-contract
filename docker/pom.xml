@@ -5,17 +5,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>spring-cloud-contract-docker-parent</artifactId>
+	<artifactId>stubborn-docker-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>5.0.4-SNAPSHOT</version>
-	<name>Spring Cloud Contract Docker Parent</name>
-	<description>Spring Cloud Contract Docker Parent</description>
+	<version>0.1.0-SNAPSHOT</version>
+	<name>Stubborn Contract Docker Parent</name>
+	<description>Stubborn Contract Docker Parent</description>
 
 	<properties>
 		<docker.registry.organization>springcloud</docker.registry.organization>
@@ -34,8 +34,8 @@
 <!--				<activeByDefault>false</activeByDefault>-->
 <!--			</activation>-->
 <!--			<modules>-->
-<!--				<module>spring-cloud-contract-docker</module>-->
-<!--				<module>spring-cloud-contract-stub-runner-docker</module>-->
+<!--				<module>stubborn-contract-docker</module>-->
+<!--				<module>stubborn-contract-stub-runner-docker</module>-->
 <!--			</modules>-->
 <!--		</profile>-->
 <!--		<profile>-->
@@ -44,8 +44,8 @@
 <!--				<activeByDefault>false</activeByDefault>-->
 <!--			</activation>-->
 <!--			<modules>-->
-<!--				<module>spring-cloud-contract-docker</module>-->
-<!--				<module>spring-cloud-contract-stub-runner-docker</module>-->
+<!--				<module>stubborn-contract-docker</module>-->
+<!--				<module>stubborn-contract-stub-runner-docker</module>-->
 <!--			</modules>-->
 <!--		</profile>-->
 	</profiles>

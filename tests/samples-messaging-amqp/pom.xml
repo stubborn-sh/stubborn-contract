@@ -4,15 +4,15 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-tests</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-tests</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>spring-cloud-contract-sample-amqp</artifactId>
+	<artifactId>stubborn-sample-amqp</artifactId>
 	<packaging>jar</packaging>
-	<name>Spring Cloud Contract Sample Spring Amqp</name>
-	<description>Spring Cloud Contract Sample Spring Amqp Rabbit</description>
+	<name>Stubborn Contract Sample Spring Amqp</name>
+	<description>Stubborn Contract Sample Spring Amqp Rabbit</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -27,8 +27,8 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -30,8 +30,8 @@
 		<finalName>${project.name}</finalName>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

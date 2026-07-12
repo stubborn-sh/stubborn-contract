@@ -26,7 +26,7 @@ This goal allows you to generate `stubs-jar` or execute `spring-cloud-contract:r
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
       <phase>process-test-resources</phase>
-      <implementation>org.springframework.cloud.contract.maven.verifier.ConvertMojo</implementation>
+      <implementation>sh.stubborn.contract.maven.verifier.ConvertMojo</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
@@ -48,7 +48,7 @@ This goal allows you to generate `stubs-jar` or execute `spring-cloud-contract:r
         </parameter>
         <parameter>
           <name>contractsMode</name>
-          <type>org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties$StubsMode</type>
+          <type>sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode</type>
           <required>false</required>
           <editable>true</editable>
           <description>Picks the mode in which stubs will be found and registered.</description>
@@ -65,7 +65,7 @@ This goal allows you to generate `stubs-jar` or execute `spring-cloud-contract:r
           <type>java.util.Map</type>
           <required>false</required>
           <editable>true</editable>
-          <description>Map of properties that can be passed to custom org.springframework.cloud.contract.stubrunner.StubDownloaderBuilder.</description>
+          <description>Map of properties that can be passed to custom sh.stubborn.contract.stubrunner.StubDownloaderBuilder.</description>
         </parameter>
         <parameter>
           <name>contractsRepositoryPassword</name>
@@ -206,7 +206,7 @@ This parameter is only used when goal is executed outside of maven project.
       <configuration>
         <contractDependency implementation="org.apache.maven.model.Dependency">${contractDependency}</contractDependency>
         <contractsDirectory implementation="java.io.File" default-value="${project.basedir}/src/test/resources/contracts">${spring.cloud.contract.verifier.contractsDirectory}</contractsDirectory>
-        <contractsMode implementation="org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties$StubsMode" default-value="CLASSPATH">${contractsMode}</contractsMode>
+        <contractsMode implementation="sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode" default-value="CLASSPATH">${contractsMode}</contractsMode>
         <contractsPath implementation="java.lang.String">${contractsPath}</contractsPath>
         <contractsProperties implementation="java.util.Map">${contractsProperties}</contractsProperties>
         <contractsRepositoryPassword implementation="java.lang.String">${contractsRepositoryPassword}</contractsRepositoryPassword>
@@ -247,7 +247,7 @@ This parameter is only used when goal is executed outside of maven project.
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
       <phase>package</phase>
-      <implementation>org.springframework.cloud.contract.maven.verifier.GenerateStubsMojo</implementation>
+      <implementation>sh.stubborn.contract.maven.verifier.GenerateStubsMojo</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
@@ -374,7 +374,7 @@ This parameter is only used when goal is executed outside of maven project.
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
       <phase>generate-test-sources</phase>
-      <implementation>org.springframework.cloud.contract.maven.verifier.GenerateTestsMojo</implementation>
+      <implementation>sh.stubborn.contract.maven.verifier.GenerateTestsMojo</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
@@ -424,7 +424,7 @@ This parameter is only used when goal is executed outside of maven project.
         </parameter>
         <parameter>
           <name>contractsMode</name>
-          <type>org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties$StubsMode</type>
+          <type>sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode</type>
           <required>false</required>
           <editable>true</editable>
           <description>Picks the mode in which stubs will be found and registered.</description>
@@ -441,7 +441,7 @@ This parameter is only used when goal is executed outside of maven project.
           <type>java.util.Map</type>
           <required>false</required>
           <editable>true</editable>
-          <description>Map of properties that can be passed to custom org.springframework.cloud.contract.stubrunner.StubDownloaderBuilder.</description>
+          <description>Map of properties that can be passed to custom sh.stubborn.contract.stubrunner.StubDownloaderBuilder.</description>
         </parameter>
         <parameter>
           <name>contractsRepositoryPassword</name>
@@ -620,14 +620,14 @@ This parameter is only used when goal is executed outside of maven project.
         </parameter>
         <parameter>
           <name>testFramework</name>
-          <type>org.springframework.cloud.contract.verifier.config.TestFramework</type>
+          <type>sh.stubborn.contract.verifier.config.TestFramework</type>
           <required>false</required>
           <editable>true</editable>
           <description></description>
         </parameter>
         <parameter>
           <name>testMode</name>
-          <type>org.springframework.cloud.contract.verifier.config.TestMode</type>
+          <type>sh.stubborn.contract.verifier.config.TestMode</type>
           <required>false</required>
           <editable>true</editable>
           <description></description>
@@ -638,7 +638,7 @@ This parameter is only used when goal is executed outside of maven project.
         <baseClassMappings implementation="java.util.List">${baseClassMappings}</baseClassMappings>
         <contractDependency implementation="org.apache.maven.model.Dependency">${contractDependency}</contractDependency>
         <contractsDirectory implementation="java.io.File" default-value="${project.basedir}/src/test/resources/contracts">${spring.cloud.contract.verifier.contractsDirectory}</contractsDirectory>
-        <contractsMode implementation="org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties$StubsMode" default-value="CLASSPATH">${contractsMode}</contractsMode>
+        <contractsMode implementation="sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode" default-value="CLASSPATH">${contractsMode}</contractsMode>
         <contractsPath implementation="java.lang.String">${contractsPath}</contractsPath>
         <contractsProperties implementation="java.util.Map">${contractsProperties}</contractsProperties>
         <contractsRepositoryPassword implementation="java.lang.String">${contractsRepositoryPassword}</contractsRepositoryPassword>
@@ -660,8 +660,8 @@ This parameter is only used when goal is executed outside of maven project.
         <repoSession implementation="org.eclipse.aether.RepositorySystemSession" default-value="${repositorySystemSession}"/>
         <session implementation="org.apache.maven.execution.MavenSession" default-value="${session}"/>
         <skip implementation="boolean" default-value="false">${spring.cloud.contract.verifier.skip}</skip>
-        <testFramework implementation="org.springframework.cloud.contract.verifier.config.TestFramework" default-value="JUNIT5"/>
-        <testMode implementation="org.springframework.cloud.contract.verifier.config.TestMode" default-value="MOCKMVC"/>
+        <testFramework implementation="sh.stubborn.contract.verifier.config.TestFramework" default-value="JUNIT5"/>
+        <testMode implementation="sh.stubborn.contract.verifier.config.TestMode" default-value="MOCKMVC"/>
       </configuration>
     </mojo>
     <mojo>
@@ -725,7 +725,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
       <aggregator>false</aggregator>
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
-      <implementation>org.springframework.cloud.contract.maven.verifier.PushStubsToScmMojo</implementation>
+      <implementation>sh.stubborn.contract.maven.verifier.PushStubsToScmMojo</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
@@ -733,7 +733,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
       <parameters>
         <parameter>
           <name>contractsMode</name>
-          <type>org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties$StubsMode</type>
+          <type>sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode</type>
           <required>false</required>
           <editable>true</editable>
           <description>Picks the mode in which stubs will be found and registered.</description>
@@ -743,7 +743,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
           <type>java.util.Map</type>
           <required>false</required>
           <editable>true</editable>
-          <description>Map of properties that can be passed to custom org.springframework.cloud.contract.stubrunner.StubDownloaderBuilder.</description>
+          <description>Map of properties that can be passed to custom sh.stubborn.contract.stubrunner.StubDownloaderBuilder.</description>
         </parameter>
         <parameter>
           <name>contractsRepositoryPassword</name>
@@ -810,7 +810,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
         </parameter>
       </parameters>
       <configuration>
-        <contractsMode implementation="org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties$StubsMode" default-value="CLASSPATH">${contractsMode}</contractsMode>
+        <contractsMode implementation="sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode" default-value="CLASSPATH">${contractsMode}</contractsMode>
         <contractsProperties implementation="java.util.Map">${contractsProperties}</contractsProperties>
         <contractsRepositoryPassword implementation="java.lang.String">${contractsRepositoryPassword}</contractsRepositoryPassword>
         <contractsRepositoryUrl implementation="java.lang.String">${contractsRepositoryUrl}</contractsRepositoryUrl>
@@ -833,7 +833,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
       <aggregator>false</aggregator>
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
-      <implementation>org.springframework.cloud.contract.maven.verifier.RunMojo</implementation>
+      <implementation>sh.stubborn.contract.maven.verifier.RunMojo</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>

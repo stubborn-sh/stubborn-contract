@@ -18,7 +18,7 @@ You can pick from the following options of acquiring stubs:
 
 - Aether-based solution that downloads JARs with stubs from Artifactory or Nexus
 - Classpath-scanning solution that searches the classpath with a pattern to retrieve stubs
-- Writing your own implementation of the `org.springframework.cloud.contract.stubrunner.StubDownloaderBuilder` for full customization
+- Writing your own implementation of the `sh.stubborn.contract.stubrunner.StubDownloaderBuilder` for full customization
 
 The latter example is described in the xref:advanced.adoc#customization-custom-stub-runner[Custom Stub Runner] section.
 
@@ -169,13 +169,13 @@ Sometimes, you need to perform some additional tuning (which is concrete for the
 To do that, Stub Runner gives you
 the `httpServerStubConfigurer` property that is available in the annotation and the
 JUnit rule and is accessible through system properties, where you can provide
-your implementation of the `org.springframework.cloud.contract.stubrunner.HttpServerStubConfigurer`
+your implementation of the `sh.stubborn.contract.stubrunner.HttpServerStubConfigurer`
 interface. The implementations can alter
 the configuration files for the given HTTP server stub.
 
-Spring Cloud Contract Stub Runner comes with an implementation that you
+Stubborn Contract Stub Runner comes with an implementation that you
 can extend for WireMock:
-`org.springframework.cloud.contract.stubrunner.provider.wiremock.WireMockHttpServerStubConfigurer`.
+`sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStubConfigurer`.
 In the `configure` method,
 you can provide your own custom configuration for the given stub. The use
 case might be starting WireMock for the given artifact ID, on an HTTPS port. The following

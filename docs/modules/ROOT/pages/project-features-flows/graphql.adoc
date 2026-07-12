@@ -9,7 +9,7 @@ Since https://graphql.org/[GraphQL] is essentially HTTP you can write a contract
 [source,groovy,indent=0,subs="verbatim",role="primary"]
 .Groovy
 ----
-import org.springframework.cloud.contract.spec.Contract
+import sh.stubborn.contract.spec.Contract
 
 Contract.make {
 
@@ -92,7 +92,7 @@ metadata:
 ====
 
 Adding the metadata section will change the way the default, WireMock stub is built.
-It will now use the Spring Cloud Contract request matcher, so that e.g. the `query` part of the GraphQL request gets compared against the real request by ignoring whitespaces.
+It will now use the Stubborn Contract request matcher, so that e.g. the `query` part of the GraphQL request gets compared against the real request by ignoring whitespaces.
 
 [[features-graphql-producer]]
 == Producer Side Setup
@@ -105,7 +105,7 @@ On the producer side your configuration can look as follows.
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.contract.verifier.twitter.place
+package sh.stubborn.contract.verifier.twitter.place
 
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
@@ -38,7 +38,7 @@ class PairIdController {
 			method = PUT,
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	String getPlacesFromTweets(@PathVariable long pairId, @RequestBody List<org.springframework.cloud.contract.verifier.twitter.place.Tweet> tweets) {
+	String getPlacesFromTweets(@PathVariable long pairId, @RequestBody List<sh.stubborn.contract.verifier.twitter.place.Tweet> tweets) {
 		log.info("Inside PairIdController, doing very important logic")
 		if (tweets?.text != ["Gonna see you at Warsaw"]) {
 			throw new IllegalArgumentException("Wrong text in tweet: ${tweets?.text}")

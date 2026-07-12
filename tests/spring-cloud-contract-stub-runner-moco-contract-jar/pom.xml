@@ -4,22 +4,22 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-tests</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-tests</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>spring-cloud-contract-stub-runner-moco-contract-jar</artifactId>
+	<artifactId>stubborn-stub-runner-moco-contract-jar</artifactId>
 	<packaging>jar</packaging>
-	<name>Spring Cloud Contract Stub Runner Moco Contract Jar</name>
-	<description>Spring Cloud Contract Stub Runner Moco Contract Jar</description>
+	<name>Stubborn Contract Stub Runner Moco Contract Jar</name>
+	<description>Stubborn Contract Stub Runner Moco Contract Jar</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

@@ -12,7 +12,7 @@ repository to commit those changes to Git.
 
 In order to achieve this, you can use the `stubs://`
 protocol when the repository root parameter is set either
-in Stub Runner or in a Spring Cloud Contract plugin.
+in Stub Runner or in a Stubborn Contract plugin.
 
 In this example, the `producer` project has been successfully
 built and stubs were generated under the `target/stubs` folder. As a consumer, one can set up the Stub Runner to pick the stubs from that location by using the `stubs://` protocol.

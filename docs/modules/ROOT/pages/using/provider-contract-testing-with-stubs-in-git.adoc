@@ -26,7 +26,7 @@ $ tree .
 
 ----
 
-You must also provide consumer code that has Spring Cloud Contract Stub Runner set up. For
+You must also provide consumer code that has Stubborn Contract Stub Runner set up. For
 an example of such a project, see {samples_code}/consumer[this sample] and search for a
 `BeerControllerGitTest` test. You must also provide producer code that has Spring Cloud
 Contract set up, together with a plugin. For an example of such a project, see
@@ -36,7 +36,7 @@ Contract set up, together with a plugin. For an example of such a project, see
 == The Flow
 
 The flow looks exactly as the one presented in
-xref:../getting-started/first-application.adoc[Developing Your First Spring Cloud Contract based application],
+xref:../getting-started/first-application.adoc[Developing Your First Stubborn Contract based application],
 but the `Stub Storage` implementation is a git repository.
 
 You can read more about setting up a git repository and setting consumer and producer side
@@ -95,7 +95,7 @@ Maven::
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>

@@ -3,4 +3,4 @@
 
 include::partial$_attributes.adoc[]
 
-You can check the xref:../getting-started/first-application.adoc[Developing Your First Spring Cloud Contract based application] link to see the provider contract testing with stubs in the Nexus or Artifactory flow.
+You can check the xref:../getting-started/first-application.adoc[Developing Your First Stubborn Contract based application] link to see the provider contract testing with stubs in the Nexus or Artifactory flow.

@@ -1,9 +1,9 @@
 [[getting-started-first-application]]
-= Developing Your First Spring Cloud Contract-based Application
+= Developing Your First Stubborn Contract-based Application
 
 include::partial$_attributes.adoc[]
 
-This brief tour walks through using Spring Cloud Contract. It consists of the following topics:
+This brief tour walks through using Stubborn Contract. It consists of the following topics:
 
 * xref:getting-started/first-application.adoc#getting-started-first-application-producer[On the Producer Side]
 * xref:getting-started/first-application.adoc#getting-started-first-application-consumer[On the Consumer Side]
@@ -13,7 +13,7 @@ xref:getting-started/three-second-tour.adoc[here].
 
 For the sake of this example, the `Stub Storage` is Nexus/Artifactory.
 
-The following UML diagram shows the relationship of the parts of Spring Cloud Contract:
+The following UML diagram shows the relationship of the parts of Stubborn Contract:
 
 [plantuml, getting-started-three-second, png]
 ----
@@ -36,7 +36,7 @@ The following UML diagram shows the relationship of the parts of Spring Cloud Co
 [[getting-started-first-application-producer]]
 == On the Producer Side
 
-To start working with `Spring Cloud Contract`, you can add the Spring Cloud Contract Verifier
+To start working with `Stubborn Contract`, you can add the Stubborn Contract Verifier
 dependency and plugin to your build file, as the following example shows:
 
 {samples_code}/standalone/dsl/http-server/pom.xml[Click here to see the code]
@@ -48,7 +48,7 @@ portion of the file:
 ----
 <plugin>
 	<groupId>org.springframework.cloud</groupId>
-	<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+	<artifactId>stubborn-maven-plugin</artifactId>
 	<version>${spring-cloud-contract.version}</version>
 	<extensions>true</extensions>
 </plugin>
@@ -81,7 +81,7 @@ groovy::
 ----
 package contracts
 
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
 	request {
 		method 'PUT'
 		url '/fraudcheck'
@@ -156,7 +156,7 @@ include::{verifier_root_path}/src/test/resources/yml/contract_message_scenario1.
 
 Running `./mvnw clean install` automatically generates tests that verify the application
 compliance with the added contracts. By default, the generated tests are under
-`org.springframework.cloud.contract.verifier.tests.`.
+`sh.stubborn.contract.verifier.tests.`.
 
 The generated tests may differ, depending on which framework and test type you have set up
 in your plugin.
@@ -277,7 +277,7 @@ The following example, from `pom.xml`, shows how to specify the base test class:
         <plugins>
             <plugin>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <artifactId>stubborn-maven-plugin</artifactId>
                 <version>2.1.2.RELEASE</version>
                 <extensions>true</extensions>
                 <configuration>
@@ -292,7 +292,7 @@ The following example, from `pom.xml`, shows how to specify the base test class:
     </build>
 ----
 <1> The `baseClassForTests` element lets you specify your base test class. It must be a child
-of a `configuration` element within `spring-cloud-contract-maven-plugin`.
+of a `configuration` element within `stubborn-maven-plugin`.
 
 The following example shows a minimal (but functional) base test class:
 
@@ -394,7 +394,7 @@ the following example shows:
 
 [source,bash,indent=0]
 ----
- [INFO] --- spring-cloud-contract-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
+ [INFO] --- stubborn-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
  [INFO] Building jar: /some/path/http-server/target/http-server-0.0.1-SNAPSHOT-stubs.jar
  [INFO]
  [INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ http-server ---
@@ -414,10 +414,10 @@ in an online repository.
 [[getting-started-first-application-consumer]]
 == On the Consumer Side
 
-You can use Spring Cloud Contract Stub Runner in the integration tests to get a running
+You can use Stubborn Contract Stub Runner in the integration tests to get a running
 WireMock instance or messaging route that simulates the actual service.
 
-To get started, add the dependency to `Spring Cloud Contract Stub Runner`, as follows:
+To get started, add the dependency to `Stubborn Contract Stub Runner`, as follows:
 
 {samples_code}/standalone/dsl/http-client/pom.xml[Click here to see the code]
 
@@ -436,13 +436,13 @@ NOTE: The tests are skipped because the Producer-side contract implementation is
 in place, so the automatically-generated contract tests fail.
 
 * By getting existing producer service stubs from a remote repository. To do so,
-pass the stub artifact IDs and artifact repository URL as `Spring Cloud Contract Stub
+pass the stub artifact IDs and artifact repository URL as `Stubborn Contract Stub
 Runner` properties, as the following example shows:
 +
 {samples_code}/standalone/dsl/http-client/src/test/resources/application-test-repo.yaml[Click here to see the code]
 
 Now you can annotate your test class with `@AutoConfigureStubRunner`. In the annotation,
-provide the `group-id` and `artifact-id` for `Spring Cloud Contract Stub Runner` to run
+provide the `group-id` and `artifact-id` for `Stubborn Contract Stub Runner` to run
 the collaborators' stubs for you, as the following example shows:
 
 [source,java, indent=0]

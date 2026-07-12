@@ -32,8 +32,8 @@ The following example shows a typical `spring.factories` file:
 
 [source]
 ----
-org.springframework.cloud.contract.spec.ContractConverter=\
-org.springframework.cloud.contract.verifier.converter.YamlContractConverter
+sh.stubborn.contract.spec.ContractConverter=\
+sh.stubborn.contract.verifier.converter.YamlContractConverter
 ----
 
 [[customization-custom-test-generator]]
@@ -55,7 +55,7 @@ example:
 
 [source]
 ----
-org.springframework.cloud.contract.verifier.builder.SingleTestGenerator=/
+sh.stubborn.contract.verifier.builder.SingleTestGenerator=/
 com.example.MyGenerator
 ----
 
@@ -98,7 +98,7 @@ HTTP Stub server implementation, which might resemble the following example:
 
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-moco/src/test/groovy/org/springframework/cloud/contract/stubrunner/provider/moco/MocoHttpServerStub.groovy[indent=0,lines=16..-1]
+include::{tests_path}/stubborn-stub-runner-moco/src/test/groovy/org/springframework/cloud/contract/stubrunner/provider/moco/MocoHttpServerStub.groovy[indent=0,lines=16..-1]
 ----
 
 Then you can register it in your `spring.factories` file, as the following
@@ -106,8 +106,8 @@ example shows:
 
 [source]
 ----
-org.springframework.cloud.contract.stubrunner.HttpServerStub=\
-org.springframework.cloud.contract.stubrunner.provider.moco.MocoHttpServerStub
+sh.stubborn.contract.stubrunner.HttpServerStub=\
+sh.stubborn.contract.stubrunner.provider.moco.MocoHttpServerStub
 ----
 
 Now you can run stubs with Moco.
@@ -153,7 +153,7 @@ example shows:
 [source]
 ----
 # Example of a custom Stub Downloader Provider
-org.springframework.cloud.contract.stubrunner.StubDownloaderBuilder=\
+sh.stubborn.contract.stubrunner.StubDownloaderBuilder=\
 com.example.CustomStubDownloaderBuilder
 ----
 

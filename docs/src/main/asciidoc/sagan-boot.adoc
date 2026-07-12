@@ -1,9 +1,9 @@
 [[on-the-producer-side]]
 = On the Producer Side
 
-To start working with Spring Cloud Contract, you can add files with REST or messaging contracts expressed in either Groovy DSL or YAML to the contracts directory, which is set by the contractsDslDir property. By default, it is $rootDir/src/test/resources/contracts.
+To start working with Stubborn Contract, you can add files with REST or messaging contracts expressed in either Groovy DSL or YAML to the contracts directory, which is set by the contractsDslDir property. By default, it is $rootDir/src/test/resources/contracts.
 
-Then you can add the Spring Cloud Contract Verifier dependency and plugin to your build file, as the following example shows:
+Then you can add the Stubborn Contract Verifier dependency and plugin to your build file, as the following example shows:
 
 ```xml
 <dependency>
@@ -18,13 +18,13 @@ The following listing shows how to add the plugin, which should go in the build/
 ```xml
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
 </plugin>
 ```
 
-Running `./mvnw clean install` automatically generates tests that verify the application compliance with the added contracts. By default, the tests get generated under `org.springframework.cloud.contract.verifier.tests`.
+Running `./mvnw clean install` automatically generates tests that verify the application compliance with the added contracts. By default, the tests get generated under `sh.stubborn.contract.verifier.tests`.
 
 As the implementation of the functionalities described by the contracts is not yet present, the tests fail.
 
@@ -37,7 +37,7 @@ The following example, from pom.xml, shows how to specify the base test class:
     <plugins>
         <plugin>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+            <artifactId>stubborn-maven-plugin</artifactId>
             <version>${spring-cloud-contract.version}</version>
             <extensions>true</extensions>
             <configuration>
@@ -52,16 +52,16 @@ The following example, from pom.xml, shows how to specify the base test class:
 </build>
 ```
 
-INFO: The baseClassForTests element lets you specify your base test class. It must be a child of a configuration element within spring-cloud-contract-maven-plugin.
+INFO: The baseClassForTests element lets you specify your base test class. It must be a child of a configuration element within stubborn-maven-plugin.
 
 Once the implementation and the test base class are in place, the tests pass, and both the application and the stub artifacts are built and installed in the local Maven repository. You can now merge the changes, and you can publish both the application and the stub artifacts in an online repository.
 
 [[on-the-consumer-side]]
 = On the Consumer Side
 
-You can use Spring Cloud Contract Stub Runner in the integration tests to get a running WireMock instance or messaging route that simulates the actual service.
+You can use Stubborn Contract Stub Runner in the integration tests to get a running WireMock instance or messaging route that simulates the actual service.
 
-To do so, add the dependency to Spring Cloud Contract Stub Runner, as the following example shows:
+To do so, add the dependency to Stubborn Contract Stub Runner, as the following example shows:
 
 ```xml
 <dependency>
@@ -82,7 +82,7 @@ $ ./mvnw clean install -DskipTests
 
 The tests are being skipped because the producer-side contract implementation is not in place yet, so the automatically-generated contract tests fail.
 
-By getting already-existing producer service stubs from a remote repository. To do so, pass the stub artifact IDs and artifact repository URL as Spring Cloud Contract Stub Runner properties, as the following example shows:
+By getting already-existing producer service stubs from a remote repository. To do so, pass the stub artifact IDs and artifact repository URL as Stubborn Contract Stub Runner properties, as the following example shows:
 
 ```yml
     spring.cloud.contract.stubrunner:
@@ -90,7 +90,7 @@ By getting already-existing producer service stubs from a remote repository. To 
       repositoryRoot: https://repo.spring.io/libs-snapshot
 ```  
 
-Now you can annotate your test class with `@AutoConfigureStubRunner`. In the annotation, provide the group-id and artifact-id values for Spring Cloud Contract Stub Runner to run the collaborators' stubs for you, as the following example shows:
+Now you can annotate your test class with `@AutoConfigureStubRunner`. In the annotation, provide the group-id and artifact-id values for Stubborn Contract Stub Runner to run the collaborators' stubs for you, as the following example shows:
 
 ```java
 @RunWith(SpringRunner.class)

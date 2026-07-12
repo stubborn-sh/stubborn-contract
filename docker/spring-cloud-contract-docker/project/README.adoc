@@ -1,4 +1,4 @@
-# Spring Cloud Contract Verifier Docker Project
+# Stubborn Contract Verifier Docker Project
 
 ## Developer tips
 

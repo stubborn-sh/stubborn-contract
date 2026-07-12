@@ -28,9 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.cloud.contract.stubrunner.StubFinder;
-import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
-import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubFinder;
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureStubRunner(repositoryRoot = "classpath:m2repo/repository/",
-		ids = { "org.springframework.cloud.contract.verifier.stubs:contextPathFraudDetectionServer" },
+		ids = { "sh.stubborn.contract.verifier.stubs:contextPathFraudDetectionServer" },
 		stubsMode = StubRunnerProperties.StubsMode.REMOTE)
 public class LoanApplicationServiceTests {
 

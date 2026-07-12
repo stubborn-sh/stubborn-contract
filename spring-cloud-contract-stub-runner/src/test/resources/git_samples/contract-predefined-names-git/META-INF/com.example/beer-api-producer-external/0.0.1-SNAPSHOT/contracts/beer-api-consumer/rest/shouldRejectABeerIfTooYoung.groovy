@@ -16,7 +16,7 @@
 
 package contracts.beer.rest
 
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
 	request {
 		description("""
 Represents a unsuccessful scenario of getting a beer

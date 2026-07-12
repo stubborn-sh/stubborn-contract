@@ -6,7 +6,7 @@ include::partial$_attributes.adoc[]
 [[gradle-prerequisites]]
 == Prerequisites
 
-To use Spring Cloud Contract Verifier with WireMock, you must use either a
+To use Stubborn Contract Verifier with WireMock, you must use either a
 Gradle or a Maven plugin.
 
 WARNING: If you want to use Spock in your projects, you must separately add the
@@ -25,13 +25,13 @@ Plugin DSL GA versions::
 // build.gradle
 plugins {
   id "groovy"
-  // this will work only for GA versions of Spring Cloud Contract
-  id "org.springframework.cloud.contract" version "$\{GAVerifierVersion}"
+  // this will work only for GA versions of Stubborn Contract
+  id "sh.stubborn.contract" version "$\{GAVerifierVersion}"
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$\{GAVerifierVersion}"
+		mavenBom "org.springframework.cloud:stubborn-dependencies:$\{GAVerifierVersion}"
 	}
 }
 
@@ -51,7 +51,7 @@ Plugin DSL non GA versions::
 // settings.gradle
 pluginManagement {
 	plugins {
-		id "org.springframework.cloud.contract" version "$\{verifierVersion}"
+		id "sh.stubborn.contract" version "$\{verifierVersion}"
 	}
     repositories {
         // to pick from local .m2
@@ -68,12 +68,12 @@ pluginManagement {
 // build.gradle
 plugins {
   id "groovy"
-  id "org.springframework.cloud.contract"
+  id "sh.stubborn.contract"
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$\{verifierVersion}"
+		mavenBom "org.springframework.cloud:stubborn-dependencies:$\{verifierVersion}"
 	}
 }
 
@@ -97,18 +97,18 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:$\{springboot_version}"
-		classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$\{verifier_version}"
+		classpath "org.springframework.cloud:stubborn-gradle-plugin:$\{verifier_version}"
         // here you can also pass additional dependencies such as Kotlin spec e.g.:
         // classpath "org.springframework.cloud:spring-cloud-contract-spec-kotlin:$\{verifier_version}"
 	}
 }
 
 apply plugin: 'groovy'
-apply plugin: 'org.springframework.cloud.contract'
+apply plugin: 'sh.stubborn.contract'
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:$\{verifier_version}"
+		mavenBom "org.springframework.cloud:stubborn-dependencies:$\{verifier_version}"
 	}
 }
 
@@ -135,13 +135,13 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:$\{springboot_version}"
-		classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$\{verifier_version}"
+		classpath "org.springframework.cloud:stubborn-gradle-plugin:$\{verifier_version}"
 	}
 }
 
 dependencies {
     // all dependencies
-    // you can exclude rest-assured from spring-cloud-contract-verifier
+    // you can exclude rest-assured from stubborn-verifier
     testCompile "com.jayway.restassured:rest-assured:2.5.0"
     testCompile "com.jayway.restassured:spring-mock-mvc:2.5.0"
 }
@@ -159,17 +159,17 @@ which are automatically uploaded after every successful build.
 [[gradle-add-stubs]]
 == Add stubs
 
-By default, Spring Cloud Contract Verifier looks for stubs in the
+By default, Stubborn Contract Verifier looks for stubs in the
 `src/contractTest/resources/contracts` directory. For transitional purposes the plugin
 will also look for contracts in `src/test/resources/contracts`, however, this directory
-is deprecated as of Spring Cloud Contract 3.0.0.
+is deprecated as of Stubborn Contract 3.0.0.
 
 It should also be noted, that with this new Gradle source set, you should also migrate
 any base classes used within your contract tests to `src/contractTest/\{language}` where
 `\{language}` should be replaced with Java or Groovy as needed for your purposes.
 
 The directory that contains stub definitions is treated as a class name, and each stub
-definition is treated as a single test. Spring Cloud Contract Verifier assumes that it
+definition is treated as a single test. Stubborn Contract Verifier assumes that it
 contains at least one level of directories that are to be used as the test class name.
 If more than one level of nested directories is present, all except the last one is used
 as the package name. Consider the following structure:
@@ -180,7 +180,7 @@ src/contractTest/resources/contracts/myservice/shouldCreateUser.groovy
 src/contractTest/resources/contracts/myservice/shouldReturnUser.groovy
 ----
 
-Given the preceding structure, Spring Cloud Contract Verifier creates a test class named
+Given the preceding structure, Stubborn Contract Verifier creates a test class named
 `defaultBasePackage.MyService` with two methods:
 
 - `shouldCreateUser()`
@@ -298,7 +298,7 @@ array.
 * `basePackageForTests`: Specifies the base package for all generated tests. If not set,
 the value is picked from the package of `baseClassForTests` and from `packageWithBaseClasses`.
 If neither of these values are set, the value is set to
-`org.springframework.cloud.contract.verifier.tests`.
+`sh.stubborn.contract.verifier.tests`.
 * `baseClassForTests`: Creates a base class for all generated tests. By default, if you
 use Spock classes, the class is `spock.lang.Specification`.
 * `packageWithBaseClasses`: Defines a package where all the base classes reside. This
@@ -320,7 +320,7 @@ from the Groovy DSL should be placed. By default, its value is
 the Groovy DSL should be placed.
 * `testFramework`: Specifies the target test framework to be used. Currently, Spock, JUnit 4 (`TestFramework.JUNIT`) and
 JUnit 5 are supported, with JUnit 4 being the default framework.
-* `contractsProperties`: A map that contains properties to be passed to Spring Cloud Contract
+* `contractsProperties`: A map that contains properties to be passed to Stubborn Contract
 components. Those properties might be used by (for example) built-in or custom Stub Downloaders.
 * `sourceSet`: Source set where the contracts are stored. If not provided will assume `contractTest` (for example, `project.sourceSets.contractTest.java` for JUnit or `project.sourceSets.contractTest.groovy` for Spock).
 
@@ -360,13 +360,13 @@ feature is disabled by default.
 [[gradle-single-base-class]]
 == Single Base Class for All Tests
 
-When using Spring Cloud Contract Verifier in MockMvc (the default), you need to create a base
+When using Stubborn Contract Verifier in MockMvc (the default), you need to create a base
 specification for all generated acceptance tests. In this class, you need to point to an
 endpoint, which should be verified. The following example shows how to do so:
 
 [source,groovy,indent=0]
 ----
-include::{plugins_path}/spring-cloud-contract-gradle-plugin/src/test/resources/functionalTest/bootSimple/src/test/groovy/org/springframework/cloud/contract/verifier/twitter/places/BaseMockMvcSpec.groovy[tags=base_class,indent=0]
+include::{plugins_path}/stubborn-gradle-plugin/src/test/resources/functionalTest/bootSimple/src/test/groovy/org/springframework/cloud/contract/verifier/twitter/places/BaseMockMvcSpec.groovy[tags=base_class,indent=0]
 ----
 
 If you use `Explicit` mode, you can use a base class to initialize the whole tested application,
@@ -377,7 +377,7 @@ only option to test the JAX-RS API is to start a web server.
 [[gradle-different-base-classes]]
 == Different Base Classes for Contracts
 
-If your base classes differ between contracts, you can tell the Spring Cloud Contract
+If your base classes differ between contracts, you can tell the Stubborn Contract
 plugin which class should get extended by the autogenerated tests. You have two options:
 
 * Follow a convention by providing the `packageWithBaseClasses`
@@ -388,7 +388,7 @@ plugin which class should get extended by the autogenerated tests. You have two 
 
 The convention is such that, if you have a contract in (for example)
 `src/contractTest/resources/contract/foo/bar/baz/` and set the value of the
-`packageWithBaseClasses` property to `com.example.base`, then Spring Cloud Contract
+`packageWithBaseClasses` property to `com.example.base`, then Stubborn Contract
 Verifier assumes that there is a `BarBazBase` class under the `com.example.base` package.
 In other words, the system takes the last two parts of the package, if they exist, and
 forms a class with a `Base` suffix. This rule takes precedence over `baseClassForTests`.
@@ -469,9 +469,9 @@ through the `contractsProperties` method (for example, `contracts { contractsPro
 or through a system property or an environment variable.
 
 [[gradle-consumer]]
-== Spring Cloud Contract Verifier on the Consumer Side
+== Stubborn Contract Verifier on the Consumer Side
 
-In a consuming service, you need to configure the Spring Cloud Contract Verifier plugin
+In a consuming service, you need to configure the Stubborn Contract Verifier plugin
 in exactly the same way as in the case of a provider. If you do not want to use Stub Runner,
 you need to copy the contracts stored in `src/contractTest/resources/contracts` and generate
 WireMock JSON stubs by using the following command:
@@ -513,4 +513,4 @@ class LoanApplicationServiceSpec extends Specification {
 
 In the preceding example, `LoanApplication` makes a call to the `FraudDetection` service.
 This request is handled by a WireMock server configured with stubs that were generated by
-Spring Cloud Contract Verifier.
+Stubborn Contract Verifier.

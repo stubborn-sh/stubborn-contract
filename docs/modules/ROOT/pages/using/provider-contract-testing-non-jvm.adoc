@@ -6,16 +6,16 @@ In this flow, we assume that:
 * The API Producer and API Consumer are non-JVM applications.
 * The contract definitions are written in YAML.
 * The Stub Storage is Artifactory or Nexus.
-* Spring Cloud Contract Docker (SCC Docker) and Spring Cloud Contract Stub Runner Docker
+* Stubborn Contract Docker (SCC Docker) and Stubborn Contract Stub Runner Docker
 (SCC Stub Runner Docker) images are used.
 
-You can read more about how to use Spring Cloud Contract with Docker link:docker-project.html[here].
+You can read more about how to use Stubborn Contract with Docker link:docker-project.html[here].
 
 https://spring.io/blog/2018/02/13/spring-cloud-contract-in-a-polyglot-world[Here], you can
-read a blog post about how to use Spring Cloud Contract in a polyglot world.
+read a blog post about how to use Stubborn Contract in a polyglot world.
 
 https://github.com/spring-cloud-samples/spring-cloud-contract-nodejs/[Here], you can find
-a sample of a NodeJS application that uses Spring Cloud Contract both as a producer and a
+a sample of a NodeJS application that uses Stubborn Contract both as a producer and a
 consumer.
 
 [[flows-provider-non-jvm-producer]]
@@ -29,7 +29,7 @@ At a high level, the producer:
 +
 If mocking is not possible, you can set up the infrastructure and define tests in a stateful way.
 
-.. Run the Spring Cloud Contract Docker image and pass the port of a running application as an environment variable.
+.. Run the Stubborn Contract Docker image and pass the port of a running application as an environment variable.
 The SCC Docker image:
 * Generates the tests from the attached volume.
 * Runs the tests against the running application.
@@ -66,7 +66,7 @@ include::partial$_attributes.adoc[]
 At a high level, the consumer:
 
 . Sets up the build tool to:
-* Start the Spring Cloud Contract Stub Runner Docker image and start the stubs.
+* Start the Stubborn Contract Stub Runner Docker image and start the stubs.
 +
 The environment variables configure:
 * The stubs to fetch.

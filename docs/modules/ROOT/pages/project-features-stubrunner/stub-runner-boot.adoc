@@ -1,11 +1,11 @@
 [[features-stub-runner-boot]]
 = Using the Stub Runner Boot Application
 
-WARNING:: Due to the limitations in the current artifact repository release tool, we cannot currently release executable jars and as of `4.1.6` we're skipping the release of this artifact. Stub Runner Boot is still available through the xref:../docker-project.adoc#docker-stubrunner[Docker Stub Runner Boot image], which is the preferred way of using the app. You can also access https://github.com/spring-cloud/spring-cloud-contract/https://github.com/spring-cloud/spring-cloud-contract/tree/main/spring-cloud-contract-stub-runner-boot[the sources in the project repository] and build the app yourself. If the required adjustments are made in the artifact repository tooling, we'll resume publishing this jar.
+WARNING:: Due to the limitations in the current artifact repository release tool, we cannot currently release executable jars and as of `4.1.6` we're skipping the release of this artifact. Stub Runner Boot is still available through the xref:../docker-project.adoc#docker-stubrunner[Docker Stub Runner Boot image], which is the preferred way of using the app. You can also access https://github.com/spring-cloud/spring-cloud-contract/https://github.com/spring-cloud/spring-cloud-contract/tree/main/stubborn-stub-runner-boot[the sources in the project repository] and build the app yourself. If the required adjustments are made in the artifact repository tooling, we'll resume publishing this jar.
 
 include::partial$_attributes.adoc[]
 
-Spring Cloud Contract Stub Runner Boot is a Spring Boot application that exposes REST endpoints to
+Stubborn Contract Stub Runner Boot is a Spring Boot application that exposes REST endpoints to
 trigger the messaging labels and to access WireMock servers.
 
 [[features-stub-runner-boot-security]]
@@ -43,7 +43,7 @@ by running the following commands:
 ====
 [source,bash,indent=0]
 ----
-$ wget -O stub-runner.jar 'https://search.maven.org/remotecontent?filepath=org/springframework/cloud/spring-cloud-contract-stub-runner-boot/2.0.1.RELEASE/spring-cloud-contract-stub-runner-boot-2.0.1.RELEASE.jar'
+$ wget -O stub-runner.jar 'https://search.maven.org/remotecontent?filepath=org/springframework/cloud/stubborn-stub-runner-boot/2.0.1.RELEASE/stubborn-stub-runner-boot-2.0.1.RELEASE.jar'
 $ java -jar stub-runner.jar --spring.cloud.contract.stubrunner.ids=... --spring.cloud.contract.stubrunner.repositoryRoot=...
 ----
 ====

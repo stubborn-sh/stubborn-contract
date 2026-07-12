@@ -3,14 +3,14 @@
 
 include::partial$_attributes.adoc[]
 
-Spring Cloud Contract supports DSLs written in the following languages:
+Stubborn Contract supports DSLs written in the following languages:
 
 * Groovy
 * YAML
 * Java
 * Kotlin
 
-TIP: Spring Cloud Contract supports defining multiple contracts in a single file (In Groovy return a list instead of a single contract).
+TIP: Stubborn Contract supports defining multiple contracts in a single file (In Groovy return a list instead of a single contract).
 
 The following example shows a contract definition:
 
@@ -45,7 +45,7 @@ include::{verifier_root_path}/src/test/resources/kotlin/contract_rest.kts[tags=c
 You can compile contracts to stubs mapping by using the following standalone Maven command:
 
 ----
-mvn org.springframework.cloud:spring-cloud-contract-maven-plugin:convert
+mvn org.springframework.cloud:stubborn-maven-plugin:convert
 ----
 ====
 

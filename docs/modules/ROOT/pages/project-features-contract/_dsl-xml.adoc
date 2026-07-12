@@ -6,7 +6,7 @@ include::partial$_attributes.adoc[]
 For HTTP contracts, we also support using XML in the request and response body.
 The XML body has to be passed within the `body` element
 as a `String` or `GString`. Also, body matchers can be provided for
-both the request and the response. In place of the `jsonPath(...)` method, the `org.springframework.cloud.contract.spec.internal.BodyMatchers.xPath`
+both the request and the response. In place of the `jsonPath(...)` method, the `sh.stubborn.contract.spec.internal.BodyMatchers.xPath`
 method should be used, with the desired `xPath` provided as the first argument
 and the appropriate `MatchingType` as the second argument. All the body matchers apart from `byType()` are supported.
 

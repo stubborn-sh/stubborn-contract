@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-tools</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-tools</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -15,12 +15,12 @@
 		<maven>3.9</maven>
 	</prerequisites>
 
-	<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+	<artifactId>stubborn-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 
-	<name>Spring Cloud Contract Maven Plugin</name>
-	<description>Spring Cloud Contract Maven Plugin</description>
-	<url>https://github.com/spring-cloud/spring-cloud-contract</url>
+	<name>Stubborn Contract Maven Plugin</name>
+	<description>Stubborn Contract Maven Plugin</description>
+	<url>https://github.com/spring-cloud/stubborn-contract</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -230,12 +230,12 @@
 			<version>${slf4j-api.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-converters</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-converters</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -244,12 +244,12 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-stub-runner</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-wiremock</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-wiremock</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -24,7 +24,7 @@ Social remarks
 discuss changes while going through the process.
 * CDC is all about communication.
 
-The server-side code is available under {samples_code}[Spring Cloud Contract Samples] repository `samples/standalone/dsl/http-server` path, and the client-side code is available under Spring Cloud Contract's repository `samples/standalone/dsl/http-client` path.
+The server-side code is available under {samples_code}[Stubborn Contract Samples] repository `samples/standalone/dsl/http-server` path, and the client-side code is available under Stubborn Contract's repository `samples/standalone/dsl/http-client` path.
 
 TIP: In this case, the producer owns the contracts. Physically, all the contracts are
 in the producer's repository.
@@ -38,7 +38,7 @@ For simplicity, we use the following acronyms:
 
 - Loan Issuance (LI): The HTTP client
 - Fraud Detection (FD): The HTTP server
-- SCC: Spring Cloud Contract
+- SCC: Stubborn Contract
 
 [[getting-started-cdc-consumer]]
 == The Consumer Side (Loan Issuance)
@@ -49,7 +49,7 @@ As a developer of the Loan Issuance service (a consumer of the Fraud Detection s
 . Write the missing implementation.
 . Clone the Fraud Detection service repository locally.
 . Define the contract locally in the repository of the fraud detection service.
-. Add the Spring Cloud Contract (SCC) plugin.
+. Add the Stubborn Contract (SCC) plugin.
 . Run the integration tests.
 . File a pull request.
 . Create an initial implementation.
@@ -170,18 +170,18 @@ Once you are ready to check the API in practice in the integration tests, you ne
 install the stubs locally.
 
 [[getting-started-cdc-consumer-add]]
-=== Add the Spring Cloud Contract Verifier Plugin
+=== Add the Stubborn Contract Verifier Plugin
 
 We can add either a Maven or a Gradle plugin. In this example, we show how to add Maven.
-First, we add the `Spring Cloud Contract` BOM, as the following example shows:
+First, we add the `Stubborn Contract` BOM, as the following example shows:
 
 {samples_code}/standalone/dsl/http-server/pom.xml[Click here to see the code]
 
-Next, add the `Spring Cloud Contract Verifier` Maven plugin, as the following example shows:
+Next, add the `Stubborn Contract Verifier` Maven plugin, as the following example shows:
 
 {samples_code}/standalone/dsl/http-server/pom.xml[Click here to see the code]
 
-Since the plugin was added, you get the `Spring Cloud Contract Verifier` features, which,
+Since the plugin was added, you get the `Stubborn Contract Verifier` features, which,
 from the provided contracts:
 
 - Generate and run tests
@@ -200,7 +200,7 @@ Once you run those commands, you should you see something like the following con
 
 [source,bash,indent=0]
 ----
-[INFO] --- spring-cloud-contract-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
+[INFO] --- stubborn-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
 [INFO] Building jar: /some/path/http-server/target/http-server-0.0.1-SNAPSHOT-stubs.jar
 [INFO]
 [INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ http-server ---
@@ -227,15 +227,15 @@ repository.
 [[getting-started-cdc-consumer-run]]
 === Running the Integration Tests
 
-In order to profit from the Spring Cloud Contract Stub Runner functionality of automatic
+In order to profit from the Stubborn Contract Stub Runner functionality of automatic
 stub downloading, you must do the following in your consumer side project (`Loan
 Application service`):
 
-. Add the `Spring Cloud Contract` BOM, as follows:
+. Add the `Stubborn Contract` BOM, as follows:
 +
 {samples_code}/standalone/dsl/http-client/pom.xml[Click here to see the code]
 
-. Add the dependency to `Spring Cloud Contract Stub Runner`, as follows:
+. Add the dependency to `Stubborn Contract Stub Runner`, as follows:
 +
 {samples_code}/standalone/dsl/http-client/pom.xml[Click here to see the code]
 
@@ -459,7 +459,7 @@ $ git merge --no-ff contract-change-pr
 [[getting-started-cdc-consumer-final-online]]
 === Working Online
 
-Now you can disable the offline work for Spring Cloud Contract Stub Runner and indicate
+Now you can disable the offline work for Stubborn Contract Stub Runner and indicate
 where the repository with your stubs is located. At this moment, the stubs of the server
 side are automatically downloaded from Nexus/Artifactory. You can set the value of
 `stubsMode` to `REMOTE`. The following code shows an example of

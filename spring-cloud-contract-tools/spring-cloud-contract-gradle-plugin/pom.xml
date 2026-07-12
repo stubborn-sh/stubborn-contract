@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-tools</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-tools</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>spring-cloud-contract-gradle-plugin</artifactId>
+	<artifactId>stubborn-gradle-plugin</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Spring Cloud Contract Gradle Plugin</name>
-	<description>Spring Cloud Contract Gradle Plugin</description>
+	<name>Stubborn Contract Gradle Plugin</name>
+	<description>Stubborn Contract Gradle Plugin</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,8 +26,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -36,8 +36,8 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-converters</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-converters</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -46,8 +46,8 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-stub-runner</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>

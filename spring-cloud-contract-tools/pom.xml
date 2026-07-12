@@ -5,18 +5,18 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>spring-cloud-contract-tools</artifactId>
+	<artifactId>stubborn-tools</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Spring Cloud Contract Tools</name>
-	<description>Spring Cloud Contract Tools</description>
-	<url>https://github.com/spring-cloud/spring-cloud-contract</url>
+	<name>Stubborn Contract Tools</name>
+	<description>Stubborn Contract Tools</description>
+	<url>https://github.com/spring-cloud/stubborn-contract</url>
 
 	<licenses>
 		<license>
@@ -26,12 +26,12 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https://github.com/spring-cloud/spring-cloud-contract.git
+		<connection>scm:git:https://github.com/spring-cloud/stubborn-contract.git
 		</connection>
 		<developerConnection>
-			scm:git:git@github.com:spring-cloud/spring-cloud-contract.git
+			scm:git:git@github.com:spring-cloud/stubborn-contract.git
 		</developerConnection>
-		<url>https://github.com/spring-cloud/spring-cloud-contract</url>
+		<url>https://github.com/spring-cloud/stubborn-contract</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -69,10 +69,10 @@
 	</developers>
 
 	<modules>
-		<module>spring-cloud-contract-converters</module>
-		<module>spring-cloud-contract-maven-plugin</module>
-		<module>spring-cloud-contract-gradle-plugin</module>
-		<module>spring-cloud-contract-gradle-portal-plugin</module>
+		<module>stubborn-contract-converters</module>
+		<module>stubborn-contract-maven-plugin</module>
+		<module>stubborn-contract-gradle-plugin</module>
+		<module>stubborn-contract-gradle-portal-plugin</module>
 	</modules>
 
 	<build>

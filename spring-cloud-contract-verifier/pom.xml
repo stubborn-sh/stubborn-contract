@@ -9,19 +9,19 @@
 		<kafka-avro-serializer.version>7.9.0</kafka-avro-serializer.version>
 	</properties>
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>spring-cloud-contract-verifier</artifactId>
+	<artifactId>stubborn-verifier</artifactId>
 	<packaging>jar</packaging>
-	<name>Spring Cloud Contract Verifier</name>
-	<description>Spring Cloud Contract Verifier</description>
+	<name>Stubborn Contract Verifier</name>
+	<description>Stubborn Contract Verifier</description>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-spec</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-spec</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -170,7 +170,7 @@
 		</dependency>
 		<!-- Leaving for backward-compatibility. We no longer rely on this library
 		and neither should you. For more information check
-		https://github.com/spring-cloud/spring-cloud-contract/issues/2129  -->
+		https://github.com/spring-cloud/stubborn-contract/issues/2129  -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>

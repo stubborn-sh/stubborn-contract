@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-import org.springframework.cloud.contract.spec.Contract;
+import sh.stubborn.contract.spec.Contract;
 
 class contract implements Supplier<Collection<Contract>> {
 

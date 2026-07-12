@@ -3,7 +3,7 @@
 
 include::partial$_attributes.adoc[]
 
-Spring Cloud Contract lets you verify applications that use messaging as a
+Stubborn Contract lets you verify applications that use messaging as a
 means of communication. All of the integrations shown in this document work with Spring,
 but you can also create one of your own and use that.
 
@@ -49,7 +49,7 @@ test that calls that method to trigger the message. On the consumer side, you ca
 IMPORTANT: This section is valid only for the Groovy DSL.
 
 In HTTP, you have a notion of `client`/`stub and `server`/`test` notation. You can also
-use those paradigms in messaging. In addition, Spring Cloud Contract Verifier also
+use those paradigms in messaging. In addition, Stubborn Contract Verifier also
 provides the `consumer` and `producer` methods
 (note that you can use either `$` or `value` methods to provide `consumer` and `producer`
 parts).
@@ -59,7 +59,7 @@ parts).
 
 In the `input` or `outputMessage` section, you can call `assertThat` with the name
 of a `method` (for example, `assertThatMessageIsOnTheQueue()`) that you have defined in the
-base class or in a static import. Spring Cloud Contract runs that method
+base class or in a static import. Stubborn Contract runs that method
 in the generated test.
 
 [[features-messaging-integrations]]
@@ -76,7 +76,7 @@ Since we use Spring Boot, if you have added one of these libraries to the classp
 the messaging configuration is automatically set up.
 
 IMPORTANT: Remember to put `@AutoConfigureMessageVerifier` on the base class of your
-generated tests. Otherwise, the messaging part of Spring Cloud Contract does not
+generated tests. Otherwise, the messaging part of Stubborn Contract does not
 work.
 
 [IMPORTANT]
@@ -109,7 +109,7 @@ testImplementation(group: 'org.springframework.cloud', name: 'spring-cloud-strea
 === Manual Integration Testing
 
 The main interface used by the tests is
-`org.springframework.cloud.contract.verifier.messaging.MessageVerifierSender` and `org.springframework.cloud.contract.verifier.messaging.MessageVerifierReceiver`.
+`sh.stubborn.contract.verifier.messaging.MessageVerifierSender` and `sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver`.
 It defines how to send and receive messages.
 
 In a test, you can inject a `ContractVerifierMessageExchange` to send and receive
@@ -222,7 +222,7 @@ The following example shows how to trigger a message with a label:
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=client_trigger,indent=0]
+include::{tests_path}/stubborn-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=client_trigger,indent=0]
 ----
 ====
 
@@ -234,7 +234,7 @@ The following example shows how to trigger a message by group and artifact IDs:
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=trigger_group_artifact,indent=0]
+include::{tests_path}/stubborn-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=trigger_group_artifact,indent=0]
 ----
 ====
 
@@ -245,7 +245,7 @@ The following example shows how to trigger a message from artifact IDs:
 
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=trigger_artifact,indent=0]
+include::{tests_path}/stubborn-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=trigger_artifact,indent=0]
 ----
 
 [[features-messaging-trigger-all-messages]]
@@ -255,7 +255,7 @@ The following example shows how to trigger all messages:
 
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=trigger_all,indent=0]
+include::{tests_path}/stubborn-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=trigger_all,indent=0]
 ----
 
 :input_name: jms:input
@@ -264,14 +264,14 @@ include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/groovy/o
 [[features-messaging-stub-runner-camel]]
 == Consumer Side Messaging With Apache Camel
 
-Spring Cloud Contract Stub Runner's messaging module gives you an easy way to integrate with Apache Camel.
+Stubborn Contract Stub Runner's messaging module gives you an easy way to integrate with Apache Camel.
 For the provided artifacts, it automatically downloads the stubs and registers the required
 routes.
 
 [[features-messaging-stub-runner-camel-adding]]
 === Adding Apache Camel to the Project
 
-You can have both Apache Camel and Spring Cloud Contract Stub Runner on the classpath.
+You can have both Apache Camel and Stubborn Contract Stub Runner on the classpath.
 Remember to annotate your test class with `@AutoConfigureStubRunner`.
 
 [[features-messaging-stub-runner-camel-disabling]]
@@ -343,14 +343,14 @@ That will send out a message to the destination described in the output message 
 [[features-messaging-stub-runner-integration]]
 == Consumer Side Messaging with Spring Integration
 
-Spring Cloud Contract Stub Runner's messaging module gives you an easy way to
+Stubborn Contract Stub Runner's messaging module gives you an easy way to
 integrate with Spring Integration. For the provided artifacts, it automatically downloads
 the stubs and registers the required routes.
 
 [[features-messaging-stub-runner-integration-adding]]
 === Adding the Runner to the Project
 
-You can have both Spring Integration and Spring Cloud Contract Stub Runner on the
+You can have both Spring Integration and Stubborn Contract Stub Runner on the
 classpath. Remember to annotate your test class with `@AutoConfigureStubRunner`.
 
 [[features-messaging-stub-runner-integration-disabling]]
@@ -402,7 +402,7 @@ Consider the following contract:
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-integration/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/integration/IntegrationStubRunnerSpec.groovy[tags=sample_dsl,indent=0]
+include::{tests_path}/stubborn-stub-runner-integration/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/integration/IntegrationStubRunnerSpec.groovy[tags=sample_dsl,indent=0]
 ----
 ====
 
@@ -411,7 +411,7 @@ Now consider the following Spring Integration Route:
 ====
 [source,xml]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-integration/src/test/resources/integration-context.xml[lines=1;18..-1]
+include::{tests_path}/stubborn-stub-runner-integration/src/test/resources/integration-context.xml[lines=1;18..-1]
 ----
 ====
 
@@ -421,7 +421,7 @@ follows:
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-integration/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/integration/IntegrationStubRunnerSpec.groovy[tags=client_trigger,indent=0]
+include::{tests_path}/stubborn-stub-runner-integration/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/integration/IntegrationStubRunnerSpec.groovy[tags=client_trigger,indent=0]
 ----
 ====
 
@@ -430,7 +430,7 @@ That will send out a message to the destination described in the output message 
 [[features-messaging-stub-runner-stream]]
 == Consumer Side Messaging With Spring Cloud Stream
 
-Spring Cloud Contract Stub Runner's messaging module gives you an easy way to
+Stubborn Contract Stub Runner's messaging module gives you an easy way to
 integrate with Spring Stream. For the provided artifacts, it automatically downloads the
 stubs and registers the required routes.
 
@@ -465,7 +465,7 @@ testImplementation('org.springframework.cloud:spring-cloud-stream-test-binder')
 [[features-messaging-stub-runner-stream-adding]]
 === Adding the Runner to the Project
 
-You can have both Spring Cloud Stream and Spring Cloud Contract Stub Runner on the
+You can have both Spring Cloud Stream and Stubborn Contract Stub Runner on the
 classpath. Remember to annotate your test class with `@AutoConfigureStubRunner`.
 
 [[features-messaging-stub-runner-stream-disabling]]
@@ -517,7 +517,7 @@ Consider the following contract:
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=sample_dsl,indent=0]
+include::{tests_path}/stubborn-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=sample_dsl,indent=0]
 ----
 ====
 
@@ -526,7 +526,7 @@ Now consider the following Spring Cloud Stream function configuration:
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=setup,indent=0]
+include::{tests_path}/stubborn-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=setup,indent=0]
 ----
 ====
 
@@ -535,7 +535,7 @@ Now consider the following Spring configuration:
 ====
 [source,yaml]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/resources/application.yml[]
+include::{tests_path}/stubborn-stub-runner-stream/src/test/resources/application.yml[]
 ----
 ====
 
@@ -545,7 +545,7 @@ follows:
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=client_trigger,indent=0]
+include::{tests_path}/stubborn-stub-runner-stream/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/stream/StreamStubRunnerSpec.groovy[tags=client_trigger,indent=0]
 ----
 ====
 
@@ -555,7 +555,7 @@ That will send out a message to the destination described in the output message 
 [[features-messaging-stub-runner-jms]]
 == Consumer Side Messaging With Spring JMS
 
-Spring Cloud Contract Stub Runner's messaging module provides an easy way to
+Stubborn Contract Stub Runner's messaging module provides an easy way to
 integrate with Spring JMS.
 
 The integration assumes that you have a running instance of a JMS broker.
@@ -563,7 +563,7 @@ The integration assumes that you have a running instance of a JMS broker.
 [[features-messaging-stub-runner-jms-adding]]
 === Adding the Runner to the Project
 
-You need to have both Spring JMS and Spring Cloud Contract Stub Runner on the classpath. Remember to annotate your test class
+You need to have both Spring JMS and Stubborn Contract Stub Runner on the classpath. Remember to annotate your test class
 with `@AutoConfigureStubRunner`.
 
 :input_name: input
@@ -606,7 +606,7 @@ Now consider the following contract:
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-jms/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/jms/JmsStubRunnerSpec.groovy[tags=sample_dsl,indent=0]
+include::{tests_path}/stubborn-stub-runner-jms/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/jms/JmsStubRunnerSpec.groovy[tags=sample_dsl,indent=0]
 ----
 ====
 
@@ -615,7 +615,7 @@ To trigger a message from the `return_book_1` label, we use the `StubTrigger` in
 ====
 [source,groovy]
 ----
-include::{tests_path}/spring-cloud-contract-stub-runner-jms/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/jms/JmsStubRunnerSpec.groovy[tags=client_trigger,indent=0]
+include::{tests_path}/stubborn-stub-runner-jms/src/test/groovy/org/springframework/cloud/contract/stubrunner/messaging/jms/JmsStubRunnerSpec.groovy[tags=client_trigger,indent=0]
 ----
 ====
 

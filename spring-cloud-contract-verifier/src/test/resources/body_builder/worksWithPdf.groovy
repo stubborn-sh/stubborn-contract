@@ -1,4 +1,4 @@
-import org.springframework.cloud.contract.spec.Contract
+import sh.stubborn.contract.spec.Contract
 
 Contract.make {
 	request {

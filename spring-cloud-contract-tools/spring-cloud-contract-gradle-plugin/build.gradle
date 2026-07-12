@@ -35,8 +35,8 @@ apply from: "$rootDir/gradle/release.gradle"
 gradlePlugin {
 	plugins {
 		springCloudContractPlugin {
-			id = 'org.springframework.cloud.contract'
-			implementationClass = 'org.springframework.cloud.contract.verifier.plugin.SpringCloudContractVerifierGradlePlugin'
+			id = 'sh.stubborn.contract'
+			implementationClass = 'sh.stubborn.contract.verifier.plugin.SpringCloudContractVerifierGradlePlugin'
 		}
 	}
 }

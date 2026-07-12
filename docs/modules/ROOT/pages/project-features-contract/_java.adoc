@@ -5,7 +5,7 @@ include::partial$_attributes.adoc[]
 
 To write a contract definition in Java, you need to create a class that implements either the `Supplier<Contract>` interface (for a single contract) or `Supplier<Collection<Contract>>` (for multiple contracts).
 
-You can also write the contract definitions under `src/test/java` (for example, `src/test/java/contracts`) so that you do not have to modify the classpath of your project. In this case, you have to provide a new location of contract definitions to your Spring Cloud Contract plugin.
+You can also write the contract definitions under `src/test/java` (for example, `src/test/java/contracts`) so that you do not have to modify the classpath of your project. In this case, you have to provide a new location of contract definitions to your Stubborn Contract plugin.
 
 The following example (in both Maven and Gradle) has the contract definitions under `src/test/java`:
 
@@ -15,7 +15,7 @@ The following example (in both Maven and Gradle) has the contract definitions un
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>

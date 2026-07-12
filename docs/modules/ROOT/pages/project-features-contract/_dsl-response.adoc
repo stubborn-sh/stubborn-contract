@@ -37,7 +37,7 @@ include::{verifier_root_path}/src/test/resources/kotlin/contract_docs_examples.k
 Besides status, the response may contain headers, cookies, and a body, which are
 specified the same way as in the request (see xref:project-features-contract/http.adoc#contract-dsl-request[HTTP Request]).
 
-TIP: In the Groovy DSL, you can reference the `org.springframework.cloud.contract.spec.internal.HttpStatus`
+TIP: In the Groovy DSL, you can reference the `sh.stubborn.contract.spec.internal.HttpStatus`
 methods to provide a meaningful status instead of a digit. For example, you can call
 `OK()` for a status `200` or `BAD_REQUEST()` for `400`.
 

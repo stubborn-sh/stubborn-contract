@@ -8,7 +8,7 @@ In this page you will learn how to do provider contract testing with a non-Sprin
 [[flows-provider-non-spring-flow]]
 == The Flow
 
-You can read xref:getting-started/first-application.adoc[Developing Your First Spring Cloud Contract-based Application] to see the flow for provider contract testing with stubs in Nexus or Artifactory.
+You can read xref:getting-started/first-application.adoc[Developing Your First Stubborn Contract-based Application] to see the flow for provider contract testing with stubs in Nexus or Artifactory.
 
 [[flows-provider-non-spring-consumer]]
 == Setting up the Consumer
@@ -40,7 +40,7 @@ JUnit 5 Extension::
 [[flows-provider-non-spring-producer]]
 == Setting up the Producer
 
-By default, the Spring Cloud Contract Plugin uses Rest Assured's `MockMvc` setup for the
+By default, the Stubborn Contract Plugin uses Rest Assured's `MockMvc` setup for the
 generated tests. Since non-Spring applications do not use `MockMvc`, you can change the
 `testMode` to `EXPLICIT` to send a real request to an application bound at a specific port.
 
@@ -85,7 +85,7 @@ Maven::
 ----
 <plugin>
 	<groupId>org.springframework.cloud</groupId>
-	<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+	<artifactId>stubborn-maven-plugin</artifactId>
 	<version>${spring-cloud-contract.version}</version>
 	<extensions>true</extensions>
 	<configuration>
@@ -146,7 +146,7 @@ public class BaseClass {
 
 With such a setup:
 
-* We have set up the Spring Cloud Contract plugin to use the `EXPLICIT` mode to send real
+* We have set up the Stubborn Contract plugin to use the `EXPLICIT` mode to send real
 requests instead of mocked ones.
 * We have defined a base class that:
 ** Starts the HTTP server on a random port for each test.

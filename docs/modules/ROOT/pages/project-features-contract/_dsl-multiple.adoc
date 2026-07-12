@@ -10,7 +10,7 @@ following example:
 [source,groovy,indent=0,role="primary"]
 .Groovy
 ----
-include::{plugins_path}/spring-cloud-contract-maven-plugin/src/test/projects/multiple-contracts/src/test/resources/contracts/com/hello/v1/WithList.groovy[lines=18..-1,indent=0]
+include::{plugins_path}/stubborn-maven-plugin/src/test/projects/multiple-contracts/src/test/resources/contracts/com/hello/v1/WithList.groovy[lines=18..-1,indent=0]
 ----
 
 [source,yaml,indent=0,role="secondary"]
@@ -44,7 +44,7 @@ class contract implements Supplier<Collection<Contract>> {
 [source,kotlin,indent=0,subs="verbatim",role="secondary"]
 .Kotlin
 ----
-import org.springframework.cloud.contract.spec.ContractDsl.Companion.contract
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
 
 arrayOf(
     contract {
@@ -67,7 +67,7 @@ leads to generation of two tests that look like the following:
 ====
 [source,java,indent=0]
 ----
-package org.springframework.cloud.contract.verifier.tests.com.hello;
+package sh.stubborn.contract.verifier.tests.com.hello;
 
 import com.example.TestBase;
 import com.jayway.jsonpath.DocumentContext;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.contract.verifier.twitter.place;
+package sh.stubborn.contract.verifier.twitter.place;
 
 public class Tweet {
 

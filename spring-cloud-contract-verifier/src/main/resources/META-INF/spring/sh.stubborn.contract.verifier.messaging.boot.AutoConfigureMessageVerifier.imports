@@ -1,0 +1,6 @@
+sh.stubborn.contract.verifier.messaging.stream.ContractVerifierStreamAutoConfiguration
+sh.stubborn.contract.verifier.messaging.integration.ContractVerifierIntegrationConfiguration
+sh.stubborn.contract.verifier.messaging.camel.ContractVerifierCamelConfiguration
+sh.stubborn.contract.verifier.messaging.jms.ContractVerifierJmsConfiguration
+sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration
+sh.stubborn.contract.verifier.messaging.avro.KafkaAvroContractVerifierConfiguration

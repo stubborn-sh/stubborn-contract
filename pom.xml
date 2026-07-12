@@ -11,20 +11,20 @@
 		<relativePath/>
 	</parent>
 
-	<artifactId>spring-cloud-contract-parent</artifactId>
+	<artifactId>stubborn-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>5.0.4-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 
-	<name>Spring Cloud Contract</name>
-	<description>Spring Cloud Contract</description>
+	<name>Stubborn Contract</name>
+	<description>Stubborn Contract</description>
 
-	<url>https://github.com/spring-cloud/spring-cloud-contract</url>
+	<url>https://github.com/spring-cloud/stubborn-contract</url>
 
 	<inceptionYear>2016</inceptionYear>
 
 	<properties>
 		<spring-boot.version>4.0.7</spring-boot.version>
-		<!-- Align it also in Docker image under [docker/spring-cloud-contract-docker/project/gradle.properties] -->
+		<!-- Align it also in Docker image under [docker/stubborn-contract-docker/project/gradle.properties] -->
 		<camel.version>4.16.0</camel.version>
 		<jsch-agent.version>0.0.9</jsch-agent.version>
 		<spring-cloud-build.version>5.0.3-SNAPSHOT</spring-cloud-build.version>
@@ -73,17 +73,17 @@
 	</properties>
 
 	<modules>
-		<module>spring-cloud-contract-dependencies</module>
+		<module>stubborn-contract-dependencies</module>
 		<!-- TODO: temporarily disable -->
 		<!--<module>docker</module>-->
 		<module>docs</module>
-		<module>spring-cloud-contract-wiremock</module>
-		<module>spring-cloud-contract-verifier</module>
+		<module>stubborn-contract-wiremock</module>
+		<module>stubborn-contract-verifier</module>
 		<module>specs</module>
-		<module>spring-cloud-contract-stub-runner</module>
-		<module>spring-cloud-contract-starters</module>
-		<module>spring-cloud-contract-tools</module>
-		<module>spring-cloud-contract-stub-runner-boot</module>
+		<module>stubborn-contract-stub-runner</module>
+		<module>stubborn-contract-starters</module>
+		<module>stubborn-contract-tools</module>
+		<module>stubborn-contract-stub-runner-boot</module>
 		<module>tests</module>
 	</modules>
 
@@ -253,8 +253,8 @@
 			</dependency>
 			<!-- Git Stub Downloader -->
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-dependencies</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-dependencies</artifactId>
 				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -480,12 +480,12 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https://github.com/spring-cloud/spring-cloud-contract.git
+		<connection>scm:git:https://github.com/spring-cloud/stubborn-contract.git
 		</connection>
 		<developerConnection>
-			scm:git:git@github.com:spring-cloud/spring-cloud-contract.git
+			scm:git:git@github.com:spring-cloud/stubborn-contract.git
 		</developerConnection>
-		<url>https://github.com/spring-cloud/spring-cloud-contract</url>
+		<url>https://github.com/spring-cloud/stubborn-contract</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -524,12 +524,12 @@
 
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/spring-cloud/spring-cloud-contract/issues</url>
+		<url>https://github.com/spring-cloud/stubborn-contract/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>Github Actions</system>
-		<url>https://github.com/spring-cloud/spring-cloud-contract/actions</url>
+		<url>https://github.com/spring-cloud/stubborn-contract/actions</url>
 	</ciManagement>
 
 	<build>
@@ -747,24 +747,24 @@
 						<artifactId>central-publishing-maven-plugin</artifactId>
 						<configuration>
 							<excludeArtifacts>
-								<artifact>spring-cloud-contract-stub-runner-boot</artifact>
-								<artifact>spring-cloud-contract-docker-parent</artifact>
-								<artifact>spring-cloud-contract-specs</artifact>
-								<artifact>spring-cloud-contract-tests</artifact>
-								<artifact>spring-cloud-contract-stub-runner-boot-zookeeper</artifact>
-								<artifact>spring-cloud-contract-stub-runner-boot-eureka</artifact>
-								<artifact>spring-cloud-contract-sample-jms</artifact>
-								<artifact>spring-cloud-contract-stub-runner-kafka</artifact>
-								<artifactId>spring-cloud-contract-sample-amqp</artifactId>
-								<artifactId>spring-cloud-contract-stub-runner-integration</artifactId>
-								<artifactId>spring-cloud-contract-stub-runner-amqp</artifactId>
-								<artifactId>spring-cloud-contract-sample-integration</artifactId>
-								<artifactId>spring-cloud-contract-stub-runner-jms</artifactId>
-								<artifactId>spring-cloud-contract-sample-camel</artifactId>
-								<artifactId>spring-cloud-contract-stub-runner-stream</artifactId>
-								<artifactId>spring-cloud-contract-stub-runner-context-path</artifactId>
-								<artifactId>spring-cloud-contract-stub-runner-moco</artifactId>
-								<artifactId>spring-cloud-contract-stub-runner-moco-contract-jar</artifactId>
+								<artifact>stubborn-contract-stub-runner-boot</artifact>
+								<artifact>stubborn-contract-docker-parent</artifact>
+								<artifact>stubborn-contract-specs</artifact>
+								<artifact>stubborn-contract-tests</artifact>
+								<artifact>stubborn-contract-stub-runner-boot-zookeeper</artifact>
+								<artifact>stubborn-contract-stub-runner-boot-eureka</artifact>
+								<artifact>stubborn-contract-sample-jms</artifact>
+								<artifact>stubborn-contract-stub-runner-kafka</artifact>
+								<artifactId>stubborn-sample-amqp</artifactId>
+								<artifactId>stubborn-stub-runner-integration</artifactId>
+								<artifactId>stubborn-stub-runner-amqp</artifactId>
+								<artifactId>stubborn-sample-integration</artifactId>
+								<artifactId>stubborn-stub-runner-jms</artifactId>
+								<artifactId>stubborn-sample-camel</artifactId>
+								<artifactId>stubborn-stub-runner-stream</artifactId>
+								<artifactId>stubborn-stub-runner-context-path</artifactId>
+								<artifactId>stubborn-stub-runner-moco</artifactId>
+								<artifactId>stubborn-stub-runner-moco-contract-jar</artifactId>
 							</excludeArtifacts>
 						</configuration>
 					</plugin>

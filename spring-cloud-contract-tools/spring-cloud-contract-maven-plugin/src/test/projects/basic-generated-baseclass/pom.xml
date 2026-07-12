@@ -30,8 +30,8 @@
 		<plugins>
 			<!-- tag::convention[] -->
 			<plugin>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-maven-plugin</artifactId>
 				<configuration>
 					<packageWithBaseClasses>hello</packageWithBaseClasses>
 				</configuration>

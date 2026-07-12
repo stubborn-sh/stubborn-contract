@@ -18,7 +18,7 @@
 // tag::class[]
 import java.util.function.Supplier;
 
-import org.springframework.cloud.contract.spec.Contract;
+import sh.stubborn.contract.spec.Contract;
 
 class contract_xml implements Supplier<Contract> {
 

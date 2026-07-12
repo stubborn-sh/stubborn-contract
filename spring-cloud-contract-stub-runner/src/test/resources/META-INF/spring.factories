@@ -1,4 +1,4 @@
-org.springframework.cloud.contract.verifier.dsl.wiremock.WireMockExtensions=\
-org.springframework.cloud.contract.stubrunner.provider.wiremock.TestWireMockExtensions
-org.springframework.cloud.contract.spec.ContractConverter=\
-org.springframework.cloud.contract.stubrunner.TestCustomYamlContractConverter
+sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions=\
+sh.stubborn.contract.stubrunner.provider.wiremock.TestWireMockExtensions
+sh.stubborn.contract.spec.ContractConverter=\
+sh.stubborn.contract.stubrunner.TestCustomYamlContractConverter

@@ -4,15 +4,15 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>spring-cloud-contract-wiremock</artifactId>
+	<artifactId>stubborn-wiremock</artifactId>
 	<packaging>jar</packaging>
-	<name>spring-cloud-contract-wiremock</name>
-	<description>Spring Cloud Contract Wiremock</description>
+	<name>stubborn-contract-wiremock</name>
+	<description>Stubborn Contract Wiremock</description>
 	<repositories>
 		<repository>
 			<id>spring-milestones</id>
@@ -125,8 +125,8 @@
 			<artifactId>spring-cloud-test-support</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

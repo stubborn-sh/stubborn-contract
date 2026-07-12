@@ -19,4 +19,4 @@ spring:
 server:
   port: 0
 debug: true
-logging.level.org.springframework.cloud.contract: debug
+logging.level.sh.stubborn.contract: debug

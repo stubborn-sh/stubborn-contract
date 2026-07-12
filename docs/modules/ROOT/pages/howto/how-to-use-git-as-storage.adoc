@@ -4,7 +4,7 @@
 include::partial$_attributes.adoc[]
 
 In the polyglot world, there are languages that do not use binary storage, as
-Artifactory and Nexus do. Starting from Spring Cloud Contract version 2.0.0, we provide
+Artifactory and Nexus do. Starting from Stubborn Contract version 2.0.0, we provide
 mechanisms to store contracts and stubs in a SCM (Source Control Management) repository. Currently, the
 only supported SCM is Git.
 
@@ -38,7 +38,7 @@ Under the `META-INF` folder:
 * We group applications by `groupId` (such as `com.example`).
 * Each application is represented by its `artifactId` (for example, `beer-api-producer-git`).
 * Next, each application is organized by its version (such as `0.0.1-SNAPSHOT`). Starting
-from Spring Cloud Contract version `2.1.0`, you can specify the versions as follows
+from Stubborn Contract version `2.1.0`, you can specify the versions as follows
 (assuming that your versions follow semantic versioning):
 ** `+` or `latest`: To find the latest version of your stubs (assuming that the snapshots
 are always the latest artifact for a given revision number). That means:
@@ -56,7 +56,7 @@ Finally, there are two folders:
 * `contracts`: The good practice is to store the contracts required by each
 consumer in the folder with the consumer name (such as `beer-api-consumer`). That way, you
 can use the `stubs-per-consumer` feature. Further directory structure is arbitrary.
-* `mappings`: The Maven or Gradle Spring Cloud Contract plugins push
+* `mappings`: The Maven or Gradle Stubborn Contract plugins push
 the stub server mappings in this folder. On the consumer side, Stub Runner scans this folder
 to start stub servers with stub definitions. The folder structure is a copy
 of the one created in the `contracts` subfolder.
@@ -66,7 +66,7 @@ of the one created in the `contracts` subfolder.
 
 To control the type and location of the source of contracts (whether
 binary storage or an SCM repository), you can use the protocol in the URL of
-the repository. Spring Cloud Contract iterates over registered protocol resolvers
+the repository. Stubborn Contract iterates over registered protocol resolvers
 and tries to fetch the contracts (by using a plugin) or stubs (from Stub Runner).
 
 For the SCM functionality, currently, we support the Git repository. To use it,
@@ -84,7 +84,7 @@ git://git@github.com:spring-cloud-samples/spring-cloud-contract-nodejs-contracts
 == Producer
 
 For the producer, to use the SCM (Source Control Management) approach, we can reuse the
-same mechanism we use for external contracts. We route Spring Cloud Contract
+same mechanism we use for external contracts. We route Stubborn Contract
 to use the SCM implementation from the URL that starts with
 the `git://` protocol.
 
@@ -101,7 +101,7 @@ Maven::
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>

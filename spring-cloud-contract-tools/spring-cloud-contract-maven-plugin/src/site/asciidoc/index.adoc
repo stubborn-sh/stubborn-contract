@@ -1,14 +1,14 @@
 :samples_branch: 2.2.x
 
-= Spring Cloud Contract Maven Plugin
+= Stubborn Contract Maven Plugin
 
-Just to make long story short - Spring Cloud Contract Verifier is a tool that enables Consumer Driven Contract (CDC) development of JVM-based applications.
+Just to make long story short - Stubborn Contract Verifier is a tool that enables Consumer Driven Contract (CDC) development of JVM-based applications.
 
  * Stubs mappings to be used by WireMock when doing integration testing on the client code (client tests).
 
  * Acceptance tests used to verify if server-side implementation of the API is compliant with the contract (server tests).
 
-Spring Cloud Contract Verifier moves TDD to the level of software architecture.
+Stubborn Contract Verifier moves TDD to the level of software architecture.
 
 This plugin allows you to:
 
@@ -17,7 +17,7 @@ This plugin allows you to:
 
 == Samples
 
-You can check out the https://github.com/spring-cloud-samples/spring-cloud-contract-samples[Spring Cloud Contract Samples project] for
+You can check out the https://github.com/spring-cloud-samples/spring-cloud-contract-samples[Stubborn Contract Samples project] for
 examples of Maven plugin setup.
 
 - https://github.com/spring-cloud-samples/spring-cloud-contract-samples/blob/{samples_branch}/producer/pom.xml[Producer application with a test dependency added to the plugin]

@@ -6,14 +6,14 @@ include::partial$_attributes.adoc[]
 You can use https://projects.spring.io/spring-restdocs[Spring REST Docs] to generate
 documentation (for example, in Asciidoc format) for an HTTP API with Spring MockMvc or
 WebTestClient. At the same time that you generate documentation for your API, you can also
-generate WireMock stubs by using Spring Cloud Contract WireMock. To do so, write your
+generate WireMock stubs by using Stubborn Contract WireMock. To do so, write your
 normal REST Docs test cases and use `@AutoConfigureRestDocs` to have stubs be
 automatically generated in the REST Docs output directory. The following UML diagram shows
 the REST Docs flow:
 
 [plantuml, rest-docs, png]
 ----
-"API Producer"->"API Producer": Add Spring Cloud Contract (SCC) \nStub Runner dependency
+"API Producer"->"API Producer": Add Stubborn Contract (SCC) \nStub Runner dependency
 "API Producer"->"API Producer": Set up stub jar assembly
 "API Producer"->"API Producer": Write and set up REST Docs tests
 "API Producer"->"Build": Run build
@@ -97,7 +97,7 @@ example shows:
 ====
 [source,java,indent=0]
 ----
-import static org.springframework.cloud.contract.wiremock.restdocs.WireMockRestDocs.verify;
+import static sh.stubborn.contract.wiremock.restdocs.WireMockRestDocs.verify;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -184,12 +184,12 @@ number of different ways, including by using
 `@AutoConfigureWireMock(stubs="classpath:resource.json")`, as described earlier in this
 document.
 
-NOTE:  In Spring Cloud Contract 5.0.x support for Rest Assured in Spring Rest Docs was removed due to https://github.com/spring-projects/spring-restdocs/issues/1000[Rest Assured being incompatible with Groovy 5].
+NOTE:  In Stubborn Contract 5.0.x support for Rest Assured in Spring Rest Docs was removed due to https://github.com/spring-projects/spring-restdocs/issues/1000[Rest Assured being incompatible with Groovy 5].
 
 [[features-rest-docs-contracts]]
 == Generating Contracts with REST Docs
 
-You can also generate Spring Cloud Contract DSL files and documentation with Spring REST
+You can also generate Stubborn Contract DSL files and documentation with Spring REST
 Docs. If you do so in combination with Spring Cloud WireMock, you get both the contracts
 and the stubs.
 
@@ -219,7 +219,7 @@ The contract is called `index.groovy` and might resemble the following example:
 ====
 [source,groovy]
 ----
-import org.springframework.cloud.contract.spec.Contract
+import sh.stubborn.contract.spec.Contract
 
 Contract.make {
     request {

@@ -19,15 +19,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-import org.springframework.cloud.contract.spec.Contract;
-import org.springframework.cloud.contract.verifier.util.ContractVerifierUtil;
+import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
 
 // tag::class[]
 class contract_docs_examples implements Supplier<Collection<Contract>> {
 
-	org.springframework.cloud.contract.spec.Contract httpDsl =
+	sh.stubborn.contract.spec.Contract httpDsl =
 			// tag::http_dsl[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				// Definition of HTTP request part of the contract
 				// (this can be a valid request or invalid depending
 				// on type of contract being specified).
@@ -53,7 +53,7 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::http_dsl[]
 
-	org.springframework.cloud.contract.spec.Contract methodDsl = org.springframework.cloud.contract.spec.Contract
+	sh.stubborn.contract.spec.Contract methodDsl = sh.stubborn.contract.spec.Contract
 		.make(c -> {
 			c.request(r -> {
 				// tag::method[]
@@ -69,9 +69,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 			c.priority(1);
 		});
 
-	org.springframework.cloud.contract.spec.Contract request =
+	sh.stubborn.contract.spec.Contract request =
 			// tag::request[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					// HTTP request method (GET/POST/PUT/DELETE).
 					r.method("GET");
@@ -88,9 +88,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::request[]
 
-	org.springframework.cloud.contract.spec.Contract url =
+	sh.stubborn.contract.spec.Contract url =
 			// tag::url[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					r.method("GET");
 
@@ -106,9 +106,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::url[]
 
-	org.springframework.cloud.contract.spec.Contract urlPaths =
+	sh.stubborn.contract.spec.Contract urlPaths =
 			// tag::urlpath[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					// ...
 					r.method(r.GET());
@@ -154,9 +154,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::urlpath[]
 
-	org.springframework.cloud.contract.spec.Contract headers =
+	sh.stubborn.contract.spec.Contract headers =
 			// tag::headers[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					// ...
 					r.method(r.GET());
@@ -180,9 +180,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::headers[]
 
-	org.springframework.cloud.contract.spec.Contract cookies =
+	sh.stubborn.contract.spec.Contract cookies =
 			// tag::cookies[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					// ...
 					r.method(r.GET());
@@ -206,9 +206,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::cookies[]
 
-	org.springframework.cloud.contract.spec.Contract body =
+	sh.stubborn.contract.spec.Contract body =
 			// tag::body[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					// ...
 					r.method(r.GET());
@@ -227,9 +227,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::body[]
 
-	org.springframework.cloud.contract.spec.Contract bodyAsXml =
+	sh.stubborn.contract.spec.Contract bodyAsXml =
 			// tag::bodyAsXml[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					// ...
 					r.method(r.GET());
@@ -247,9 +247,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::bodyAsXml[]
 
-	org.springframework.cloud.contract.spec.Contract response =
+	sh.stubborn.contract.spec.Contract response =
 			// tag::response[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					// ...
 					r.method(r.GET());
@@ -264,9 +264,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::response[]
 
-	org.springframework.cloud.contract.spec.Contract regex =
+	sh.stubborn.contract.spec.Contract regex =
 			// tag::regex[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					r.method("GET");
 					r.url(r.$(r.consumer(r.regex("\\/[0-9]{2}")), r.producer("/12")));
@@ -284,9 +284,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::regex[]
 
-	org.springframework.cloud.contract.spec.Contract optionals =
+	sh.stubborn.contract.spec.Contract optionals =
 			// tag::optionals[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.priority(1);
 				c.name("optionals");
 				c.request(r -> {
@@ -312,9 +312,9 @@ class contract_docs_examples implements Supplier<Collection<Contract>> {
 
 	// end::optionals[]
 
-	org.springframework.cloud.contract.spec.Contract method =
+	sh.stubborn.contract.spec.Contract method =
 			// tag::methodBuilder[]
-			org.springframework.cloud.contract.spec.Contract.make(c -> {
+			sh.stubborn.contract.spec.Contract.make(c -> {
 				c.request(r -> {
 					r.method("PUT");
 					r.url(r.$(r.consumer(r.regex("^/api/[0-9]{2}$")), r.producer("/api/12")));

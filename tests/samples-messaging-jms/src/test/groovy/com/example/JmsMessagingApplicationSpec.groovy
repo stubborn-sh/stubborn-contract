@@ -28,11 +28,11 @@ import org.junit.jupiter.api.condition.JRE
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.cloud.contract.spec.Contract
-import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier
-import org.springframework.cloud.contract.verifier.messaging.internal.ContractVerifierMessage
-import org.springframework.cloud.contract.verifier.messaging.internal.ContractVerifierMessaging
-import org.springframework.cloud.contract.verifier.messaging.internal.ContractVerifierObjectMapper
+import sh.stubborn.contract.spec.Contract
+import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import org.springframework.jms.core.JmsTemplate
 import org.springframework.jms.core.MessagePostProcessor
 

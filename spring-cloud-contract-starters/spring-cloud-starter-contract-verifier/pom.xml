@@ -4,19 +4,19 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-starters</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-starters</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>spring-cloud-starter-contract-verifier</artifactId>
+	<artifactId>stubborn-starter-verifier</artifactId>
 	<packaging>jar</packaging>
-	<name>Spring Cloud Contract Verifier Starter</name>
-	<description>Spring Cloud Contract Verifier Starter</description>
+	<name>Stubborn Contract Verifier Starter</name>
+	<description>Stubborn Contract Verifier Starter</description>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.rest-assured</groupId>

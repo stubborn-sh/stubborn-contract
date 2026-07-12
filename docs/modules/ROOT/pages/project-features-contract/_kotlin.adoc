@@ -21,7 +21,7 @@ The following example (in both Maven and Gradle) shows how to do so:
 ----
 <plugin>
     <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+    <artifactId>stubborn-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>
@@ -54,7 +54,7 @@ buildscript {
         // ...
     }
 	dependencies {
-		classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:$\{scContractVersion}"
+		classpath "org.springframework.cloud:stubborn-gradle-plugin:$\{scContractVersion}"
 	}
 }
 
@@ -70,6 +70,6 @@ dependencies {
 ====
 
 IMPORTANT: Remember that, inside the Kotlin Script file, you have to provide the fully qualified name to the `ContractDSL` class.
-Generally you would use its contract function as follows: `org.springframework.cloud.contract.spec.ContractDsl.contract { ... }`.
-You can also provide an import to the `contract` function (`import org.springframework.cloud.contract.spec.ContractDsl.Companion.contract`) and then call `contract { ... }`.
+Generally you would use its contract function as follows: `sh.stubborn.contract.spec.ContractDsl.contract { ... }`.
+You can also provide an import to the `contract` function (`import sh.stubborn.contract.spec.ContractDsl.Companion.contract`) and then call `contract { ... }`.
 

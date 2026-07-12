@@ -1,2 +1,2 @@
-org.springframework.cloud.contract.spec.ContractConverter=\
-org.springframework.cloud.contract.spec.internal.KotlinContractConverter
+sh.stubborn.contract.spec.ContractConverter=\
+sh.stubborn.contract.spec.internal.KotlinContractConverter

@@ -29,7 +29,7 @@ my_contracts_dir\
 ----
 ====
 
-Such a tree causes Spring Cloud Contract Verifier to generate WireMock's scenario with a
+Such a tree causes Stubborn Contract Verifier to generate WireMock's scenario with a
 name of `scenario1` and the three following steps:
 
 . `login`, marked as `Started` pointing to...

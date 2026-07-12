@@ -1,2 +1,2 @@
-org.springframework.cloud.contract.spec.internal.DslPropertyConverter=\
-org.springframework.cloud.contract.spec.internal.GroovyDslPropertyConverter
+sh.stubborn.contract.spec.internal.DslPropertyConverter=\
+sh.stubborn.contract.spec.internal.GroovyDslPropertyConverter

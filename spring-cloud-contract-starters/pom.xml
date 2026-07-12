@@ -5,17 +5,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>spring-cloud-contract-starters</artifactId>
+	<artifactId>stubborn-starters</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Spring Cloud Contract Starters</name>
-	<description>Spring Cloud Contract Starters</description>
+	<name>Stubborn Contract Starters</name>
+	<description>Stubborn Contract Starters</description>
 
 	<modules>
 		<module>spring-cloud-starter-contract-stub-runner</module>

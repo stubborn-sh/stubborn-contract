@@ -8,10 +8,10 @@ In this section, we show how to customize the way you work with https://wiremock
 [[customization-wiremock-extension]]
 == Registering Your Own WireMock Extension
 
-WireMock lets you register custom extensions. By default, Spring Cloud Contract registers
+WireMock lets you register custom extensions. By default, Stubborn Contract registers
 the transformer, which lets you reference a request from a response. If you want to
 provide your own extensions, you can register an implementation of the
-`org.springframework.cloud.contract.verifier.dsl.wiremock.WireMockExtensions` interface.
+`sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions` interface.
 Since we use the `spring.factories` extension approach, you can create an entry similar to
 the following in the `META-INF/spring.factories` file:
 
@@ -35,7 +35,7 @@ requires it, override the `applyGlobally()` method and set it to `false` .
 == Customization of WireMock via Metadata
 
 With version 3.0.0 you're able to set `metadata` in your contracts. If you set an entry with key equal to `wiremock` and the value
-will be a valid WireMock's `StubMapping` JSON / map or an actual `StubMapping` object, Spring Cloud Contract will patch the generated
+will be a valid WireMock's `StubMapping` JSON / map or an actual `StubMapping` object, Stubborn Contract will patch the generated
 stub with part of your customization. Let's look at the following example
 
 {samples_code}/standalone/dsl/http-server/src/test/resources/contracts/yml/fraud/shouldReturnFraudStats.yml[Click here to see the code]
@@ -70,8 +70,8 @@ are the whole request and body and headers of the response.
 == Customization of WireMock via Metadata and a Custom Processor
 
 If you want to apply a custom WireMock `StubMapping` post processing, you can under `META-INF/spring.factories` under the
-`org.springframework.cloud.contract.verifier.converter.StubProcessor` key register your own implementation of a stub processor. For your convenience we've created an interface called `org.springframework.cloud.contract.verifier.wiremock.WireMockStubPostProcessor` that is dedicated to WireMock.
+`sh.stubborn.contract.verifier.converter.StubProcessor` key register your own implementation of a stub processor. For your convenience we've created an interface called `sh.stubborn.contract.verifier.wiremock.WireMockStubPostProcessor` that is dedicated to WireMock.
 
-You'll have to implement methods to inform Spring Cloud Contract whether the post processor is applicable for a given contract and how should the post processing look like.
+You'll have to implement methods to inform Stubborn Contract whether the post processor is applicable for a given contract and how should the post processing look like.
 
 IMPORTANT: On the consumer side, when using Stub Runner, remember to pass the custom `HttpServerStubConfigurer` implementation (e.g. the one that extends `WireMockHttpServerStubConfigurer`) where you'll register a custom extension of your choosing. If you don't do so, even you have a custom WireMock extension on the classpath, WireMock will not notice it, won't apply it and will print out a warning statement that the given extension was not found.

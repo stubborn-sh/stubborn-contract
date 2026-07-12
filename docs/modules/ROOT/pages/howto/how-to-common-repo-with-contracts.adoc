@@ -15,7 +15,7 @@ with your local changes.
 Assume that we have a producer with coordinates of `com.example:server` and three
 consumers: `client1`, `client2`, and `client3`. Then, in the repository with common
 contracts, you could have the following setup (which you can check out in the
-https://github.com/spring-cloud/spring-cloud-contract/[Spring Cloud Contract's repository] `samples/standalone/contracts` subfolder).
+https://github.com/spring-cloud/spring-cloud-contract/[Stubborn Contract's repository] `samples/standalone/contracts` subfolder).
 The following listing shows such a structure:
 
 [source,bash,indent=0]
@@ -47,7 +47,7 @@ The following example shows a `pom.xml` file inside the `server` folder:
 
 {samples_code}/standalone/dsl/contracts/com/example/server/pom.xml[Click here to see the code]
 
-There are no dependencies other than the Spring Cloud Contract Maven Plugin.
+There are no dependencies other than the Stubborn Contract Maven Plugin.
 Those `pom.xml` files are necessary for the consumer side to run `mvn clean install -DskipTests` to locally install
 the stubs of the producer project.
 
@@ -63,7 +63,7 @@ shows such a setup:
 [[how-to-workflow]]
 == Workflow
 
-The workflow assumes that Spring Cloud Contract is set up both on the consumer and on the
+The workflow assumes that Stubborn Contract is set up both on the consumer and on the
 producer side. There is also the proper plugin setup in the common repository with
 contracts. The CI jobs are set for a common repository to build an artifact of all
 contracts and upload it to Nexus or Artifactory. The following image shows the UML for this
@@ -116,12 +116,12 @@ TIP: You need to have https://maven.apache.org/download.cgi[Maven installed loca
 [[how-to-workflow-producer]]
 == Producer
 
-As a producer, you can alter the Spring Cloud Contract Verifier to provide the URL and
+As a producer, you can alter the Stubborn Contract Verifier to provide the URL and
 the dependency of the JAR that contains the contracts, as follows:
 
 [source,xml,indent=0]
 ----
-include::{tools_path}/spring-cloud-contract-maven-plugin/src/test/projects/basic-remote-contracts/pom-with-repo.xml[tags=remote_config,indent=0]
+include::{tools_path}/stubborn-maven-plugin/src/test/projects/basic-remote-contracts/pom-with-repo.xml[tags=remote_config,indent=0]
 ----
 
 With this setup, the JAR with a `groupid` of `com.example.standalone` and an `artifactid` of
@@ -145,16 +145,16 @@ contracts are placed in the folder per topic.
 
 To make it possible to work on the producer side, we should specify an inclusion pattern for
 filtering common repository jar files by messaging topics we are interested in. The
-`includedFiles` property of the Maven Spring Cloud Contract plugin
+`includedFiles` property of the Maven Stubborn Contract plugin
 lets us do so. Also, `contractsPath` need to be specified, since the default path would be
 the common repository `groupid/artifactid`. The following example shows a Maven
-plugin for Spring Cloud Contract:
+plugin for Stubborn Contract:
 
 [source,xml,indent=0]
 ----
 <plugin>
    <groupId>org.springframework.cloud</groupId>
-   <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+   <artifactId>stubborn-maven-plugin</artifactId>
    <version>${spring-cloud-contract.version}</version>
    <configuration>
       <contractsMode>REMOTE</contractsMode>

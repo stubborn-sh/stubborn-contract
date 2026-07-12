@@ -1,4 +1,4 @@
-=== Spring Cloud Contract Specification
+=== Stubborn Contract Specification
 
 This module contains the specifications describing contracts. Currently we have only
 one way for contract description which is the Groovy DSL.

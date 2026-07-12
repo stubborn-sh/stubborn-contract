@@ -14,15 +14,15 @@ To use consumer-driven contracts with the contracts held in an external reposito
 * Contains all the contract definitions for each producer.
 * Can package the contract definitions in a JAR.
 * For each contract producer, contains a way (for example, `pom.xml`) to install stubs
-locally through the Spring Cloud Contract Plugin (SCC Plugin).
+locally through the Stubborn Contract Plugin (SCC Plugin).
 
 For more information, see the xref:../howto/how-to-common-repo-with-contracts.adoc[How To section],
 where we describe how to set up such a repository.
 For an example of such a project, see {samples_code}/beer_contracts[this sample].
 
-You also need consumer code that has Spring Cloud Contract Stub Runner set up.
+You also need consumer code that has Stubborn Contract Stub Runner set up.
 For an example of such a project, see {samples_code}/consumer[this sample].
-You also need producer code that has Spring Cloud Contract set up, together with a plugin.
+You also need producer code that has Stubborn Contract set up, together with a plugin.
 For an example of such a project, see {samples_code}/producer_with_external_contracts[this sample].
 The stub storage is Nexus or Artifactory.
 
@@ -61,7 +61,7 @@ For example, for a producer named `producer` and a consumer named `consumer`, th
 $ cd src/main/resource/contracts/producer
 $ ./mvnw clean install
 ----
-. Sets up Spring Cloud Contract (SCC) Stub Runner in the consumer tests, to:
+. Sets up Stubborn Contract (SCC) Stub Runner in the consumer tests, to:
 * Fetch the producer stubs from local storage.
 * Work in the stubs-per-consumer mode (this enables consumer driven contracts mode).
 +
@@ -120,7 +120,7 @@ Maven::
 ----
 <plugin>
 	<groupId>org.springframework.cloud</groupId>
-	<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+	<artifactId>stubborn-maven-plugin</artifactId>
 	<version>${spring-cloud-contract.version}</version>
 	<extensions>true</extensions>
 	<configuration>
@@ -189,7 +189,7 @@ Maven::
 ----
 <plugin>
 	<groupId>org.springframework.cloud</groupId>
-	<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+	<artifactId>stubborn-maven-plugin</artifactId>
 	<version>${spring-cloud-contract.version}</version>
 	<extensions>true</extensions>
 	<configuration>

@@ -10,22 +10,22 @@
 	</properties>
 
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-docker-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-docker-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>spring-cloud-contract-docker</artifactId>
+	<artifactId>stubborn-docker</artifactId>
 	<packaging>pom</packaging>
-	<version>5.0.4-SNAPSHOT</version>
-	<name>Spring Cloud Contract Docker</name>
-	<description>Spring Cloud Contract Docker</description>
+	<version>0.1.0-SNAPSHOT</version>
+	<name>Stubborn Contract Docker</name>
+	<description>Stubborn Contract Docker</description>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-dependencies</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-dependencies</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 			<scope>runtime</scope>
@@ -47,80 +47,80 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-starter-verifier</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-gradle-plugin</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-gradle-plugin</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-wiremock</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-wiremock</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-spec</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-spec</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-tools</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-tools</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-spec-java</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-spec-java</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-spec-groovy</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-spec-groovy</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-spec-kotlin</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-spec-kotlin</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-converters</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-converters</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-stub-runner</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-stub-runner-boot</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner-boot</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-starter-stub-runner</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-contract-stub-runner-jetty</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-maven-plugin</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -201,7 +201,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<repository>${docker.registry.organization}/spring-cloud-contract
+					<repository>${docker.registry.organization}/stubborn-contract
 					</repository>
 					<tag>${project.version}</tag>
 					<username>${env.DOCKER_HUB_USERNAME}</username>

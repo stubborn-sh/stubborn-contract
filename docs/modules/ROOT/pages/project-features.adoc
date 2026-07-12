@@ -1,10 +1,10 @@
 [[features]]
-= Spring Cloud Contract Features
+= Stubborn Contract Features
 
 include::partial$_attributes.adoc[]
 
 This section dives into the details of {project-full-name}. Here you can learn about the key
 features that you may want to use and customize. If you have not already done so, you
 might want to read the "xref:getting-started.adoc[Getting Started]" and
-"xref:using.adoc[Using Spring Cloud Contract]" sections, so that you have a good grounding in the
+"xref:using.adoc[Using Stubborn Contract]" sections, so that you have a good grounding in the
 basics.

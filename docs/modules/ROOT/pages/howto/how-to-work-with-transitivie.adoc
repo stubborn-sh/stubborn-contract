@@ -3,7 +3,7 @@
 
 include::partial$_attributes.adoc[]
 
-The Spring Cloud Contract plugins add the tasks that create the stubs jar for you. One
+The Stubborn Contract plugins add the tasks that create the stubs jar for you. One
 problem that arises is that, when reusing the stubs, you can mistakenly import all of
 that stub's dependencies. When building a Maven artifact, even though you have a couple
 of different jars, all of them share one `pom.xml` file, as the following listing shows:

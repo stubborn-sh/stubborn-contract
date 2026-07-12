@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.springframework.cloud.contract.spec.Contract;
-import org.springframework.cloud.contract.spec.internal.DslProperty;
-import org.springframework.cloud.contract.spec.internal.Request;
-import org.springframework.cloud.contract.verifier.util.ContractVerifierUtil;
+import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.DslProperty;
+import sh.stubborn.contract.spec.internal.Request;
+import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
 
 class contract_multipart implements Supplier<Collection<Contract>> {
 

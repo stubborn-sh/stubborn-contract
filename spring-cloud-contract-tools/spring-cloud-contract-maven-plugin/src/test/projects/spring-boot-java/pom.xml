@@ -50,8 +50,8 @@
 		<!-- verifier test dependencies-->
 		<!-- tag::dependencies[] -->
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-contract-verifier</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-starter-verifier</artifactId>
 			<version>${it-plugin.version}</version>
 			<scope>test</scope>
 		</dependency>
@@ -72,8 +72,8 @@
 			</plugin>
 			<!-- tag::plugin[] -->
 			<plugin>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-maven-plugin</artifactId>
 				<version>${spring-cloud-verifier-plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>

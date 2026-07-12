@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
 	request {
 		method """PUT"""
 		url """/fraudcheck"""

@@ -1,20 +1,20 @@
 = Usage
 
-== Converting Spring Cloud Contract DSL into WireMock stub mappings
+== Converting Stubborn Contract DSL into WireMock stub mappings
 
-   mvn org.springframework.cloud:spring-cloud-contract-maven-plugin:convert
+   mvn org.springframework.cloud:stubborn-maven-plugin:convert
 
 or shortly footnoteref:[prefix,Additional configuration inside `~/.m2/settings.xml` is required: `<pluginGroups><pluginGroup>org.springframework.cloud</pluginGroup></pluginGroups>`.]
 
     mvn spring-cloud-contract:convert
 
-For more information please go to the Spring Cloud Contract Wiki or Plugin Documentation Site.
+For more information please go to the Stubborn Contract Wiki or Plugin Documentation Site.
 
-== Spring Cloud Contract Stub Runner
+== Stubborn Contract Stub Runner
 
 Run stubs mappings from current directory:
 
-    mvn org.springframework.cloud:spring-cloud-contract-maven-plugin:run
+    mvn org.springframework.cloud:stubborn-maven-plugin:run
 
 or shortly footnoteref:[prefix]
 

@@ -5,17 +5,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.springframework.cloud</groupId>
-		<artifactId>spring-cloud-contract-parent</artifactId>
-		<version>5.0.4-SNAPSHOT</version>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>spring-cloud-contract-tests</artifactId>
+	<artifactId>stubborn-tests</artifactId>
 	<packaging>pom</packaging>
 
-	<name>Spring Cloud Contract Tests</name>
-	<description>Spring Cloud Contract Tests</description>
+	<name>Stubborn Contract Tests</name>
+	<description>Stubborn Contract Tests</description>
 
 	<dependencyManagement>
 		<dependencies>
@@ -61,14 +61,14 @@
 				<module>samples-messaging-integration</module>
 				<module>samples-messaging-amqp</module>
 				<module>samples-messaging-jms</module>
-				<module>spring-cloud-contract-stub-runner-boot-eureka</module>
-				<module>spring-cloud-contract-stub-runner-boot-zookeeper</module>
-				<module>spring-cloud-contract-stub-runner-context-path</module>
-				<module>spring-cloud-contract-stub-runner-integration</module>
-				<module>spring-cloud-contract-stub-runner-stream</module>
-				<module>spring-cloud-contract-stub-runner-amqp</module>
-				<module>spring-cloud-contract-stub-runner-jms</module>
-				<module>spring-cloud-contract-stub-runner-kafka</module>
+				<module>stubborn-contract-stub-runner-boot-eureka</module>
+				<module>stubborn-contract-stub-runner-boot-zookeeper</module>
+				<module>stubborn-contract-stub-runner-context-path</module>
+				<module>stubborn-contract-stub-runner-integration</module>
+				<module>stubborn-contract-stub-runner-stream</module>
+				<module>stubborn-contract-stub-runner-amqp</module>
+				<module>stubborn-contract-stub-runner-jms</module>
+				<module>stubborn-contract-stub-runner-kafka</module>
 			</modules>
 		</profile>
 		<profile>
@@ -83,16 +83,16 @@
 				<module>samples-messaging-integration</module>
 				<module>samples-messaging-amqp</module>
 				<module>samples-messaging-jms</module>
-				<module>spring-cloud-contract-stub-runner-boot-eureka</module>
-				<module>spring-cloud-contract-stub-runner-boot-zookeeper</module>
-				<module>spring-cloud-contract-stub-runner-context-path</module>
-				<module>spring-cloud-contract-stub-runner-moco-contract-jar</module>
-				<module>spring-cloud-contract-stub-runner-moco</module>
-				<module>spring-cloud-contract-stub-runner-integration</module>
-				<module>spring-cloud-contract-stub-runner-stream</module>
-				<module>spring-cloud-contract-stub-runner-amqp</module>
-				<module>spring-cloud-contract-stub-runner-jms</module>
-				<module>spring-cloud-contract-stub-runner-kafka</module>
+				<module>stubborn-contract-stub-runner-boot-eureka</module>
+				<module>stubborn-contract-stub-runner-boot-zookeeper</module>
+				<module>stubborn-contract-stub-runner-context-path</module>
+				<module>stubborn-contract-stub-runner-moco-contract-jar</module>
+				<module>stubborn-contract-stub-runner-moco</module>
+				<module>stubborn-contract-stub-runner-integration</module>
+				<module>stubborn-contract-stub-runner-stream</module>
+				<module>stubborn-contract-stub-runner-amqp</module>
+				<module>stubborn-contract-stub-runner-jms</module>
+				<module>stubborn-contract-stub-runner-kafka</module>
 			</modules>
 		</profile>
 	</profiles>

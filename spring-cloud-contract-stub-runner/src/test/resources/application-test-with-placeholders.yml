@@ -4,7 +4,7 @@ spring.cloud.contract.stubrunner:
   repositoryRoot: classpath:m2repo/repository/
   ids:
     - ${some.property1}
-    - 'org.springframework.cloud.contract.verifier.stubs:${provider.stub.artifact.id}'
+    - 'sh.stubborn.contract.verifier.stubs:${provider.stub.artifact.id}'
   stubs-mode: ${some.stubsmode:remote}
   min-port: ${some.minport:1000}
   max-port: ${some.maxport:20000}
