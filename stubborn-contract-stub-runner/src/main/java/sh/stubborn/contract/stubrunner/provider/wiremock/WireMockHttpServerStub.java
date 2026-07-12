@@ -49,6 +49,7 @@ import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsEscapeHelper;
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsJsonPathHelper;
 import sh.stubborn.contract.verifier.dsl.wiremock.DefaultResponseTransformer;
 import sh.stubborn.contract.verifier.dsl.wiremock.SpringCloudContractRequestMatcher;
+import sh.stubborn.contract.verifier.dsl.wiremock.SpringCloudContractRequestMatcherCompat;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions;
 import sh.stubborn.contract.wiremock.WireMockSpring;
 import wiremock.com.github.jknack.handlebars.Helper;
@@ -95,7 +96,8 @@ public class WireMockHttpServerStub implements HttpServerStub {
 			}
 		}
 		else {
-			extensions.addAll(Arrays.asList(new DefaultResponseTransformer(), new SpringCloudContractRequestMatcher()));
+			extensions.addAll(Arrays.asList(new DefaultResponseTransformer(), new SpringCloudContractRequestMatcher(),
+					new SpringCloudContractRequestMatcherCompat()));
 		}
 		return extensions.toArray(new Extension[extensions.size()]);
 	}
