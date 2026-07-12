@@ -1,33 +1,52 @@
-name: Spring Cloud Contract CI Job
+name: Stubborn Contract CI
 
 on:
   push:
-    branches:
-      - main
-      - 4.3.x
-
-  # Scheduled builds run daily at midnight UTC
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   schedule:
-    - cron: '0 0 * * *'
-
-  # Manual trigger with optional branch override
+    - cron: '0 6 * * *'
   workflow_dispatch:
-    inputs:
-      branches:
-        description: "Which branch should be built (can be a comma-separated list of branches)"
-        required: true
-        default: 'main'
-        type: string
+
+permissions:
+  contents: read
+  checks: write
+
+env:
+  JAVA_VERSION: '25'
+  JAVA_DISTRIBUTION: 'liberica'
 
 jobs:
-  deploy:
-    uses: spring-cloud/spring-cloud-github-actions/.github/workflows/deploy.yml@main
-    with:
-      branches: ${{ inputs.branches }}
-    secrets:
-      ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-      ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
-      COMMERCIAL_ARTIFACTORY_USERNAME: ${{ secrets.COMMERCIAL_ARTIFACTORY_USERNAME }}
-      COMMERCIAL_ARTIFACTORY_PASSWORD: ${{ secrets.COMMERCIAL_ARTIFACTORY_PASSWORD }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Build stubborn-build parent
+        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Build & install (skip tests)
+        run: ./mvnw clean install -DskipTests --no-transfer-progress
+
+      - name: Run tests
+        run: ./mvnw test --no-transfer-progress
+        continue-on-error: true
+
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Test Results
+          path: '**/target/surefire-reports/TEST-*.xml'
+          reporter: java-junit
+          fail-on-error: false

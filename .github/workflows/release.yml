@@ -1,0 +1,107 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 0.1.0)'
+        required: true
+      next-snapshot:
+        description: 'Next SNAPSHOT version (e.g. 0.2.0-SNAPSHOT)'
+        required: true
+        default: '0.2.0-SNAPSHOT'
+
+permissions:
+  contents: write
+
+env:
+  JAVA_VERSION: '25'
+  JAVA_DISTRIBUTION: 'liberica'
+
+jobs:
+  release:
+    name: Release to Maven Central
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Validate version format
+        run: |
+          VERSION="${{ inputs.version }}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Invalid version format: $VERSION (expected e.g. 0.1.0 or 0.1.0-RC1)"
+            exit 1
+          fi
+
+      - name: Set release version
+        run: |
+          ./mvnw versions:set -DnewVersion=${{ inputs.version }} \
+            -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress
+          # also bump stubborn-build (not a reactor module)
+          ./mvnw versions:set -DnewVersion=${{ inputs.version }} \
+            -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress \
+            -f stubborn-build/pom.xml
+
+      - name: Build stubborn-build parent
+        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Build & test
+        run: ./mvnw clean install --no-transfer-progress
+
+      - name: Deploy stubborn-build to Maven Central
+        run: ./mvnw deploy -Ppublish,release -DskipTests --no-transfer-progress -f stubborn-build/pom.xml
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Deploy all modules to Maven Central
+        run: ./mvnw deploy -Ppublish,release -DskipTests --no-transfer-progress
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Tag release & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Release ${{ inputs.version }}"
+          git tag "v${{ inputs.version }}"
+          git push origin main "v${{ inputs.version }}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ inputs.version }}" \
+            --title "v${{ inputs.version }}" \
+            --generate-notes
+
+      - name: Set next SNAPSHOT version
+        run: |
+          ./mvnw versions:set -DnewVersion=${{ inputs.next-snapshot }} \
+            -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress
+          ./mvnw versions:set -DnewVersion=${{ inputs.next-snapshot }} \
+            -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress \
+            -f stubborn-build/pom.xml
+          git add -A
+          git commit -m "Back to ${{ inputs.next-snapshot }}"
+          git push origin main

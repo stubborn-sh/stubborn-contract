@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!--
+	  Build parent for all Stubborn projects.
+	  Currently delegates build tooling (checkstyle, javadoc, flatten) to
+	  spring-cloud-build:5.0.2. The plan is to extract those settings here
+	  and eventually make this a standalone repo published to Maven Central.
+	-->
+	<parent>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-build</artifactId>
+		<version>5.0.2</version>
+		<relativePath/>
+	</parent>
+
+	<groupId>sh.stubborn</groupId>
+	<artifactId>stubborn-build</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>Stubborn Build</name>
+	<description>Build parent for Stubborn projects</description>
+
+	<url>https://github.com/stubborn-sh/stubborn-contract</url>
+
+	<inceptionYear>2024</inceptionYear>
+
+	<organization>
+		<name>Stubborn</name>
+		<url>https://stubborn.sh/</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:https://github.com/stubborn-sh/stubborn-contract.git</connection>
+		<developerConnection>scm:git:git@github.com:stubborn-sh/stubborn-contract.git</developerConnection>
+		<url>https://github.com/stubborn-sh/stubborn-contract</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>marcingrzejszczak</id>
+			<name>Marcin Grzejszczak</name>
+			<email>marcin.grzejszczak@gmail.com</email>
+		</developer>
+	</developers>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/stubborn-sh/stubborn-contract/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>GitHub Actions</system>
+		<url>https://github.com/stubborn-sh/stubborn-contract/actions</url>
+	</ciManagement>
+
+	<properties>
+		<central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
+		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+	</properties>
+
+	<!-- Override spring-cloud-build's distributionManagement (repo.spring.io) -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>central</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>central</id>
+			<url>https://central.sonatype.com/</url>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.sonatype.central</groupId>
+					<artifactId>central-publishing-maven-plugin</artifactId>
+					<version>${central-publishing-maven-plugin.version}</version>
+					<extensions>true</extensions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>${maven-gpg-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<profiles>
+		<!--
+		  Snapshot + release publishing to Maven Central Portal.
+		  Use for both SNAPSHOT and release deployments.
+		  For releases, combine with the 'release' profile to activate GPG signing.
+
+		  Usage:
+		    Snapshots: ./mvnw deploy -Ppublish -DskipTests
+		    Releases:  ./mvnw deploy -Ppublish,release -DskipTests
+		-->
+		<profile>
+			<id>publish</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+							<deploymentName>${project.artifactId}-${project.version}</deploymentName>
+							<autoPublish>true</autoPublish>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- GPG signing — combine with 'publish' profile for releases -->
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<gpgArguments>
+								<arg>--pinentry-mode</arg>
+								<arg>loopback</arg>
+							</gpgArguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

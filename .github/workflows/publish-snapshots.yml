@@ -1,0 +1,58 @@
+name: Publish Snapshots
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '25'
+  JAVA_DISTRIBUTION: 'liberica'
+
+jobs:
+  publish:
+    name: Publish Snapshots to Maven Central
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+
+      - name: Verify version is SNAPSHOT
+        run: |
+          VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          if [[ ! "$VERSION" == *-SNAPSHOT ]]; then
+            echo "::error::Version $VERSION is not a SNAPSHOT — skipping snapshot publish"
+            exit 1
+          fi
+          echo "Publishing snapshot: $VERSION"
+
+      - name: Build stubborn-build parent
+        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Build & install (skip tests)
+        run: ./mvnw clean install -DskipTests --no-transfer-progress
+
+      - name: Deploy stubborn-build to Maven Central
+        run: ./mvnw deploy -Ppublish -DskipTests --no-transfer-progress -f stubborn-build/pom.xml
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+
+      - name: Deploy all modules to Maven Central
+        run: ./mvnw deploy -Ppublish -DskipTests --no-transfer-progress
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}

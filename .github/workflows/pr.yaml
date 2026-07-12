@@ -2,11 +2,42 @@ name: PR
 
 on:
   pull_request:
-    branches: [ main, 4.3.x ]
+    branches: [ main ]
+
+permissions:
+  contents: read
+  checks: write
+
+env:
+  JAVA_VERSION: '25'
+  JAVA_DISTRIBUTION: 'liberica'
 
 jobs:
   build:
-    uses: spring-cloud/spring-cloud-github-actions/.github/workflows/pr.yml@main
-    with:
-      custom_build_command: |
-        ./mvnw clean install -B -U -Pspring,integration,docs
+    name: Build & Verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Build stubborn-build parent
+        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Build & test
+        run: ./mvnw clean install --no-transfer-progress
+
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: PR Test Results
+          path: '**/target/surefire-reports/TEST-*.xml'
+          reporter: java-junit
+          fail-on-error: false
