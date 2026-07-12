@@ -32,7 +32,7 @@ jobs:
 
       - name: Verify version is SNAPSHOT
         run: |
-          VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION=$(grep -m1 '<version>' pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
           if [[ ! "$VERSION" == *-SNAPSHOT ]]; then
             echo "::error::Version $VERSION is not a SNAPSHOT — skipping snapshot publish"
             exit 1
@@ -41,6 +41,9 @@ jobs:
 
       - name: Build stubborn-build parent
         run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Install BOM (stubborn-contract-dependencies)
+        run: ./mvnw install -pl stubborn-contract-dependencies -DskipTests --no-transfer-progress
 
       - name: Build & install (skip tests)
         run: ./mvnw clean install -DskipTests --no-transfer-progress

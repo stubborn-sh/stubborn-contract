@@ -30,6 +30,9 @@ jobs:
       - name: Build stubborn-build parent
         run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
 
+      - name: Install BOM (stubborn-contract-dependencies)
+        run: ./mvnw install -pl stubborn-contract-dependencies -DskipTests --no-transfer-progress
+
       - name: Build & test
         run: ./mvnw clean install --no-transfer-progress
 
