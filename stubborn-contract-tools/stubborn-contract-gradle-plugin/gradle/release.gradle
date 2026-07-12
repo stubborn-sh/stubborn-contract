@@ -64,7 +64,7 @@ if (isReleaseToCentral) {
 			springCloudContractPlugin {
 				displayName = 'Spring Cloud Contract Gradle Plugin'
 				description = 'Spring Cloud Contract Gradle Plugin'
-				tags.set(['spring', 'spring-framework', 'spring-cloud', 'spring-cloud-contract'])
+				tags.set(['spring', 'spring-framework', 'spring-cloud', 'stubborn-contract'])
 			}
 		}
 	}

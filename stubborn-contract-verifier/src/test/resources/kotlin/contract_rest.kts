@@ -15,8 +15,8 @@
  */
 
 // tag::class[]
-import org.springframework.cloud.contract.spec.ContractDsl.Companion.contract
-import org.springframework.cloud.contract.spec.withQueryParameters
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
+import sh.stubborn.contract.spec.withQueryParameters
 
 contract {
 	name = "some name"

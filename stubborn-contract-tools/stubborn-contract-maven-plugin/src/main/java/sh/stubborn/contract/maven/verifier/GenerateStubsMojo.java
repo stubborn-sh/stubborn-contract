@@ -118,7 +118,7 @@ public class GenerateStubsMojo extends AbstractMojo {
 		}
 		else if (stubsOutputMissing(this.stubsDirectory) && this.failOnNoContracts) {
 			throw new MojoExecutionException("Stubs could not be found: [" + this.stubsDirectory.getAbsolutePath()
-					+ "] .\nPlease make sure that spring-cloud-contract:convert was invoked");
+					+ "] .\nPlease make sure that stubborn-contract:convert was invoked");
 		}
 		File stubsJarFile = getStubJarDestFile();
 		if (this.incrementalContractStubsJar && !inputFilesChangeDetected(stubsDirectory, mojoExecution, session)) {

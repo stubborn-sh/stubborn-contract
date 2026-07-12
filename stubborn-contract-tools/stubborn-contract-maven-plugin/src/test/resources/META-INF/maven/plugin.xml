@@ -6,9 +6,9 @@
   <name>Spring Cloud Contract Maven Plugin</name>
   <description>Spring Cloud Contract Maven Plugin</description>
   <groupId>org.springframework.cloud</groupId>
-  <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+  <artifactId>stubborn-maven-plugin</artifactId>
   <version>5.0.1-SNAPSHOT</version>
-  <goalPrefix>spring-cloud-contract</goalPrefix>
+  <goalPrefix>stubborn-contract</goalPrefix>
   <isolatedRealm>false</isolatedRealm>
   <inheritedByDefault>true</inheritedByDefault>
   <requiredJavaVersion>17</requiredJavaVersion>
@@ -17,7 +17,7 @@
     <mojo>
       <goal>convert</goal>
       <description>Convert Spring Cloud Contract Verifier contracts into stubs mappings. 
-This goal allows you to generate `stubs-jar` or execute `spring-cloud-contract:run` with generated mappings.
+This goal allows you to generate `stubs-jar` or execute `stubborn-contract:run` with generated mappings.
 </description>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>false</requiresProject>
@@ -666,8 +666,8 @@ This parameter is only used when goal is executed outside of maven project.
     </mojo>
     <mojo>
       <goal>help</goal>
-      <description>Display help information on spring-cloud-contract-maven-plugin. 
-Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to display parameter details.</description>
+      <description>Display help information on stubborn-maven-plugin. 
+Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to display parameter details.</description>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>false</requiresProject>
       <requiresReports>false</requiresReports>
@@ -951,19 +951,19 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
   <dependencies>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-verifier</artifactId>
+      <artifactId>stubborn-verifier</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-spec</artifactId>
+      <artifactId>stubborn-spec</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-spec-java</artifactId>
+      <artifactId>stubborn-spec-java</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
@@ -975,7 +975,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-spec-groovy</artifactId>
+      <artifactId>stubborn-spec-groovy</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
@@ -1311,7 +1311,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-converters</artifactId>
+      <artifactId>stubborn-converters</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
@@ -1371,7 +1371,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-stub-runner</artifactId>
+      <artifactId>stubborn-stub-runner</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
@@ -1443,7 +1443,7 @@ Call mvn spring-cloud-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to di
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-wiremock</artifactId>
+      <artifactId>stubborn-wiremock</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>

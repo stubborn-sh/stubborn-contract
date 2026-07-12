@@ -16,10 +16,10 @@
 
 package contracts
 
-import org.springframework.cloud.contract.spec.ContractDsl.Companion.contract
-import org.springframework.cloud.contract.spec.withQueryParameters
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
+import sh.stubborn.contract.spec.withQueryParameters
 
-var httpDsl: org.springframework.cloud.contract.spec.Contract =
+var httpDsl: sh.stubborn.contract.spec.Contract =
         // tag::http_dsl[]
         contract {
             // Definition of HTTP request part of the contract
@@ -47,7 +47,7 @@ var httpDsl: org.springframework.cloud.contract.spec.Contract =
         // end::http_dsl[]
 
 
-var request: org.springframework.cloud.contract.spec.Contract =
+var request: sh.stubborn.contract.spec.Contract =
         // tag::request[]
         contract {
             request {
@@ -65,7 +65,7 @@ var request: org.springframework.cloud.contract.spec.Contract =
         // end::request[]
 
 
-var url: org.springframework.cloud.contract.spec.Contract =
+var url: sh.stubborn.contract.spec.Contract =
         // tag::url[]
         contract {
             request {
@@ -81,7 +81,7 @@ var url: org.springframework.cloud.contract.spec.Contract =
         }
         // end::url[]
 
-var urlPaths: org.springframework.cloud.contract.spec.Contract =
+var urlPaths: sh.stubborn.contract.spec.Contract =
         // tag::urlpath[]
         contract {
             request {
@@ -123,7 +123,7 @@ var urlPaths: org.springframework.cloud.contract.spec.Contract =
         }
         // end::urlpath[]
 
-var headers: org.springframework.cloud.contract.spec.Contract =
+var headers: sh.stubborn.contract.spec.Contract =
         // tag::headers[]
         contract {
             request {
@@ -147,7 +147,7 @@ var headers: org.springframework.cloud.contract.spec.Contract =
         }
         // end::headers[]
 
-var cookies: org.springframework.cloud.contract.spec.Contract =
+var cookies: sh.stubborn.contract.spec.Contract =
         // tag::cookies[]
         contract {
             request {
@@ -172,7 +172,7 @@ var cookies: org.springframework.cloud.contract.spec.Contract =
         }
         // end::cookies[]
 
-var body: org.springframework.cloud.contract.spec.Contract =
+var body: sh.stubborn.contract.spec.Contract =
         // tag::body[]
         contract {
             request {
@@ -191,7 +191,7 @@ var body: org.springframework.cloud.contract.spec.Contract =
         }
         // end::body[]
 
-var response: org.springframework.cloud.contract.spec.Contract =
+var response: sh.stubborn.contract.spec.Contract =
         // tag::response[]
         contract {
             request {
@@ -207,7 +207,7 @@ var response: org.springframework.cloud.contract.spec.Contract =
         }
         // end::response[]
 
-var regex: org.springframework.cloud.contract.spec.Contract =
+var regex: sh.stubborn.contract.spec.Contract =
         // tag::regex[]
         contract {
             request {
@@ -227,7 +227,7 @@ var regex: org.springframework.cloud.contract.spec.Contract =
         }
         // end::regex[]
 
-var regexCreatingProps: org.springframework.cloud.contract.spec.Contract =
+var regexCreatingProps: sh.stubborn.contract.spec.Contract =
         // tag::regex_creating_props[]
         contract {
             name = "foo"
@@ -265,7 +265,7 @@ var regexCreatingProps: org.springframework.cloud.contract.spec.Contract =
         }
         //end::regex_creating_props[]
 
-var optionals: org.springframework.cloud.contract.spec.Contract =
+var optionals: sh.stubborn.contract.spec.Contract =
         // tag::optionals[]
         contract { c ->
             priority = 1
@@ -293,7 +293,7 @@ var optionals: org.springframework.cloud.contract.spec.Contract =
         }
         // end::optionals[]
 
-var methodDsl: org.springframework.cloud.contract.spec.Contract =
+var methodDsl: sh.stubborn.contract.spec.Contract =
         contract { c ->
             request {
                 // tag::method[]
@@ -307,7 +307,7 @@ var methodDsl: org.springframework.cloud.contract.spec.Contract =
             priority = 1
         }
 
-var method: org.springframework.cloud.contract.spec.Contract =
+var method: sh.stubborn.contract.spec.Contract =
         // tag::methodBuilder[]
         contract {
             request {

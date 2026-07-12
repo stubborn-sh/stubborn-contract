@@ -33,7 +33,7 @@
 			<topBarEnabled>true</topBarEnabled>
 			<sideBarEnabled>true</sideBarEnabled>
 			<gitHub>
-				<projectId>spring-cloud/spring-cloud-contract</projectId>
+				<projectId>stubborn-sh/stubborn-contract</projectId>
 				<ribbonOrientation>right</ribbonOrientation>
 				<ribbonColor>orange</ribbonColor>
 			</gitHub>
@@ -53,7 +53,7 @@
 		</menu>
 		<menu name="Related Projects">
 			<item name="Spring Cloud Contract"
-				  href="https://github.com/spring-cloud/spring-cloud-contract"/>
+				  href="https://github.com/stubborn-sh/stubborn-contract"/>
 		</menu>
 		<menu ref="reports"/>
 	</body>

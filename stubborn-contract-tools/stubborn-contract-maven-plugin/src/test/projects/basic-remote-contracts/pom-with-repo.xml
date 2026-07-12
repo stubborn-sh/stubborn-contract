@@ -31,7 +31,7 @@
 			<!-- tag::remote_config[] -->
 			<plugin>
 				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+				<artifactId>stubborn-maven-plugin</artifactId>
 				<configuration>
 					<contractsMode>REMOTE</contractsMode>
 					<contractsRepositoryUrl>

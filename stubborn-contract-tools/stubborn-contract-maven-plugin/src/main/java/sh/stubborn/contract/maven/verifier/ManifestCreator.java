@@ -50,7 +50,7 @@ final class ManifestCreator {
 
 	private static Plugin findMavenPlugin(List<Plugin> plugins) {
 		for (Plugin plugin : plugins) {
-			if ("spring-cloud-contract-maven-plugin".equals(plugin.getArtifactId())) {
+			if ("stubborn-maven-plugin".equals(plugin.getArtifactId())) {
 				return plugin;
 			}
 		}
@@ -59,7 +59,7 @@ final class ManifestCreator {
 
 	private static Dependency findVerifierDependency(List<Dependency> deps) {
 		for (Dependency dep : deps) {
-			if ("spring-cloud-contract-verifier".equals(dep.getArtifactId())) {
+			if ("stubborn-verifier".equals(dep.getArtifactId())) {
 				return dep;
 			}
 		}

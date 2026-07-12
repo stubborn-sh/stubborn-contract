@@ -15,15 +15,15 @@
  */
 
 import org.gradle.api.publish.PublishingExtension
-import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties
-import org.springframework.cloud.contract.verifier.config.TestFramework
-import org.springframework.cloud.contract.verifier.config.TestMode
-import org.springframework.cloud.contract.verifier.plugin.ContractVerifierExtension
+import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
+import sh.stubborn.contract.verifier.config.TestFramework
+import sh.stubborn.contract.verifier.config.TestMode
+import sh.stubborn.contract.verifier.plugin.ContractVerifierExtension
 
 plugins {
 	groovy
 	id("org.springframework.boot") apply false
-	id("org.springframework.cloud.contract") apply false
+	id("sh.stubborn.contract") apply false
 }
 
 val restAssuredVersion by extra("3.0.7")
@@ -34,7 +34,7 @@ val verifierVersion: String by extra
 
 val contractVerifierStubsBaseDirectory by extra("src/test/resources/stubs")
 
-group = "org.springframework.cloud.testprojects"
+group = "sh.stubborn.testprojects"
 
 subprojects {
 	apply(plugin = "groovy")
@@ -57,14 +57,14 @@ subprojects {
 		testCompile("junit:junit:4.12")
 		testCompile("com.github.tomakehurst:wiremock:$wiremockVersion")
 		testCompile("com.toomuchcoding.jsonassert:jsonassert:$jsonAssertVersion")
-		testCompile("org.springframework.cloud:spring-cloud-contract-verifier:$verifierVersion")
+		testCompile("sh.stubborn:stubborn-verifier:$verifierVersion")
 	}
 }
 
 configure(listOf(project(":fraudDetectionService"), project(":loanApplicationService"))) {
 	apply(plugin = "org.springframework.boot")
 	apply(plugin = "io.spring.dependency-management")
-	apply(plugin = "org.springframework.cloud.contract")
+	apply(plugin = "sh.stubborn.contract")
 	apply(plugin = "maven-publish")
 
 	configure<ContractVerifierExtension> {

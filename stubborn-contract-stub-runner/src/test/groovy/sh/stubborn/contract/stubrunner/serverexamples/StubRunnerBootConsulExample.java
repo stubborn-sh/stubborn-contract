@@ -42,7 +42,7 @@ public class StubRunnerBootConsulExample {
  * -Dstubrunner.repositoryRoot=classpath:m2repo/repository/
  * -Dstubrunner.cloud.stubbed.discovery.enabled=false
  * -Dstubrunner.ids=sh.stubborn.contract.verifier.stubs:loanIssuance,org.
- * springframework.cloud.contract.verifier.stubs:fraudDetectionServer,org.springframework.
+ * sh.stubborn.contract.verifier.stubs:fraudDetectionServer,org.springframework.
  * cloud.contract.verifier.stubs:bootService
  * -Dstubrunner.idsToServiceIds.fraudDetectionServer=
  * someNameThatShouldMapFraudDetectionServer -Dstubrunner.cloud.consul.enabled=true

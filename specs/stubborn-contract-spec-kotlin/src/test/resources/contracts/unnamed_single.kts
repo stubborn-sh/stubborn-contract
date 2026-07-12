@@ -16,7 +16,7 @@
 
 package contracts
 
-import org.springframework.cloud.contract.spec.ContractDsl.Companion.contract
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
 
 contract {
     request {

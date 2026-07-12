@@ -40,7 +40,7 @@ public class StubRunnerBootZookeeperExample {
 /*
  *
  * -Dstubrunner.ids=sh.stubborn.contract.verifier.stubs:loanIssuance,org.
- * springframework.cloud.contract.verifier.stubs:fraudDetectionServer,org.springframework.
+ * sh.stubborn.contract.verifier.stubs:fraudDetectionServer,org.springframework.
  * cloud.contract.verifier.stubs:bootService
  * -Dstubrunner.idsToServiceIds.fraudDetectionServer=
  * someNameThatShouldMapFraudDetectionServer

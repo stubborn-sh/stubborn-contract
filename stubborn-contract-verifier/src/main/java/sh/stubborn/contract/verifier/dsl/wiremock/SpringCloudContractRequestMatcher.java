@@ -46,7 +46,7 @@ public class SpringCloudContractRequestMatcher extends RequestMatcherExtension {
 	/**
 	 * Name of the transformer inside the stub.
 	 */
-	public static final String NAME = "spring-cloud-contract";
+	public static final String NAME = "stubborn-contract";
 
 	private static final Log log = LogFactory.getLog(SpringCloudContractRequestMatcher.class);
 

@@ -10,7 +10,7 @@ buildscript {
 
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-		classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:${verifierVersion}"
+		classpath "sh.stubborn:stubborn-gradle-plugin:${verifierVersion}"
 	}
 }
 
@@ -101,7 +101,7 @@ class EnvVar {
 }
 
 dependencies {
-	testImplementation(platform("org.springframework.cloud:spring-cloud-contract-dependencies:${verifierVersion}"))
+	testImplementation(platform("sh.stubborn:stubborn-dependencies:${verifierVersion}"))
 	testImplementation(platform("org.apache.camel.springboot:camel-spring-boot-dependencies:${camelVersion}"))
 
 	testImplementation("org.springframework.boot:spring-boot-starter-web")
@@ -174,7 +174,7 @@ contracts {
 }
 
 task cleanOutput(type: Delete) {
-	def dirName = "/spring-cloud-contract-output"
+	def dirName = "/stubborn-contract-output"
 	file(dirName).list().each {
 		f -> delete "${dirName}/${f}"
 	}
@@ -184,7 +184,7 @@ task copyOutput(type: Copy) {
 	dependsOn("cleanOutput")
 	mustRunAfter("build", "generatePomFileForMavenPublication")
 	from 'build'
-	into '/spring-cloud-contract-output'
+	into '/stubborn-contract-output'
 }
 
 test {

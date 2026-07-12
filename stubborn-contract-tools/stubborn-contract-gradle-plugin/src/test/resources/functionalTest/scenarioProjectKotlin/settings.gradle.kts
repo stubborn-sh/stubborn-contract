@@ -26,9 +26,9 @@ pluginManagement {
             if (requested.id.id == "org.springframework.boot") {
                 val bootVersion: String by extra
                 useModule("org.springframework.boot:spring-boot-gradle-plugin:$bootVersion")
-            } else if (requested.id.id == "org.springframework.cloud.contract") {
+            } else if (requested.id.id == "sh.stubborn.contract") {
                 val verifierVersion: String by extra
-                useModule("org.springframework.cloud:spring-cloud-contract-gradle-plugin:$verifierVersion")
+                useModule("sh.stubborn:stubborn-gradle-plugin:$verifierVersion")
             }
         }
     }

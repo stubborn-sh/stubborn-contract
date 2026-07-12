@@ -187,7 +187,7 @@ public class SpringCloudContractVerifierGradlePlugin implements Plugin<Project> 
 
 		configureConfigurations();
 
-		project.getDependencies().add(CONTRACT_TEST_GENERATOR_RUNTIME_CLASSPATH_CONFIGURATION_NAME, "org.springframework.cloud:spring-cloud-contract-converters:" + SPRING_CLOUD_VERSION);
+		project.getDependencies().add(CONTRACT_TEST_GENERATOR_RUNTIME_CLASSPATH_CONFIGURATION_NAME, "sh.stubborn:stubborn-converters:" + SPRING_CLOUD_VERSION);
 	}
 
 	private SourceSet configureSourceSets(ContractVerifierExtension extension, JavaPluginExtension javaExtension, SourceSet contractTest) {

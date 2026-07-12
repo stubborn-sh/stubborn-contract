@@ -44,8 +44,8 @@ import static sh.stubborn.contract.maven.verifier.ChangeDetector.inputFilesChang
 /**
  * Convert Spring Cloud Contract Verifier contracts into stubs mappings.
  * <p>
- * This goal allows you to generate `stubs-jar` or execute `spring-cloud-contract:run`
- * with generated mappings.
+ * This goal allows you to generate `stubs-jar` or execute `stubborn-contract:run` with
+ * generated mappings.
  *
  * @author Mariusz Smykula
  */
