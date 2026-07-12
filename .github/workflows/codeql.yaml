@@ -14,8 +14,8 @@ permissions:
   contents: read
 
 env:
-  JAVA_VERSION: '25'
-  JAVA_DISTRIBUTION: 'liberica'
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
 
 jobs:
   analyze:

@@ -14,8 +14,8 @@ permissions:
   checks: write
 
 env:
-  JAVA_VERSION: '25'
-  JAVA_DISTRIBUTION: 'liberica'
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
 
 jobs:
   build:
