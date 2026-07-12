@@ -36,7 +36,9 @@ jobs:
         run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
 
       - name: Install BOM (stubborn-contract-dependencies)
-        run: ./mvnw install -pl stubborn-contract-dependencies -DskipTests --no-transfer-progress
+        run: |
+          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
 
       - name: Build & install (skip tests)
         run: ./mvnw clean install -DskipTests --no-transfer-progress
