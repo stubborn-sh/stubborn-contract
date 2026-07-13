@@ -19,6 +19,8 @@ package sh.stubborn.contract.verifier.messaging.noop;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
@@ -29,7 +31,9 @@ import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -89,9 +93,32 @@ public class NoOpContractVerifierAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
+	@ConditionalOnMissingClass("org.apache.avro.specific.SpecificRecordBase")
 	public ContractVerifierObjectMapper contractVerifierObjectMapper(ObjectProvider<JsonMapper> jsonMapper) {
 		JsonMapper mapper = jsonMapper.getIfAvailable(JsonMapper::new);
 		return new ContractVerifierObjectMapper(mapper);
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass(SpecificRecordBase.class)
+	static class AvroObjectMapperConfig {
+
+		@Bean
+		@ConditionalOnMissingBean
+		public ContractVerifierObjectMapper contractVerifierObjectMapperWithAvro(
+				ObjectProvider<JsonMapper> jsonMapper) {
+			JsonMapper mapper = jsonMapper.getIfAvailable(JsonMapper::new)
+				.rebuild()
+				.addMixIn(SpecificRecordBase.class, IgnoreAvroInternals.class)
+				.build();
+			return new ContractVerifierObjectMapper(mapper);
+		}
+
+		@JsonIgnoreProperties({ "schema", "specificData", "classSchema", "conversion" })
+		interface IgnoreAvroInternals {
+
+		}
+
 	}
 
 }
