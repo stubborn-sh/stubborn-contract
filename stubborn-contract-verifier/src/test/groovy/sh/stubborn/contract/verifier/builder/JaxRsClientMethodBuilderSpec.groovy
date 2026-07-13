@@ -976,17 +976,18 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 // tag::jaxrs[]
 package com.example;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.Test;
+import org.junit.Rule;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import org.junit.Rule;
-import org.junit.Test;
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
-import static javax.ws.rs.client.Entity.*;
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+import static javax.ws.rs.client.Entity.*;
+
 @SuppressWarnings("rawtypes")
 public class FooTest {
   WebTarget webTarget;

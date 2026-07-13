@@ -102,17 +102,18 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
+import org.springframework.beans.factory.annotation.Autowired
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
-import spock.lang.Specification
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes
 
-import org.springframework.beans.factory.annotation.Autowired
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging
@@ -186,18 +187,19 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Rule;
+import org.springframework.beans.factory.annotation.Autowired;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("rawtypes")
 public class FooTest {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging;
@@ -263,18 +265,19 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Rule;
+import org.springframework.beans.factory.annotation.Autowired;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("rawtypes")
 public class FooTest {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging;
@@ -473,17 +476,18 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
+import org.springframework.beans.factory.annotation.Autowired
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
-import spock.lang.Specification
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes
 
-import org.springframework.beans.factory.annotation.Autowired
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging
@@ -544,17 +548,18 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
+import org.springframework.beans.factory.annotation.Autowired
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
-import spock.lang.Specification
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes
 
-import org.springframework.beans.factory.annotation.Autowired
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging
@@ -615,17 +620,18 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
+import org.springframework.beans.factory.annotation.Autowired
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
-import spock.lang.Specification
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes
 
-import org.springframework.beans.factory.annotation.Autowired
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging
@@ -687,18 +693,19 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Rule;
+import org.springframework.beans.factory.annotation.Autowired;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("rawtypes")
 public class FooTest {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging;
@@ -766,17 +773,18 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
+import org.springframework.beans.factory.annotation.Autowired
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
-import spock.lang.Specification
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes
 
-import org.springframework.beans.factory.annotation.Autowired
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging
@@ -807,18 +815,19 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Rule;
+import org.springframework.beans.factory.annotation.Autowired;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("rawtypes")
 public class FooTest {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging;
@@ -893,17 +902,18 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
+import org.springframework.beans.factory.annotation.Autowired
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
-import spock.lang.Specification
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes
 
-import org.springframework.beans.factory.annotation.Autowired
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging
@@ -947,18 +957,19 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Rule;
+import org.springframework.beans.factory.annotation.Autowired;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("rawtypes")
 public class FooTest {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging;
@@ -1032,17 +1043,18 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
+import org.springframework.beans.factory.annotation.Autowired
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper
-import spock.lang.Specification
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes
 
-import org.springframework.beans.factory.annotation.Autowired
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging
@@ -1072,18 +1084,19 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Rule;
+import org.springframework.beans.factory.annotation.Autowired;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
-import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes;
 
-import org.springframework.beans.factory.annotation.Autowired;
 @SuppressWarnings("rawtypes")
 public class FooTest {
 	@Autowired ContractVerifierMessaging contractVerifierMessaging;
