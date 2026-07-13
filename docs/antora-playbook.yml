@@ -1,10 +1,10 @@
 antora:
   extensions:
     - require: '@springio/antora-extensions'
-      root_component_name: 'cloud-contract'
+      root_component_name: 'stubborn-contract'
 site:
-  title: Spring Cloud Contract
-  url: https://docs.spring.io/spring-cloud-contract/reference/
+  title: Stubborn Contract
+  url: https://stubborn-sh.github.io/stubborn-contract/
 content:
   sources:
     - url: ./..
@@ -13,7 +13,7 @@ content:
       worktrees: true
 asciidoc:
   attributes:
-    page-stackoverflow-url: https://stackoverflow.com/tags/spring-cloud
+    page-stackoverflow-url: https://stackoverflow.com/tags/stubborn-contract
     page-pagination: ''
     hide-uri-scheme: '@'
     tabs-sync-option: '@'
@@ -21,7 +21,7 @@ asciidoc:
     kroki-fetch-diagram: true
   extensions:
     - '@asciidoctor/tabs'
-    - '@springio/asciidoctor-extensions' #TODO: Add plantuml rendering
+    - '@springio/asciidoctor-extensions'
     - 'asciidoctor-kroki'
   sourcemap: true
 urls:

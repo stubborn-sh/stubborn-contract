@@ -2,7 +2,7 @@
 = Stubborn Contract
 
 
-Stubborn Contract is the official continuation of Stubborn Contract, led by
+Stubborn Contract is the official continuation of Spring Cloud Contract, led by
 https://toomuchcoding.com[Marcin Grzejszczak], one of its original creators. Following
 the transition from the Spring Cloud portfolio, future development continues under the
 Stubborn organization.
@@ -19,7 +19,7 @@ producers and consumers -- for both HTTP and message-based interactions.
 
 The repository has been established as the new home of the project. The first
 Stubborn-branded release, including package and Maven coordinate changes, is planned.
-Existing Stubborn Contract users can continue using their current versions --
+Existing Spring Cloud Contract users can continue using their current versions --
 migration instructions will be published with the first Stubborn Contract release. See
 the https://stubborn.sh/transition-guide[Transition Guide] for details.
 
