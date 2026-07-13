@@ -27,8 +27,8 @@
 			<artifactId>spring-mock-mvc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.toomuchcoding.jsonassert</groupId>
-			<artifactId>jsonassert</artifactId>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-jsonassert</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>

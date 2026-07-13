@@ -62,9 +62,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.toomuchcoding.jsonassert</groupId>
-			<artifactId>jsonassert</artifactId>
-			<version>0.7.0</version>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-jsonassert</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -17,7 +17,6 @@
 	<description>Stubborn Contract Dependencies</description>
 	<properties>
 		<wiremock.version>3.13.2</wiremock.version>
-		<jsonassert.version>0.8.0</jsonassert.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -96,16 +95,15 @@
 				<artifactId>wiremock-standalone</artifactId>
 				<version>${wiremock.version}</version>
 			</dependency>
-			<!-- Leaving this for backward compatibility -->
 			<dependency>
-				<groupId>com.toomuchcoding.jsonassert</groupId>
-				<artifactId>jsonassert</artifactId>
-				<version>${jsonassert.version}</version>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-jsonassert</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.toomuchcoding.jsonassert</groupId>
-				<artifactId>jsonassert-shade</artifactId>
-				<version>${jsonassert.version}</version>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-xmlassert</artifactId>
+				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

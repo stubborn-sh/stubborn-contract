@@ -49,7 +49,7 @@ subprojects {
 		}
 		testImplementation "junit:junit:4.12"
 		testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
-		testImplementation "com.toomuchcoding.jsonassert:jsonassert:${jsonAssertVersion}"
+		testImplementation "sh.stubborn:stubborn-jsonassert:${verifierVersion}"
 		testImplementation "org.assertj:assertj-core:2.4.1"
 		testImplementation "sh.stubborn:stubborn-verifier:${verifierVersion}"
 	}

@@ -29,7 +29,6 @@ plugins {
 val restAssuredVersion by extra("3.0.7")
 val spockVersion by extra("1.0-groovy-2.4")
 val wiremockVersion: String by extra
-val jsonAssertVersion: String by extra
 val verifierVersion: String by extra
 
 val contractVerifierStubsBaseDirectory by extra("src/test/resources/stubs")
@@ -56,7 +55,7 @@ subprojects {
 		testCompile("org.spockframework:spock-core:$spockVersion")
 		testCompile("junit:junit:4.12")
 		testCompile("com.github.tomakehurst:wiremock:$wiremockVersion")
-		testCompile("com.toomuchcoding.jsonassert:jsonassert:$jsonAssertVersion")
+		testCompile("sh.stubborn:stubborn-jsonassert:$verifierVersion")
 		testCompile("sh.stubborn:stubborn-verifier:$verifierVersion")
 	}
 }
