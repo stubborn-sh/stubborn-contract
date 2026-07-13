@@ -61,6 +61,7 @@
 		<xpath2.processor.version>2.1.100</xpath2.processor.version>
 		<xerces.version>2.12.2</xerces.version>
 		<archunit.version>1.3.0</archunit.version>
+		<archunit-junit5.version>1.3.0</archunit-junit5.version>
 		<!-- Set to false in Spring-agnostic core modules to ban Spring compile deps -->
 		<stubborn.no-spring.skip>true</stubborn.no-spring.skip>
 		<commons-beanutils.version>1.11.0</commons-beanutils.version>
@@ -220,6 +221,12 @@
 				<groupId>org.spockframework</groupId>
 				<artifactId>spock-junit4</artifactId>
 				<version>${spock-spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.tngtech.archunit</groupId>
+				<artifactId>archunit-junit5</artifactId>
+				<version>${archunit-junit5.version}</version>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
