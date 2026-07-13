@@ -86,6 +86,8 @@
 		<module>stubborn-contract-tools</module>
 		<module>stubborn-contract-stub-runner-boot</module>
 		<module>stubborn-messaging-kafka</module>
+		<module>stubborn-jsonassert</module>
+		<module>stubborn-xmlassert</module>
 		<module>tests</module>
 	</modules>
 
