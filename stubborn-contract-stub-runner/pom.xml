@@ -190,12 +190,7 @@
 			<artifactId>spring-mock-mvc</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.spockframework</groupId>
-			<artifactId>spock-spring</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
+<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -245,12 +240,7 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.spockframework</groupId>
-			<artifactId>spock-junit4</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
+<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-webmvc-test</artifactId>
 			<scope>test</scope>
@@ -275,52 +265,9 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.gmavenplus</groupId>
-				<artifactId>gmavenplus-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<!-- Will run JUnit 5 -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<!-- Will run JUnit 4 -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${maven-failsafe-plugin.version}</version>
-				<dependencies>
-					<!-- let JUnit vintage engine run JUnit 3 or JUnit 4 tests -->
-					<dependency>
-						<groupId>org.junit.jupiter</groupId>
-						<artifactId>junit-jupiter-engine</artifactId>
-						<version>${junit-jupiter.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.junit.vintage</groupId>
-						<artifactId>junit-vintage-engine</artifactId>
-						<version>${junit-vintage.version}</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<includes>
-						<include>**/junit4/*Test.*</include>
-						<include>**/junit4/*Tests.*</include>
-						<include>**/junit4/*Spec.*</include>
-					</includes>
-					<reportFormat>plain</reportFormat>
-					<failIfNoTests>true</failIfNoTests>
-					<junitPlatformArtifactName>
-						org.junit.jupiter:junit-vintage-engine
-					</junitPlatformArtifactName>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
