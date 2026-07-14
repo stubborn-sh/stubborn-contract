@@ -6,7 +6,7 @@
 	<properties>
 		<javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
 		<avro.version>1.12.1</avro.version>
-		<kafka-avro-serializer.version>7.9.0</kafka-avro-serializer.version>
+		<kafka-avro-serializer.version>7.9.8</kafka-avro-serializer.version>
 	</properties>
 	<parent>
 		<groupId>sh.stubborn</groupId>
@@ -267,13 +267,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty.ee10</groupId>
 			<artifactId>jetty-ee10-servlet</artifactId>
-			<version>12.1.10</version>
+			<version>12.1.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.ee10</groupId>
 			<artifactId>jetty-ee10-servlets</artifactId>
-			<version>12.1.10</version>
+			<version>12.1.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
