@@ -18,8 +18,6 @@ package sh.stubborn.contract.stubrunner;
 
 import java.util.Locale;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Represents a configuration of a single stub. The stub can be described by
  * groupId:artifactId:version:classifier notation
@@ -91,7 +89,7 @@ public class StubConfiguration {
 	}
 
 	private boolean isDefined() {
-		return StringUtils.hasText(this.groupId) && StringUtils.hasText(this.artifactId);
+		return this.groupId != null && !this.groupId.isBlank() && this.artifactId != null && !this.artifactId.isBlank();
 	}
 
 	/**
@@ -102,12 +100,12 @@ public class StubConfiguration {
 		if (!isDefined()) {
 			return "";
 		}
-		return StringUtils.arrayToDelimitedString(new String[] { nullCheck(this.groupId), nullCheck(this.artifactId),
-				nullCheck(this.version), nullCheck(this.classifier) }, STUB_COLON_DELIMITER);
+		return String.join(STUB_COLON_DELIMITER, nullCheck(this.groupId), nullCheck(this.artifactId),
+				nullCheck(this.version), nullCheck(this.classifier));
 	}
 
 	private String nullCheck(String value) {
-		return StringUtils.hasText(value) ? value : "";
+		return value != null && !value.isBlank() ? value : "";
 	}
 
 	/**

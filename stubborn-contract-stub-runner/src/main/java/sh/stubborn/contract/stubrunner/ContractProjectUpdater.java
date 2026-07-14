@@ -31,9 +31,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
-
 /**
  * Updates the project containing contracts.
  *
@@ -85,10 +82,10 @@ public class ContractProjectUpdater {
 		}
 		String attempts = StubRunnerPropertyUtils.getProperty(this.stubRunnerOptions.getProperties(),
 				GIT_ATTEMPTS_NO_PROP);
-		int intAttempts = StringUtils.hasText(attempts) ? Integer.parseInt(attempts) : DEFAULT_ATTEMPTS_NO;
+		int intAttempts = attempts != null && !attempts.isBlank() ? Integer.parseInt(attempts) : DEFAULT_ATTEMPTS_NO;
 		String wait = StubRunnerPropertyUtils.getProperty(this.stubRunnerOptions.getProperties(),
 				GIT_WAIT_BETWEEN_ATTEMPTS);
-		long longWait = StringUtils.hasText(wait) ? Long.parseLong(wait) : DEFAULT_WAIT_BETWEEN_ATTEMPTS;
+		long longWait = wait != null && !wait.isBlank() ? Long.parseLong(wait) : DEFAULT_WAIT_BETWEEN_ATTEMPTS;
 		tryToPushCurrentBranch(clonedRepo, gitRepo, intAttempts, longWait);
 	}
 
@@ -123,7 +120,7 @@ public class ContractProjectUpdater {
 	}
 
 	private String commitMessage(String projectName, String msg) {
-		return StringUtils.hasText(msg) ? replaceProject(projectName, msg)
+		return msg != null && !msg.isBlank() ? replaceProject(projectName, msg)
 				: replaceProject(projectName, DEFAULT_COMMIT_MESSAGE);
 	}
 
@@ -198,7 +195,7 @@ class DirectoryCopyingVisitor extends SimpleFileVisitor<Path> {
 		return FileVisitResult.CONTINUE;
 	}
 
-	private boolean deleteRecursively(@Nullable Path root) throws IOException {
+	private boolean deleteRecursively(Path root) throws IOException {
 		if (root == null) {
 			return false;
 		}

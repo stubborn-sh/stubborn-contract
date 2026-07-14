@@ -20,19 +20,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
-
-import org.springframework.core.io.AbstractResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.StringUtils;
 
 /**
  * Allows to read stubs and contracts from a given location. Contrary to
@@ -61,7 +58,7 @@ public class FileStubDownloader implements StubDownloaderBuilder {
 				|| stubRunnerOptions.getStubRepositoryRoot() == null) {
 			return null;
 		}
-		Resource resource = stubRunnerOptions.getStubRepositoryRoot();
+		StubResource resource = stubRunnerOptions.getStubRepositoryRoot();
 		// we verify whether the protocol starts with `stubs://`
 		if (!(resource instanceof StubsResource)) {
 			return null;
@@ -70,8 +67,8 @@ public class FileStubDownloader implements StubDownloaderBuilder {
 	}
 
 	@Override
-	public Resource resolve(String location, ResourceLoader resourceLoader) {
-		if (!StringUtils.hasText(location) || !isProtocolAccepted(location)) {
+	public StubResource resolve(String location) {
+		if (location == null || location.isBlank() || !isProtocolAccepted(location)) {
 			return null;
 		}
 		// Can be resolving a resource for Classpath as fallback
@@ -99,10 +96,9 @@ public class FileStubDownloader implements StubDownloaderBuilder {
 }
 
 /**
- * Primitive version of a Stubs {@link Resource}. Automatically makes Spring convert the
- * URL to a Resource.
+ * Primitive version of a Stubs {@link StubResource}.
  */
-class StubsResource extends AbstractResource {
+class StubsResource implements StubResource {
 
 	private final String rawLocation;
 
@@ -123,6 +119,39 @@ class StubsResource extends AbstractResource {
 	@Override
 	public URI getURI() throws IOException {
 		return URI.create(this.rawLocation);
+	}
+
+	@Override
+	public URL getURL() throws IOException {
+		return URI.create(this.rawLocation).toURL();
+	}
+
+	@Override
+	public File getFile() throws IOException {
+		return new File(URI.create(this.rawLocation));
+	}
+
+	@Override
+	public String getFilename() {
+		String path = this.rawLocation;
+		int sep = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+		return sep >= 0 ? path.substring(sep + 1) : path;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof StubsResource that)) {
+			return false;
+		}
+		return Objects.equals(this.rawLocation, that.rawLocation);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.rawLocation);
 	}
 
 }
@@ -173,7 +202,7 @@ class StubsStubDownloader implements StubDownloader {
 
 	private String resolvePath() {
 		String schemeSpecificPart = schemeSpecificPart();
-		Resource resource = ResourceResolver.resource(schemeSpecificPart);
+		StubResource resource = ResourceResolver.resource(schemeSpecificPart);
 		if (resource != null) {
 			try {
 				return resource.getURL().getFile();
@@ -228,7 +257,7 @@ class StubsStubDownloader implements StubDownloader {
 	private String schemeSpecificPart() {
 		try {
 			String part = this.stubRunnerOptions.getStubRepositoryRoot().getURI().getSchemeSpecificPart();
-			if (!StringUtils.hasText(part)) {
+			if (part == null || part.isBlank()) {
 				return part;
 			}
 			return part.startsWith("//") ? part.substring(2) : part;

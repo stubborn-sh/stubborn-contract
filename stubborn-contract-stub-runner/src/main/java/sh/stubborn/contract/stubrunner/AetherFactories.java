@@ -40,9 +40,6 @@ import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 
-import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
-
 /**
  * Utilities for creating/obtaining Aether (Maven Resolver) components.
  *
@@ -83,7 +80,7 @@ final class AetherFactories {
 	 * Return the injected system if available, otherwise create a new one via a
 	 * {@link DefaultServiceLocator} without hard-linking to optional providers.
 	 */
-	static RepositorySystem repositorySystemOr(@Nullable RepositorySystem injectedOrNull) {
+	static RepositorySystem repositorySystemOr(RepositorySystem injectedOrNull) {
 		if (injectedOrNull != null) {
 			if (log.isDebugEnabled()) {
 				log.debug("Using Maven-injected RepositorySystem");
@@ -100,7 +97,7 @@ final class AetherFactories {
 	 * Return the injected session if available, otherwise create a new session for the
 	 * given system.
 	 */
-	static RepositorySystemSession sessionOr(RepositorySystem system, @Nullable RepositorySystemSession injectedOrNull,
+	static RepositorySystemSession sessionOr(RepositorySystem system, RepositorySystemSession injectedOrNull,
 			boolean workOffline) {
 		if (injectedOrNull != null) {
 			if (log.isDebugEnabled()) {
@@ -231,9 +228,9 @@ final class AetherFactories {
 		}
 	}
 
-	private static String readPropertyFromSystemProps(@Nullable String localRepoLocationFromSettings) {
+	private static String readPropertyFromSystemProps(String localRepoLocationFromSettings) {
 		String mavenLocalRepo = fromSystemPropOrEnv(MAVEN_LOCAL_REPOSITORY_LOCATION);
-		return StringUtils.hasText(mavenLocalRepo) ? mavenLocalRepo
+		return mavenLocalRepo != null && !mavenLocalRepo.isBlank() ? mavenLocalRepo
 				: (localRepoLocationFromSettings != null ? localRepoLocationFromSettings
 						: System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository");
 	}
@@ -241,7 +238,7 @@ final class AetherFactories {
 	// system prop takes precedence over env var
 	private static String fromSystemPropOrEnv(String prop) {
 		String resolvedProp = System.getProperty(prop);
-		if (StringUtils.hasText(resolvedProp)) {
+		if (resolvedProp != null && !resolvedProp.isBlank()) {
 			return resolvedProp;
 		}
 		return System.getenv(prop);

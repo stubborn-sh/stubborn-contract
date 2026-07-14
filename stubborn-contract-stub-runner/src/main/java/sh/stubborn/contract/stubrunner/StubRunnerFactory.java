@@ -38,7 +38,6 @@ import sh.stubborn.contract.verifier.converter.StubGeneratorProvider;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
 
-import org.springframework.core.io.Resource;
 import java.util.ServiceLoader;
 
 /**
@@ -99,7 +98,7 @@ class StubRunnerFactory {
 	}
 
 	private Path resolvePath(File unpackedLocation) {
-		Resource resource = ResourceResolver.resource(unpackedLocation.toURI().toString());
+		StubResource resource = ResourceResolver.resource(unpackedLocation.toURI().toString());
 		Path path = unpackedLocation.toPath();
 		if (resource != null) {
 			try {

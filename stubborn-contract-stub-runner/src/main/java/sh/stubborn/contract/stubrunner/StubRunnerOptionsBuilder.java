@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,8 @@ import java.util.Map;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import sh.stubborn.contract.stubrunner.util.StubsParser;
 
-import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * A builder object for {@link StubRunnerOptions}.
@@ -51,7 +52,7 @@ public class StubRunnerOptionsBuilder {
 
 	private Integer maxPortValue = 15000;
 
-	private Resource stubRepositoryRoot;
+	private StubResource stubRepositoryRoot;
 
 	private String stubsClassifier = "stubs";
 
@@ -91,7 +92,9 @@ public class StubRunnerOptionsBuilder {
 	private static List<String> stubsToList(String[] stubIdsToPortMapping) {
 		List<String> list = new ArrayList<>();
 		if (stubIdsToPortMapping.length == 1 && !containsRange(stubIdsToPortMapping[0])) {
-			list.addAll(StringUtils.commaDelimitedListToSet(stubIdsToPortMapping[0]));
+			list.addAll(Arrays.stream(stubIdsToPortMapping[0].split(","))
+				.map(String::trim)
+				.collect(Collectors.toCollection(LinkedHashSet::new)));
 			return list;
 		}
 		else if (stubIdsToPortMapping.length == 1 && containsRange(stubIdsToPortMapping[0])) {
@@ -149,13 +152,13 @@ public class StubRunnerOptionsBuilder {
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withStubRepositoryRoot(Resource stubRepositoryRoot) {
+	public StubRunnerOptionsBuilder withStubRepositoryRoot(StubResource stubRepositoryRoot) {
 		this.stubRepositoryRoot = stubRepositoryRoot;
 		return this;
 	}
 
 	public StubRunnerOptionsBuilder withStubRepositoryRoot(String stubRepositoryRoot) {
-		if (StringUtils.hasText(stubRepositoryRoot)) {
+		if (stubRepositoryRoot != null && !stubRepositoryRoot.isBlank()) {
 			this.stubRepositoryRoot = ResourceResolver.resource(stubRepositoryRoot);
 		}
 		return this;

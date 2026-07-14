@@ -37,10 +37,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-
 class ResourceResolvingStubDownloader implements StubDownloader {
 
 	private static final Log log = LogFactory.getLog(ResourceResolvingStubDownloader.class);
@@ -51,8 +47,7 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 
 	private final Function<StubConfiguration, Pattern> gavPattern;
 
-	private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(
-			new DefaultResourceLoader());
+	private final ClasspathStubResourceScanner resolver = new ClasspathStubResourceScanner();
 
 	ResourceResolvingStubDownloader(StubRunnerOptions stubRunnerOptions,
 			BiFunction<StubRunnerOptions, StubConfiguration, RepoRoots> repoRootFunction,
@@ -67,7 +62,7 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 		registerShutdownHook();
 		List<RepoRoot> repoRoots = repoRootFunction.apply(stubRunnerOptions, config);
 		List<String> paths = toPaths(repoRoots);
-		List<Resource> resources = resolveResources(paths);
+		List<StubResource> resources = resolveResources(paths);
 		if (log.isDebugEnabled()) {
 			log.debug("For paths " + paths + " found following resources " + resources);
 		}
@@ -80,7 +75,7 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 			tmp.deleteOnExit();
 		}
 		boolean atLeastOneFound = false;
-		for (Resource resource : resources) {
+		for (StubResource resource : resources) {
 			try {
 				String relativePath = relativePathPicker(resource, this.gavPattern.apply(config));
 				if (log.isDebugEnabled()) {
@@ -114,7 +109,7 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 					new Thread(() -> TemporaryFileStorage.cleanup(stubRunnerOptions.isDeleteStubsAfterTest())));
 	}
 
-	private void copyTheFoundFiles(File tmp, Resource resource, String relativePath) throws IOException {
+	private void copyTheFoundFiles(File tmp, StubResource resource, String relativePath) throws IOException {
 		// the relative path is OS agnostic and contains / only
 		int lastIndexOf = relativePath.lastIndexOf("/");
 		String relativePathWithoutFile = lastIndexOf > -1 ? relativePath.substring(0, lastIndexOf) : relativePath;
@@ -134,7 +129,7 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 		}
 	}
 
-	boolean isDirectory(Resource resource) {
+	boolean isDirectory(StubResource resource) {
 		try {
 			return resource.getFile().isDirectory();
 		}
@@ -146,7 +141,7 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 		}
 	}
 
-	String relativePathPicker(Resource resource, Pattern groupAndArtifactPattern) throws IOException {
+	String relativePathPicker(StubResource resource, Pattern groupAndArtifactPattern) throws IOException {
 		Matcher groupAndArtifactMatcher = matcher(resource, groupAndArtifactPattern);
 		if (groupAndArtifactMatcher.matches() && groupAndArtifactMatcher.groupCount() > 2) {
 			MatchResult groupAndArtifactResult = groupAndArtifactMatcher.toMatchResult();
@@ -160,7 +155,7 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 		}
 	}
 
-	private Matcher matcher(Resource resource, Pattern groupAndArtifactPattern) throws IOException {
+	private Matcher matcher(StubResource resource, Pattern groupAndArtifactPattern) throws IOException {
 		try {
 			String path = resource.getURI().getPath();
 			return groupAndArtifactPattern.matcher(path);
@@ -179,11 +174,11 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 		return list;
 	}
 
-	List<Resource> resolveResources(List<String> paths) {
-		List<Resource> resources = new ArrayList<>();
+	List<StubResource> resolveResources(List<String> paths) {
+		List<StubResource> resources = new ArrayList<>();
 		for (String path : paths) {
 			try {
-				List<Resource> list = Arrays.asList(this.resolver.getResources(path));
+				List<StubResource> list = this.resolver.getResources(path);
 				resources.addAll(list);
 			}
 			catch (IOException e) {

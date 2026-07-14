@@ -24,8 +24,6 @@ import java.util.Map;
 
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Utility to parse string into a list of configuration of stubs.
  *
@@ -60,7 +58,7 @@ public final class StubsParser {
 	public static List<StubConfiguration> fromString(Collection<String> collection, String defaultClassifier) {
 		List<StubConfiguration> stubs = new ArrayList<>();
 		for (String config : collection) {
-			if (StringUtils.hasText(config)) {
+			if (config != null && !config.isBlank()) {
 				stubs.add(StubSpecification.parse(config, defaultClassifier).stub);
 			}
 		}

@@ -45,8 +45,6 @@ import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions.StubRunnerProxyOptions;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
-import org.springframework.util.StringUtils;
-
 import static sh.stubborn.contract.stubrunner.AetherFactories.newSession;
 import static sh.stubborn.contract.stubrunner.AetherFactories.settings;
 import static sh.stubborn.contract.stubrunner.util.ZipCategory.unzipTo;
@@ -153,7 +151,7 @@ public class AetherStubDownloader implements StubDownloader {
 		final String[] repos = stubRunnerOptions.getStubRepositoryRootAsString().split(",");
 		final List<RemoteRepository> remoteRepos = new ArrayList<>();
 		for (int i = 0; i < repos.length; i++) {
-			if (StringUtils.hasText(repos[i])) {
+			if (repos[i] != null && !repos[i].isBlank()) {
 				final RemoteRepository.Builder builder = new RemoteRepository.Builder("remote" + i, "default", repos[i])
 					.setAuthentication(resolveAuthentication(stubRunnerOptions));
 				if (stubRunnerOptions.getProxyOptions() != null) {
@@ -170,7 +168,7 @@ public class AetherStubDownloader implements StubDownloader {
 	}
 
 	private Authentication resolveAuthentication(StubRunnerOptions stubRunnerOptions) {
-		if (StringUtils.hasText(stubRunnerOptions.serverId)) {
+		if (stubRunnerOptions.serverId != null && !stubRunnerOptions.serverId.isBlank()) {
 			Server stubServer = this.settings.getServer(stubRunnerOptions.serverId);
 			if (stubServer != null) {
 				if (log.isDebugEnabled()) {
@@ -194,7 +192,7 @@ public class AetherStubDownloader implements StubDownloader {
 	private File unpackedJar(String resolvedVersion, String stubsGroup, String stubsModule, String classifier) {
 		try {
 			log.info("Resolved version is [" + resolvedVersion + "]");
-			if (!StringUtils.hasText(resolvedVersion)) {
+			if (resolvedVersion == null || resolvedVersion.isBlank()) {
 				log.warn("Stub for group [" + stubsGroup + "] module [" + stubsModule + "] and classifier ["
 						+ classifier + "] not found in " + this.remoteRepos);
 				return null;
@@ -223,7 +221,7 @@ public class AetherStubDownloader implements StubDownloader {
 	}
 
 	private String getVersion(String stubsGroup, String stubsModule, String version, String classifier) {
-		if (!StringUtils.hasText(version) || LATEST_VERSION_IN_IVY.equals(version)) {
+		if (version == null || version.isBlank() || LATEST_VERSION_IN_IVY.equals(version)) {
 			log.info("Desired version is [" + version + "] - will try to resolve the latest version");
 			return resolveHighestArtifactVersion(stubsGroup, stubsModule, classifier, LATEST_ARTIFACT_VERSION);
 		}

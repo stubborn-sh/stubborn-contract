@@ -45,8 +45,6 @@ import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessageM
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 import sh.stubborn.contract.verifier.util.BodyExtractor;
 
-import org.springframework.beans.BeanUtils;
-
 /**
  * Runs stubs for a particular {@link StubServer}.
  */
@@ -90,8 +88,14 @@ class StubRunnerExecutor implements StubFinder {
 			}
 			return runningStubs();
 		}
-		HttpServerStubConfigurer configurer = BeanUtils
-			.instantiateClass(stubRunnerOptions.getHttpServerStubConfigurer());
+		HttpServerStubConfigurer configurer;
+		try {
+			configurer = stubRunnerOptions.getHttpServerStubConfigurer().getDeclaredConstructor().newInstance();
+		}
+		catch (Exception ex) {
+			throw new IllegalStateException("Cannot instantiate " + stubRunnerOptions.getHttpServerStubConfigurer(),
+					ex);
+		}
 		startStubServers(configurer, stubRunnerOptions, stubConfiguration, repository);
 		RunningStubs runningCollaborators = runningStubs();
 		log.info("All stubs are now running " + runningCollaborators.toString());

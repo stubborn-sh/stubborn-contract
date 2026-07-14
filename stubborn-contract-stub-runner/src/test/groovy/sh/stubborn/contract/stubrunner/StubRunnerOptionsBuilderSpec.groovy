@@ -21,8 +21,8 @@ import spock.lang.Issue
 import spock.lang.Specification
 import spock.util.environment.RestoreSystemProperties
 
-import org.springframework.core.io.ClassPathResource
-import org.springframework.core.io.FileSystemResource
+
+
 class StubRunnerOptionsBuilderSpec extends Specification {
 
 	private StubRunnerOptionsBuilder builder = new StubRunnerOptionsBuilder()
@@ -43,7 +43,7 @@ class StubRunnerOptionsBuilderSpec extends Specification {
 	def shouldReturnURIOfAResourceFromResource() {
 
 		given:
-			builder.withStubRepositoryRoot(new ClassPathResource("logback.xml"))
+			builder.withStubRepositoryRoot(ResourceResolver.classpathResource("logback.xml"))
 
 		when:
 			StubRunnerOptions options = builder.build()
@@ -56,7 +56,7 @@ class StubRunnerOptionsBuilderSpec extends Specification {
 	def shouldReturnEmptyStringWhenFileNotFound() {
 
 		given:
-			builder.withStubRepositoryRoot(new ClassPathResource("fileThatDoesNotExist.xml"))
+			builder.withStubRepositoryRoot(ResourceResolver.classpathResource("fileThatDoesNotExist.xml"))
 
 		when:
 			StubRunnerOptions options = builder.build()
@@ -228,7 +228,8 @@ class StubRunnerOptionsBuilderSpec extends Specification {
 	@Issue("#466")
 	def shouldSetAllDependenciesFromOptions() {
 		given:
-			StubRunnerOptionsBuilder builder = builder.withOptions(new StubRunnerOptions(1, 2, new FileSystemResource("root"), StubRunnerProperties.StubsMode.LOCAL,
+			StubResource root = ResourceResolver.classpathResource("root")
+			StubRunnerOptionsBuilder builder = builder.withOptions(new StubRunnerOptions(1, 2, root, StubRunnerProperties.StubsMode.LOCAL,
 					"classifier", [new StubConfiguration("a:b:c")], [(new StubConfiguration("a:b:c")): 3], "foo", "bar",
 					new StubRunnerOptions.StubRunnerProxyOptions("host", 4), true, "consumer", "folder", false, true, false, [foo: "bar"], Foo, "server"))
 			builder.withStubs("foo:bar:baz")
@@ -237,7 +238,7 @@ class StubRunnerOptionsBuilderSpec extends Specification {
 		then:
 			options.minPortValue == 1
 			options.maxPortValue == 2
-			options.stubRepositoryRoot == new FileSystemResource("root")
+			options.stubRepositoryRoot == root
 			options.stubsMode == StubRunnerProperties.StubsMode.LOCAL
 			options.stubsClassifier == "classifier"
 			options.dependencies == [new StubConfiguration("a:b:c"), new StubConfiguration("foo:bar:baz:classifier")]
@@ -259,7 +260,7 @@ class StubRunnerOptionsBuilderSpec extends Specification {
 
 	def shouldNotPrintUsernameAndPassword() {
 		given:
-			StubRunnerOptionsBuilder builder = builder.withOptions(new StubRunnerOptions(1, 2, new FileSystemResource("root"),
+			StubRunnerOptionsBuilder builder = builder.withOptions(new StubRunnerOptions(1, 2, ResourceResolver.classpathResource("root"),
 					StubRunnerProperties.StubsMode.CLASSPATH, "classifier",
 					[new StubConfiguration("a:b:c")], [(new StubConfiguration("a:b:c")): 3], "username123", "password123",
 					new StubRunnerOptions.StubRunnerProxyOptions("host", 4), true, "consumer", "folder", false, true, true, [:], Foo, "server"))
@@ -301,7 +302,7 @@ class StubRunnerOptionsBuilderSpec extends Specification {
 		then:
 			options.minPortValue == 1
 			options.maxPortValue == 2
-			options.stubRepositoryRoot == new ClassPathResource("root")
+			options.stubRepositoryRoot == ResourceResolver.classpathResource("root")
 			options.stubsMode == StubRunnerProperties.StubsMode.LOCAL
 			options.stubsClassifier == "classifier"
 			options.dependencies == [new StubConfiguration("a:b:c"), new StubConfiguration("foo:bar:baz:classifier")]

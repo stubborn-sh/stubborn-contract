@@ -29,9 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
-import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
-
 /**
  * Technical options related to running StubRunner
  *
@@ -58,7 +55,7 @@ public class StubRunnerOptions {
 	/**
 	 * root URL from where the JAR with stub mappings will be downloaded.
 	 */
-	final Resource stubRepositoryRoot;
+	final StubResource stubRepositoryRoot;
 
 	/**
 	 * stub definition classifier.
@@ -141,7 +138,7 @@ public class StubRunnerOptions {
 	 */
 	final String serverId;
 
-	StubRunnerOptions(Integer minPortValue, Integer maxPortValue, Resource stubRepositoryRoot,
+	StubRunnerOptions(Integer minPortValue, Integer maxPortValue, StubResource stubRepositoryRoot,
 			StubRunnerProperties.StubsMode stubsMode, String stubsClassifier,
 			Collection<StubConfiguration> dependencies, Map<StubConfiguration, Integer> stubIdsToPortMapping,
 			String username, String password, final StubRunnerProxyOptions stubRunnerProxyOptions,
@@ -253,7 +250,7 @@ public class StubRunnerOptions {
 		return this.stubIdsToPortMapping;
 	}
 
-	public Resource getStubRepositoryRoot() {
+	public StubResource getStubRepositoryRoot() {
 		return this.stubRepositoryRoot;
 	}
 
@@ -308,7 +305,7 @@ public class StubRunnerOptions {
 	}
 
 	public boolean hasMappingsOutputFolder() {
-		return StringUtils.hasText(this.mappingsOutputFolder);
+		return this.mappingsOutputFolder != null && !this.mappingsOutputFolder.isBlank();
 	}
 
 	public String getMappingsOutputFolder() {
@@ -352,7 +349,7 @@ public class StubRunnerOptions {
 	}
 
 	private String obfuscate(String string) {
-		return StringUtils.hasText(string) ? "****" : "";
+		return string != null && !string.isBlank() ? "****" : "";
 	}
 
 	/**

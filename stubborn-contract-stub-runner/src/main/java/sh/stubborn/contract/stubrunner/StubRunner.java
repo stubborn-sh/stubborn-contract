@@ -30,7 +30,6 @@ import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.util.StringUtils;
 
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -80,7 +79,7 @@ public class StubRunner implements StubRunning {
 				this.stubsConfiguration);
 		if (this.stubRunnerOptions.hasMappingsOutputFolder()) {
 			String registeredMappings = this.localStubRunner.registeredMappings();
-			if (StringUtils.hasText(registeredMappings)) {
+			if (registeredMappings != null && !registeredMappings.isBlank()) {
 				File outputMappings = new File(this.stubRunnerOptions.getMappingsOutputFolder(),
 						this.stubsConfiguration.artifactId + "_"
 								+ stubs.getPort(this.stubsConfiguration.toColonSeparatedDependencyNotation()));

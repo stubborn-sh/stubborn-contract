@@ -23,8 +23,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Reads property from system prop and from env var.
  *
@@ -50,7 +48,7 @@ public final class StubRunnerPropertyUtils {
 	 */
 	public static boolean isPropertySet(String propName) {
 		String value = getProperty(new HashMap<>(), propName);
-		return StringUtils.hasText(value) && Boolean.parseBoolean(value);
+		return value != null && !value.isBlank() && Boolean.parseBoolean(value);
 	}
 
 	/**
@@ -61,7 +59,7 @@ public final class StubRunnerPropertyUtils {
 	 */
 	public static boolean hasProperty(Map<String, String> options, String propName) {
 		String value = getProperty(options, propName);
-		return StringUtils.hasText(value);
+		return value != null && !value.isBlank();
 	}
 
 	/**
@@ -90,7 +88,7 @@ public final class StubRunnerPropertyUtils {
 
 	private static String doGetProp(String stubRunnerProp) {
 		String systemProp = FETCHER.systemProp(stubRunnerProp);
-		if (StringUtils.hasText(systemProp)) {
+		if (systemProp != null && !systemProp.isBlank()) {
 			if (log.isTraceEnabled()) {
 				log.trace("System property [" + stubRunnerProp + "] has value [" + systemProp + "]");
 			}

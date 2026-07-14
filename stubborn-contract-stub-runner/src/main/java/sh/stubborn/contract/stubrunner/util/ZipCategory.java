@@ -28,8 +28,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
-import org.springframework.util.StreamUtils;
-
 /**
  * Based on
  * <a href="https://github.com/timyates/groovy-common-extensions">https://github.com/
@@ -80,7 +78,7 @@ public final class ZipCategory {
 							destinationFile.getParentFile().mkdirs();
 						}
 						try (OutputStream output = Files.newOutputStream(destinationFile.toPath())) {
-							StreamUtils.copy(zipInput, output);
+							zipInput.transferTo(output);
 						}
 						unzippedFiles.add(destinationFile);
 					}

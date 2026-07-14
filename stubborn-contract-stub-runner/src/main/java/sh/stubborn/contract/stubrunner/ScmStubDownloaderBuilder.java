@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -41,11 +42,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
-
-import org.springframework.core.io.AbstractResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.StringUtils;
 
 /**
  * Builds a {@link StubDownloader} to work with contracts and stubs from a SCM.
@@ -72,7 +68,7 @@ public final class ScmStubDownloaderBuilder implements StubDownloaderBuilder {
 				|| stubRunnerOptions.getStubRepositoryRoot() == null) {
 			return null;
 		}
-		Resource resource = stubRunnerOptions.getStubRepositoryRoot();
+		StubResource resource = stubRunnerOptions.getStubRepositoryRoot();
 		if (!(resource instanceof GitResource)) {
 			return null;
 		}
@@ -80,8 +76,8 @@ public final class ScmStubDownloaderBuilder implements StubDownloaderBuilder {
 	}
 
 	@Override
-	public Resource resolve(String location, ResourceLoader resourceLoader) {
-		if (!StringUtils.hasText(location) || !isProtocolAccepted(location)) {
+	public StubResource resolve(String location) {
+		if (location == null || location.isBlank() || !isProtocolAccepted(location)) {
 			return null;
 		}
 		return new GitResource(location);
@@ -90,9 +86,9 @@ public final class ScmStubDownloaderBuilder implements StubDownloaderBuilder {
 }
 
 /**
- * Primitive version of a Git {@link Resource}.
+ * Primitive version of a Git {@link StubResource}.
  */
-class GitResource extends AbstractResource {
+class GitResource implements StubResource {
 
 	private final String rawLocation;
 
@@ -115,11 +111,28 @@ class GitResource extends AbstractResource {
 		return URI.create(this.rawLocation);
 	}
 
+	@Override
+	public URL getURL() throws IOException {
+		return URI.create(this.rawLocation).toURL();
+	}
+
+	@Override
+	public File getFile() throws IOException {
+		return new File(URI.create(this.rawLocation));
+	}
+
+	@Override
+	public String getFilename() {
+		String path = this.rawLocation;
+		int sep = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+		return sep >= 0 ? path.substring(sep + 1) : path;
+	}
+
 }
 
 class GitContractsRepo {
 
-	static final Map<Resource, File> CACHED_LOCATIONS = new ConcurrentHashMap<>();
+	static final Map<StubResource, File> CACHED_LOCATIONS = new ConcurrentHashMap<>();
 
 	private static final Log log = LogFactory.getLog(GitContractsRepo.class);
 
@@ -131,7 +144,7 @@ class GitContractsRepo {
 		this.options = options;
 	}
 
-	File clonedRepo(Resource repo) {
+	File clonedRepo(StubResource repo) {
 		File file = CACHED_LOCATIONS.get(repo);
 		GitStubDownloaderProperties properties = new GitStubDownloaderProperties(repo, this.options);
 		if (file == null) {
@@ -185,7 +198,7 @@ class GitStubDownloader implements StubDownloader {
 				log.debug("Trying to find a contract for [" + stubConfiguration.toColonSeparatedDependencyNotation()
 						+ "]");
 			}
-			Resource repo = this.stubRunnerOptions.getStubRepositoryRoot();
+			StubResource repo = this.stubRunnerOptions.getStubRepositoryRoot();
 			File clonedRepo = this.gitContractsRepo.clonedRepo(repo);
 			FileWalker walker = new FileWalker(stubConfiguration);
 			Files.walkFileTree(clonedRepo.toPath(), walker);
@@ -233,7 +246,7 @@ class GitStubDownloaderProperties {
 
 	final Boolean ensureGitSuffix;
 
-	GitStubDownloaderProperties(Resource repo, StubRunnerOptions options) {
+	GitStubDownloaderProperties(StubResource repo, StubRunnerOptions options) {
 		String repoUrl;
 		Map<String, String> args = options.getProperties();
 		try {
@@ -248,13 +261,14 @@ class GitStubDownloaderProperties {
 		String modifiedRepo = repoUrl.startsWith("git@") ? modifyUrlForGitRepo(repoUrl) : repoUrl;
 		this.url = URI.create(modifiedRepo);
 		String username = StubRunnerPropertyUtils.getProperty(args, GIT_USERNAME_PROPERTY);
-		this.username = StringUtils.hasText(username) ? username : options.getUsername();
+		this.username = username != null && !username.isBlank() ? username : options.getUsername();
 		String password = StubRunnerPropertyUtils.getProperty(args, GIT_PASSWORD_PROPERTY);
-		this.password = StringUtils.hasText(password) ? password : options.getPassword();
+		this.password = password != null && !password.isBlank() ? password : options.getPassword();
 		String branch = StubRunnerPropertyUtils.getProperty(args, GIT_BRANCH_PROPERTY);
-		this.branch = StringUtils.hasText(branch) ? branch : "master";
+		this.branch = branch != null && !branch.isBlank() ? branch : "master";
 		String ensureGitSuffix = StubRunnerPropertyUtils.getProperty(args, GIT_ENSURE_GIT_SUFFIX_PROPERTY);
-		this.ensureGitSuffix = StringUtils.hasText(ensureGitSuffix) ? Boolean.parseBoolean(ensureGitSuffix) : true;
+		this.ensureGitSuffix = ensureGitSuffix != null && !ensureGitSuffix.isBlank()
+				? Boolean.parseBoolean(ensureGitSuffix) : true;
 
 		if (log.isDebugEnabled()) {
 			log.debug("Repo url is [" + repoUrl + "], modified url string " + "is [" + modifiedRepo + "] URL is ["
@@ -265,7 +279,7 @@ class GitStubDownloaderProperties {
 
 	private String schemeSpecificPart(URI uri) {
 		String part = uri.getSchemeSpecificPart();
-		if (!StringUtils.hasText(part)) {
+		if (part == null || part.isBlank()) {
 			return part;
 		}
 		return part.startsWith("//") ? part.substring(2) : part;

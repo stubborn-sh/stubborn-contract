@@ -32,8 +32,6 @@ import sh.stubborn.contract.verifier.converter.StubGeneratorProvider;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
 
-import org.springframework.util.StringUtils;
-
 final class MappingGenerator {
 
 	private static final Log log = LogFactory.getLog(MappingGenerator.class);
@@ -54,7 +52,7 @@ final class MappingGenerator {
 					new ContractMetadata(contractFile.toPath(), false, contracts.size(), null, contracts));
 			for (Map.Entry<Contract, String> entry : map.entrySet()) {
 				String value = entry.getValue();
-				File mapping = new File(mappingsFolder, StringUtils.stripFilenameExtension(contractFile.getName()) + "_"
+				File mapping = new File(mappingsFolder, stripFilenameExtension(contractFile.getName()) + "_"
 						+ Math.abs(entry.getKey().hashCode()) + stubGenerator.fileExtension());
 				mappings.add(storeFile(mapping.toPath(), value.getBytes()));
 			}
@@ -73,6 +71,12 @@ final class MappingGenerator {
 		catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	private static String stripFilenameExtension(String name) {
+		int dot = name.lastIndexOf('.');
+		int sep = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
+		return dot > sep ? name.substring(0, dot) : name;
 	}
 
 }

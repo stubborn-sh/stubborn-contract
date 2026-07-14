@@ -19,7 +19,7 @@ package sh.stubborn.contract.stubrunner.provider.wiremock;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,10 +54,8 @@ import sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions;
 import sh.stubborn.contract.wiremock.WireMockSpring;
 import wiremock.com.github.jknack.handlebars.Helper;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ServiceLoader;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Abstraction over WireMock as a HTTP Server Stub.
@@ -79,8 +77,18 @@ public class WireMockHttpServerStub implements HttpServerStub {
 
 	private WireMockConfiguration wireMockConfiguration;
 
+	private static boolean isPresent(String className) {
+		try {
+			Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+			return true;
+		}
+		catch (ClassNotFoundException ex) {
+			return false;
+		}
+	}
+
 	private WireMockConfiguration config() {
-		if (ClassUtils.isPresent("sh.stubborn.contract.wiremock.WireMockSpring", null)) {
+		if (isPresent("sh.stubborn.contract.wiremock.WireMockSpring")) {
 			return WireMockSpring.options().extensions(responseTransformers());
 		}
 		return new WireMockConfiguration().extensions(responseTransformers());
@@ -193,7 +201,7 @@ public class WireMockHttpServerStub implements HttpServerStub {
 	}
 
 	private String jsonArrayOfMappings(Collection<String> mappings) {
-		return "[" + StringUtils.collectionToDelimitedString(mappings, ",\n") + "]";
+		return "[" + String.join(",\n", mappings) + "]";
 	}
 
 	@Override
@@ -213,7 +221,7 @@ public class WireMockHttpServerStub implements HttpServerStub {
 
 	StubMapping getMapping(File file) {
 		try (InputStream stream = Files.newInputStream(file.toPath())) {
-			return StubMapping.buildFrom(StreamUtils.copyToString(stream, Charset.forName("UTF-8")));
+			return StubMapping.buildFrom(new String(stream.readAllBytes(), StandardCharsets.UTF_8));
 		}
 		catch (IOException | JsonException e) {
 			throw new IllegalStateException("Cannot read file", e);

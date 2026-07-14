@@ -25,8 +25,6 @@ import org.sonatype.plexus.components.cipher.DefaultPlexusCipher;
 import org.sonatype.plexus.components.cipher.PlexusCipher;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 
-import org.springframework.util.StringUtils;
-
 public class MavenSettings {
 
 	private static final String MAVEN_USER_CONFIG_DIRECTORY = "maven.user.config.dir";
@@ -45,7 +43,7 @@ public class MavenSettings {
 
 	private static String fromSystemPropOrEnv(String prop) {
 		String resolvedProp = System.getProperty(prop);
-		if (StringUtils.hasText(resolvedProp)) {
+		if (resolvedProp != null && !resolvedProp.isBlank()) {
 			return resolvedProp;
 		}
 		return System.getenv(prop);

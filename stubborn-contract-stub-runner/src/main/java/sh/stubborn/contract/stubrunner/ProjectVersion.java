@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Object representing a root project's version. Knows how to provide a minor bumped
  * version;
@@ -312,12 +310,12 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 		}
 
 		private boolean noSuffix() {
-			return !StringUtils.hasText(suffix);
+			return suffix == null || suffix.isBlank();
 		}
 
 		private String gav() {
 			// Finchley
-			if (!StringUtils.hasText(minor)) {
+			if (minor == null || minor.isBlank()) {
 				return String.format("%s", major);
 			}
 			// 1.0.1
@@ -338,13 +336,13 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 			// must have
 			// either major and suffix (release train)
 			// major, minor, patch and suffix
-			return isNumeric(major) && (!StringUtils.hasText(minor) || !StringUtils.hasText(patch)
-					|| !StringUtils.hasText(suffix) || !StringUtils.hasText(delimiter));
+			return isNumeric(major) && ((minor == null || minor.isBlank()) || (patch == null || patch.isBlank())
+					|| (suffix == null || suffix.isBlank()) || (delimiter == null || delimiter.isBlank()));
 		}
 
 		private boolean wrongReleaseTrainVersion() {
 			// BAD: 1.EXAMPLE, GOOD: Hoxton.RELEASE
-			return isNumeric(major) && !StringUtils.hasText(suffix);
+			return isNumeric(major) && (suffix == null || suffix.isBlank());
 		}
 
 	}

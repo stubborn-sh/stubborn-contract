@@ -16,34 +16,36 @@
 
 package sh.stubborn.contract.stubrunner;
 
-import org.springframework.core.io.ProtocolResolver;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-
 /**
- * Builder for a {@link StubDownloader}. Can't allow direct usage of
- * {@link StubDownloader} cause in order to register instances of this interface in
- * {@link org.springframework.core.io.support.SpringFactoriesLoader} one needs a default
- * constructor whereas the {@link StubDownloader} instances need to be constructed from
- * stub related options.
+ * Builder for a {@link StubDownloader}. Instances must have a no-arg constructor so they
+ * can be registered via {@link java.util.ServiceLoader} in
+ * {@code META-INF/services/sh.stubborn.contract.stubrunner.StubDownloaderBuilder}. The
+ * {@link StubDownloader} itself is built from options after discovery.
  *
- * Since {@code 2.0.0} extends {@link ProtocolResolver}. Implementations have to tell
- * Spring how to parse the repository root String into a resource.
+ * <p>
+ * Implementations may also override {@link #resolve(String)} to tell the
+ * {@link ResourceResolver} how to convert a protocol-specific URL string into a
+ * {@link StubResource}.
  *
  * @author Marcin Grzejszczak
  * @since 1.1.0
  */
-public interface StubDownloaderBuilder extends ProtocolResolver {
+public interface StubDownloaderBuilder {
 
 	/**
 	 * @param stubRunnerOptions options of Stub Runner
-	 * @return {@link StubDownloader} instance of {@code null} if current parameters don't
+	 * @return {@link StubDownloader} instance or {@code null} if current parameters don't
 	 * allow building the instance
 	 */
 	StubDownloader build(StubRunnerOptions stubRunnerOptions);
 
-	@Override
-	default Resource resolve(String location, ResourceLoader resourceLoader) {
+	/**
+	 * Converts a URL string into a {@link StubResource} for protocols understood by this
+	 * builder. Returns {@code null} if the URL is not handled.
+	 * @param location URL string
+	 * @return resolved {@link StubResource} or {@code null}
+	 */
+	default StubResource resolve(String location) {
 		return null;
 	}
 

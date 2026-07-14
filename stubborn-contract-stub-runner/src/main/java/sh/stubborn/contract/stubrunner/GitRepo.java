@@ -60,9 +60,6 @@ import org.eclipse.jgit.util.FS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.util.FileSystemUtils;
-import org.springframework.util.ResourceUtils;
-
 /**
  * Abstraction over a Git repo. Can cloned repo from a given location and check its
  * branch.
@@ -211,7 +208,7 @@ class GitRepo {
 	}
 
 	private File file(File project) throws FileNotFoundException {
-		return ResourceUtils.getFile(project.toURI()).getAbsoluteFile();
+		return new File(project.toURI()).getAbsoluteFile();
 	}
 
 	private Git cloneToBasedir(URI projectUrl, File destinationFolder) {
@@ -309,10 +306,27 @@ class GitRepo {
 
 	private void deleteBaseDirIfExists(String errorMessage) {
 		if (this.basedir.exists()) {
-			if (!FileSystemUtils.deleteRecursively(this.basedir)) {
+			if (!deleteRecursively(this.basedir)) {
 				throw new IllegalStateException(errorMessage);
 			}
 		}
+	}
+
+	private static boolean deleteRecursively(File root) {
+		if (root == null || !root.exists()) {
+			return true;
+		}
+		if (root.isDirectory()) {
+			File[] children = root.listFiles();
+			if (children != null) {
+				for (File child : children) {
+					if (!deleteRecursively(child)) {
+						return false;
+					}
+				}
+			}
+		}
+		return root.delete();
 	}
 
 	enum CommitResult {
@@ -370,7 +384,7 @@ class GitRepo {
 		};
 
 		JGitFactory(GitStubDownloaderProperties properties) {
-			if (org.springframework.util.StringUtils.hasText(properties.username)) {
+			if (properties.username != null && !properties.username.isBlank()) {
 				log.info("Passed username and password - will set a custom credentials provider");
 				this.provider = credentialsProvider(properties);
 			}

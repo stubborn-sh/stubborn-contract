@@ -18,8 +18,6 @@ package sh.stubborn.contract.stubrunner
 
 import spock.lang.Specification
 
-import org.springframework.core.io.AbstractResource
-import org.springframework.core.io.Resource
 /**
  * @author Marcin Grzejszczak
  */
@@ -27,7 +25,7 @@ class GitStubDownloaderPropertiesSpec extends Specification {
 
 	def "should parse only the URL after protocol if it doesn't start with git"() {
 		given:
-			Resource resource = resource("git://https://foo.com")
+			StubResource resource = resource("git://https://foo.com")
 		when:
 			GitStubDownloaderProperties props = new GitStubDownloaderProperties(resource, new StubRunnerOptionsBuilder().build())
 		then:
@@ -36,30 +34,22 @@ class GitStubDownloaderPropertiesSpec extends Specification {
 
 	def "should return the whole address if it starts with git@ but doesn't finish with dot git"() {
 		given:
-			Resource resource = resource("git://git@foo.com/foo")
+			StubResource resource = resource("git://git@foo.com/foo")
 		when:
 			GitStubDownloaderProperties props = new GitStubDownloaderProperties(resource, new StubRunnerOptionsBuilder().build())
 		then:
 			props.url == URI.create("git:git@foo.com/foo")
 	}
 
-	Resource resource(String resourceUri) {
-		return new AbstractResource() {
-			@Override
-			String getDescription() {
-				return null
-			}
-
-			@Override
-			InputStream getInputStream() throws IOException {
-				return null
-			}
-
-			@Override
-			URI getURI() throws IOException {
-				// Groovy resolves URI to getURI() and StackOverFlow is thrown
-				return java.net.URI.create(resourceUri)
-			}
-		}
+	StubResource resource(String resourceUri) {
+		return [
+			getDescription: { null },
+			getInputStream: { null },
+			getURI: { java.net.URI.create(resourceUri) },
+			getURL: { null },
+			getFile: { null },
+			getFilename: { null },
+			exists: { false }
+		] as StubResource
 	}
 }

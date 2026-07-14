@@ -24,10 +24,9 @@ import java.util.Properties;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer.NoOpHttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.ResourceResolver;
+import sh.stubborn.contract.stubrunner.StubResource;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Dave Syer
@@ -48,7 +47,7 @@ public class StubRunnerProperties {
 	/**
 	 * The repository root to use (where the stubs should be downloaded from).
 	 */
-	private Resource repositoryRoot;
+	private StubResource repositoryRoot;
 
 	/**
 	 * The ids of the stubs to run in "ivy" notation
@@ -153,7 +152,7 @@ public class StubRunnerProperties {
 		this.maxPort = maxPort;
 	}
 
-	public Resource getRepositoryRoot() {
+	public StubResource getRepositoryRoot() {
 		return this.repositoryRoot;
 	}
 
@@ -254,12 +253,14 @@ public class StubRunnerProperties {
 	}
 
 	public void setProperties(String[] properties) {
-		Properties elements = StringUtils.splitArrayElementsIntoProperties(properties, "=");
-		if (elements == null) {
+		if (properties == null) {
 			return;
 		}
-		for (String key : elements.stringPropertyNames()) {
-			this.properties.put(key, elements.getProperty(key));
+		for (String property : properties) {
+			int idx = property == null ? -1 : property.indexOf('=');
+			if (idx > 0) {
+				this.properties.put(property.substring(0, idx).trim(), property.substring(idx + 1).trim());
+			}
 		}
 	}
 
