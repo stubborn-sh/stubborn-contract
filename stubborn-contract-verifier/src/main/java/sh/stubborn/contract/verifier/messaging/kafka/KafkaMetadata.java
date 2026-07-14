@@ -18,6 +18,8 @@ package sh.stubborn.contract.verifier.messaging.kafka;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import sh.stubborn.contract.verifier.messaging.avro.AvroMetadata;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
@@ -28,6 +30,7 @@ import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
  * @author Marcin Grzejszczak
  * @since 3.0.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public final class KafkaMetadata implements SpringCloudContractMetadata {
 
 	/**
@@ -49,7 +52,7 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 	 * Avro serialization metadata. Configures the schema used to serialize/deserialize
 	 * messages on this Kafka topic.
 	 */
-	private AvroMetadata avro = new AvroMetadata();
+	private AvroMetadata avro;
 
 	/**
 	 * Returns the input message metadata.

@@ -16,11 +16,11 @@
 
 package sh.stubborn.contract.verifier.converter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import sh.stubborn.contract.spec.Contract;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
 
 /**
  * Post processor of stub mappings.
@@ -34,7 +34,11 @@ public interface StubPostProcessor<T> {
 	/**
 	 * List of registered stub post processors.
 	 */
-	List<StubPostProcessor> PROCESSORS = SpringFactoriesLoader.loadFactories(StubPostProcessor.class, null);
+	static List<StubPostProcessor> PROCESSORS() {
+		List<StubPostProcessor> list = new ArrayList<>();
+		ServiceLoader.load(StubPostProcessor.class).forEach(list::add);
+		return list;
+	}
 
 	/**
 	 * @param stubMapping - generated stub mapping

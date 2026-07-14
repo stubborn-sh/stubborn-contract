@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +39,7 @@ import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.file.ContractFileScanner;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 import org.springframework.util.MultiValueMap;
 
 import static sh.stubborn.contract.verifier.util.NamesUtil.afterLast;
@@ -75,7 +76,8 @@ public class TestGenerator {
 	}
 
 	private static SingleTestGenerator singleTestGenerator() {
-		List<SingleTestGenerator> factories = SpringFactoriesLoader.loadFactories(SingleTestGenerator.class, null);
+		List<SingleTestGenerator> factories = new ArrayList<>();
+		ServiceLoader.load(SingleTestGenerator.class).forEach(factories::add);
 		if (factories.isEmpty()) {
 			return new JavaTestGenerator();
 		}

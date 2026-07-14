@@ -23,7 +23,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import sh.stubborn.contract.stubrunner.junit4.StubRunnerRuleJUnitTest;
+
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,7 +52,7 @@ class StubRunnerJUnit5ExtensionTests {
 
 	private static String repoRoot() {
 		try {
-			return StubRunnerRuleJUnitTest.class.getResource("/m2repo/repository/").toURI().toString();
+			return StubRunnerJUnit5ExtensionTests.class.getResource("/m2repo/repository/").toURI().toString();
 		}
 		catch (Exception e) {
 			return "";

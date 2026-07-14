@@ -35,11 +35,6 @@ class ClassAnnotationsBuilder {
 		return this;
 	}
 
-	ClassAnnotationsBuilder jUnit4() {
-		this.parentBuilder.classAnnotations(new JUnit4OrderClassAnnotation(builder, metaData));
-		return this;
-	}
-
 	ClassAnnotationsBuilder jUnit5() {
 		this.parentBuilder.classAnnotations(new JUnit5OrderClassAnnotation(builder, metaData));
 		return this;

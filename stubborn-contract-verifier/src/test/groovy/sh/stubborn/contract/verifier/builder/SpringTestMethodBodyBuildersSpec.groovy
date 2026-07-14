@@ -2666,7 +2666,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String testContents -> testContents.contains("""responseBody ==~ java.util.regex.Pattern.compile("true|false")""") }
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String testContents -> testContents.contains("""assertThat(responseBody).matches("true|false");""") }
 			"webclient"       | {
 				configProperties.testMode = TestMode.WEBTESTCLIENT
@@ -2745,7 +2745,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				configProperties.testMode = TestMode.WEBTESTCLIENT
@@ -2785,7 +2785,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }
 	}
@@ -2826,7 +2826,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String body -> body.contains(""".build("GET", entity("12000", "text/plain"))""") } | { String body -> body.contains('responseBody == "12000"') }
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String body -> body.contains(""".build("GET", entity("12000", "text/plain"))""") } | { String body -> body.contains('assertThat(responseBody).isEqualTo("12000")') }
 			"webclient"       | {
 				configProperties.testMode = TestMode.WEBTESTCLIENT
@@ -2927,7 +2927,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String body -> body.contains('''response.getHeaderString("Authorization") == "foo secret bar"''') }
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String body -> body.contains('assertThat(response.getHeaderString("Authorization")).isEqualTo("foo secret bar");') }
 			"webclient"       | {
 				configProperties.testMode = TestMode.WEBTESTCLIENT
@@ -2986,7 +2986,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }
 	}
@@ -3112,7 +3112,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }
 	}
@@ -3162,7 +3162,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }
 	}
@@ -3204,7 +3204,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }
 	}
@@ -3278,7 +3278,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }
 	}
@@ -3310,7 +3310,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 			methodBuilderName | methodBuilder
 			"spock"           | { configProperties.testFramework = TestFramework.SPOCK }
 			"testng"          | { configProperties.testFramework = TestFramework.TESTNG }
-			"junit"           | { configProperties.testFramework = TestFramework.JUNIT }
+			"junit"           | { configProperties.testFramework = TestFramework.JUNIT5 }
 			"junit5"          | { configProperties.testFramework = TestFramework.JUNIT5 }
 	}
 
@@ -3350,7 +3350,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }
 	}
@@ -3398,7 +3398,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 				configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT
+				configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }
 	}
@@ -3438,7 +3438,7 @@ DocumentContext parsedJson = JsonPath.parse(json);
 			"mockmvc"         | { configProperties.testMode = TestMode.MOCKMVC }                                            | { String body -> body.contains('isEqualTo("attachment; filename=\\"test.pdf\\"")') }
 			// JaxRs Spock uses double quotes so quotes need escaping
 			"jaxrs-spock"     | { configProperties.testFramework = TestFramework.SPOCK; configProperties.testMode = TestMode.JAXRSCLIENT } | { String body -> body.contains('filename=\\"test.pdf\\"') }
-			"jaxrs"           | { configProperties.testFramework = TestFramework.JUNIT; configProperties.testMode = TestMode.JAXRSCLIENT } | { String body -> body.contains('isEqualTo("attachment; filename=\\"test.pdf\\"")') }
+			"jaxrs"           | { configProperties.testFramework = TestFramework.JUNIT5; configProperties.testMode = TestMode.JAXRSCLIENT } | { String body -> body.contains('isEqualTo("attachment; filename=\\"test.pdf\\"")') }
 			"webclient"       | { configProperties.testMode = TestMode.WEBTESTCLIENT }                                      | { String body -> body.contains('isEqualTo("attachment; filename=\\"test.pdf\\"")') }
 	}
 }

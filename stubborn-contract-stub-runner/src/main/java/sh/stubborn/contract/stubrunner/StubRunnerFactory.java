@@ -39,7 +39,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
 
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 
 /**
  * Factory of StubRunners. Basing on the options and passed collaborators downloads the
@@ -114,7 +114,8 @@ class StubRunnerFactory {
 
 	private void removeCurrentMappings(Path path) {
 
-		List<HttpServerStub> httpServerStubs = SpringFactoriesLoader.loadFactories(HttpServerStub.class, null);
+		List<HttpServerStub> httpServerStubs = new ArrayList<>();
+		ServiceLoader.load(HttpServerStub.class).forEach(httpServerStubs::add);
 		if (httpServerStubs.isEmpty()) {
 			httpServerStubs.add(new WireMockHttpServerStub());
 		}

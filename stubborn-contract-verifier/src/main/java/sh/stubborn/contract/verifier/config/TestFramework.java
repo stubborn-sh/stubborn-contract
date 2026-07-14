@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.config;
 
 import sh.stubborn.contract.verifier.config.framework.CustomDefinition;
 import sh.stubborn.contract.verifier.config.framework.JUnit5Definition;
-import sh.stubborn.contract.verifier.config.framework.JUnitDefinition;
 import sh.stubborn.contract.verifier.config.framework.SpockDefinition;
 import sh.stubborn.contract.verifier.config.framework.TestFrameworkDefinition;
 import sh.stubborn.contract.verifier.config.framework.TestNGDefinition;
@@ -36,10 +35,6 @@ public enum TestFramework {
 	 * Spock test framework.
 	 */
 	SPOCK(new SpockDefinition()),
-	/**
-	 * JUnit test framework.
-	 */
-	JUNIT(new JUnitDefinition()),
 	/**
 	 * JUnit5 test framework.
 	 */

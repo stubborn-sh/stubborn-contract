@@ -58,7 +58,6 @@ public class JavaTestGenerator implements SingleTestGenerator {
 						.userImports()
 						.customMode()
 						.json()
-						.jUnit4()
 						.jUnit5()
 						.testNG()
 						.spock()
@@ -69,7 +68,6 @@ public class JavaTestGenerator implements SingleTestGenerator {
 					.build()
 				.classAnnotations()
 					.defaultAnnotations()
-					.jUnit4()
 					.jUnit5()
 					.spock()
 					.build()
@@ -93,7 +91,6 @@ public class JavaTestGenerator implements SingleTestGenerator {
 		// @formatter:off
 		return SingleMethodBuilder.builder(builder, metaData)
 				.methodAnnotation()
-					.jUnit4()
 					.jUnit5()
 					.testNG()
 					.spock()

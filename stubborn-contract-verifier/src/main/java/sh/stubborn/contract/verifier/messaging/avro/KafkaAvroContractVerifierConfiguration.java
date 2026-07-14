@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -60,6 +61,7 @@ public final class KafkaAvroContractVerifierConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(name = "avroKafkaTemplate")
+	@ConditionalOnProperty(name = "spring.kafka.bootstrap-servers")
 	KafkaTemplate<String, Object> avroKafkaTemplate(
 			@Value("${spring.kafka.bootstrap-servers}") final String bootstrapServers,
 			@Value("${spring.kafka.properties.schema.registry.url:}") final String schemaRegistryUrl) {
@@ -73,6 +75,7 @@ public final class KafkaAvroContractVerifierConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
+	@ConditionalOnProperty(name = "spring.kafka.bootstrap-servers")
 	KafkaAvroMessageVerifierSender kafkaAvroMessageVerifierSender(
 			@Qualifier("avroKafkaTemplate") final KafkaTemplate<String, Object> avroKafkaTemplate) {
 		return new KafkaAvroMessageVerifierSender(avroKafkaTemplate);

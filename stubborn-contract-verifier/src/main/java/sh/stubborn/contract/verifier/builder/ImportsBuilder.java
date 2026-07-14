@@ -59,12 +59,6 @@ class ImportsBuilder {
 		return this;
 	}
 
-	ImportsBuilder jUnit4() {
-		this.parentBuilder.imports(new JUnit4Imports(builder, metaData), new JUnit4IgnoreImports(builder, metaData),
-				new JUnit4OrderImports(builder, metaData));
-		return this;
-	}
-
 	ImportsBuilder jUnit5() {
 		this.parentBuilder.imports(new JUnit5Imports(builder, metaData), new JUnit5IgnoreImports(builder, metaData),
 				new JUnit5OrderImports(builder, metaData));

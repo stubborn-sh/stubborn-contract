@@ -250,7 +250,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '\\$'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '$'
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -326,7 +326,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '\\$'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '$'
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -387,7 +387,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '\\$'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '$'
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -428,7 +428,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '\\$'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '$'
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -470,7 +470,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '\\$'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '$'
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -514,7 +514,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '\\$'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                                                      | '$'
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -566,7 +566,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -614,7 +614,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -670,7 +670,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT;
+				properties.testFramework = TestFramework.JUNIT5;
 				properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
@@ -735,7 +735,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT;
+				properties.testFramework = TestFramework.JUNIT5;
 				properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
@@ -777,7 +777,7 @@ class MockMvcMethodBodyBuilderWithMatchersSpec extends Specification implements 
 				properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT;
+				properties.testFramework = TestFramework.JUNIT5;
 				properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {

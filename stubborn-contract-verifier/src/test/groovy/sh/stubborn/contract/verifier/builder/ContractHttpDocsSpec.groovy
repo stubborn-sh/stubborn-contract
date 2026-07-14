@@ -372,13 +372,15 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
 import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification
 import io.restassured.response.ResponseOptions
-import spock.lang.Specification
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.*
+
 import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
 import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.*
+
 @SuppressWarnings("rawtypes")
 class FooSpec extends Specification {
 

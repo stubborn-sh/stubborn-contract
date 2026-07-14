@@ -22,18 +22,19 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
+
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
-import org.springframework.util.StringUtils;
 
 /**
  * Represents a single instance of ready-to-run stubs. Can run the stubs and then will
@@ -63,7 +64,8 @@ public class StubRunner implements StubRunning {
 			MessageVerifierSender<?> contractVerifierMessaging) {
 		this.stubsConfiguration = stubsConfiguration;
 		this.stubRunnerOptions = stubRunnerOptions;
-		List<HttpServerStub> serverStubs = SpringFactoriesLoader.loadFactories(HttpServerStub.class, null);
+		List<HttpServerStub> serverStubs = new ArrayList<>();
+		ServiceLoader.load(HttpServerStub.class).forEach(serverStubs::add);
 		this.stubRepository = new StubRepository(new File(repositoryPath), serverStubs, this.stubRunnerOptions,
 				stubsConfiguration);
 		AvailablePortScanner portScanner = new AvailablePortScanner(stubRunnerOptions.getMinPortValue(),

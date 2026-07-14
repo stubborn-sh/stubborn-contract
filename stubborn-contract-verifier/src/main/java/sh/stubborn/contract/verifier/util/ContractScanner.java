@@ -20,8 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.ServiceLoader;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -30,8 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
 
 /**
  * Scans through the given directory and converts all files for contract definitions.
@@ -96,11 +97,9 @@ public final class ContractScanner {
 	}
 
 	private static ContractConverter<?> contractConverter(File file) {
-		return SpringFactoriesLoader.loadFactories(ContractConverter.class, null)
-			.stream()
-			.filter(converter -> converter.isAccepted(file))
-			.findFirst()
-			.orElse(null);
+		List<ContractConverter> converters = new ArrayList<>();
+		ServiceLoader.load(ContractConverter.class).forEach(converters::add);
+		return converters.stream().filter(converter -> converter.isAccepted(file)).findFirst().orElse(null);
 	}
 
 	private static boolean isContractDescriptor(File file) {

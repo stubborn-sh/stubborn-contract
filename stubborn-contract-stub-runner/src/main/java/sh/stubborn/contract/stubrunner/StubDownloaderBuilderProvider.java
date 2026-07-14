@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 
 /**
  * Provider for {@link StubDownloaderBuilder}. It can also pick a default downloader if
@@ -34,7 +34,7 @@ public class StubDownloaderBuilderProvider {
 	private final List<StubDownloaderBuilder> builders = new ArrayList<>();
 
 	public StubDownloaderBuilderProvider() {
-		this.builders.addAll(SpringFactoriesLoader.loadFactories(StubDownloaderBuilder.class, null));
+		ServiceLoader.load(StubDownloaderBuilder.class).forEach(this.builders::add);
 	}
 
 	StubDownloaderBuilderProvider(List<StubDownloaderBuilder> builders) {

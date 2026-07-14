@@ -16,9 +16,11 @@
 
 package sh.stubborn.contract.verifier.dsl.wiremock;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.function.Function;
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
@@ -34,8 +36,6 @@ import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.MapConverter;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -80,8 +80,8 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	private String[] responseTransformerNames() {
-		List<WireMockExtensions> wireMockExtensions = SpringFactoriesLoader.loadFactories(WireMockExtensions.class,
-				null);
+		List<WireMockExtensions> wireMockExtensions = new ArrayList<>();
+		ServiceLoader.load(WireMockExtensions.class).forEach(wireMockExtensions::add);
 		if (!wireMockExtensions.isEmpty()) {
 			return wireMockExtensions.stream()
 				.map(WireMockExtensions::extensions)

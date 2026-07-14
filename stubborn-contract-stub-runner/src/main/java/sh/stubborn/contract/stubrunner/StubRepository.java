@@ -37,7 +37,7 @@ import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStub;
 import sh.stubborn.contract.verifier.util.ContractScanner;
 
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 
 /**
  * Wraps the folder with stub mappings.
@@ -52,7 +52,7 @@ class StubRepository {
 
 	private final File path;
 
-	private final List<ContractConverter> contractConverters;
+	private final List<ContractConverter> contractConverters = new ArrayList<>();
 
 	private final List<HttpServerStub> httpServerStubs;
 
@@ -63,7 +63,7 @@ class StubRepository {
 		if (!repository.isDirectory()) {
 			throw new IllegalArgumentException("Missing descriptor repository under path [" + repository + "]");
 		}
-		this.contractConverters = SpringFactoriesLoader.loadFactories(ContractConverter.class, null);
+		ServiceLoader.load(ContractConverter.class).forEach(this.contractConverters::add);
 		if (log.isTraceEnabled()) {
 			log.trace("Found the following contract converters " + this.contractConverters);
 		}

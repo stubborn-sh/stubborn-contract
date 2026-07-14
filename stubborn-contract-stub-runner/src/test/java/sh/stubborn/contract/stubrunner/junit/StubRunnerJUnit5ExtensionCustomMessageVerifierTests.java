@@ -23,7 +23,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import sh.stubborn.contract.stubrunner.junit4.StubRunnerRuleCustomPortJUnitTest;
+
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
@@ -56,7 +56,9 @@ class StubRunnerJUnit5ExtensionCustomMessageVerifierTests {
 
 	private static String repoRoot() {
 		try {
-			return StubRunnerRuleCustomPortJUnitTest.class.getResource("/m2repo/repository/").toURI().toString();
+			return StubRunnerJUnit5ExtensionCustomMessageVerifierTests.class.getResource("/m2repo/repository/")
+				.toURI()
+				.toString();
 		}
 		catch (Exception e) {
 			return "";

@@ -177,7 +177,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -215,7 +215,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -255,7 +255,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -297,7 +297,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -331,7 +331,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | """entity("{\\"items\\":[\\"HOP\\"]}", "application/json")"""
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | 'entity("{\\"items\\":[\\"HOP\\"]}", "application/json")'
 	}
 
@@ -365,7 +365,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | """entity("property1=VAL1", "application/octet-stream")"""
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | 'entity("property1=VAL1", "application/octet-stream")'
 	}
 
@@ -403,7 +403,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -440,7 +440,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -477,7 +477,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -520,7 +520,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -555,7 +555,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -588,7 +588,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | 'request("text/plain")'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | 'request("text/plain")'
 	}
 
@@ -626,7 +626,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | ["""entity('', 'text/plain')""", """header('Timer', '123')"""]
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | ['entity("\\"\\"", "text/plain")', 'header("Timer", "123")']
 	}
 
@@ -685,7 +685,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 		where:
 			methodBuilderName | methodBuilder
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -803,7 +803,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String paramString -> paramString }
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String paramString -> paramString.replace("'", "\"") }
 	}
 
@@ -835,7 +835,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | """entity("", "application/octet-stream")"""
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | """entity("", "application/octet-stream")"""
 	}
 
@@ -865,7 +865,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | "String responseAsString = response.readEntity(String)"
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | "String responseAsString = response.readEntity(String.class);"
 	}
 
@@ -897,7 +897,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | "String responseAsString = response.readEntity(String)" | 'responseBody == "test"'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | 'String responseBody = responseAsString;'               | 'assertThat(responseBody).isEqualTo("test");'
 	}
 
@@ -934,7 +934,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | '.build("GET")'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | 'build("GET")'
 	}
 
@@ -967,7 +967,7 @@ class JaxRsClientMethodBuilderSpec extends Specification implements WireMockStub
 					"""
 				}
 			}
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -978,8 +978,8 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
-import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
@@ -1053,7 +1053,7 @@ public class FooTest {
 					])
 				}
 			}
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -1094,7 +1094,7 @@ public class FooTest {
 					])
 				}
 			}
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -1125,7 +1125,7 @@ public class FooTest {
 					])
 				}
 			}
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -1147,7 +1147,7 @@ public class FooTest {
 					body(value(stub("HELLO FROM STUB"), server(regex(".*"))))
 				}
 			}
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -1193,7 +1193,7 @@ public class FooTest {
 					body(value(stub("HELLO FROM STUB"), server(execute('foo($it)'))))
 				}
 			}
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -1262,7 +1262,7 @@ public class FooTest {
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -1357,7 +1357,7 @@ public class FooTest {
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | '\\$'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | '$'
 	}
 
@@ -1397,7 +1397,7 @@ public class FooTest {
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -1432,7 +1432,7 @@ public class FooTest {
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -1472,7 +1472,7 @@ DATA
 		where:
 			methodBuilderName | methodBuilder
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -1505,13 +1505,13 @@ DATA
 		where:
 			methodBuilderName | methodBuilder
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
 	def "should generate test for cookies with string value in JAX-RS JUnit test"() {
 		given:
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDslWithCookiesValue)
 		then:
@@ -1524,7 +1524,7 @@ DATA
 
 	def "should generate test for cookies with pattern in JAX-RS JUnit test"() {
 		given:
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDslWithCookiesPattern)
 		then:
@@ -1538,7 +1538,7 @@ DATA
 
 	def "should not generate cookie assertions with absent value in JAX-RS JUnit test"() {
 		given:
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDslWithAbsentCookies)
 		then:

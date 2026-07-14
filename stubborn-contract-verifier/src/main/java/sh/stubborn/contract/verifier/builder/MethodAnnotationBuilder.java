@@ -30,12 +30,6 @@ class MethodAnnotationBuilder {
 		this.metaData = singleMethodBuilder.generatedClassMetaData;
 	}
 
-	MethodAnnotationBuilder jUnit4() {
-		this.singleMethodBuilder.methodAnnotation(new JUnit4MethodAnnotation(this.builder, this.metaData),
-				new JUnit4IgnoreMethodAnnotation(this.builder, this.metaData));
-		return this;
-	}
-
 	MethodAnnotationBuilder jUnit5() {
 		this.singleMethodBuilder.methodAnnotation(new JUnit5MethodAnnotation(this.builder, this.metaData),
 				new JUnit5IgnoreMethodAnnotation(this.builder, this.metaData));

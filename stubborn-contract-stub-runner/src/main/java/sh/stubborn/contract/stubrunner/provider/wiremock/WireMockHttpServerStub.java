@@ -54,7 +54,7 @@ import sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions;
 import sh.stubborn.contract.wiremock.WireMockSpring;
 import wiremock.com.github.jknack.handlebars.Helper;
 
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
@@ -87,8 +87,8 @@ public class WireMockHttpServerStub implements HttpServerStub {
 	}
 
 	private Extension[] responseTransformers() {
-		List<WireMockExtensions> wireMockExtensions = SpringFactoriesLoader.loadFactories(WireMockExtensions.class,
-				null);
+		List<WireMockExtensions> wireMockExtensions = new ArrayList<>();
+		ServiceLoader.load(WireMockExtensions.class).forEach(wireMockExtensions::add);
 		List<Extension> extensions = new ArrayList<>();
 		if (!wireMockExtensions.isEmpty()) {
 			for (WireMockExtensions wireMockExtension : wireMockExtensions) {

@@ -176,7 +176,7 @@ class FooSpec extends Specification {
 				}
 			}
 
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -187,8 +187,8 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
-import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
@@ -255,7 +255,7 @@ public class FooTest {
 						}
 					}
 
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -265,8 +265,8 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
-import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
@@ -331,7 +331,7 @@ public class FooTest {
 						}
 					}
 
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -405,7 +405,7 @@ public class FooTest {
 		where:
 			methodBuilderName | methodBuilder                                      | endOfLineRegExSymbol
 			"spock"           | { properties.testFramework = TestFramework.SPOCK } | '\\$'
-			"junit"           | { properties.testFramework = TestFramework.JUNIT } | '$'
+			"junit"           | { properties.testFramework = TestFramework.JUNIT5 } | '$'
 	}
 
 	@Issue("587")
@@ -431,7 +431,7 @@ public class FooTest {
 						}
 					}
 
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -683,7 +683,7 @@ class FooSpec extends Specification {
 						}
 					}
 
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -693,8 +693,8 @@ package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
-import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
@@ -810,13 +810,13 @@ class FooSpec extends Specification {
 
 }
 """
-			"junit"           | { properties.testFramework = TestFramework.JUNIT } | """\
+			"junit"           | { properties.testFramework = TestFramework.JUNIT5 } | """\
 package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
-import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
@@ -952,13 +952,13 @@ class FooSpec extends Specification {
 
 }
 """
-			"junit"           | { properties.testFramework = TestFramework.JUNIT } | """\
+			"junit"           | { properties.testFramework = TestFramework.JUNIT5 } | """\
 package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
-import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
@@ -1079,13 +1079,13 @@ class FooSpec extends Specification {
 
 }
 """
-			"junit"           | { properties.testFramework = TestFramework.JUNIT } | """\
+			"junit"           | { properties.testFramework = TestFramework.JUNIT5 } | """\
 package com.example;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Test;
-import org.junit.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;

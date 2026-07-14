@@ -77,7 +77,7 @@ public final class KafkaAvroMessageVerifierSender implements MessageVerifierSend
 					+ " Avro serialization for destination [" + destination + "]");
 		}
 		AvroMetadata avroMetadata = KafkaMetadata.fromMetadata(contract.metadata).getAvro();
-		if (avroMetadata.getSchema() == null) {
+		if (avroMetadata == null || avroMetadata.getSchema() == null) {
 			throw new IllegalArgumentException("No Avro schema configured in contract metadata —"
 					+ " cannot perform Avro serialization" + " for destination [" + destination + "]");
 		}

@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 
 /**
  * Retrieves file converters from the class path and operates on them.
@@ -34,7 +34,7 @@ public class StubGeneratorProvider {
 	private final List<StubGenerator> converters = new ArrayList<>();
 
 	public StubGeneratorProvider() {
-		this.converters.addAll(SpringFactoriesLoader.loadFactories(StubGenerator.class, null));
+		ServiceLoader.load(StubGenerator.class).forEach(this.converters::add);
 	}
 
 	public StubGeneratorProvider(List<StubGenerator> converters) {

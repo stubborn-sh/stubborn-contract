@@ -147,7 +147,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -192,7 +192,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -240,7 +240,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -290,7 +290,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -338,7 +338,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -383,7 +383,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -454,7 +454,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 						contains("""response.getHeaderString("Content-Type") ==~ java.util.regex.Pattern.compile("application/pdf.*")""")
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String testBody ->
 				testBody.
 						contains('assertThat(response.getHeaderString("Content-Length")).isEqualTo(4);') && testBody.
@@ -509,7 +509,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -560,7 +560,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -615,7 +615,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				string.contains('responseBody == "My name"')
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String string ->
 				string.contains('assertThat(responseBody).isEqualTo("My name");')
 			}
@@ -669,7 +669,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -737,7 +737,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -792,7 +792,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -871,7 +871,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -938,7 +938,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -1001,7 +1001,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -1050,7 +1050,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -1129,7 +1129,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -1171,7 +1171,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -1225,7 +1225,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				string.contains('response.readEntity(byte[]) == fileToBytes(this, "worksWithPdf_response_response.pdf")')
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String string ->
 				string.contains('entity(fileToBytes(this, "worksWithPdf_request_request.pdf")')
 			}                                                  | { String string ->
@@ -1312,7 +1312,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -1364,7 +1364,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -1424,7 +1424,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -1476,7 +1476,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 	}
 
@@ -1527,7 +1527,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -1579,7 +1579,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -1645,7 +1645,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 						contains('''response.getHeaderString("Content-Type") ==~ java.util.regex.Pattern.compile("^\\\\s*\\\\S[\\\\S\\\\s]*")'''); return true
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String testContent ->
 				assert testContent.
 						contains('''assertThat(response.getHeaderString("Content-Type")).matches("^\\\\s*\\\\S[\\\\S\\\\s]*")''') && testContent.
@@ -1691,7 +1691,7 @@ class MethodBodyBuilderSpec extends Specification implements WireMockStubVerifie
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -1751,7 +1751,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -1810,7 +1810,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -1853,7 +1853,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -1899,7 +1899,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -2021,7 +2021,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -2073,7 +2073,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -2117,7 +2117,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -2161,7 +2161,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"testNG"          | {
 				properties.testFramework = TestFramework.TESTNG
@@ -2223,7 +2223,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | '\\$'
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | '\$'
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT
@@ -2271,7 +2271,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { it -> it.contains('.build("POST", entity("fromDt=16-Aug-2023&toDt=25-Aug-2023", "application/x-www-form-urlencoded; charset=UTF-8"))')}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { it -> it.contains('.build("POST", entity("fromDt=16-Aug-2023&toDt=25-Aug-2023", "application/x-www-form-urlencoded; charset=UTF-8"))')}
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT

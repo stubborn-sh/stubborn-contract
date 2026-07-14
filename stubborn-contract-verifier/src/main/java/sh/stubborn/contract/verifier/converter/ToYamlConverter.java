@@ -20,17 +20,17 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
 
 /**
  * Converts contracts to YAML for the given folder.
@@ -108,7 +108,8 @@ public final class ToYamlConverter {
 	}
 
 	private static List<ContractConverter> converters() {
-		List<ContractConverter> converters = SpringFactoriesLoader.loadFactories(ContractConverter.class, null);
+		List<ContractConverter> converters = new ArrayList<>();
+		ServiceLoader.load(ContractConverter.class).forEach(converters::add);
 		converters.add(YamlContractConverter.INSTANCE);
 		converters.add(ContractVerifierDslConverter.INSTANCE);
 		return converters;

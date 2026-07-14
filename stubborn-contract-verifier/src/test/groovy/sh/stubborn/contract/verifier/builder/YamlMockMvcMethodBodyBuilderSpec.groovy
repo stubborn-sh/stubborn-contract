@@ -1237,7 +1237,7 @@ response:
         value: '^[a-zA-Z0-9_\\- ]+$'
 '''
 			Contract contractDsl = fromYaml(contract)
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -1629,7 +1629,7 @@ response:
         value: "assertThatUserNameIsNotNull($it)"
 '''
 			Contract contractDsl = fromYaml(contract)
-			properties.testFramework = TestFramework.JUNIT
+			properties.testFramework = TestFramework.JUNIT5
 		when:
 			String test = singleTestGenerator(contractDsl)
 		then:
@@ -1843,7 +1843,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String testContents -> testContents.contains("""responseBody ==~ java.util.regex.Pattern.compile("true|false")""") }
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String testContents -> testContents.contains("""assertThat(responseBody).matches("true|false");""") }
 			"custom"          | {
 				properties.testMode = TestMode.CUSTOM
@@ -1925,7 +1925,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"custom"          | {
 				properties.testMode = TestMode.CUSTOM
@@ -1968,7 +1968,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}
 			"webclient"       | { properties.testMode = TestMode.WEBTESTCLIENT }
 			"custom"          | { properties.testMode = TestMode.CUSTOM }
@@ -2010,7 +2010,7 @@ response:
 				properties.testFramework = TestFramework.SPOCK; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String body -> body.contains(""".build("GET", entity("12000", "text/plain"))""") } | { String body -> body.contains('responseBody == "12000"') }
 			"jaxrs"           | {
-				properties.testFramework = TestFramework.JUNIT; properties.testMode = TestMode.JAXRSCLIENT
+				properties.testFramework = TestFramework.JUNIT5; properties.testMode = TestMode.JAXRSCLIENT
 			}                                 | { String body -> body.contains(""".build("GET", entity("12000", "text/plain"))""") } | { String body -> body.contains('assertThat(responseBody).isEqualTo("12000")') }
 			"webclient"       | {
 				properties.testMode = TestMode.WEBTESTCLIENT

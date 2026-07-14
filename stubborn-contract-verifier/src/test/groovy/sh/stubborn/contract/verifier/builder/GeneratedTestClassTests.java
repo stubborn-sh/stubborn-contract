@@ -21,19 +21,18 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 import org.assertj.core.api.BDDAssertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-
-import org.springframework.util.FileSystemUtils;
 
 import static sh.stubborn.contract.verifier.util.ContractVerifierDslConverter.convertAsCollection;
 
@@ -70,11 +69,11 @@ public class GeneratedTestClassTests {
 + "import BazBar;\n"
 + "import com.jayway.jsonpath.DocumentContext;\n"
 + "import com.jayway.jsonpath.JsonPath;\n"
-+ "import org.junit.Test;\n"
-+ "import org.junit.Rule;\n"
-+ "import org.junit.Ignore;\n"
-+ "import org.junit.FixMethodOrder;\n"
-+ "import org.junit.runners.MethodSorters;\n"
++ "import org.junit.jupiter.api.Test;\n"
++ "import org.junit.jupiter.api.extension.ExtendWith;\n"
++ "import org.junit.jupiter.api.Disabled;\n"
++ "import org.junit.jupiter.api.TestMethodOrder;\n"
++ "import org.junit.jupiter.api.MethodOrderer;\n"
 + "import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;\n"
 + "import io.restassured.response.ResponseOptions;\n"
 + "\n"
@@ -84,11 +83,11 @@ public class GeneratedTestClassTests {
 + "import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;\n"
 + "\n"
 + "@SuppressWarnings(\"rawtypes\")\n"
-+ "@FixMethodOrder(MethodSorters.NAME_ASCENDING)\n"
++ "@TestMethodOrder(MethodOrderer.MethodName.class)"
 + "public class FooBarTest extends BazBar {\n"
 + "\n"
 + "\t@Test\n"
-+ "\t@Ignore\n"
++ "\t@Disabled\n"
 + "\tpublic void validate_foo() throws Exception {\n"
 + "\t\t// given:\n"
 + "\t\t\tMockMvcRequestSpecification request = given()\n"
@@ -111,28 +110,47 @@ public class GeneratedTestClassTests {
 + "}\n";
 	// @formatter:on
 
-	@Rule
-	public TemporaryFolder tmpFolder = new TemporaryFolder();
+	@TempDir
+	Path tmpDir;
 
 	File file;
 
 	File tmp;
 
-	@Before
+	@BeforeEach
 	public void setup() throws IOException, URISyntaxException {
-		this.file = this.tmpFolder.newFile();
+		this.file = Files.createTempFile(tmpDir, "tmp", ".groovy").toFile();
 		Files.write(this.file.toPath(), this.contract.getBytes());
-		this.tmp = this.tmpFolder.newFolder();
+		this.tmp = Files.createTempDirectory(tmpDir, "tmp").toFile();
 		File classpath = new File(GeneratedTestClassTests.class.getResource("/classpath/").toURI());
-		FileSystemUtils.copyRecursively(classpath, this.tmp);
+		copyRecursively(classpath.toPath(), this.tmp.toPath());
+	}
+
+	private static void copyRecursively(Path src, Path dst) throws IOException {
+		try (Stream<Path> stream = Files.walk(src)) {
+			stream.forEach(source -> {
+				Path destination = dst.resolve(src.relativize(source));
+				try {
+					if (Files.isDirectory(source)) {
+						Files.createDirectories(destination);
+					}
+					else {
+						Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+					}
+				}
+				catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
+		}
 	}
 
 	@Test
-	public void should_work_for_junit4_mockmvc_json_non_binary() {
+	public void should_work_for_junit5_mockmvc_json_non_binary() {
 		// given
 		JavaTestGenerator generator = new JavaTestGenerator();
 		ContractVerifierConfigProperties configProperties = new ContractVerifierConfigProperties();
-		configProperties.setTestFramework(TestFramework.JUNIT);
+		configProperties.setTestFramework(TestFramework.JUNIT5);
 		Collection<ContractMetadata> contracts = Collections.singletonList(
 				new ContractMetadata(this.file.toPath(), true, 1, 2, convertAsCollection(new File("/"), this.file)));
 		String includedDirectoryRelativePath = "some/path";

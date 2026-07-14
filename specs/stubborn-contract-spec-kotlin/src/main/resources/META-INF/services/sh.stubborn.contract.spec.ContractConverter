@@ -1,2 +1,1 @@
-sh.stubborn.contract.spec.ContractConverter=\
 sh.stubborn.contract.spec.internal.KotlinContractConverter

@@ -49,7 +49,7 @@ kafka:
 			def parsed = mapper.readerForMapOf(Object).readValue(yamlEntry)
 			KafkaMetadata kafkaMetadata = KafkaMetadata.fromMetadata(parsed)
 		then:
-			kafkaMetadata.avro.schema == null
+			kafkaMetadata.avro == null
 	}
 
 }

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -37,7 +38,7 @@ import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -156,7 +157,9 @@ public class ContractFileScanner {
 	}
 
 	protected List<ContractConverter> converters() {
-		return SpringFactoriesLoader.loadFactories(ContractConverter.class, null);
+		List<ContractConverter> converters = new ArrayList<>();
+		ServiceLoader.load(ContractConverter.class).forEach(converters::add);
+		return converters;
 	}
 
 	private void addContractToTestGeneration(List<ContractConverter> converters,

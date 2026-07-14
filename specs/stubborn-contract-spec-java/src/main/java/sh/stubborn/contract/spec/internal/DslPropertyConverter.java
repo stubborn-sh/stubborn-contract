@@ -16,9 +16,9 @@
 
 package sh.stubborn.contract.spec.internal;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 
 /**
  * A hook mechanism to allow external languages and frameworks to convert types that are
@@ -48,7 +48,8 @@ public interface DslPropertyConverter {
 		if (INSTANCE != null) {
 			return INSTANCE;
 		}
-		List<DslPropertyConverter> converters = SpringFactoriesLoader.loadFactories(DslPropertyConverter.class, null);
+		List<DslPropertyConverter> converters = new ArrayList<>();
+		ServiceLoader.load(DslPropertyConverter.class).forEach(converters::add);
 		if (converters.isEmpty()) {
 			return DEFAULT;
 		}
