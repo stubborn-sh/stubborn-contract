@@ -53,10 +53,6 @@ import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-
 /**
  * Converts a String or a Groovy or Java file into a {@link Contract}.
  *
@@ -184,7 +180,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 				classpathLocations.add(rootFolder);
 				appendUrlsFromAllClassLoaders(classpathLocations);
 				String classPath = System.getProperty("java.class.path", "");
-				if (StringUtils.hasText(classPath)) {
+				if (classPath != null && !classPath.isBlank()) {
 					classpathLocations.addAll(Arrays.stream(classPath.split(":")).map(File::new).toList());
 				}
 				fileManager.setLocation(StandardLocation.CLASS_PATH, classpathLocations);
@@ -206,7 +202,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 					URLClassLoader urlClassLoader = new URLClassLoader("contract-classloader",
 							new URL[] { new URL("file://" + directory.toAbsolutePath() + "/") },
 							Thread.currentThread().getContextClassLoader());
-					Class<?> clazz = ClassUtils.forName(fqn, urlClassLoader);
+					Class<?> clazz = Class.forName(fqn, true, urlClassLoader);
 					Constructor<?> constructor = clazz.getDeclaredConstructor();
 					constructor.setAccessible(true);
 					return constructor;
@@ -300,7 +296,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 	}
 
 	private static boolean contractNameEmpty(Contract it) {
-		return it != null && ObjectUtils.isEmpty(it.getName());
+		return it != null && (it.getName() == null || it.getName().isEmpty());
 	}
 
 	@Override

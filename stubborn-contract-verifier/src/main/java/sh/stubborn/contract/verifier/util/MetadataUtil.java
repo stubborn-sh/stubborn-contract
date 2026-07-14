@@ -22,28 +22,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.SerializationContext;
-import tools.jackson.databind.exc.InvalidDefinitionException;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.ser.PropertyWriter;
 import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
 import tools.jackson.databind.ser.std.SimpleFilterProvider;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * Helper class that allows to work with metadata.
@@ -93,31 +83,6 @@ public final class MetadataUtil {
 			return MAPPER.readerForUpdating(objectToMerge).readValue(bytes);
 		}
 		catch (Exception e) {
-			if (e.getClass().toString().contains("InaccessibleObjectException")
-					|| (e instanceof InvalidDefinitionException
-							&& e.getMessage().contains("InaccessibleObjectException"))) {
-				// JDK 16 workaround - ObjectMapper seems not be JDK16 compatible
-				// with the setup present in Spring Cloud Contract. So we will not
-				// allow patching but we will just copy values from the patch to
-				// to the object to merge
-				try {
-					YamlPropertiesFactoryBean yamlProcessor = new YamlPropertiesFactoryBean();
-					yamlProcessor.setResources(new ByteArrayResource(bytes));
-					Properties properties = yamlProcessor.getObject();
-					T props = (T) new Binder(
-							new MapConfigurationPropertySource(properties.entrySet()
-								.stream()
-								.collect(Collectors.toMap(entry -> entry.getKey().toString(),
-										entry -> entry.getValue().toString()))))
-						.bind("", objectToMerge.getClass())
-						.get();
-					BeanUtils.copyProperties(props, objectToMerge);
-					return objectToMerge;
-				}
-				catch (Exception ex) {
-					throw new IllegalStateException(ex);
-				}
-			}
 			throw new IllegalStateException(e);
 		}
 	}
@@ -266,17 +231,28 @@ class MyFilter extends SimpleBeanPropertyFilter implements Serializable {
 	}
 
 	boolean valueSameAsDefault(Object pojo, Object defaultInstance, String fieldName) {
-		Field field = ReflectionUtils.findField(pojo.getClass(), fieldName);
+		Field field = findField(pojo.getClass(), fieldName);
 		if (field == null) {
 			return false;
 		}
-		ReflectionUtils.makeAccessible(field);
+		field.setAccessible(true);
 		try {
 			return Objects.equals(field.get(pojo), field.get(defaultInstance));
 		}
 		catch (IllegalAccessException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	private static Field findField(Class<?> clazz, String fieldName) {
+		for (Class<?> c = clazz; c != null && c != Object.class; c = c.getSuperclass()) {
+			try {
+				return c.getDeclaredField(fieldName);
+			}
+			catch (NoSuchFieldException ignored) {
+			}
+		}
+		return null;
 	}
 
 }

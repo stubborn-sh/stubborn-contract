@@ -23,7 +23,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.MatchingType;
 
-import org.springframework.util.SerializationUtils;
+import sh.stubborn.contract.verifier.util.CloneUtils;
 
 /**
  * @author Marcin Grzejszczak
@@ -33,8 +33,7 @@ import org.springframework.util.SerializationUtils;
 interface BodyMethodGeneration {
 
 	default Object cloneBody(Object object) {
-		byte[] serializedObject = SerializationUtils.serialize(object);
-		return SerializationUtils.deserialize(serializedObject);
+		return CloneUtils.clone(object);
 	}
 
 	default void addColonIfRequired(Optional<String> lineSuffix, BlockBuilder blockBuilder) {

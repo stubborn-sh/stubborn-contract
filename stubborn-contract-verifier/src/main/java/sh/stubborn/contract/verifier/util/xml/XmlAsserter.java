@@ -28,8 +28,6 @@ import org.eclipse.wst.xml.xpath2.processor.Engine;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.ElementType;
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 
-import org.springframework.util.StringUtils;
-
 class XmlAsserter implements XmlVerifiable {
 
 	private static final Log log = LogFactory.getLog(XmlAsserter.class);
@@ -124,7 +122,7 @@ class XmlAsserter implements XmlVerifiable {
 		FieldAssertion asserter = new FieldAssertion(this.cachedObjects, this.xPathBuffer, this.specialCaseXPathBuffer,
 				value, this.xmlAsserterConfiguration);
 		String path = String.format("*[local-name()='%s'", value);
-		if (StringUtils.hasText(defaultNamespace)) {
+		if (defaultNamespace != null && !defaultNamespace.isBlank()) {
 			path += String.format(" and namespace-uri()='%s'", defaultNamespace);
 		}
 		path += "]";

@@ -27,8 +27,6 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
 import sh.stubborn.contract.verifier.util.NamesUtil;
 
-import org.springframework.util.StringUtils;
-
 class NameProvider {
 
 	private static final Log log = LogFactory.getLog(NameProvider.class);
@@ -41,7 +39,7 @@ class NameProvider {
 		ContractMetadata contractMetadata = singleContractMetadata.getContractMetadata();
 		File stubsFile = contractMetadata.getPath().toFile();
 		Contract stubContent = singleContractMetadata.getContract();
-		if (StringUtils.hasText(stubContent.getName())) {
+		if (stubContent.getName() != null && !stubContent.getName().isBlank()) {
 			String name = NamesUtil.camelCase(NamesUtil.convertIllegalPackageChars(stubContent.getName()));
 			if (log.isDebugEnabled()) {
 				log.debug("Overriding the default test name with [" + name + "]");
@@ -57,7 +55,7 @@ class NameProvider {
 			return name;
 		}
 		String name = camelCasedMethodFromFileName(stubsFile);
-		if (StringUtils.hasText(name) && log.isTraceEnabled()) {
+		if (name != null && !name.isBlank() && log.isTraceEnabled()) {
 			log.trace("The method name will be [" + name + "]");
 		}
 		return name;

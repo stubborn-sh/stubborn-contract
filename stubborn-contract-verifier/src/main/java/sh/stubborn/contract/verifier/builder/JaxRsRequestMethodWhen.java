@@ -24,8 +24,6 @@ import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
 
-import org.springframework.util.StringUtils;
-
 class JaxRsRequestMethodWhen implements When, JaxRsBodyParser {
 
 	private final BlockBuilder blockBuilder;
@@ -48,8 +46,9 @@ class JaxRsRequestMethodWhen implements When, JaxRsBodyParser {
 		ContentType type = metadata.getInputTestContentType();
 		String method = request.getMethod().getServerValue().toString().toLowerCase(Locale.ROOT);
 		if (request.getBody() != null) {
-			String contentType = StringUtils.hasText(metadata.getDefinedInputTestContentType())
-					? metadata.getDefinedInputTestContentType() : type.getMimeType();
+			String definedContentType = metadata.getDefinedInputTestContentType();
+			String contentType = (definedContentType != null && !definedContentType.isBlank()) ? definedContentType
+					: type.getMimeType();
 			Object body = request.getBody().getServerValue();
 			String value;
 			if (body instanceof ExecutionProperty) {

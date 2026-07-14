@@ -16,7 +16,10 @@
 
 package sh.stubborn.contract.verifier.util;
 
-import org.springframework.util.SerializationUtils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * Creates a clone.
@@ -36,8 +39,14 @@ public final class CloneUtils {
 	 * @return a clone of the object
 	 */
 	public static Object clone(Object object) {
-		byte[] serializedObject = SerializationUtils.serialize(object);
-		return SerializationUtils.deserialize(serializedObject);
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			new ObjectOutputStream(baos).writeObject(object);
+			return new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray())).readObject();
+		}
+		catch (Exception e) {
+			throw new IllegalStateException("Failed to clone object", e);
+		}
 	}
 
 }

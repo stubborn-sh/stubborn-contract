@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -39,9 +40,6 @@ import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import java.util.ServiceLoader;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 
 /**
  * Scans the provided file path for the DSLs. There's a possibility to provide inclusion
@@ -98,8 +96,8 @@ public class ContractFileScanner {
 		return pathMatchers;
 	}
 
-	public MultiValueMap<Path, ContractMetadata> findContractsRecursively() {
-		MultiValueMap<Path, ContractMetadata> result = CollectionUtils.toMultiValueMap(new LinkedHashMap<>());
+	public Map<Path, List<ContractMetadata>> findContractsRecursively() {
+		Map<Path, List<ContractMetadata>> result = new LinkedHashMap<>();
 		appendRecursively(baseDir, result);
 		return result;
 	}
@@ -108,7 +106,7 @@ public class ContractFileScanner {
 	 * We iterate over found contracts, filter out those that should be excluded and try
 	 * to convert via pluggable Contract Converters any possible contracts.
 	 */
-	private void appendRecursively(File baseDir, MultiValueMap<Path, ContractMetadata> result) {
+	private void appendRecursively(File baseDir, Map<Path, List<ContractMetadata>> result) {
 		List<ContractConverter> converters = convertersWithYml();
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Found the following contract converters " + converters);
@@ -123,9 +121,9 @@ public class ContractFileScanner {
 			boolean excluded = matchesPattern(file, excludeMatchers);
 			if (!excluded) {
 				boolean contractFile = isContractFile(file);
-				boolean included = !StringUtils.hasText(includeMatcher)
+				boolean included = (includeMatcher == null || includeMatcher.isBlank())
 						|| file.getAbsolutePath().matches(includeMatcher);
-				included = !CollectionUtils.isEmpty(includeMatchers) ? matchesPattern(file, includeMatchers) : included;
+				included = !includeMatchers.isEmpty() ? matchesPattern(file, includeMatchers) : included;
 				if (contractFile && included) {
 					addContractToTestGeneration(result, files, file, i,
 							ContractVerifierDslConverter.convertAsCollection(baseDir, file));
@@ -163,7 +161,7 @@ public class ContractFileScanner {
 	}
 
 	private void addContractToTestGeneration(List<ContractConverter> converters,
-			MultiValueMap<Path, ContractMetadata> result, File[] files, File file, int index) {
+			Map<Path, List<ContractMetadata>> result, File[] files, File file, int index) {
 		boolean converted = false;
 		if (!file.isDirectory()) {
 			for (ContractConverter converter : converters) {
@@ -198,7 +196,7 @@ public class ContractFileScanner {
 		}
 	}
 
-	private void addContractToTestGeneration(MultiValueMap<Path, ContractMetadata> result, File[] files, File file,
+	private void addContractToTestGeneration(Map<Path, List<ContractMetadata>> result, File[] files, File file,
 			int index, Collection<Contract> convertedContract) {
 		Path path = file.toPath();
 		Integer order = null;
@@ -211,7 +209,7 @@ public class ContractFileScanner {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Creating a contract entry for path [" + path + "] and metadata [" + metadata + "]");
 		}
-		result.add(parent, metadata);
+		result.computeIfAbsent(parent, k -> new ArrayList<>()).add(metadata);
 	}
 
 	private boolean hasScenarioFilenamePattern(Path path) {

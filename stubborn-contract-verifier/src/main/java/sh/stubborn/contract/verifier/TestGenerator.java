@@ -40,7 +40,6 @@ import sh.stubborn.contract.verifier.file.ContractFileScanner;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 
 import java.util.ServiceLoader;
-import org.springframework.util.MultiValueMap;
 
 import static sh.stubborn.contract.verifier.util.NamesUtil.afterLast;
 import static sh.stubborn.contract.verifier.util.NamesUtil.beforeLast;
@@ -134,7 +133,7 @@ public class TestGenerator {
 	}
 
 	void generateTestClasses(final String basePackageName) {
-		MultiValueMap<Path, ContractMetadata> contracts = contractFileScanner.findContractsRecursively();
+		Map<Path, List<ContractMetadata>> contracts = contractFileScanner.findContractsRecursively();
 		log.debug("Found the following contracts {}", contracts.keySet());
 
 		Set<Map.Entry<Path, List<ContractMetadata>>> inProgress = inProgress(contracts);
@@ -149,14 +148,14 @@ public class TestGenerator {
 		processAll(contracts, basePackageName);
 	}
 
-	private Set<Map.Entry<Path, List<ContractMetadata>>> inProgress(MultiValueMap<Path, ContractMetadata> contracts) {
+	private Set<Map.Entry<Path, List<ContractMetadata>>> inProgress(Map<Path, List<ContractMetadata>> contracts) {
 		return contracts.entrySet()
 			.stream()
 			.filter(entry -> entry.getValue().stream().anyMatch(ContractMetadata::anyInProgress))
 			.collect(Collectors.toSet());
 	}
 
-	void processAll(MultiValueMap<Path, ContractMetadata> contracts, final String basePackageName) {
+	void processAll(Map<Path, List<ContractMetadata>> contracts, final String basePackageName) {
 		contracts.entrySet()
 			.stream()
 			.forEach(entry -> processIncludedDirectory(relativizeContractPath(entry), entry.getValue(),

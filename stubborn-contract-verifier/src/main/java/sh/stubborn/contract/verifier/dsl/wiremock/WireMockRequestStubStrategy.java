@@ -70,9 +70,6 @@ import sh.stubborn.contract.verifier.util.xml.XmlToXPathsConverter;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
 import static sh.stubborn.contract.spec.internal.MatchingStrategy.Type.BINARY_EQUAL_TO;
 import static sh.stubborn.contract.spec.internal.MatchingType.EQUALITY;
 import static sh.stubborn.contract.verifier.util.ContentType.FORM;
@@ -123,7 +120,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 		if (contract.getMetadata().containsKey(ContractVerifierMetadata.METADATA_KEY)) {
 			ContractVerifierMetadata metadata = ContractVerifierMetadata.fromMetadata(contract.getMetadata());
 			appendSpringCloudContractMatcher(metadata, requestPatternBuilder);
-			if (!StringUtils.hasLength(metadata.getTool())) {
+			if (metadata.getTool() == null || metadata.getTool().isEmpty()) {
 				doAppendBody(requestPatternBuilder);
 			}
 		}
@@ -260,7 +257,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	private boolean onlySizeAssertionsArePresent(JsonPaths values) {
-		return !CollectionUtils.isEmpty(values)
+		return values != null && !values.isEmpty()
 				&& (request.getBodyMatchers() == null || !request.getBodyMatchers().hasMatchers())
 				&& this.every(values.iterator(), MethodBufferingJsonVerifiable::assertsSize);
 	}

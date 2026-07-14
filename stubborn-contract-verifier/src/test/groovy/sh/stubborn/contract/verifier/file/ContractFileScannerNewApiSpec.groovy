@@ -26,7 +26,6 @@ import sh.stubborn.contract.spec.ContractConverter
 import spock.lang.Specification
 
 import org.springframework.util.FileSystemUtils
-import org.springframework.util.MultiValueMap
 /**
  * @author Jakub Kubrynski, codearte.io
  */
@@ -51,7 +50,7 @@ class ContractFileScannerNewApiSpec extends Specification {
 			Set<String> ignored = ["other/different/**"] as Set
 			ContractFileScanner scanner = new ContractFileScanner(baseDir, excluded, ignored, [] as Set, null)
 		when:
-			MultiValueMap<Path, ContractMetadata> result = scanner.findContractsRecursively()
+			Map result = scanner.findContractsRecursively()
 		then:
 			result.keySet().size() == 3
 			result.get(baseDir.toPath().resolve("different")).size() == 1
@@ -69,7 +68,7 @@ class ContractFileScannerNewApiSpec extends Specification {
 			Set<String> ignored = ["bar/**"] as Set
 			ContractFileScanner scanner = new ContractFileScanner(baseDir, excluded, ignored, [] as Set, null)
 		when:
-			MultiValueMap<Path, ContractMetadata> result = scanner.findContractsRecursively()
+			Map result = scanner.findContractsRecursively()
 		then:
 			result.entrySet().size() == 2
 		and:
@@ -83,7 +82,7 @@ class ContractFileScannerNewApiSpec extends Specification {
 			File baseDir = new File(this.getClass().getResource("/directory/with/scenario").toURI())
 			ContractFileScanner scanner = new ContractFileScanner(baseDir, [] as Set, [] as Set, [] as Set, null)
 		when:
-			MultiValueMap<Path, ContractMetadata> contracts = scanner.findContractsRecursively()
+			Map contracts = scanner.findContractsRecursively()
 		then:
 			contracts.values().size() == 1
 			def firstEntry = contracts.values().first()
@@ -166,7 +165,7 @@ class ContractFileScannerNewApiSpec extends Specification {
 				}
 			}
 		when:
-			MultiValueMap<Path, ContractMetadata> result = scanner.findContractsRecursively()
+			Map result = scanner.findContractsRecursively()
 		then:
 			result.keySet().size() == 1
 			result.entrySet().every { it.value.convertedContract }
@@ -182,7 +181,7 @@ class ContractFileScannerNewApiSpec extends Specification {
 			Set<String> included = ["social-service/**", "**/coupon-collected/**/*V1*"] as Set
 			ContractFileScanner scanner = new ContractFileScanner(baseDir, [] as Set, [] as Set, included, null)
 		when:
-			MultiValueMap<Path, ContractMetadata> result = scanner.findContractsRecursively()
+			Map result = scanner.findContractsRecursively()
 		then:
 			result.keySet().size() == 3
 			result.values().flatten().find {

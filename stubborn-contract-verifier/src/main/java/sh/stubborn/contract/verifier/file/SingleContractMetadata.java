@@ -33,7 +33,7 @@ import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.util.ContentType;
 
-import org.springframework.util.Assert;
+import java.util.Objects;
 
 import static sh.stubborn.contract.verifier.util.ContentType.DEFINED;
 import static sh.stubborn.contract.verifier.util.ContentType.JSON;
@@ -89,7 +89,7 @@ public class SingleContractMetadata {
 	private final boolean http;
 
 	public SingleContractMetadata(Contract currentContract, ContractMetadata contractMetadata) {
-		Assert.notNull(currentContract, "Contract must not be null");
+		Objects.requireNonNull(currentContract, "Contract must not be null");
 		this.allContracts = contractMetadata.getConvertedContract();
 		this.contract = currentContract;
 		this.contractMetadata = contractMetadata;

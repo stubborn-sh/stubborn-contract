@@ -18,8 +18,6 @@ package sh.stubborn.contract.verifier.builder;
 
 import sh.stubborn.contract.verifier.config.TestFramework;
 
-import org.springframework.util.StringUtils;
-
 class JavaClassMetaData implements ClassMetaData, DefaultClassMetadata {
 
 	private final BlockBuilder blockBuilder;
@@ -41,8 +39,8 @@ class JavaClassMetaData implements ClassMetaData, DefaultClassMetadata {
 
 	@Override
 	public ClassMetaData suffix() {
-		String suffix = StringUtils.hasText(this.generatedClassMetaData.configProperties.getNameSuffixForTests())
-				? this.generatedClassMetaData.configProperties.getNameSuffixForTests() : "Test";
+		String nameSuffix = this.generatedClassMetaData.configProperties.getNameSuffixForTests();
+		String suffix = (nameSuffix != null && !nameSuffix.isBlank()) ? nameSuffix : "Test";
 		if (!this.blockBuilder.endsWith(suffix)) {
 			this.blockBuilder.addAtTheEnd(suffix);
 		}
@@ -79,7 +77,7 @@ class JavaClassMetaData implements ClassMetaData, DefaultClassMetadata {
 	@Override
 	public ClassMetaData parentClass() {
 		String baseClass = fqnBaseClass();
-		if (StringUtils.hasText(baseClass)) {
+		if (baseClass != null && !baseClass.isBlank()) {
 			int lastIndexOf = baseClass.lastIndexOf(".");
 			if (lastIndexOf > 0) {
 				baseClass = baseClass.substring(lastIndexOf + 1);

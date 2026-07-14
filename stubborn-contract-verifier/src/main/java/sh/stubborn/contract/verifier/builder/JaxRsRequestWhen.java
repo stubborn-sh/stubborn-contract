@@ -21,8 +21,6 @@ import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.MapConverter;
 
-import org.springframework.util.StringUtils;
-
 class JaxRsRequestWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 
 	private final BlockBuilder blockBuilder;
@@ -42,7 +40,7 @@ class JaxRsRequestWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 
 	void appendRequestWithRequiredResponseContentType(Request request) {
 		String acceptHeader = getHeader(request, "Accept");
-		if (StringUtils.hasText(acceptHeader)) {
+		if (acceptHeader != null && !acceptHeader.isBlank()) {
 			this.blockBuilder.addIndented(".request(\"" + acceptHeader + "\")");
 		}
 		else {

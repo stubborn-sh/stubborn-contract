@@ -59,8 +59,6 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.exc.MismatchedInputException;
 import tools.jackson.dataformat.yaml.YAMLMapper;
 
-import org.springframework.util.StringUtils;
-
 import static java.util.stream.Collectors.toSet;
 import static sh.stubborn.contract.verifier.util.ContentType.XML;
 import static sh.stubborn.contract.verifier.util.ContentUtils.evaluateClientSideContentType;
@@ -153,7 +151,7 @@ class YamlToContracts {
 
 	private void mapName(int counter, File contractFile, List<YamlContract> yamlContracts, YamlContract yamlContract,
 			Contract dslContract) {
-		dslContract.name(StringUtils.hasText(yamlContract.name) ? yamlContract.name
+		dslContract.name((yamlContract.name != null && !yamlContract.name.isBlank()) ? yamlContract.name
 				: NamesUtil.defaultContractName(contractFile, yamlContracts, counter));
 	}
 

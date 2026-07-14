@@ -40,7 +40,7 @@ import sh.stubborn.contract.verifier.util.JsonPaths;
 import sh.stubborn.contract.verifier.util.JsonToJsonPathsConverter;
 import sh.stubborn.contract.verifier.util.MapConverter;
 
-import org.springframework.beans.BeanWrapperImpl;
+import java.lang.reflect.Method;
 
 /**
  * @author Marcin Grzejszczak
@@ -352,11 +352,20 @@ class JsonBodyVerificationBuilder implements BodyMethodGeneration, ClassVerifier
 			}
 			return Array.get(current, index);
 		}
-		BeanWrapperImpl wrapper = new BeanWrapperImpl(current);
-		if (!wrapper.isReadableProperty(token)) {
-			throw new IllegalStateException("No readable property [" + token + "]");
+		try {
+			String capitalized = Character.toUpperCase(token.charAt(0)) + token.substring(1);
+			Method getter;
+			try {
+				getter = current.getClass().getMethod("get" + capitalized);
+			}
+			catch (NoSuchMethodException ignored) {
+				getter = current.getClass().getMethod("is" + capitalized);
+			}
+			return getter.invoke(current);
 		}
-		return wrapper.getPropertyValue(token);
+		catch (Exception ex) {
+			throw new IllegalStateException("No readable property [" + token + "]", ex);
+		}
 	}
 
 	private int parseIndex(String token) {

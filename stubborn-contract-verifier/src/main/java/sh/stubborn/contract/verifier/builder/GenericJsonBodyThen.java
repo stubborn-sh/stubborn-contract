@@ -34,8 +34,6 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.MapConverter;
 
-import org.springframework.util.StringUtils;
-
 import static sh.stubborn.contract.verifier.util.ContentType.DEFINED;
 import static sh.stubborn.contract.verifier.util.ContentType.FORM;
 import static sh.stubborn.contract.verifier.util.ContentType.JSON;
@@ -106,7 +104,7 @@ class GenericJsonBodyThen implements Then {
 	private void processBodyElement(String oldProp, String property, Object value) {
 		String propDiff = subtract(property, oldProp);
 		String prop = wrappedWithBracketsForDottedProp(propDiff);
-		String mergedProp = StringUtils.hasText(property) ? oldProp + "." + prop : "";
+		String mergedProp = (property != null && !property.isBlank()) ? oldProp + "." + prop : "";
 		if (value instanceof ExecutionProperty) {
 			processBodyElement(mergedProp, (ExecutionProperty) value);
 		}

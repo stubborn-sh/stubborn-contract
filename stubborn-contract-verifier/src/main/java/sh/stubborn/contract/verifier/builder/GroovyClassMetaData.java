@@ -19,8 +19,6 @@ package sh.stubborn.contract.verifier.builder;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 
-import org.springframework.util.StringUtils;
-
 class GroovyClassMetaData implements ClassMetaData, DefaultClassMetadata {
 
 	private final BlockBuilder blockBuilder;
@@ -46,8 +44,8 @@ class GroovyClassMetaData implements ClassMetaData, DefaultClassMetadata {
 
 	@Override
 	public ClassMetaData suffix() {
-		String suffix = StringUtils.hasText(this.generatedClassMetaData.configProperties.getNameSuffixForTests())
-				? this.generatedClassMetaData.configProperties.getNameSuffixForTests() : "Spec";
+		String nameSuffix = this.generatedClassMetaData.configProperties.getNameSuffixForTests();
+		String suffix = (nameSuffix != null && !nameSuffix.isBlank()) ? nameSuffix : "Spec";
 		if (!this.blockBuilder.endsWith(suffix)) {
 			this.blockBuilder.addAtTheEnd(suffix);
 		}
@@ -72,7 +70,7 @@ class GroovyClassMetaData implements ClassMetaData, DefaultClassMetadata {
 		String baseClass = baseClassProvider().retrieveBaseClass(properties.getBaseClassMappings(),
 				properties.getPackageWithBaseClasses(), properties.getBaseClassForTests(),
 				includedDirectoryRelativePath);
-		baseClass = StringUtils.hasText(baseClass) ? baseClass : "Specification";
+		baseClass = (baseClass != null && !baseClass.isBlank()) ? baseClass : "Specification";
 		int lastIndexOf = baseClass.lastIndexOf(".");
 		if (lastIndexOf > 0) {
 			baseClass = baseClass.substring(lastIndexOf + 1);

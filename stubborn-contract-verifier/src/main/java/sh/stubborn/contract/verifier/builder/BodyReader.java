@@ -34,7 +34,7 @@ import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
-import org.springframework.util.Assert;
+import java.util.Objects;
 
 class BodyReader {
 
@@ -108,9 +108,9 @@ class BodyReader {
 	}
 
 	private void generatedTestResourcesFileBytes(byte[] bytes, File newFile) throws IOException {
-		Assert.notNull(this.generatedClassMetaData.configProperties.getGeneratedTestSourcesDir(),
+		Objects.requireNonNull(this.generatedClassMetaData.configProperties.getGeneratedTestSourcesDir(),
 				"No generated test sources directory set");
-		Assert.notNull(this.generatedClassMetaData.configProperties.getGeneratedTestResourcesDir(),
+		Objects.requireNonNull(this.generatedClassMetaData.configProperties.getGeneratedTestResourcesDir(),
 				"No generated test resources directory set");
 		Path path = this.generatedClassMetaData.configProperties.getGeneratedTestSourcesDir().toPath();
 		Path relativePath = path.relativize(newFile.toPath());

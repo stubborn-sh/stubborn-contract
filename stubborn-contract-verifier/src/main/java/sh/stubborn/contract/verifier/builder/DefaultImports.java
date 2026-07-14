@@ -16,8 +16,6 @@
 
 package sh.stubborn.contract.verifier.builder;
 
-import org.springframework.util.StringUtils;
-
 class DefaultImports implements Imports, DefaultBaseClassProvider {
 
 	private final BlockBuilder blockBuilder;
@@ -35,7 +33,7 @@ class DefaultImports implements Imports, DefaultBaseClassProvider {
 	@Override
 	public Imports call() {
 		String fqnBaseClass = fqnBaseClass();
-		if (StringUtils.hasText(fqnBaseClass)) {
+		if (fqnBaseClass != null && !fqnBaseClass.isBlank()) {
 			this.blockBuilder.addLineWithEnding("import " + fqnBaseClass);
 		}
 		return this;

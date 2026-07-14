@@ -24,8 +24,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import sh.stubborn.contract.verifier.util.NamesUtil;
 
-import org.springframework.util.StringUtils;
-
 class BaseClassProvider {
 
 	private static final Log log = LogFactory.getLog(BaseClassProvider.class);
@@ -50,7 +48,7 @@ class BaseClassProvider {
 				return mapping.get().getValue();
 			}
 		}
-		if (!StringUtils.hasText(packageWithBaseClasses)) {
+		if (packageWithBaseClasses == null || packageWithBaseClasses.isBlank()) {
 			return baseClassForTests;
 		}
 		String generatedClassName = generateDefaultBaseClassName(contractPackage, packageWithBaseClasses);
