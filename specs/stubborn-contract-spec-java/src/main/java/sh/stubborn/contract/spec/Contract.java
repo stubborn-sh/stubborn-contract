@@ -170,6 +170,7 @@ public class Contract {
 	public static Contract make(Consumer<Contract> consumer) {
 		Contract contract = new Contract();
 		consumer.accept(contract);
+		assertContract(contract);
 		return contract;
 	}
 
