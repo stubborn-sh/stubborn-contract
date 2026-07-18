@@ -89,6 +89,7 @@
 		<module>stubborn-contract-starters</module>
 		<module>stubborn-contract-tools</module>
 		<module>stubborn-extras</module>
+		<module>stubborn-migration</module>
 		<module>stubborn-contract-stub-runner-boot</module>
 		<module>stubborn-messaging-kafka</module>
 		<module>stubborn-jsonassert</module>

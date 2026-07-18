@@ -1,0 +1,90 @@
+name: Publish Docker Images
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*.*.*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+  DOCKER_ORG: mgrzejszczak
+
+jobs:
+  publish-docker:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Compute image tags
+        id: meta
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+            TAGS="$VERSION latest"
+          else
+            TAGS="latest"
+          fi
+          echo "tags=$TAGS" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build stubborn-build parent
+        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Install BOM
+        run: |
+          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Build & install all modules (no tests)
+        run: ./mvnw install -DskipTests --no-transfer-progress
+
+      - name: Build docker module parents
+        run: ./mvnw install -N -f docker/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Build & push stubborn-contract Docker image
+        run: |
+          ./mvnw package -f docker/stubborn-contract-docker/pom.xml \
+            -Ddocker.registry.organization=${{ env.DOCKER_ORG }} \
+            -DskipTests --no-transfer-progress
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & push stubborn-stub-runner Docker image
+        run: |
+          ./mvnw package -f docker/stubborn-contract-stub-runner-docker/pom.xml \
+            -Ddocker.registry.organization=${{ env.DOCKER_ORG }} \
+            -DskipTests --no-transfer-progress
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Tag images with additional tags
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          docker tag "${{ env.DOCKER_ORG }}/stubborn-contract:${VERSION}" \
+                     "${{ env.DOCKER_ORG }}/stubborn-contract:latest"
+          docker push "${{ env.DOCKER_ORG }}/stubborn-contract:latest"
+          docker tag "${{ env.DOCKER_ORG }}/stubborn-contract-stub-runner:${VERSION}" \
+                     "${{ env.DOCKER_ORG }}/stubborn-contract-stub-runner:latest"
+          docker push "${{ env.DOCKER_ORG }}/stubborn-contract-stub-runner:latest"
