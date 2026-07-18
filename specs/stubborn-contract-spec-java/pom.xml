@@ -4,6 +4,7 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<properties>
+		<stubborn.no-spring.skip>false</stubborn.no-spring.skip>
 		<automaton.version>1.12-4</automaton.version>
 	</properties>
 	<parent>
