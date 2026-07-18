@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,8 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class StubRunnerJUnit5ExtensionExceptionThrowingTests {
 
 	@RegisterExtension
-	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension()
-		.stubsMode(StubRunnerProperties.StubsMode.REMOTE)
+	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension().stubsMode(StubsMode.REMOTE)
 		.repoRoot(repoRoot())
 		.downloadStub("sh.stubborn.contract.verifier.stubs", "bootService");
 

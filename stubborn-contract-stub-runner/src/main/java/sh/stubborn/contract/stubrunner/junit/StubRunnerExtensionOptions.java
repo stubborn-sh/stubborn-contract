@@ -21,7 +21,7 @@ import java.util.Map;
 
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
@@ -79,7 +79,7 @@ interface StubRunnerExtensionOptions {
 	 * @param stubsMode Stubs mode that should be used
 	 * @return the stub runner extension
 	 */
-	StubRunnerExtension stubsMode(StubRunnerProperties.StubsMode stubsMode);
+	StubRunnerExtension stubsMode(StubsMode stubsMode);
 
 	/**
 	 * @param groupId group id of the stub

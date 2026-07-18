@@ -38,7 +38,7 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import sh.stubborn.contract.spec.ContractVerifierException;
 import sh.stubborn.contract.stubrunner.AetherStubDownloader;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.TestGenerator;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
@@ -162,7 +162,7 @@ public class GenerateTestsMojo extends AbstractMojo {
 	 * Picks the mode in which stubs will be found and registered.
 	 */
 	@Parameter(property = "contractsMode", defaultValue = "CLASSPATH")
-	private StubRunnerProperties.StubsMode contractsMode;
+	private StubsMode contractsMode;
 
 	/**
 	 * A package that contains all the base clases for generated tests. If your contract

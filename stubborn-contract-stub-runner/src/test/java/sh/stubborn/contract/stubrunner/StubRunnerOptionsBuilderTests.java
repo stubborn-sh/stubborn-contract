@@ -23,7 +23,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -163,17 +163,16 @@ class StubRunnerOptionsBuilderTests {
 	@Test
 	void shouldSetAllDependenciesFromOptions() {
 		StubResource root = ResourceResolver.classpathResource("root");
-		StubRunnerOptionsBuilder b = this.builder
-			.withOptions(new StubRunnerOptions(1, 2, root, StubRunnerProperties.StubsMode.LOCAL, "classifier",
-					List.of(new StubConfiguration("a:b:c")), Map.of(new StubConfiguration("a:b:c"), 3), "foo", "bar",
-					new StubRunnerOptions.StubRunnerProxyOptions("host", 4), true, "consumer", "folder", false, true,
-					false, Map.of("foo", "bar"), Foo.class, "server"));
+		StubRunnerOptionsBuilder b = this.builder.withOptions(new StubRunnerOptions(1, 2, root, StubsMode.LOCAL,
+				"classifier", List.of(new StubConfiguration("a:b:c")), Map.of(new StubConfiguration("a:b:c"), 3), "foo",
+				"bar", new StubRunnerOptions.StubRunnerProxyOptions("host", 4), true, "consumer", "folder", false, true,
+				false, Map.of("foo", "bar"), Foo.class, "server"));
 		b.withStubs("foo:bar:baz");
 		StubRunnerOptions options = b.build();
 		assertThat(options.getMinPortValue()).isEqualTo(1);
 		assertThat(options.getMaxPortValue()).isEqualTo(2);
 		assertThat(options.getStubRepositoryRoot()).isEqualTo(root);
-		assertThat(options.getStubsMode()).isEqualTo(StubRunnerProperties.StubsMode.LOCAL);
+		assertThat(options.getStubsMode()).isEqualTo(StubsMode.LOCAL);
 		assertThat(options.getStubsClassifier()).isEqualTo("classifier");
 		assertThat(options.getDependencies()).containsExactly(new StubConfiguration("a:b:c"),
 				new StubConfiguration("foo:bar:baz:classifier"));
@@ -195,11 +194,11 @@ class StubRunnerOptionsBuilderTests {
 
 	@Test
 	void shouldNotPrintUsernameAndPassword() {
-		StubRunnerOptionsBuilder b = this.builder.withOptions(new StubRunnerOptions(1, 2,
-				ResourceResolver.classpathResource("root"), StubRunnerProperties.StubsMode.CLASSPATH, "classifier",
-				List.of(new StubConfiguration("a:b:c")), Map.of(new StubConfiguration("a:b:c"), 3), "username123",
-				"password123", new StubRunnerOptions.StubRunnerProxyOptions("host", 4), true, "consumer", "folder",
-				false, true, true, Map.of(), Foo.class, "server"));
+		StubRunnerOptionsBuilder b = this.builder
+			.withOptions(new StubRunnerOptions(1, 2, ResourceResolver.classpathResource("root"), StubsMode.CLASSPATH,
+					"classifier", List.of(new StubConfiguration("a:b:c")), Map.of(new StubConfiguration("a:b:c"), 3),
+					"username123", "password123", new StubRunnerOptions.StubRunnerProxyOptions("host", 4), true,
+					"consumer", "folder", false, true, true, Map.of(), Foo.class, "server"));
 		b.withStubs("foo:bar:baz");
 		String options = b.build().toString();
 		assertThat(options).doesNotContain("username123").doesNotContain("password123").contains("****");
@@ -232,7 +231,7 @@ class StubRunnerOptionsBuilderTests {
 		assertThat(options.getMinPortValue()).isEqualTo(1);
 		assertThat(options.getMaxPortValue()).isEqualTo(2);
 		assertThat(options.getStubRepositoryRoot()).isEqualTo(ResourceResolver.classpathResource("root"));
-		assertThat(options.getStubsMode()).isEqualTo(StubRunnerProperties.StubsMode.LOCAL);
+		assertThat(options.getStubsMode()).isEqualTo(StubsMode.LOCAL);
 		assertThat(options.getStubsClassifier()).isEqualTo("classifier");
 		assertThat(options.getDependencies()).containsExactly(new StubConfiguration("a:b:c"),
 				new StubConfiguration("foo:bar:baz:classifier"));

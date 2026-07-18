@@ -25,6 +25,10 @@
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-stub-runner</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner-spring-boot</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -28,7 +28,7 @@ import sh.stubborn.contract.stubrunner.StubDownloader;
 import sh.stubborn.contract.stubrunner.StubDownloaderBuilderProvider;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 
 import org.springframework.util.StringUtils;
@@ -53,7 +53,7 @@ class MavenContractsDownloader {
 
 	private final String contractsRepositoryUrl;
 
-	private final StubRunnerProperties.StubsMode stubsMode;
+	private final StubsMode stubsMode;
 
 	private final Log log;
 
@@ -74,7 +74,7 @@ class MavenContractsDownloader {
 	private final boolean failOnNoStubs;
 
 	MavenContractsDownloader(MavenProject project, Dependency contractDependency, String contractsPath,
-			String contractsRepositoryUrl, StubRunnerProperties.StubsMode stubsMode, Log log, String repositoryUsername,
+			String contractsRepositoryUrl, StubsMode stubsMode, Log log, String repositoryUsername,
 			String repositoryPassword, String repositoryProxyHost, Integer repositoryProxyPort,
 			boolean deleteStubsAfterTest, Map<String, String> contractsProperties, boolean failOnNoContracts) {
 		this.project = project;

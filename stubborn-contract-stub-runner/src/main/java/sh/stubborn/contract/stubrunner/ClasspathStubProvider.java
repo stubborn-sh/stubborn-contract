@@ -20,13 +20,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 /**
  * Stub downloader that picks stubs and contracts from the provided resource. If
  * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties#stubsMode} is set to
- * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties.StubsMode#CLASSPATH}
- * then classpath is searched according to what has been passed in
+ * {@link sh.stubborn.contract.stubrunner.spring.StubsMode#CLASSPATH} then classpath is
+ * searched according to what has been passed in
  * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties#ids}. The pattern to
  * search for stubs looks like this
  *
@@ -53,7 +53,7 @@ public class ClasspathStubProvider implements StubDownloaderBuilder {
 
 	@Override
 	public StubDownloader build(final StubRunnerOptions stubRunnerOptions) {
-		if (stubRunnerOptions.stubsMode != StubRunnerProperties.StubsMode.CLASSPATH) {
+		if (stubRunnerOptions.stubsMode != StubsMode.CLASSPATH) {
 			return null;
 		}
 		log.info("Will download stubs from classpath");

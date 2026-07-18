@@ -82,6 +82,16 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-stub-runner-spring-cloud</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-starter-verifier</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -176,6 +186,14 @@
 				<artifactId>dokka-maven-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<flattenMode>bom</flattenMode>
 				</configuration>
 			</plugin>
 		</plugins>

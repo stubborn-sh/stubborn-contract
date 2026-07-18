@@ -16,8 +16,8 @@
 
 package sh.stubborn.contract.stubrunner;
 
-import org.junit.Test;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -29,7 +29,7 @@ public class ClasspathStubProviderTest {
 	@Test
 	public void should_return_null_if_stub_mode_is_not_classpath() {
 		StubDownloader stubDownloader = new ClasspathStubProvider()
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE).build());
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE).build());
 
 		then(stubDownloader).isNull();
 	}

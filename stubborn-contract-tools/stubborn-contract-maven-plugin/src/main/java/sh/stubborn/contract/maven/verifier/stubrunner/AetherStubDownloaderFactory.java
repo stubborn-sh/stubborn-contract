@@ -28,8 +28,6 @@ import sh.stubborn.contract.stubrunner.StubDownloaderBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 /**
@@ -66,10 +64,6 @@ public class AetherStubDownloaderFactory {
 						AetherStubDownloaderFactory.this.settings);
 			}
 
-			@Override
-			public Resource resolve(String location, ResourceLoader resourceLoader) {
-				return null;
-			}
 		};
 	}
 

@@ -39,9 +39,6 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.NamesUtil;
 import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
 
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
-
 /**
  * Recursively converts contracts into their stub representations.
  *
@@ -86,7 +83,7 @@ public class RecursiveFilesConverter {
 			.included(new HashSet<>())
 			.includeMatcher(includedContracts)
 			.build();
-		MultiValueMap<Path, ContractMetadata> contracts = scanner.findContractsRecursively();
+		Map<Path, List<ContractMetadata>> contracts = scanner.findContractsRecursively();
 		if (log.isDebugEnabled()) {
 			log.debug("Found the following contracts " + contracts);
 		}
@@ -130,7 +127,7 @@ public class RecursiveFilesConverter {
 							Map.Entry<Contract, String> content = iterator.next();
 							Contract dsl = content.getKey();
 							String converted = content.getValue();
-							if (StringUtils.hasText(converted)) {
+							if (converted != null && !converted.isBlank()) {
 								Path absoluteTargetPath = createAndReturnTargetDirectory(sourceFile);
 								File newJsonFile = createTargetFileWithProperName(stubGenerator, absoluteTargetPath,
 										sourceFile, contractsSize, index, dsl);
@@ -202,7 +199,7 @@ public class RecursiveFilesConverter {
 		String generatedName = converter.generateOutputFileNameForInput(sourceFile.getName());
 		boolean hasDot = NamesUtil.hasDot(generatedName);
 		String extension = hasDot ? NamesUtil.afterLastDot(generatedName) : "";
-		if (StringUtils.hasText(dsl.getName()) && StringUtils.hasText(extension)) {
+		if (dsl.getName() != null && !dsl.getName().isBlank() && extension != null && !extension.isBlank()) {
 			return dsl.getName() + "." + extension;
 		}
 		else if (contractsSize == 1) {

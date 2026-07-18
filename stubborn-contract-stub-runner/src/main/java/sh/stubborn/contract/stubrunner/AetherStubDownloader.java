@@ -43,7 +43,7 @@ import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions.StubRunnerProxyOptions;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static sh.stubborn.contract.stubrunner.AetherFactories.newSession;
 import static sh.stubborn.contract.stubrunner.AetherFactories.settings;
@@ -107,7 +107,7 @@ public class AetherStubDownloader implements StubDownloader {
 						"You can't use Aether downloader when you use classpath to find stubs");
 		}
 		this.repositorySystem = AetherFactories.repositorySystemOr(repositorySystemFromMaven);
-		this.workOffline = stubRunnerOptions.stubsMode == StubRunnerProperties.StubsMode.LOCAL;
+		this.workOffline = stubRunnerOptions.stubsMode == StubsMode.LOCAL;
 		this.session = newSession(this.repositorySystem, this.workOffline);
 		registerShutdownHook();
 	}

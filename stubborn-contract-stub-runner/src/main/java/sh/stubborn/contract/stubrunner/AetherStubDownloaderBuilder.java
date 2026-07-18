@@ -18,7 +18,7 @@ package sh.stubborn.contract.stubrunner;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 /**
  * @author Marcin Grzejszczak
@@ -30,7 +30,7 @@ public class AetherStubDownloaderBuilder implements StubDownloaderBuilder {
 
 	@Override
 	public StubDownloader build(StubRunnerOptions stubRunnerOptions) {
-		if (stubRunnerOptions.stubsMode == StubRunnerProperties.StubsMode.CLASSPATH) {
+		if (stubRunnerOptions.stubsMode == StubsMode.CLASSPATH) {
 			return null;
 		}
 		log.info("Will download stubs and contracts via Aether");

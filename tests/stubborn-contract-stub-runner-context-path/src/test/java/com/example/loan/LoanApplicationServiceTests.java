@@ -20,28 +20,24 @@ import com.example.loan.model.Client;
 import com.example.loan.model.LoanApplication;
 import com.example.loan.model.LoanApplicationResult;
 import com.example.loan.model.LoanApplicationStatus;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.StubFinder;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 // tag::autoconfigure_stubrunner[]
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureStubRunner(repositoryRoot = "classpath:m2repo/repository/",
-		ids = { "sh.stubborn.contract.verifier.stubs:contextPathFraudDetectionServer" },
-		stubsMode = StubRunnerProperties.StubsMode.REMOTE)
+		ids = { "sh.stubborn.contract.verifier.stubs:contextPathFraudDetectionServer" }, stubsMode = StubsMode.REMOTE)
 public class LoanApplicationServiceTests {
 
 	// end::autoconfigure_stubrunner[]
@@ -55,7 +51,7 @@ public class LoanApplicationServiceTests {
 	@Autowired
 	private StubFinder stubFinder;
 
-	@Before
+	@BeforeEach
 	public void setPort() {
 		this.service
 			.setFraudUrl(this.stubFinder.findStubUrl("contextPathFraudDetectionServer").toString() + "/fraud-path/");

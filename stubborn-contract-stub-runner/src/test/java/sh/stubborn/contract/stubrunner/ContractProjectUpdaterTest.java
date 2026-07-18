@@ -17,28 +17,28 @@
 package sh.stubborn.contract.stubrunner;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.HashMap;
 
 import org.assertj.core.api.BDDAssertions;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
 /**
  * @author Marcin Grzejszczak
  */
+@ExtendWith(OutputCaptureExtension.class)
 public class ContractProjectUpdaterTest extends AbstractGitTest {
-
-	@Rule
-	public OutputCaptureRule outputCapture = new OutputCaptureRule();
 
 	File originalProject;
 
@@ -50,25 +50,26 @@ public class ContractProjectUpdaterTest extends AbstractGitTest {
 
 	File origin;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		GitContractsRepo.CACHED_LOCATIONS.clear();
 		this.originalProject = new File(GitRepoTests.class.getResource("/git_samples/contract-git").toURI());
 		TestUtils.prepareLocalRepo();
 		this.gitRepo = new GitRepo(this.tmpFolder);
-		this.origin = clonedProject(this.tmp.newFolder(), this.originalProject);
+		this.origin = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "origin").toFile(),
+				this.originalProject);
 		this.project = this.gitRepo.cloneProject(this.originalProject.toURI());
 		this.gitRepo.checkout(this.project, "master");
 		setOriginOnProjectToTmp(this.origin, this.project);
 		StubRunnerOptions options = new StubRunnerOptionsBuilder()
 			.withStubRepositoryRoot("file://" + this.project.getAbsolutePath() + "/")
-			.withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.withStubsMode(StubsMode.REMOTE)
 			.build();
 		this.updater = new ContractProjectUpdater(options);
 	}
 
 	@Test
-	public void should_push_changes_to_current_branch() throws Exception {
+	public void should_push_changes_to_current_branch(CapturedOutput outputCapture) throws Exception {
 		File stubs = new File(GitRepoTests.class.getResource("/git_samples/sample_stubs").toURI());
 
 		this.updater.updateContractProject("hello-world", stubs.toPath());
@@ -83,14 +84,14 @@ public class ContractProjectUpdaterTest extends AbstractGitTest {
 		BDDAssertions.then(new File(this.project, "META-INF/com.example/hello-world/0.0.2/mappings/someMapping.json"))
 			.exists();
 		BDDAssertions.then(this.gitRepo.gitFactory.provider).isNull();
-		BDDAssertions.then(this.outputCapture.toString()).contains("No custom credentials provider will be set");
+		BDDAssertions.then(outputCapture.toString()).contains("No custom credentials provider will be set");
 	}
 
 	@Test
-	public void should_push_changes_to_current_branch_using_credentials() throws Exception {
+	public void should_push_changes_to_current_branch_using_credentials(CapturedOutput outputCapture) throws Exception {
 		StubRunnerOptions options = new StubRunnerOptionsBuilder()
 			.withStubRepositoryRoot("file://" + this.project.getAbsolutePath() + "/")
-			.withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.withStubsMode(StubsMode.REMOTE)
 			.withProperties(new HashMap<String, String>() {
 				{
 					put("git.username", "foo");
@@ -112,15 +113,16 @@ public class ContractProjectUpdaterTest extends AbstractGitTest {
 		}
 		BDDAssertions.then(new File(this.project, "META-INF/com.example/hello-world/0.0.2/mappings/someMapping.json"))
 			.exists();
-		BDDAssertions.then(this.outputCapture.toString())
+		BDDAssertions.then(outputCapture.toString())
 			.contains("Passed username and password - will set a custom credentials provider");
 	}
 
 	@Test
-	public void should_push_changes_to_current_branch_using_root_credentials() throws Exception {
+	public void should_push_changes_to_current_branch_using_root_credentials(CapturedOutput outputCapture)
+			throws Exception {
 		StubRunnerOptions options = new StubRunnerOptionsBuilder()
 			.withStubRepositoryRoot("file://" + this.project.getAbsolutePath() + "/")
-			.withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.withStubsMode(StubsMode.REMOTE)
 			.withUsername("foo")
 			.withPassword("bar")
 			.build();
@@ -138,7 +140,7 @@ public class ContractProjectUpdaterTest extends AbstractGitTest {
 		}
 		BDDAssertions.then(new File(this.project, "META-INF/com.example/hello-world/0.0.2/mappings/someMapping.json"))
 			.exists();
-		BDDAssertions.then(this.outputCapture.toString())
+		BDDAssertions.then(outputCapture.toString())
 			.contains("Passed username and password - will set a custom credentials provider");
 	}
 

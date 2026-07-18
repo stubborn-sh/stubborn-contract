@@ -41,7 +41,7 @@ import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.StubNotFoundException;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
@@ -226,7 +226,7 @@ public class StubRunnerExtension implements BeforeAllCallback, AfterAllCallback,
 	}
 
 	@Override
-	public StubRunnerExtension stubsMode(StubRunnerProperties.StubsMode stubsMode) {
+	public StubRunnerExtension stubsMode(StubsMode stubsMode) {
 		builder().withStubsMode(stubsMode);
 		return this.delegate;
 	}

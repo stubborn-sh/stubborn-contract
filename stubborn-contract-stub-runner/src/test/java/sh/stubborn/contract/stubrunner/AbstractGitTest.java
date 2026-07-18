@@ -30,24 +30,15 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * @author Marcin Grzejszczak
  */
 public abstract class AbstractGitTest {
 
-	@Rule
-	public TemporaryFolder tmp = new TemporaryFolder();
-
+	@TempDir
 	File tmpFolder;
-
-	@Before
-	public void setupTemp() throws IOException {
-		this.tmpFolder = this.tmp.newFolder();
-	}
 
 	File createNewFile(File project) throws Exception {
 		File newFile = new File(project, "newFile");

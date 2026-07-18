@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 
 import org.springframework.cloud.test.TestSocketUtils;
@@ -138,7 +138,7 @@ class StubRunnerTests {
 		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder().withMinMaxPort(MIN_PORT, MAX_PORT)
 			.withGenerateStubs(true)
 			.withStubs(stubConfiguration.toString())
-			.withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.withStubsMode(StubsMode.REMOTE)
 			.withStubRepositoryRoot("stubs://file://" + GENERATE_STUBS.getPath())
 			.build();
 		return new Arguments(stubRunnerOptions, "src/test/resources/generateStubs", stubConfiguration);

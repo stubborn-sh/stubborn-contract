@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.stubrunner.util.StubsParser;
 
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public class StubRunnerOptionsBuilder {
 
 	private String mappingsOutputFolder;
 
-	private StubRunnerProperties.StubsMode stubsMode;
+	private StubsMode stubsMode;
 
 	private boolean deleteStubsAfterTest = true;
 
@@ -164,7 +164,7 @@ public class StubRunnerOptionsBuilder {
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withStubsMode(StubRunnerProperties.StubsMode stubsMode) {
+	public StubRunnerOptionsBuilder withStubsMode(StubsMode stubsMode) {
 		if (stubsMode == null) {
 			return this;
 		}
@@ -176,7 +176,7 @@ public class StubRunnerOptionsBuilder {
 		if (stubsMode == null) {
 			return this;
 		}
-		this.stubsMode = StubRunnerProperties.StubsMode.valueOf(stubsMode);
+		this.stubsMode = StubsMode.valueOf(stubsMode);
 		return this;
 	}
 

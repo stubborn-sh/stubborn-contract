@@ -34,7 +34,7 @@ import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import sh.stubborn.contract.stubrunner.AetherStubDownloader;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.converter.RecursiveFilesConverter;
 import sh.stubborn.contract.verifier.converter.ToYamlConverter;
@@ -122,7 +122,7 @@ public class ConvertMojo extends AbstractMojo {
 	 * Picks the mode in which stubs will be found and registered.
 	 */
 	@Parameter(property = "contractsMode", defaultValue = "CLASSPATH")
-	private StubRunnerProperties.StubsMode contractsMode;
+	private StubsMode contractsMode;
 
 	/**
 	 * If {@code true} then any file laying in a path that contains {@code build} or

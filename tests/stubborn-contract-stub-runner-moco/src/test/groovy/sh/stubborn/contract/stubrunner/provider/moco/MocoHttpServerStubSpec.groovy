@@ -20,7 +20,7 @@ import org.assertj.core.api.BDDAssertions
 import org.junit.jupiter.api.Test
 import sh.stubborn.contract.stubrunner.StubFinder
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
+import sh.stubborn.contract.stubrunner.StubsMode
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -33,7 +33,7 @@ import org.springframework.test.context.ActiveProfiles
 // tag::[classpath_stub_runner]
 @SpringBootTest(classes = MocoConfig, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids = ["com.example:fraudDetectionServerMoco"],
-        stubsMode = StubRunnerProperties.StubsMode.CLASSPATH)
+        stubsMode = StubsMode.CLASSPATH)
 // end::[classpath_stub_runner]
 @ActiveProfiles("test")
 class MocoHttpServerStubSpec {

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -40,8 +40,7 @@ class StubRunnerJUnit5ExtensionCustomMessageVerifierTests {
 
 	// Visible for testing
 	@RegisterExtension
-	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension()
-		.stubsMode(StubRunnerProperties.StubsMode.REMOTE)
+	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension().stubsMode(StubsMode.REMOTE)
 		.repoRoot(repoRoot())
 		.downloadStub("sh.stubborn.contract.verifier.stubs", "bootService")
 		.messageVerifierSender(new MyMessageVerifier())

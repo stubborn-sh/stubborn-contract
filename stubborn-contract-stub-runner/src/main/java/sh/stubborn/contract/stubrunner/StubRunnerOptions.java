@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 /**
  * Technical options related to running StubRunner
@@ -79,7 +79,7 @@ public class StubRunnerOptions {
 	 */
 	final String password;
 
-	final StubRunnerProperties.StubsMode stubsMode;
+	final StubsMode stubsMode;
 
 	/**
 	 * Optional proxy settings.
@@ -138,17 +138,17 @@ public class StubRunnerOptions {
 	 */
 	final String serverId;
 
-	StubRunnerOptions(Integer minPortValue, Integer maxPortValue, StubResource stubRepositoryRoot,
-			StubRunnerProperties.StubsMode stubsMode, String stubsClassifier,
-			Collection<StubConfiguration> dependencies, Map<StubConfiguration, Integer> stubIdsToPortMapping,
-			String username, String password, final StubRunnerProxyOptions stubRunnerProxyOptions,
-			boolean stubsPerConsumer, String consumerName, String mappingsOutputFolder, boolean deleteStubsAfterTest,
-			boolean generateStubs, boolean failOnNoStubs, Map<String, String> properties,
-			Class<? extends HttpServerStubConfigurer> httpServerStubConfigurer, String serverId) {
+	StubRunnerOptions(Integer minPortValue, Integer maxPortValue, StubResource stubRepositoryRoot, StubsMode stubsMode,
+			String stubsClassifier, Collection<StubConfiguration> dependencies,
+			Map<StubConfiguration, Integer> stubIdsToPortMapping, String username, String password,
+			final StubRunnerProxyOptions stubRunnerProxyOptions, boolean stubsPerConsumer, String consumerName,
+			String mappingsOutputFolder, boolean deleteStubsAfterTest, boolean generateStubs, boolean failOnNoStubs,
+			Map<String, String> properties, Class<? extends HttpServerStubConfigurer> httpServerStubConfigurer,
+			String serverId) {
 		this.minPortValue = minPortValue;
 		this.maxPortValue = maxPortValue;
 		this.stubRepositoryRoot = stubRepositoryRoot;
-		this.stubsMode = stubsMode != null ? stubsMode : StubRunnerProperties.StubsMode.CLASSPATH;
+		this.stubsMode = stubsMode != null ? stubsMode : StubsMode.CLASSPATH;
 		this.stubsClassifier = stubsClassifier;
 		this.dependencies = dependencies;
 		this.stubIdsToPortMapping = stubIdsToPortMapping;
@@ -272,7 +272,7 @@ public class StubRunnerOptions {
 		}
 	}
 
-	public StubRunnerProperties.StubsMode getStubsMode() {
+	public StubsMode getStubsMode() {
 		return this.stubsMode;
 	}
 

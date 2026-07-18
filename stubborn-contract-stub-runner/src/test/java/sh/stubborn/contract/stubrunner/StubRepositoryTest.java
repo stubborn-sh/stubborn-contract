@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.assertj.core.api.BDDAssertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
 
 /**

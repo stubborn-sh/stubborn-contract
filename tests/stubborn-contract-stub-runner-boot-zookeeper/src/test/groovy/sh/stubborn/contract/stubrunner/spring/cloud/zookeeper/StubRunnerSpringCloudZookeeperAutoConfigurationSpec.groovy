@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import sh.stubborn.contract.stubrunner.StubFinder
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties
+import sh.stubborn.contract.stubrunner.StubsMode
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -43,7 +43,7 @@ import org.springframework.web.client.RestTemplate
 				"debug=true"])
 @AutoConfigureStubRunner(ids = ["sh.stubborn.contract.verifier.stubs:loanIssuance",
  "sh.stubborn.contract.verifier.stubs:fraudDetectionServer",
- "sh.stubborn.contract.verifier.stubs:bootService"] , repositoryRoot = "classpath:m2repo/repository/" , stubsMode = StubRunnerProperties.StubsMode.REMOTE )
+ "sh.stubborn.contract.verifier.stubs:bootService"] , repositoryRoot = "classpath:m2repo/repository/" , stubsMode = StubsMode.REMOTE )
 class StubRunnerSpringCloudZookeeperAutoConfigurationSpec {
 
 	@Autowired

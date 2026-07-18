@@ -20,12 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -42,7 +43,7 @@ public class GitRepoTests extends AbstractGitTest {
 
 	GitRepo gitRepo;
 
-	@Before
+	@BeforeEach
 	public void setup() throws IOException, URISyntaxException {
 		this.project = new File(GitRepoTests.class.getResource("/git_samples/contract-git").toURI());
 		TestUtils.prepareLocalRepo();
@@ -131,7 +132,8 @@ public class GitRepoTests extends AbstractGitTest {
 
 	@Test
 	public void should_push_changes_to_current_branch() throws Exception {
-		File origin = clonedProject(this.tmp.newFolder(), this.project);
+		File origin = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "origin").toFile(),
+				this.project);
 		File project = this.gitRepo.cloneProject(this.project.toURI());
 		setOriginOnProjectToTmp(origin, project);
 		createNewFile(project);
@@ -147,7 +149,8 @@ public class GitRepoTests extends AbstractGitTest {
 
 	@Test
 	public void should_pull_changes_to_current_branch() throws Exception {
-		File origin = clonedProject(this.tmp.newFolder(), this.project);
+		File origin = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "origin").toFile(),
+				this.project);
 		File project = this.gitRepo.cloneProject(this.project.toURI());
 		setOriginOnProjectToTmp(origin, project);
 		createNewFile(origin);

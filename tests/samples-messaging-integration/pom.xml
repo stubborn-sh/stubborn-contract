@@ -28,6 +28,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-verifier-spring-boot</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.spockframework</groupId>
 			<artifactId>spock-spring</artifactId>
 			<scope>test</scope>

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.stubrunner.ContractDownloader;
 import sh.stubborn.contract.stubrunner.InclusionPropertiesAccessor;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 
 class MavenContractsDownloaderTests {
@@ -73,7 +73,7 @@ class MavenContractsDownloaderTests {
 	}
 
 	private MavenContractsDownloader contractsDownloader(MavenProject mavenProject, Dependency one, File file) {
-		return new MavenContractsDownloader(mavenProject, one, "", "", StubRunnerProperties.StubsMode.LOCAL, new Log() {
+		return new MavenContractsDownloader(mavenProject, one, "", "", StubsMode.LOCAL, new Log() {
 			@Override
 			public boolean isDebugEnabled() {
 				return false;

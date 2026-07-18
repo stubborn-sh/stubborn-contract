@@ -28,7 +28,7 @@ import sh.stubborn.contract.stubrunner.ContractProjectUpdater;
 import sh.stubborn.contract.stubrunner.ScmStubDownloaderBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import org.springframework.util.StringUtils;
 
@@ -85,7 +85,7 @@ public class PushStubsToScmMojo extends AbstractMojo {
 	 * Picks the mode in which stubs will be found and registered.
 	 */
 	@Parameter(property = "contractsMode", defaultValue = "CLASSPATH")
-	private StubRunnerProperties.StubsMode contractsMode;
+	private StubsMode contractsMode;
 
 	/**
 	 * If set to {@code false} will NOT delete stubs from a temporary folder after running

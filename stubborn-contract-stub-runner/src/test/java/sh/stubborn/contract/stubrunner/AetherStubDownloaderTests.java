@@ -28,7 +28,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,9 +68,7 @@ class AetherStubDownloaderTests {
 
 	@Test
 	void shouldThrowAnExceptionWhenArtifactNotFoundInLocalM2() {
-		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder()
-			.withStubsMode(StubRunnerProperties.StubsMode.LOCAL)
-			.build();
+		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder().withStubsMode(StubsMode.LOCAL).build();
 		AetherStubDownloader aetherStubDownloader = new AetherStubDownloader(stubRunnerOptions);
 
 		Map.Entry<StubConfiguration, File> entry = aetherStubDownloader.downloadAndUnpackStubJar(
@@ -81,8 +79,7 @@ class AetherStubDownloaderTests {
 
 	@Test
 	void shouldThrowAnExceptionWhenLocalM2GetsReplacedWithATempDirAndAJarIsNotFoundInRemote() throws Exception {
-		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder()
-			.withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 			.withStubRepositoryRoot("file://" + Files.createTempDirectory(this.tmpDir, "repo").toAbsolutePath())
 			.build();
 
@@ -115,9 +112,7 @@ class AetherStubDownloaderTests {
 		RepositorySystemSession repositorySystemSession = AetherFactories
 			.newSession(AetherFactories.repositorySystemOr(null), true);
 
-		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder()
-			.withStubsMode(StubRunnerProperties.StubsMode.LOCAL)
-			.build();
+		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder().withStubsMode(StubsMode.LOCAL).build();
 		AetherStubDownloader aetherStubDownloader = new AetherStubDownloader(stubRunnerOptions);
 
 		Map.Entry<StubConfiguration, File> jar = aetherStubDownloader.downloadAndUnpackStubJar(
@@ -135,8 +130,7 @@ class AetherStubDownloaderTests {
 		File configDir = new File(AetherStubDownloaderTests.class.getResource("/.m2").toURI());
 		System.setProperty("maven.user.config.dir", configDir.getAbsolutePath());
 
-		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder()
-			.withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+		StubRunnerOptions stubRunnerOptions = new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 			.withStubRepositoryRoot(AetherStubDownloaderTests.class.getResource("/m2repo/repository").toString())
 			.withServerId("my-server")
 			.build();

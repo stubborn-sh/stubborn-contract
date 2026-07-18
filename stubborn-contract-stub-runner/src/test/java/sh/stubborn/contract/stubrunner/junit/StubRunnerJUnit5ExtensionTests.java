@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +38,7 @@ class StubRunnerJUnit5ExtensionTests {
 	// Visible for Junit
 	@RegisterExtension
 	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension().repoRoot(repoRoot())
-		.stubsMode(StubRunnerProperties.StubsMode.REMOTE)
+		.stubsMode(StubsMode.REMOTE)
 		.downloadStub("sh.stubborn.contract.verifier.stubs", "loanIssuance")
 		.downloadStub("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")
 		.withMappingsOutputFolder("target/outputmappingsforrule");

@@ -23,6 +23,10 @@
 			<artifactId>stubborn-stub-runner</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.github.dreamhead</groupId>
 			<artifactId>moco-runner</artifactId>
 			<version>${moco-runner.version}</version>

@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 /**
  * Allows to read stubs and contracts from a given location. Contrary to
@@ -54,7 +54,7 @@ public class FileStubDownloader implements StubDownloaderBuilder {
 	@Override
 	public StubDownloader build(StubRunnerOptions stubRunnerOptions) {
 		// should work only in remote and local option
-		if (stubRunnerOptions.getStubsMode() == StubRunnerProperties.StubsMode.CLASSPATH
+		if (stubRunnerOptions.getStubsMode() == StubsMode.CLASSPATH
 				|| stubRunnerOptions.getStubRepositoryRoot() == null) {
 			return null;
 		}

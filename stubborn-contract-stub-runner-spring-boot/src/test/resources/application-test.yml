@@ -1,0 +1,15 @@
+# tag::test[]
+spring.cloud.contract.stubrunner:
+  repositoryRoot: classpath:m2repo/repository/
+  ids:
+    - sh.stubborn.contract.verifier.stubs:loanIssuance
+    - sh.stubborn.contract.verifier.stubs:fraudDetectionServer
+    - sh.stubborn.contract.verifier.stubs:bootService
+  stubs-mode: remote
+  # end::test[]
+  cloud:
+    enabled: false
+
+spring.cloud:
+  consul.enabled: false
+  service-registry.enabled: false

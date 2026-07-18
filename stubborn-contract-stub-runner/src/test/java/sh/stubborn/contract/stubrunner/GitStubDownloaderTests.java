@@ -21,11 +21,10 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import org.springframework.util.FileSystemUtils;
 
@@ -33,14 +32,14 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 public class GitStubDownloaderTests {
 
-	@Rule
-	public TemporaryFolder tmp = new TemporaryFolder();
+	@TempDir
+	File tmp;
 
 	File temporaryFolder;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
-		this.temporaryFolder = this.tmp.newFolder();
+		this.temporaryFolder = this.tmp;
 		TestUtils.prepareLocalRepo();
 		FileSystemUtils.copyRecursively(file("/git_samples/"), this.temporaryFolder);
 	}
@@ -50,9 +49,7 @@ public class GitStubDownloaderTests {
 		StubDownloaderBuilder stubDownloaderBuilder = new ScmStubDownloaderBuilder();
 
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.CLASSPATH)
-				.withProperties(props())
-				.build());
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.CLASSPATH).withProperties(props()).build());
 
 		then(stubDownloader).isNull();
 	}
@@ -62,9 +59,7 @@ public class GitStubDownloaderTests {
 		StubDownloaderBuilder stubDownloaderBuilder = new ScmStubDownloaderBuilder();
 
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
-				.withProperties(props())
-				.build());
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE).withProperties(props()).build());
 
 		then(stubDownloader).isNull();
 	}
@@ -74,7 +69,7 @@ public class GitStubDownloaderTests {
 		StubDownloaderBuilder stubDownloaderBuilder = new ScmStubDownloaderBuilder();
 
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 				.withStubRepositoryRoot("http://www.foo.com/")
 				.withProperties(props())
 				.build());
@@ -88,7 +83,7 @@ public class GitStubDownloaderTests {
 		String contractFolderLocation = (file("/git_samples/contract-git/").getAbsolutePath() + "/")
 			.replace(File.separator, "/");
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 				.withStubRepositoryRoot("git://" + contractFolderLocation)
 				.withProperties(props())
 				.build());
@@ -107,7 +102,7 @@ public class GitStubDownloaderTests {
 		String contractFolderLocation = (file("/git_samples/contract-git/").getAbsolutePath() + "/")
 			.replace(File.separator, "/");
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 				.withStubRepositoryRoot("git://" + contractFolderLocation)
 				.withProperties(props())
 				.build());
@@ -147,7 +142,7 @@ public class GitStubDownloaderTests {
 		String contractFolderLocation = (file("/git_samples/contract-git/").getAbsolutePath() + "/")
 			.replace(File.separator, "/");
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 				.withStubRepositoryRoot("git://" + contractFolderLocation)
 				.withProperties(props())
 				.build());
@@ -174,7 +169,7 @@ public class GitStubDownloaderTests {
 		String contractFolderLocation = (file("/git_samples/contract-predefined-names-git/").getAbsolutePath()
 			.replace("/", File.separator) + "/").replace(File.separator, "/");
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 				.withStubRepositoryRoot("git://" + contractFolderLocation)
 				.withProperties(props())
 				.build());
@@ -207,7 +202,7 @@ public class GitStubDownloaderTests {
 		String contractFolderLocation = (file("/git_samples/contract-predefined-names-git/").getAbsolutePath() + "/")
 			.replace(File.separator, "/");
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 				.withStubRepositoryRoot("git://" + contractFolderLocation)
 				.withProperties(props())
 				.build());
@@ -233,7 +228,7 @@ public class GitStubDownloaderTests {
 		String contractFolderLocation = (file("/git_samples/contract-git/").getAbsolutePath() + "/")
 			.replace(File.separator, "/");
 		StubDownloader stubDownloader = stubDownloaderBuilder
-			.build(new StubRunnerOptionsBuilder().withStubsMode(StubRunnerProperties.StubsMode.REMOTE)
+			.build(new StubRunnerOptionsBuilder().withStubsMode(StubsMode.REMOTE)
 				.withStubRepositoryRoot("git://" + contractFolderLocation)
 				.withProperties(props())
 				.build());

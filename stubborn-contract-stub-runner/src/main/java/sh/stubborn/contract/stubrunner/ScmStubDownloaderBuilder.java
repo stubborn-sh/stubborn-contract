@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 /**
  * Builds a {@link StubDownloader} to work with contracts and stubs from a SCM.
@@ -64,7 +64,7 @@ public final class ScmStubDownloaderBuilder implements StubDownloaderBuilder {
 
 	@Override
 	public StubDownloader build(StubRunnerOptions stubRunnerOptions) {
-		if (stubRunnerOptions.getStubsMode() == StubRunnerProperties.StubsMode.CLASSPATH
+		if (stubRunnerOptions.getStubsMode() == StubsMode.CLASSPATH
 				|| stubRunnerOptions.getStubRepositoryRoot() == null) {
 			return null;
 		}
