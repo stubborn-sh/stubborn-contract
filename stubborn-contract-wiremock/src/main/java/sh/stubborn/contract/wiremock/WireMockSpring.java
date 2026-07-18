@@ -23,8 +23,6 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.ssl.SSLContexts;
 
-import org.springframework.util.ClassUtils;
-
 /**
  * Convenience factory class for a {@link WireMockConfiguration} that knows how to use
  * Spring Boot to create a stub server. Use, for example, in a JUnit rule:
@@ -47,7 +45,7 @@ public abstract class WireMockSpring {
 
 	public static WireMockConfiguration options() {
 		if (!initialized) {
-			if (ClassUtils.isPresent("org.apache.http.conn.ssl.NoopHostnameVerifier", null)) {
+			if (isPresent("org.apache.http.conn.ssl.NoopHostnameVerifier")) {
 				HttpsURLConnection.setDefaultHostnameVerifier(NoopHostnameVerifier.INSTANCE);
 				try {
 					HttpsURLConnection.setDefaultSSLSocketFactory(SSLContexts.custom()
@@ -62,6 +60,16 @@ public abstract class WireMockSpring {
 			initialized = true;
 		}
 		return new WireMockConfiguration();
+	}
+
+	private static boolean isPresent(String className) {
+		try {
+			Class.forName(className);
+			return true;
+		}
+		catch (ClassNotFoundException ex) {
+			return false;
+		}
 	}
 
 }
