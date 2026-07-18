@@ -24,8 +24,8 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.helpers.Wire
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import sh.stubborn.contract.verifier.builder.TestSideRequestTemplateModel;
-import wiremock.com.github.jknack.handlebars.Helper;
-import wiremock.com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 
 /**
  * A Handlebars helper for the {@code jsonpath} helper function.

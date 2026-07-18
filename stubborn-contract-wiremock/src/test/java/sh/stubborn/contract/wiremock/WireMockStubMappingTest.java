@@ -17,7 +17,7 @@
 package sh.stubborn.contract.wiremock;
 
 import org.json.JSONException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Marcin Grzejszczak

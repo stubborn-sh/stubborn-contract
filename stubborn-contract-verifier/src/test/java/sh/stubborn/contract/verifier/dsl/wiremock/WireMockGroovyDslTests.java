@@ -40,7 +40,7 @@ import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.AssertionUtil;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
-import wiremock.com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Helper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -1649,7 +1649,7 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 			server.addStubMapping(WireMockStubMapping.buildFrom(oldJsonMapping));
 			ResponseEntity<String> entity = call(port);
 			assertThat(entity.getHeaders().toSingleValueMap())
-				.anySatisfy((k, v) -> assertThat(k).isEqualTo("authorization"));
+				.anySatisfy((k, v) -> assertThat(k).isEqualToIgnoringCase("authorization"));
 			AssertionUtil.assertThatJsonsAreEqual("""
 					{
 					  "url" : "/api/v1/xxxx?foo=bar&foo=bar2",
@@ -1785,7 +1785,7 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 			server.addStubMapping(WireMockStubMapping.buildFrom(json));
 			ResponseEntity<String> entity = call(port);
 			assertThat(entity.getHeaders().toSingleValueMap())
-				.anySatisfy((k, v) -> assertThat(k).isEqualTo("authorization"));
+				.anySatisfy((k, v) -> assertThat(k).isEqualToIgnoringCase("authorization"));
 			AssertionUtil.assertThatJsonsAreEqual("""
 					{
 					   "rawAuthorization2":"secret2",

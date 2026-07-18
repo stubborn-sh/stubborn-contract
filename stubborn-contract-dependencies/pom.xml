@@ -27,6 +27,11 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-wiremock-spring</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-wiremock-spring-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -128,6 +133,11 @@
 			<dependency>
 				<groupId>org.wiremock</groupId>
 				<artifactId>wiremock</artifactId>
+				<version>${wiremock.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wiremock</groupId>
+				<artifactId>wiremock-jetty12</artifactId>
 				<version>${wiremock.version}</version>
 			</dependency>
 			<dependency>

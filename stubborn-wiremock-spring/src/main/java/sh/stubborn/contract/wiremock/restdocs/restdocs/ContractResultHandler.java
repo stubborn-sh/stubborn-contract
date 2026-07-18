@@ -40,7 +40,6 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.QueryParameter;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
-import wiremock.org.apache.commons.io.IOUtils;
 
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -266,7 +265,7 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 						@Override
 						public Body getBody() {
 							try {
-								return new Body(IOUtils.toByteArray(part.getInputStream()));
+								return new Body(part.getInputStream().readAllBytes());
 							}
 							catch (IOException ex) {
 								throw new IllegalStateException(ex);

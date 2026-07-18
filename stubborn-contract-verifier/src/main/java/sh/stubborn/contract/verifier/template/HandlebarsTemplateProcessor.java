@@ -30,8 +30,8 @@ import sh.stubborn.contract.spec.internal.CompositeContractTemplate;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.builder.TestSideRequestTemplateModel;
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsJsonPathHelper;
-import wiremock.com.github.jknack.handlebars.Handlebars;
-import wiremock.com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
 
 /**
  * Default Handlebars template processor.

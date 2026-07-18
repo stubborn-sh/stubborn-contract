@@ -22,8 +22,8 @@ import java.util.Map;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.RequestTemplateModel;
 import org.apache.commons.text.StringEscapeUtils;
 import sh.stubborn.contract.verifier.builder.TestSideRequestTemplateModel;
-import wiremock.com.github.jknack.handlebars.Helper;
-import wiremock.com.github.jknack.handlebars.Options;
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 
 /**
  * A Handlebars helper for the {@code escapejsonbody} helper function.

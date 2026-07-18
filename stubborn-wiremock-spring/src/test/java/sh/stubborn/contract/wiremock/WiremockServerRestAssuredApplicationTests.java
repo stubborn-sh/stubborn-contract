@@ -19,8 +19,6 @@ package sh.stubborn.contract.wiremock;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import wiremock.org.eclipse.jetty.http.HttpStatus;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -31,6 +29,7 @@ import org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory;
 import org.springframework.boot.webmvc.autoconfigure.DispatcherServletAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -81,7 +80,7 @@ public class WiremockServerRestAssuredApplicationTests {
 		@ResponseBody
 		@RequestMapping("/status")
 		public ResponseEntity<String> status() {
-			return ResponseEntity.status(HttpStatus.ACCEPTED_202).body("Hello World");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("Hello World");
 		}
 
 		@Bean

@@ -16,12 +16,15 @@
 
 package sh.stubborn.contract.wiremock;
 
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.ssl.SSLContexts;
 
 /**
  * Convenience factory class for a {@link WireMockConfiguration} that knows how to use
@@ -45,31 +48,29 @@ public abstract class WireMockSpring {
 
 	public static WireMockConfiguration options() {
 		if (!initialized) {
-			if (isPresent("org.apache.http.conn.ssl.NoopHostnameVerifier")) {
-				HttpsURLConnection.setDefaultHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-				try {
-					HttpsURLConnection.setDefaultSSLSocketFactory(SSLContexts.custom()
-						.loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE)
-						.build()
-						.getSocketFactory());
-				}
-				catch (Exception e) {
-					throw new AssertionError("Cannot install custom socket factory: [" + e.getMessage() + "]");
-				}
+			try {
+				HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+				TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
+					public X509Certificate[] getAcceptedIssuers() {
+						return new X509Certificate[0];
+					}
+
+					public void checkClientTrusted(X509Certificate[] chain, String authType) {
+					}
+
+					public void checkServerTrusted(X509Certificate[] chain, String authType) {
+					}
+				} };
+				SSLContext sslContext = SSLContext.getInstance("TLS");
+				sslContext.init(null, trustAll, new SecureRandom());
+				HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+			}
+			catch (Exception e) {
+				throw new AssertionError("Cannot install custom socket factory: [" + e.getMessage() + "]");
 			}
 			initialized = true;
 		}
 		return new WireMockConfiguration();
-	}
-
-	private static boolean isPresent(String className) {
-		try {
-			Class.forName(className);
-			return true;
-		}
-		catch (ClassNotFoundException ex) {
-			return false;
-		}
 	}
 
 }

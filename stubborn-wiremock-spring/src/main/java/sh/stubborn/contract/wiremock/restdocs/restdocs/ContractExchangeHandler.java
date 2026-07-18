@@ -41,7 +41,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.QueryParameter;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -294,7 +294,7 @@ class WireMockHttpRequestAdapter implements Request {
 
 	@Override
 	public String getBodyAsBase64() {
-		return Base64.encodeBase64String(this.result.getRequestBodyContent());
+		return Base64.getEncoder().encodeToString(this.result.getRequestBodyContent());
 	}
 
 	@Override

@@ -1,0 +1,4 @@
+logging:
+  level:
+    sh.stubborn.contract: debug
+    com.github.tomakehurst.wiremock: trace
