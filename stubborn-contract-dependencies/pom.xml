@@ -127,6 +127,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.wiremock</groupId>
+				<artifactId>wiremock</artifactId>
+				<version>${wiremock.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wiremock</groupId>
 				<artifactId>wiremock-standalone</artifactId>
 				<version>${wiremock.version}</version>
 			</dependency>
@@ -139,6 +144,19 @@
 				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-xmlassert</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<!-- Spring Boot 4 split modules required by TestRestTemplate at runtime -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-http-client</artifactId>
+				<version>${spring-boot.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-restclient</artifactId>
+				<version>${spring-boot.version}</version>
+				<scope>test</scope>
 			</dependency>
 			<!-- ArchUnit for enforcing no-Spring in core modules -->
 			<dependency>
