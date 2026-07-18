@@ -78,6 +78,9 @@
 		<module>docs</module>
 		<module>stubborn-contract-wiremock</module>
 		<module>stubborn-contract-verifier</module>
+		<module>stubborn-contract-verifier-spring</module>
+		<module>stubborn-contract-verifier-spring-boot</module>
+		<module>stubborn-contract-verifier-spring-cloud</module>
 		<module>specs</module>
 		<module>stubborn-contract-stub-runner</module>
 		<module>stubborn-contract-starters</module>

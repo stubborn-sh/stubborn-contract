@@ -24,35 +24,12 @@
 			<artifactId>stubborn-spec</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-restclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-test-autoconfigure</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>tools.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-messaging</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jms</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -68,17 +45,6 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka-test</artifactId>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>jakarta.jms</groupId>
 			<artifactId>jakarta.jms-api</artifactId>
 			<optional>true</optional>
@@ -88,16 +54,6 @@
 			<artifactId>commons-text</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.camel.springboot</groupId>
-			<artifactId>camel-spring-boot-starter</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-spring</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-core</artifactId>
 			<optional>true</optional>
@@ -105,23 +61,6 @@
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-kafka</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream</artifactId>
-			<optional>true</optional>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-test-binder</artifactId>
-			<optional>true</optional>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.amqp</groupId>
-			<artifactId>spring-rabbit</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -186,11 +125,6 @@
 			<artifactId>jackson-dataformat-yaml</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-test-support</artifactId>
 			<scope>test</scope>
@@ -208,6 +142,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>org.junit.vintage</groupId>
@@ -301,6 +236,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-resttestclient</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-http-client</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-restclient</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

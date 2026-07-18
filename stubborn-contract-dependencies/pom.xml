@@ -52,6 +52,21 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-verifier-spring</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-verifier-spring-boot</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-verifier-spring-cloud</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-converters</artifactId>
 				<version>${project.version}</version>
 			</dependency>

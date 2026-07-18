@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,10 +84,11 @@ class ContractHttpDocsTests {
 			r.method("POST");
 			r.url("/users/password");
 			r.headers((h) -> h.contentType(h.applicationJson()));
-			r.body(Map.of("email",
-					r.$(r.consumer(r.optional(r.regex(RegexPatterns.email()))), r.producer("abc@abc.com")),
-					"callback_url",
-					r.$(r.consumer(r.regex(RegexPatterns.hostname())), r.producer("https://partners.com"))));
+			LinkedHashMap<String, Object> body = new LinkedHashMap<>();
+			body.put("email", r.$(r.consumer(r.optional(r.regex(RegexPatterns.email()))), r.producer("abc@abc.com")));
+			body.put("callback_url",
+					r.$(r.consumer(r.regex(RegexPatterns.hostname())), r.producer("https://partners.com")));
+			r.body(body);
 		});
 		c.response((r) -> {
 			r.status(404);

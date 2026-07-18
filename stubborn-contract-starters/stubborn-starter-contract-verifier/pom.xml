@@ -16,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-verifier-spring-boot</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.rest-assured</groupId>
