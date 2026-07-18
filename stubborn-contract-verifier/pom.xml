@@ -8,7 +8,7 @@
 		<stubborn.no-spring.skip>false</stubborn.no-spring.skip>
 		<javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
 		<avro.version>1.12.1</avro.version>
-		<kafka-avro-serializer.version>7.9.8</kafka-avro-serializer.version>
+		<kafka-avro-serializer.version>8.3.0</kafka-avro-serializer.version>
 	</properties>
 	<parent>
 		<groupId>sh.stubborn</groupId>
