@@ -24,11 +24,41 @@ producers and consumers -- for both HTTP and message-based interactions.
 = Current status
 
 
-The repository has been established as the new home of the project. The first
-Stubborn-branded release, including package and Maven coordinate changes, is planned.
-Existing Spring Cloud Contract users can continue using their current versions --
-migration instructions will be published with the first Stubborn Contract release. See
-the https://stubborn.sh/transition-guide[Transition Guide] for details.
+`0.1.0-SNAPSHOT` is available from Maven Central snapshots with new `sh.stubborn`
+coordinates, Spring Boot 4.x support, and a modular layout. Add the BOM to your
+`pom.xml`:
+
+[source,xml]
+----
+<repositories>
+    <repository>
+        <id>central-snapshots</id>
+        <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        <snapshots><enabled>true</enabled></snapshots>
+        <releases><enabled>false</enabled></releases>
+    </repository>
+</repositories>
+
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>sh.stubborn</groupId>
+            <artifactId>stubborn-dependencies</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+The BOM manages compatible versions of Spring Cloud Stream, REST-Assured, and the
+Spring Boot split modules (`spring-boot-restclient`) so you only need the single
+`stubborn-dependencies` version in your project.
+
+See the https://stubborn.sh/transition-guide[Transition Guide] and
+link:docs/migration-from-spring-cloud-contract.md[Migration Guide] for details on moving
+from Spring Cloud Contract.
 
 [[project-page]]
 = Project page

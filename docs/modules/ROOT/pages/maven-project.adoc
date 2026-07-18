@@ -11,22 +11,26 @@ To add the Stubborn Contract BOM, include the following section in your `pom.xml
 [source,xml,indent=0]
 ----
 			<dependency>
-				<groupId>org.springframework.cloud</groupId>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-dependencies</artifactId>
-				<version>${spring-cloud-contract.version}</version>
+				<version>${stubborn-contract.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 ----
+
+The BOM manages compatible versions of `spring-cloud-stream`, `rest-assured`, and the
+Spring Boot 4.x split modules (`spring-boot-restclient`, `spring-boot-http-client`)
+so you do not need to declare those versions separately.
 
 Next, add the `Stubborn Contract Verifier` Maven plugin, as follows:
 
 [source,xml,indent=0]
 ----
 			<plugin>
-				<groupId>org.springframework.cloud</groupId>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-maven-plugin</artifactId>
-				<version>${spring-cloud-contract.version}</version>
+				<version>${stubborn-contract.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<packageWithBaseClasses>com.example.fraud</packageWithBaseClasses>
@@ -59,105 +63,52 @@ Sometimes, regardless of the picked IDE, you can see that the `target/generated-
 ----
 
 [[maven-rest-assured]]
-== Maven and Rest Assured 2.0
+== Maven and REST Assured
 
-By default, Rest Assured 3.x is added to the classpath. However, you can use Rest
-Assured 2.x by adding it to the plugins classpath, as follows:
+The `stubborn-dependencies` BOM manages `io.rest-assured:rest-assured:6.0.0` so you
+do not need to specify the version in your project. Add the dependency without a
+`<version>`:
 
-[source,groovy,indent=0]
+[source,xml,indent=0]
 ----
-<plugin>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>stubborn-maven-plugin</artifactId>
-    <version>${spring-cloud-contract.version}</version>
-    <extensions>true</extensions>
-    <configuration>
-        <packageWithBaseClasses>com.example</packageWithBaseClasses>
-    </configuration>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>stubborn-verifier</artifactId>
-            <version>${spring-cloud-contract.version}</version>
-        </dependency>
-        <dependency>
-           <groupId>com.jayway.restassured</groupId>
-           <artifactId>rest-assured</artifactId>
-           <version>2.5.0</version>
-           <scope>compile</scope>
-        </dependency>
-        <dependency>
-           <groupId>com.jayway.restassured</groupId>
-           <artifactId>spring-mock-mvc</artifactId>
-           <version>2.5.0</version>
-           <scope>compile</scope>
-        </dependency>
-    </dependencies>
-</plugin>
-
-<dependencies>
-    <!-- all dependencies -->
-    <!-- you can exclude rest-assured from stubborn-verifier -->
-    <dependency>
-       <groupId>com.jayway.restassured</groupId>
-       <artifactId>rest-assured</artifactId>
-       <version>2.5.0</version>
-       <scope>test</scope>
-    </dependency>
-    <dependency>
-       <groupId>com.jayway.restassured</groupId>
-       <artifactId>spring-mock-mvc</artifactId>
-       <version>2.5.0</version>
-       <scope>test</scope>
-    </dependency>
-</dependencies>
+<dependency>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured</artifactId>
+    <scope>test</scope>
+</dependency>
 ----
-
-That way, the plugin automatically sees that Rest Assured 2.x is present on the classpath
-and modifies the imports accordingly.
 
 [[maven-snapshot-versions]]
-== Using Snapshot and Milestone Versions for Maven
+== Using Snapshot Versions for Maven
 
-To use Snapshot and Milestone versions, you have to add the following section to your
-`pom.xml`:
+To use snapshot versions, add the Maven Central snapshots repository to your `pom.xml`:
 
 [source,xml,indent=0]
 ----
 	<repositories>
 		<repository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
+			<id>central-snapshots</id>
+			<name>Maven Central Snapshots</name>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>
-		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
+			<releases>
 				<enabled>false</enabled>
-			</snapshots>
+			</releases>
 		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>spring-snapshots</id>
-			<name>Spring Snapshots</name>
-			<url>https://repo.spring.io/snapshot</url>
+			<id>central-snapshots</id>
+			<name>Maven Central Snapshots</name>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
-			<snapshots>
+			<releases>
 				<enabled>false</enabled>
-			</snapshots>
+			</releases>
 		</pluginRepository>
 	</pluginRepositories>
 ----
@@ -195,7 +146,7 @@ If you want to run stubs from Maven, call the `run` goal with the stubs to run a
 
 [source,bash,indent=0]
 ====
-mvn org.springframework.cloud:stubborn-maven-plugin:run \
+mvn sh.stubborn:stubborn-maven-plugin:run \
 -Dspring.cloud.contract.verifier.stubs="com.acme:service-name"
 ====
 
@@ -208,7 +159,7 @@ definition or the `execution` definition, as follows:
 [source,xml,indent=0]
 ----
 <plugin>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>sh.stubborn</groupId>
     <artifactId>stubborn-maven-plugin</artifactId>
     <executions>
         <execution>
@@ -484,9 +435,9 @@ goal. The following example shows how to do so:
 [source,xml,indent=0]
 ----
 <plugin>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>sh.stubborn</groupId>
     <artifactId>stubborn-maven-plugin</artifactId>
-    <version>${spring-cloud-contract.version}</version>
+    <version>${stubborn-contract.version}</version>
     <extensions>true</extensions>
     <configuration>
         <!-- Base class mappings etc. -->
@@ -527,9 +478,9 @@ or an environment variable. For instance, you could specify a concrete branch to
 [source,xml,indent=0]
 ----
 <plugin>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>sh.stubborn</groupId>
     <artifactId>stubborn-maven-plugin</artifactId>
-    <version>${spring-cloud-contract.version}</version>
+    <version>${stubborn-contract.version}</version>
     <extensions>true</extensions>
     <configuration>
         <!-- Base class mappings etc. -->
@@ -604,7 +555,7 @@ To fix this issue, provide the following section in your `pom.xml`:
                         <pluginExecutions>
                              <pluginExecution>
                                 <pluginExecutionFilter>
-                                    <groupId>org.springframework.cloud</groupId>
+                                    <groupId>sh.stubborn</groupId>
                                     <artifactId>stubborn-maven-plugin</artifactId>
                                     <versionRange>[1.0,)</versionRange>
                                     <goals>

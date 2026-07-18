@@ -10,3 +10,111 @@ includes an introduction to {project-full-name}, along with installation instruc
 walk you through building your first {project-full-name} application, discussing some core
 principles as we go.
 
+[[getting-started-requirements]]
+== Requirements
+
+* Java 17+
+* Spring Boot 4.1.x (snapshots target the current Spring Boot release train)
+* Maven 3.9+ or Gradle 8+
+
+[[getting-started-bom]]
+== BOM — one version to rule them all
+
+Import the `stubborn-dependencies` BOM in your `pom.xml`. This single import pins
+compatible versions of the Stubborn artifacts, Spring Cloud Stream, REST-Assured, and
+the Spring Boot 4.x split modules (`spring-boot-restclient`, `spring-boot-http-client`).
+
+[source,xml,indent=0]
+----
+	<repositories>
+		<repository>
+			<id>central-snapshots</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
+			<snapshots><enabled>true</enabled></snapshots>
+			<releases><enabled>false</enabled></releases>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-dependencies</artifactId>
+				<version>0.1.0-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+----
+
+[[getting-started-producer]]
+== Producer side (verifier)
+
+Add the starter and the Maven plugin to the producer service:
+
+[source,xml,indent=0]
+----
+	<dependencies>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-starter-contract-verifier</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-maven-plugin</artifactId>
+				<version>0.1.0-SNAPSHOT</version>
+				<extensions>true</extensions>
+				<configuration>
+					<packageWithBaseClasses>com.example</packageWithBaseClasses>
+					<testFramework>JUNIT5</testFramework>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+----
+
+Place contracts in `src/test/resources/contracts/` and run `mvn test` to generate and
+verify the tests. Running `mvn install` publishes a `-stubs` jar to your local Maven
+repository so consumers can download it with the stub runner.
+
+[[getting-started-consumer]]
+== Consumer side (stub runner)
+
+Add the stub runner starter to the consumer service:
+
+[source,xml,indent=0]
+----
+	<dependency>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-starter-stub-runner</artifactId>
+		<scope>test</scope>
+	</dependency>
+----
+
+Annotate your test with `@AutoConfigureStubRunner`, pointing at the producer stubs:
+
+[source,java,indent=0]
+----
+	@SpringBootTest
+	@AutoConfigureStubRunner(
+		ids = "com.example:producer-service:+:stubs",
+		stubsMode = StubsMode.LOCAL
+	)
+	class ConsumerTest {
+		// ...
+	}
+----
+
+[[getting-started-samples]]
+== Working samples
+
+See the https://github.com/stubborn-sh/stubborn-samples[stubborn-samples] repository
+for complete producer/consumer examples covering HTTP, JMS, Kafka, Spring Cloud Stream,
+GraphQL, gRPC, and REST-Assured.
+
