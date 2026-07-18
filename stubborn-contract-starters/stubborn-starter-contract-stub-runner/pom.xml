@@ -35,6 +35,10 @@
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-stub-runner-spring-boot</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-wiremock</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

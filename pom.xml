@@ -493,6 +493,92 @@
 				<artifactId>hamcrest</artifactId>
 				<version>${hamcrest.version}</version>
 			</dependency>
+			<!--
+			  wiremock-jetty12:3.13.2 uses jetty-ee10-*:12.0.30 which calls APIs only present in
+			  Jetty 12.0.x (e.g. ByteBufferPool.acquire(int,boolean), Environment.ensure(String)).
+			  Spring Boot 4 imports spring-boot-dependencies which forces all org.eclipse.jetty:* to
+			  12.1.x. Direct entries below override the BOM import so WireMock works on test classpath.
+			-->
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-util</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-io</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-http</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-server</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-security</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-session</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-xml</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-alpn-server</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-alpn-java-server</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-alpn-client</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-alpn-java-client</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-proxy</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-client</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.http2</groupId>
+				<artifactId>jetty-http2-server</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.http2</groupId>
+				<artifactId>jetty-http2-common</artifactId>
+				<version>12.0.30</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.http2</groupId>
+				<artifactId>jetty-http2-hpack</artifactId>
+				<version>12.0.30</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

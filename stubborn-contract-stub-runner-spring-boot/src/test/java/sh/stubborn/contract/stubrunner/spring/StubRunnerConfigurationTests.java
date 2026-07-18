@@ -161,7 +161,7 @@ class StubRunnerConfigurationTests {
 
 	}
 
-	static class HttpsForFraudDetection extends WireMockHttpServerStubConfigurer {
+	public static class HttpsForFraudDetection extends WireMockHttpServerStubConfigurer {
 
 		private static final Log log = LogFactory.getLog(HttpsForFraudDetection.class);
 

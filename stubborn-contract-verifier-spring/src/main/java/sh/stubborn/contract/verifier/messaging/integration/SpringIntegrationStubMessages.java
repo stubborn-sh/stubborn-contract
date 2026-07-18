@@ -54,6 +54,9 @@ public class SpringIntegrationStubMessages
 	@Override
 	public void send(Message<?> message, String destination, YamlContract contract) {
 		try {
+			if (trySendViaInputDestination(message, destination)) {
+				return;
+			}
 			MessageChannel messageChannel = this.context.getBean(destination, MessageChannel.class);
 			messageChannel.send(message);
 		}
@@ -64,9 +67,43 @@ public class SpringIntegrationStubMessages
 		}
 	}
 
+	private boolean trySendViaInputDestination(Message<?> message, String destination) {
+		if (this.context.containsBean(destination)) {
+			return false;
+		}
+		// Spring Cloud Stream 5.x test binder: channel beans are not registered by name.
+		// InputDestination.send(Message, String) routes by destination name — use it
+		// reflectively to avoid a compile-time dependency on the test binder.
+		try {
+			Class<?> inputDestinationType = Class
+				.forName("org.springframework.cloud.stream.binder.test.InputDestination");
+			if (this.context.getBeanNamesForType(inputDestinationType).length == 0) {
+				return false;
+			}
+			Object inputDestination = this.context.getBean(inputDestinationType);
+			java.lang.reflect.Method sendMethod = inputDestinationType.getMethod("send", Message.class, String.class);
+			sendMethod.invoke(inputDestination, message, destination);
+			return true;
+		}
+		catch (Exception ignored) {
+			return false;
+		}
+	}
+
 	@Override
+	@SuppressWarnings("unchecked")
 	public Message<?> receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
 		try {
+			if (!this.context.containsBean(destination)) {
+				// Spring Cloud Stream 5.x test binder: use
+				// OutputDestination.receive(long,
+				// String) reflectively to avoid a compile-time dependency on the test
+				// binder.
+				Message<?> msg = tryReceiveViaOutputDestination(destination, timeUnit.toMillis(timeout));
+				if (msg != null) {
+					return msg;
+				}
+			}
 			PollableChannel messageChannel = this.context.getBean(destination, PollableChannel.class);
 			return messageChannel.receive(timeUnit.toMillis(timeout));
 		}
@@ -74,6 +111,23 @@ public class SpringIntegrationStubMessages
 			log.error("Exception occurred while trying to read a message from " + " a channel with name [" + destination
 					+ "]", e);
 			throw new IllegalStateException(e);
+		}
+	}
+
+	private Message<?> tryReceiveViaOutputDestination(String destination, long timeoutMillis) {
+		try {
+			Class<?> outputDestinationType = Class
+				.forName("org.springframework.cloud.stream.binder.test.OutputDestination");
+			if (this.context.getBeanNamesForType(outputDestinationType).length == 0) {
+				return null;
+			}
+			Object outputDestination = this.context.getBean(outputDestinationType);
+			java.lang.reflect.Method receiveMethod = outputDestinationType.getMethod("receive", long.class,
+					String.class);
+			return (Message<?>) receiveMethod.invoke(outputDestination, timeoutMillis, destination);
+		}
+		catch (Exception ignored) {
+			return null;
 		}
 	}
 

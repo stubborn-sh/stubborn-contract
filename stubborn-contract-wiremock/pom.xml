@@ -20,6 +20,33 @@
 		<dependency>
 			<groupId>org.wiremock</groupId>
 			<artifactId>wiremock</artifactId>
+			<exclusions>
+				<!-- wiremock:3.x carries Jetty 11 transitive deps; wiremock-jetty12 provides Jetty 12 replacements -->
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-servlet</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-servlets</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-webapp</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.http2</groupId>
+					<artifactId>http2-server</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.http2</groupId>
+					<artifactId>http2-common</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.http2</groupId>
+					<artifactId>http2-hpack</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.wiremock</groupId>
