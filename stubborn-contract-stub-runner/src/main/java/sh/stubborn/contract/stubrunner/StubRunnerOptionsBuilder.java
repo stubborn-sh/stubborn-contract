@@ -17,6 +17,7 @@
 package sh.stubborn.contract.stubrunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,12 +26,10 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.stubrunner.util.StubsParser;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * A builder object for {@link StubRunnerOptions}.
@@ -98,18 +97,18 @@ public class StubRunnerOptionsBuilder {
 			return list;
 		}
 		else if (stubIdsToPortMapping.length == 1 && containsRange(stubIdsToPortMapping[0])) {
-			LinkedList<String> linkedList = new LinkedList<>();
+			List<String> parts = new ArrayList<>();
 			String[] split = stubIdsToPortMapping[0].split(",");
 			for (String string : split) {
 				if (containsClosingRange(string)) {
-					String last = linkedList.pop();
-					linkedList.push(last + "," + string);
+					String last = parts.remove(parts.size() - 1);
+					parts.add(last + "," + string);
 				}
 				else {
-					linkedList.push(string);
+					parts.add(string);
 				}
 			}
-			list.addAll(linkedList);
+			list.addAll(parts);
 			return list;
 		}
 		Collections.addAll(list, stubIdsToPortMapping);
@@ -203,7 +202,8 @@ public class StubRunnerOptionsBuilder {
 		this.stubsPerConsumer = options.isStubsPerConsumer();
 		this.consumerName = options.getConsumerName();
 		this.mappingsOutputFolder = options.getMappingsOutputFolder();
-		this.stubConfigurations = options.dependencies != null ? options.dependencies : new ArrayList<>();
+		this.stubConfigurations = options.dependencies != null ? new ArrayList<>(options.dependencies)
+				: new ArrayList<>();
 		this.stubIdsToPortMapping = options.stubIdsToPortMapping != null ? options.stubIdsToPortMapping
 				: new LinkedHashMap<>();
 		this.deleteStubsAfterTest = options.isDeleteStubsAfterTest();

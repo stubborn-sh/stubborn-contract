@@ -293,7 +293,8 @@ class JsonBodyVerificationBuilder implements BodyMethodGeneration, ClassVerifier
 				justEntry = minus(justEntry, contractTemplate.openingTemplate());
 				justEntry = minus(justEntry, contractTemplate.escapedClosingTemplate());
 				justEntry = minus(justEntry, contractTemplate.closingTemplate());
-				justEntry = minus(justEntry, FROM_REQUEST_PREFIX);
+				justEntry = minus(justEntry.trim(), FROM_REQUEST_PREFIX);
+				justEntry = justEntry.trim();
 				if (FROM_REQUEST_BODY.equalsIgnoreCase(justEntry)) {
 					// the body should be transformed by standard mechanism
 					return contractTemplate.escapedOpeningTemplate() + FROM_REQUEST_PREFIX + "escapedBody"

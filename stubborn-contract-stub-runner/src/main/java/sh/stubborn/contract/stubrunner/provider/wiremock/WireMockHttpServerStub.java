@@ -52,7 +52,7 @@ import sh.stubborn.contract.verifier.dsl.wiremock.SpringCloudContractRequestMatc
 import sh.stubborn.contract.verifier.dsl.wiremock.SpringCloudContractRequestMatcherCompat;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions;
 import sh.stubborn.contract.wiremock.WireMockSpring;
-import wiremock.com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Helper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ServiceLoader;
@@ -239,7 +239,7 @@ public class WireMockHttpServerStub implements HttpServerStub {
 		String host = "localhost";
 		int port = port();
 		String urlPathPrefix = "";
-		String hostHeader = "";
+		String hostHeader = host + ":" + port;
 		String proxyHost = this.wireMockConfiguration.proxyHostHeader();
 		int proxyPort = this.wireMockConfiguration.proxyVia().port();
 		ClientAuthenticator authenticator = NoClientAuthenticator.noClientAuthenticator();

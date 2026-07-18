@@ -113,7 +113,7 @@ class StubRunnerOptionsBuilderTests {
 	void shouldMapStubsWithPort() {
 		this.builder.withStubs("foo:bar:8080");
 		StubRunnerOptions options = this.builder.build();
-		assertThat(options.getStubIdsToPortMapping().toString()).isEqualTo("[foo:bar:+:stubs:8080]");
+		assertThat(options.getStubIdsToPortMapping()).containsEntry(new StubConfiguration("foo:bar:+:stubs"), 8080);
 	}
 
 	@Test

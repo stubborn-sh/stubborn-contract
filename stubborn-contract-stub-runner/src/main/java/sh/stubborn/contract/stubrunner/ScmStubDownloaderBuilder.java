@@ -332,9 +332,9 @@ class FileWalker extends SimpleFileVisitor<Path> {
 				if (file != null) {
 					if (log.isDebugEnabled()) {
 						log.debug("Found folder with name corresponding to a latest version [" + file + "] ");
-						this.foundFile = file.toPath();
-						return FileVisitResult.TERMINATE;
 					}
+					this.foundFile = file.toPath();
+					return FileVisitResult.TERMINATE;
 				}
 				return latestVersionFromFolders(dir, files);
 			}

@@ -389,9 +389,7 @@ class GitRepo {
 				this.provider = credentialsProvider(properties);
 			}
 			else {
-				if (log.isDebugEnabled()) {
-					log.debug("No custom credentials provider will be set");
-				}
+				log.info("No custom credentials provider will be set");
 				this.provider = null;
 			}
 		}

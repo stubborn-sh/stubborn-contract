@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import io.micrometer.common.lang.Nullable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import sh.stubborn.contract.spec.Contract;
@@ -59,7 +58,7 @@ class StubRepository {
 	private final StubRunnerOptions options;
 
 	StubRepository(File repository, List<HttpServerStub> httpServerStubs, StubRunnerOptions options,
-			@Nullable StubConfiguration stubConfiguration) {
+			StubConfiguration stubConfiguration) {
 		if (!repository.isDirectory()) {
 			throw new IllegalArgumentException("Missing descriptor repository under path [" + repository + "]");
 		}

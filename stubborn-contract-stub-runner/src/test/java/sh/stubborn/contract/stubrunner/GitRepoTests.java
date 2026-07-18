@@ -134,7 +134,8 @@ public class GitRepoTests extends AbstractGitTest {
 	public void should_push_changes_to_current_branch() throws Exception {
 		File origin = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "origin").toFile(),
 				this.project);
-		File project = this.gitRepo.cloneProject(this.project.toURI());
+		File project = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "project").toFile(),
+				this.project);
 		setOriginOnProjectToTmp(origin, project);
 		createNewFile(project);
 		this.gitRepo.commit(project, "some message");
@@ -151,7 +152,8 @@ public class GitRepoTests extends AbstractGitTest {
 	public void should_pull_changes_to_current_branch() throws Exception {
 		File origin = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "origin").toFile(),
 				this.project);
-		File project = this.gitRepo.cloneProject(this.project.toURI());
+		File project = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "project").toFile(),
+				this.project);
 		setOriginOnProjectToTmp(origin, project);
 		createNewFile(origin);
 		this.gitRepo.commit(origin, "some message");

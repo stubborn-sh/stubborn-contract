@@ -116,6 +116,7 @@ public class ContractCollectionAssert<ELEMENT> extends org.assertj.core.api.Coll
 
 	@Override
 	public ContractCollectionAssert<ELEMENT> as(String description, Object... args) {
+		this.collectionAssert.as(description, args);
 		return (ContractCollectionAssert<ELEMENT>) super.as(description, args);
 	}
 

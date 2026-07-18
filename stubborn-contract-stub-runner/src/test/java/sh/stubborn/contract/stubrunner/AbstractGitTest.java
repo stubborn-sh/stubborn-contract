@@ -24,7 +24,6 @@ import java.net.URISyntaxException;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.RemoteRemoveCommand;
-import org.eclipse.jgit.api.RemoteSetUrlCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.RefSpec;
@@ -57,13 +56,11 @@ public abstract class AbstractGitTest {
 			RemoteRemoveCommand remove = git.remoteRemove();
 			remove.setRemoteName("origin");
 			remove.call();
-			RemoteSetUrlCommand command = git.remoteSetUrl();
-			command.setRemoteUri(new URIish(origin.toURI().toURL()));
-			command.setRemoteName("origin");
-			command.setUriType(RemoteSetUrlCommand.UriType.PUSH);
-			command.call();
+			URIish originUri = new URIish(origin.toURI().toURL());
 			StoredConfig config = git.getRepository().getConfig();
 			RemoteConfig originConfig = new RemoteConfig(config, "origin");
+			originConfig.addURI(originUri);
+			originConfig.addPushURI(originUri);
 			originConfig.addFetchRefSpec(new RefSpec("+refs/heads/*:refs/remotes/origin/*"));
 			originConfig.update(config);
 			config.save();
