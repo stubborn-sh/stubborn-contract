@@ -24,8 +24,8 @@ import java.util.regex.Pattern;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.util.RegexpUtils;
 
 /**
@@ -37,7 +37,7 @@ import sh.stubborn.contract.spec.util.RegexpUtils;
  */
 public class Request extends Common implements RegexCreatingProperty<ClientDslProperty> {
 
-	private static final Log log = LogFactory.getLog(Request.class);
+	private static final Logger log = LoggerFactory.getLogger(Request.class);
 
 	private ClientPatternValueDslProperty property = new ClientPatternValueDslProperty();
 

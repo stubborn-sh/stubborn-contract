@@ -16,8 +16,8 @@
 
 package sh.stubborn.contract.spec.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper functions for HTTP statuses.
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class HttpStatus {
 
-	private static final Log log = LogFactory.getLog(HttpStatus.class);
+	private static final Logger log = LoggerFactory.getLogger(HttpStatus.class);
 
 	public HttpStatus() {
 		log.warn("WARNING: HttpStatus shouldn't be instantiated. Use its static methods instead.");

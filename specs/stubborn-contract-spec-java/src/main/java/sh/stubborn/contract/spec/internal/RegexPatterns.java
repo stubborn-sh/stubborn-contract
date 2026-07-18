@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.util.RegexpUtils;
 
 /**
@@ -33,7 +33,7 @@ import sh.stubborn.contract.spec.util.RegexpUtils;
  */
 public final class RegexPatterns {
 
-	private static final Log log = LogFactory.getLog(RegexPatterns.class);
+	private static final Logger log = LoggerFactory.getLogger(RegexPatterns.class);
 
 	public RegexPatterns() {
 		log.warn("WARNING: RegexPatterns shouldn't be instantiated. Use its static methods instead.");

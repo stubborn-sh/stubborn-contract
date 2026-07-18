@@ -16,8 +16,8 @@
 
 package sh.stubborn.contract.spec.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains Http Methods.
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class HttpMethods {
 
-	private static final Log log = LogFactory.getLog(HttpMethods.class);
+	private static final Logger log = LoggerFactory.getLogger(HttpMethods.class);
 
 	public HttpMethods() {
 		log.warn("WARNING: HttpMethods shouldn't be instantiated. Use its static methods instead.");
