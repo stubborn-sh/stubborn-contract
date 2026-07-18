@@ -70,6 +70,9 @@
 		<!-- Kotlin (for stubborn-extras/spec-kotlin) -->
 		<kotlin.version>2.2.21</kotlin.version>
 
+		<!-- Test dependencies -->
+		<archunit.version>1.4.2</archunit.version>
+
 		<!-- Maven plugin versions -->
 		<maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
@@ -213,44 +216,6 @@
 					<version>${maven-antrun-plugin.version}</version>
 				</plugin>
 				<!--
-				  Activated in Spring-agnostic core modules by setting:
-				    <stubborn.no-spring.skip>false</stubborn.no-spring.skip>
-				  Bans direct Spring dependencies so the core layer stays framework-free.
-				-->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>${maven-enforcer-plugin.version}</version>
-					<executions>
-						<execution>
-							<id>ban-spring-in-core</id>
-							<phase>validate</phase>
-							<goals>
-								<goal>enforce</goal>
-							</goals>
-							<configuration>
-								<skip>${stubborn.no-spring.skip}</skip>
-								<rules>
-									<bannedDependencies>
-										<searchTransitive>false</searchTransitive>
-										<excludes>
-											<exclude>org.springframework:*</exclude>
-											<exclude>org.springframework.boot:*</exclude>
-											<exclude>org.springframework.cloud:*</exclude>
-										</excludes>
-										<includes>
-											<!-- Spring is acceptable in test scope for core modules -->
-											<include>org.springframework:*:*:*:test</include>
-											<include>org.springframework.boot:*:*:*:test</include>
-											<include>org.springframework.cloud:*:*:*:test</include>
-										</includes>
-									</bannedDependencies>
-								</rules>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<!--
 				  POM flattening: expands parent refs and removes CI-unfriendly elements
 				  before publishing. Mode 'oss' is the standard for open-source Maven Central
 				  artifacts — it expands parent and removes internal-only elements.
@@ -370,6 +335,45 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
+			</plugin>
+			<!--
+			  Activated in Spring-agnostic core modules by setting:
+			    <stubborn.no-spring.skip>false</stubborn.no-spring.skip>
+			  Bans direct Spring compile-scope dependencies so the core layer stays
+			  framework-free. Test-scope Spring is allowed.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>${maven-enforcer-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>ban-spring-in-core</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<skip>${stubborn.no-spring.skip}</skip>
+							<rules>
+								<bannedDependencies>
+									<searchTransitive>false</searchTransitive>
+									<excludes>
+										<exclude>org.springframework:*</exclude>
+										<exclude>org.springframework.boot:*</exclude>
+										<exclude>org.springframework.cloud:*</exclude>
+									</excludes>
+									<includes>
+										<!-- Spring is acceptable in test scope for core modules -->
+										<include>org.springframework:*:*:*:test</include>
+										<include>org.springframework.boot:*:*:*:test</include>
+										<include>org.springframework.cloud:*:*:*:test</include>
+									</includes>
+								</bannedDependencies>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -48,7 +48,6 @@ import static sh.stubborn.contract.verifier.util.ContentType.JSON
 import static sh.stubborn.contract.verifier.util.ContentType.UNKNOWN
 import static sh.stubborn.contract.verifier.util.ContentType.XML
 
-import org.springframework.util.StringUtils
 /**
  * A utility class that can operate on a message body basing on the provided Content Type.
  *
@@ -108,7 +107,7 @@ class ContentUtils {
 	 * @return JSON structure with replaced client / server side parts
 	 */
 	static Object extractValue(GString bodyAsValue, ContentType contentType, Closure valueProvider) {
-		if (!StringUtils.hasText(bodyAsValue.toString())) {
+		if (bodyAsValue.toString() == null || bodyAsValue.toString().isBlank()) {
 			return bodyAsValue
 		}
 		if (contentType == ContentType.TEXT || contentType == ContentType.FORM) {

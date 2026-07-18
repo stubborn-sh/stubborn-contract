@@ -34,11 +34,9 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
-
-import org.springframework.util.Assert;
 
 /**
  * @author Marcin Grzejszczak
@@ -169,7 +167,7 @@ public class ContractVerifierExtension implements Serializable {
 	/**
 	 * Picks the mode in which stubs will be found and registered
 	 */
-	private final Property<StubRunnerProperties.StubsMode> contractsMode;
+	private final Property<StubsMode> contractsMode;
 
 	/**
 	 * A package that contains all the base clases for generated tests. If your contract
@@ -251,8 +249,8 @@ public class ContractVerifierExtension implements Serializable {
 		this.publishStubsToScm = objects.newInstance(PublishStubsToScm.class);
 		this.contractDependency = objects.newInstance(Dependency.class);
 		this.contractsPath = objects.property(String.class);
-		this.contractsMode = objects.property(StubRunnerProperties.StubsMode.class)
-				.convention(StubRunnerProperties.StubsMode.CLASSPATH);
+		this.contractsMode = objects.property(StubsMode.class)
+				.convention(StubsMode.CLASSPATH);
 		this.packageWithBaseClasses = objects.property(String.class);
 		this.baseClassMappings = objects.newInstance(BaseClassMapping.class);
 		this.excludeBuildFolders = objects.property(Boolean.class).convention(false);
@@ -462,16 +460,16 @@ public class ContractVerifierExtension implements Serializable {
 		this.contractsPath.set(contractsPath);
 	}
 
-	public Property<StubRunnerProperties.StubsMode> getContractsMode() {
+	public Property<StubsMode> getContractsMode() {
 		return contractsMode;
 	}
 
-	public void setContractsMode(StubRunnerProperties.StubsMode contractsMode) {
+	public void setContractsMode(StubsMode contractsMode) {
 		this.contractsMode.set(contractsMode);
 	}
 
 	public void setContractsMode(String contractsMode) {
-		this.contractsMode.set(StubRunnerProperties.StubsMode.valueOf(contractsMode.toUpperCase(Locale.ROOT)));
+		this.contractsMode.set(StubsMode.valueOf(contractsMode.toUpperCase(Locale.ROOT)));
 	}
 
 	public Property<String> getPackageWithBaseClasses() {
@@ -687,7 +685,9 @@ public class ContractVerifierExtension implements Serializable {
 		}
 
 		public void setProxyPort(int proxyPort) {
-			Assert.state(0 < proxyPort && proxyPort <= 65536, "Proxy port should be between 1 and 65536");
+			if (proxyPort <= 0 || proxyPort > 65536) {
+				throw new IllegalStateException("Proxy port should be between 1 and 65536");
+			}
 			this.proxyPort.set(proxyPort);
 		}
 

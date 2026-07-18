@@ -35,9 +35,7 @@ import sh.stubborn.contract.stubrunner.ContractProjectUpdater;
 import sh.stubborn.contract.stubrunner.ScmStubDownloaderBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
-
-import org.springframework.util.StringUtils;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 /**
  * For SCM based repositories will copy the generated stubs to the cloned repo with
@@ -59,7 +57,7 @@ class PublishStubsToScmTask extends DefaultTask {
 
 	private final Repository contractRepository;
 
-	private final Property<StubRunnerProperties.StubsMode> contractsMode;
+	private final Property<StubsMode> contractsMode;
 
 	/**
 	 * @see ContractVerifierExtension#getDeleteStubsAfterTest()
@@ -85,7 +83,7 @@ class PublishStubsToScmTask extends DefaultTask {
 			final ProviderFactory providers
 	) {
 		this.contractRepository = objects.newInstance(Repository.class);
-		this.contractsMode = objects.property(StubRunnerProperties.StubsMode.class);
+		this.contractsMode = objects.property(StubsMode.class);
 		this.deleteStubsAfterTest = objects.property(Boolean.class);
 		this.failOnNoContracts = objects.property(Boolean.class);
 		this.contractsProperties = objects.mapProperty(String.class, String.class);
@@ -97,7 +95,7 @@ class PublishStubsToScmTask extends DefaultTask {
 
 		this.onlyIf(task -> {
 			String contractRepoUrl = contractRepository.repositoryUrl.getOrElse("");
-			if (!StringUtils.hasText(contractRepoUrl) || !ScmStubDownloaderBuilder.isProtocolAccepted(contractRepoUrl)) {
+			if (contractRepoUrl == null || contractRepoUrl.isBlank() || !ScmStubDownloaderBuilder.isProtocolAccepted(contractRepoUrl)) {
 				getLogger().warn(
 						"Skipping pushing stubs to scm since your contracts repository URL [{}] doesn't match any of the accepted protocols for SCM stub downloader",
 						contractRepoUrl);
@@ -175,7 +173,7 @@ class PublishStubsToScmTask extends DefaultTask {
 	}
 
 	@Input
-	Property<StubRunnerProperties.StubsMode> getContractsMode() {
+	Property<StubsMode> getContractsMode() {
 		return contractsMode;
 	}
 

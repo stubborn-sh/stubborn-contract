@@ -140,6 +140,13 @@
 				<artifactId>stubborn-xmlassert</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<!-- ArchUnit for enforcing no-Spring in core modules -->
+			<dependency>
+				<groupId>com.tngtech.archunit</groupId>
+				<artifactId>archunit-junit5</artifactId>
+				<version>${archunit.version}</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<profiles>

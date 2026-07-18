@@ -60,9 +60,7 @@ import sh.stubborn.contract.stubrunner.StubDownloaderBuilderProvider;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerPropertyUtils;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
-
-import org.springframework.util.StringUtils;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 // TODO: Convert to incremental task: https://docs.gradle.org/current/userguide/custom_tasks.html#incremental_tasks
 /**
@@ -92,7 +90,7 @@ class ContractsCopyTask extends DefaultTask {
 
 	private final Repository contractRepository;
 
-	private final Property<StubRunnerProperties.StubsMode> contractsMode;
+	private final Property<StubsMode> contractsMode;
 
 	private final MapProperty<String, String> contractsProperties;
 
@@ -139,13 +137,13 @@ class ContractsCopyTask extends DefaultTask {
 		contractsDirectory = objects.directoryProperty();
 		contractDependency = objects.newInstance(Dependency.class);
 		contractRepository = objects.newInstance(Repository.class);
-		contractsMode = objects.property(StubRunnerProperties.StubsMode.class);
+		contractsMode = objects.property(StubsMode.class);
 		contractsProperties = objects.mapProperty(String.class, String.class);
 		allContractsProperties = contractsProperties.flatMap(contractsProps -> {
 			MapProperty<String, String> allProps = objects.mapProperty(String.class, String.class);
 			allProps.putAll(contractsProps);
 			String gitCommitId = this.discoverGitCommitId(contractsProps);
-			if (StringUtils.hasText(gitCommitId)) {
+			if (hasText(gitCommitId)) {
 				allProps.put("git.commit", gitCommitId);
 			}
 			return allProps;
@@ -263,7 +261,7 @@ class ContractsCopyTask extends DefaultTask {
 	}
 
 	private void throwExceptionWhenFailOnNoContracts(File file, String contractsRepository) {
-		if (StringUtils.hasText(contractsRepository)) {
+		if (hasText(contractsRepository)) {
 			if (getLogger().isDebugEnabled()) {
 				getLogger().debug(
 						"Contracts repository is set, will not throw an exception that the contracts are not found");
@@ -382,13 +380,13 @@ class ContractsCopyTask extends DefaultTask {
 
 		StubConfiguration toStubConfiguration() {
 			String stringNotation = this.stringNotation.getOrNull();
-			if (StringUtils.hasText(stringNotation)) {
+			if (hasText(stringNotation)) {
 				return new StubConfiguration(stringNotation);
 			}
 
 			String groupId = this.groupId.getOrNull();
 			String artifactId = this.artifactId.getOrNull();
-			String version = StringUtils.hasText(this.version.getOrNull()) ? this.version.getOrNull() : LATEST_VERSION;
+			String version = hasText(this.version.getOrNull()) ? this.version.getOrNull() : LATEST_VERSION;
 			String classifier = this.classifier.getOrNull();
 			return new StubConfiguration(groupId, artifactId, version, classifier);
 		}
@@ -455,7 +453,7 @@ class ContractsCopyTask extends DefaultTask {
 
 	@Input
 	@Optional
-	Property<StubRunnerProperties.StubsMode> getContractsMode() {
+	Property<StubsMode> getContractsMode() {
 		return contractsMode;
 	}
 
@@ -502,9 +500,9 @@ class ContractsCopyTask extends DefaultTask {
 	}
 
 	private boolean shouldDownloadContracts() {
-		return StringUtils.hasText(contractDependency.getArtifactId().getOrNull())
-				|| StringUtils.hasText(contractDependency.getStringNotation().getOrNull())
-				|| StringUtils.hasText(contractRepository.getRepositoryUrl().getOrNull());
+		return hasText(contractDependency.getArtifactId().getOrNull())
+				|| hasText(contractDependency.getStringNotation().getOrNull())
+				|| hasText(contractRepository.getRepositoryUrl().getOrNull());
 	}
 
 	private StubRunnerOptions createStubRunnerOptions() {
@@ -525,9 +523,9 @@ class ContractsCopyTask extends DefaultTask {
 		String repositoryUrl = contractRepository.getRepositoryUrl().getOrNull();
 		if (repositoryUrl != null && ScmStubDownloaderBuilder.isProtocolAccepted(repositoryUrl)) {
 			String branch = StubRunnerPropertyUtils.getProperty(props, "git.branch");
-			branch = StringUtils.hasText(branch) ? branch : "master";
+			branch = hasText(branch) ? branch : "master";
 			UsernamePasswordCredentialsProvider provider = null;
-			if (StringUtils.hasText(contractRepository.getUsername().getOrNull())) {
+			if (hasText(contractRepository.getUsername().getOrNull())) {
 				provider = new UsernamePasswordCredentialsProvider(contractRepository.getUsername().get(),
 						contractRepository.getPassword().get());
 			}
@@ -535,7 +533,7 @@ class ContractsCopyTask extends DefaultTask {
 				String repoUrl;
 				URI repoUri = URI.create(repositoryUrl);
 				String part = repoUri.getSchemeSpecificPart();
-				if (!StringUtils.hasLength(part)) {
+				if (part == null || part.isEmpty()) {
 					repoUrl = part;
 				}
 				else {
@@ -555,6 +553,10 @@ class ContractsCopyTask extends DefaultTask {
 			}
 		}
 		return null;
+	}
+
+	private static boolean hasText(String s) {
+		return s != null && !s.isBlank();
 	}
 
 	// See: https://github.com/gradle/gradle/issues/6072

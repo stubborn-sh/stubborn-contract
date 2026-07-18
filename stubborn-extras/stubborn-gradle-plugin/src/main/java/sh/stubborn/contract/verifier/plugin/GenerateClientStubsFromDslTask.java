@@ -42,7 +42,6 @@ import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecOperations;
 
-import org.springframework.util.StringUtils;
 
 //TODO: Implement as an incremental task: https://gradle.org/docs/current/userguide/custom_tasks.html#incremental_tasks ?
 /**
@@ -103,7 +102,7 @@ class GenerateClientStubsFromDslTask extends DefaultTask {
 				exec.getMainClass().set("sh.stubborn.contract.verifier.converter.RecursiveFilesConverterApplication");
 				exec.classpath(classpath);
 				exec.args(quoteAndEscape(output.getAbsolutePath()), quoteAndEscape(contractsDslDir.get().getAsFile().getAbsolutePath()),
-						quoteAndEscape(StringUtils.collectionToCommaDelimitedString(excludedFiles.get())), quoteAndEscape(".*"), excludeBuildFolders.get());
+						quoteAndEscape(String.join(",", excludedFiles.get())), quoteAndEscape(".*"), excludeBuildFolders.get());
 				exec.setStandardOutput(os);
 				exec.setErrorOutput(os);
 			});
