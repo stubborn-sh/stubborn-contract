@@ -13,11 +13,10 @@
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Converters</name>
 	<description>Stubborn Contract Converters</description>
+	<properties>
+		<stubborn.no-spring.skip>false</stubborn.no-spring.skip>
+	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-spec</artifactId>
@@ -27,8 +26,8 @@
 			<artifactId>stubborn-verifier</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-logging</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.groovy</groupId>
@@ -41,11 +40,6 @@
 		<dependency>
 			<groupId>org.wiremock</groupId>
 			<artifactId>wiremock-standalone</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure-processor</artifactId>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -13,6 +13,9 @@
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner</name>
 	<description>Stubborn Contract Stub Runner</description>
+	<properties>
+		<stubborn.no-spring.skip>false</stubborn.no-spring.skip>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
