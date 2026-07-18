@@ -24,7 +24,6 @@
 	<modules>
 		<module>stubborn-contract-spec-java</module>
 		<module>stubborn-contract-spec-groovy</module>
-		<module>stubborn-contract-spec-kotlin</module>
 		<module>stubborn-contract-spec</module>
 	</modules>
 

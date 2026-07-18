@@ -71,8 +71,6 @@
 	<modules>
 		<module>stubborn-contract-converters</module>
 		<module>stubborn-contract-maven-plugin</module>
-		<module>stubborn-contract-gradle-plugin</module>
-		<module>stubborn-contract-gradle-portal-plugin</module>
 	</modules>
 
 	<build>

@@ -69,11 +69,11 @@ import sh.stubborn.contract.verifier.config.TestFramework;
  * @author Shannon Pamperl
  * @since 1.0.0
  */
-public class SpringCloudContractVerifierGradlePlugin implements Plugin<Project> {
+public class StubbornContractGradlePlugin implements Plugin<Project> {
 
-	private static final Logger logger = Logging.getLogger(SpringCloudContractVerifierGradlePlugin.class);
+	private static final Logger logger = Logging.getLogger(StubbornContractGradlePlugin.class);
 
-	private static final String SPRING_CLOUD_VERSION = VersionExtractor.forClass(SpringCloudContractVerifierGradlePlugin.class);
+	private static final String SPRING_CLOUD_VERSION = VersionExtractor.forClass(StubbornContractGradlePlugin.class);
 
 	private static final String GROUP_NAME = "Verification";
 
@@ -102,7 +102,7 @@ public class SpringCloudContractVerifierGradlePlugin implements Plugin<Project> 
 	private final ObjectFactory objects;
 
 	@Inject
-	public SpringCloudContractVerifierGradlePlugin(
+	public StubbornContractGradlePlugin(
 			final ProjectLayout layout,
 			final ProviderFactory providers,
 			final ObjectFactory objects

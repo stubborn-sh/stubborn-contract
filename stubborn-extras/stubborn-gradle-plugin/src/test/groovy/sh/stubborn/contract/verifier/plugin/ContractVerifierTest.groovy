@@ -39,7 +39,7 @@ class ContractVerifierTest {
 		File testFolder = new File("build/generated-tests/${getClass().simpleName}/${dateString}")
 		testFolder.mkdirs()
 		project = (DefaultProject) ProjectBuilder.builder().withProjectDir(testFolder).build()
-		project.plugins.apply(SpringCloudContractVerifierGradlePlugin)
+		project.plugins.apply(StubbornContractGradlePlugin)
 	}
 
 	@Test
@@ -171,7 +171,7 @@ class ContractVerifierTest {
 	@Test
 	void "should compile"() {
 		given:
-			project.plugins.apply(SpringCloudContractVerifierGradlePlugin)
+			project.plugins.apply(StubbornContractGradlePlugin)
 			ContractVerifierExtension extension = project.getExtensions().findByType(ContractVerifierExtension)
 			extension.with {
 
@@ -194,7 +194,7 @@ class ContractVerifierTest {
 	@Test
 	void "should property merge scm repository settings for publishing stubs to scm"() {
 		given:
-			project.plugins.apply(SpringCloudContractVerifierGradlePlugin)
+			project.plugins.apply(StubbornContractGradlePlugin)
 			ContractVerifierExtension extension = project.extensions.findByType(ContractVerifierExtension)
 			PublishStubsToScmTask task = project.tasks.findByName(PublishStubsToScmTask.TASK_NAME)
 
