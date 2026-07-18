@@ -111,6 +111,37 @@ Annotate your test with `@AutoConfigureStubRunner`, pointing at the producer stu
 	}
 ----
 
+[[getting-started-kotlin]]
+== Kotlin contracts
+
+Stubborn Contract supports contracts written in Kotlin via the
+`sh.stubborn:stubborn-spec-kotlin` module.
+
+**Recommended format: `.kt` compiled contracts.**
+
+[source,kotlin,indent=0]
+----
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
+
+contract {
+    request {
+        method = GET
+        url = url("/api/books")
+    }
+    response {
+        status = OK
+        body = body(mapOf("books" to listOf("Effective Java")))
+        headers { contentType(APPLICATION_JSON) }
+    }
+}
+----
+
+WARNING: `.kts` (Kotlin Script) contracts are supported on **Kotlin ≤ 2.2 only**.
+The `kotlin.script.experimental` scripting host was removed in Kotlin 2.3.
+`KotlinContractConverter` (the `.kts` handler) is deprecated and will throw an
+`UnsupportedOperationException` at startup if Kotlin 2.3+ is detected on the classpath.
+Migrate existing `.kts` contract files to YAML or `.kt` compiled contracts.
+
 [[getting-started-samples]]
 == Working samples
 

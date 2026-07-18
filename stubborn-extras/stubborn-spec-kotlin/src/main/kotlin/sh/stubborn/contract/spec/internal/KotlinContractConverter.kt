@@ -32,11 +32,27 @@ import kotlin.script.experimental.jvm.jvm
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 
 /**
- * Converter that will convert the Kotlin DSL to Java DSL.
+ * Converter for `.kts` (Kotlin Script) contract files.
+ *
+ * **DEPRECATED** — Kotlin 2.3+ removed the `kotlin.script.experimental.*` scripting host
+ * that this converter relies on. This class will be removed in the next major release.
+ *
+ * Migrate `.kts` contract files to `.kt` files compiled by the stubborn-maven-plugin
+ * or to YAML/Groovy contracts instead.
+ *
+ * This class still works on Kotlin ≤ 2.2. On Kotlin 2.3+ it throws an
+ * [UnsupportedOperationException] at construction time with migration instructions.
  *
  * @author Tim Ysewyn
  * @since 2.2.0
+ * @deprecated Use `.kt` (compiled Kotlin) or YAML contracts instead. KTS scripting is
+ * not supported on Kotlin 2.3+.
  */
+@Deprecated(
+	message = "KTS scripting is not supported on Kotlin 2.3+. " +
+		"Migrate to .kt (compiled Kotlin) or YAML contracts.",
+	level = DeprecationLevel.WARNING
+)
 class KotlinContractConverter : ContractConverter<List<Contract>> {
 
 	private val ext = "kts"
@@ -45,6 +61,19 @@ class KotlinContractConverter : ContractConverter<List<Contract>> {
 		// Sets an {@code idea.use.native.fs.for.win} system property to {@code false}
 		// to disable a native engine discovery for Windows: may be resolved in the future Kotlin versions.
 		System.setProperty("idea.use.native.fs.for.win", "false")
+		checkKotlinVersion()
+	}
+
+	private fun checkKotlinVersion() {
+		val version = KotlinVersion.CURRENT
+		if (version.major > 2 || (version.major == 2 && version.minor >= 3)) {
+			throw UnsupportedOperationException(
+				"KTS contract files are not supported on Kotlin ${version}. " +
+					"The kotlin.script.experimental scripting host was removed in Kotlin 2.3. " +
+					"Please migrate your .kts contract files to YAML or Groovy contracts. " +
+					"See https://github.com/stubborn-sh/stubborn-contract/issues/1 for details."
+			)
+		}
 	}
 
 	override fun isAccepted(file: File): Boolean {
