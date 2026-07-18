@@ -18,12 +18,64 @@ env:
   JAVA_DISTRIBUTION: 'temurin'
 
 jobs:
+  detect-changes:
+    name: Detect Changed Modules
+    runs-on: ubuntu-latest
+    outputs:
+      modules: ${{ steps.detect.outputs.modules }}
+      full_build: ${{ steps.detect.outputs.full_build }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed Maven modules
+        id: detect
+        run: |
+          # On push to main or schedule/dispatch: full build
+          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
+            echo "full_build=true" >> "$GITHUB_OUTPUT"
+            echo "modules=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.sha }}"
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD" 2>/dev/null || git diff --name-only HEAD~1 HEAD)
+
+          # Map top-level directory to Maven module path
+          MODULES=""
+          declare -A SEEN
+          while IFS= read -r file; do
+            dir=$(echo "$file" | cut -d/ -f1)
+            # Skip non-module top-level paths
+            [[ "$dir" == ".github" || "$dir" == "docs" || "$dir" == "config" || "$dir" == "scripts" ]] && continue
+            # Root pom change → full build
+            if [[ "$file" == "pom.xml" || "$file" == "stubborn-build/pom.xml" ]]; then
+              echo "full_build=true" >> "$GITHUB_OUTPUT"
+              echo "modules=" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            [[ -n "${SEEN[$dir]}" ]] && continue
+            SEEN[$dir]=1
+            [[ -d "$dir" && -f "$dir/pom.xml" ]] && MODULES="${MODULES:+$MODULES,}$dir"
+          done <<< "$CHANGED"
+
+          if [[ -z "$MODULES" ]]; then
+            echo "full_build=true" >> "$GITHUB_OUTPUT"
+            echo "modules=" >> "$GITHUB_OUTPUT"
+          else
+            echo "full_build=false" >> "$GITHUB_OUTPUT"
+            echo "modules=$MODULES" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
     name: Build & Test
     runs-on: ubuntu-latest
+    needs: detect-changes
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
 
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
@@ -33,15 +85,26 @@ jobs:
           cache: maven
 
       - name: Build stubborn-build parent
-        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress -q
 
       - name: Install BOM (stubborn-contract-dependencies)
         run: |
           find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
-          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress -q
 
-      - name: Build & test
+      - name: Build & test (full)
+        if: needs.detect-changes.outputs.full_build == 'true'
         run: ./mvnw clean install --no-transfer-progress
+
+      - name: Build & test (changed modules + dependents)
+        if: needs.detect-changes.outputs.full_build == 'false'
+        run: |
+          MODULES="${{ needs.detect-changes.outputs.modules }}"
+          echo "Building modules: $MODULES (plus dependents)"
+          ./mvnw clean install --no-transfer-progress \
+            --projects "$MODULES" \
+            --also-make \
+            --also-make-dependents
 
       - name: Publish test results
         if: always()
