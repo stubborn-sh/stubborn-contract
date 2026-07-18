@@ -14,6 +14,7 @@
 	<name>stubborn-contract-wiremock</name>
 	<description>Spring-free WireMock core: WireMockSpring and WireMockStubMapping utilities</description>
 	<properties>
+		<stubborn.revapi.skip>false</stubborn.revapi.skip>
 		<stubborn.no-spring.skip>false</stubborn.no-spring.skip>
 	</properties>
 	<dependencies>

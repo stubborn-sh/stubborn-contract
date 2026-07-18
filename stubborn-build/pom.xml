@@ -96,12 +96,16 @@
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
 		<build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
 		<kotlin-maven-plugin.version>${kotlin.version}</kotlin-maven-plugin.version>
+		<revapi-maven-plugin.version>0.15.0</revapi-maven-plugin.version>
+		<revapi-java.version>0.28.1</revapi-java.version>
 
 		<!--
 		  Core module gate: set to false in Spring-agnostic core modules to ban
 		  direct Spring dependencies (org.springframework.*, *.boot, *.cloud).
 		-->
 		<stubborn.no-spring.skip>true</stubborn.no-spring.skip>
+		<!-- Set to false in public API modules to enable revapi binary-compat check. -->
+		<stubborn.revapi.skip>true</stubborn.revapi.skip>
 	</properties>
 
 	<distributionManagement>
@@ -323,6 +327,47 @@
 					<configuration>
 						<skip>true</skip>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.revapi</groupId>
+					<artifactId>revapi-maven-plugin</artifactId>
+					<version>${revapi-maven-plugin.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.revapi</groupId>
+							<artifactId>revapi-java</artifactId>
+							<version>${revapi-java.version}</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<skip>${stubborn.revapi.skip}</skip>
+						<analysisConfiguration>
+							<revapi.java>
+								<filter>
+									<packages>
+										<regex>true</regex>
+										<include>
+											<item>sh\.stubborn\..*</item>
+										</include>
+									</packages>
+								</filter>
+							</revapi.java>
+							<revapi.differences>
+								<ignore>true</ignore>
+								<differences>
+									<!-- Intentional API changes must be acknowledged here with a justification. -->
+								</differences>
+							</revapi.differences>
+						</analysisConfiguration>
+					</configuration>
+					<executions>
+						<execution>
+							<id>check-compatibility</id>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

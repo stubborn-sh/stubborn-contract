@@ -16,6 +16,7 @@
 	<description>Fluent XML/XPath assertion library — formerly com.toomuchcoding.xmlassert</description>
 
 	<properties>
+		<stubborn.revapi.skip>false</stubborn.revapi.skip>
 		<eclipse-xpath2.version>2.1.100</eclipse-xpath2.version>
 		<xerces.version>2.12.2</xerces.version>
 		<checkstyle.skip>true</checkstyle.skip>

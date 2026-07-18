@@ -16,6 +16,7 @@
 	<description>Fluent JSON assertion library — formerly com.toomuchcoding.jsonassert</description>
 
 	<properties>
+		<stubborn.revapi.skip>false</stubborn.revapi.skip>
 		<json-path.version>2.10.0</json-path.version>
 		<json-smart.version>2.5.2</json-smart.version>
 		<checkstyle.skip>true</checkstyle.skip>
