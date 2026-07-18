@@ -23,13 +23,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Chris Bono
@@ -54,12 +55,13 @@ public class ContractVerifierUtilTest {
 		assertThat(value).isEqualTo("customer@test.com");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void shouldThrowExceptionOnIllegalValueFromXPath() {
 		// Given
 		Document parsedXml = parsedXml(unnamedXml);
-		// When
-		ContractVerifierUtil.valueFromXPath(parsedXml, "/ns1:customer/email/text()");
+		// When / Then
+		assertThrows(IllegalArgumentException.class,
+				() -> ContractVerifierUtil.valueFromXPath(parsedXml, "/ns1:customer/email/text()"));
 	}
 
 	@Test
@@ -156,12 +158,13 @@ public class ContractVerifierUtilTest {
 		assertThat(node.getTextContent()).isEqualTo("customer@test.com");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void shouldThrowExceptionOnIllegalNodeFromXPath() {
 		// Given
 		Document parsedXml = parsedXml(unnamedXml);
-		// When
-		ContractVerifierUtil.nodeFromXPath(parsedXml, "/ns1:customer/email/text()");
+		// When / Then
+		assertThrows(IllegalArgumentException.class,
+				() -> ContractVerifierUtil.nodeFromXPath(parsedXml, "/ns1:customer/email/text()"));
 	}
 
 	@Test
