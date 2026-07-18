@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -19,9 +19,11 @@ jobs:
   build-docs:
     name: Build Docs
     runs-on: ubuntu-latest
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
 
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
@@ -30,17 +32,8 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: maven
 
-      - name: Build stubborn-build parent
-        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
-
-      - name: Install BOM (stubborn-contract-dependencies)
-        run: |
-          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
-          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
-
-      - name: Build docs
-        run: ./mvnw install -DskipTests --no-transfer-progress -Pdocs
-        continue-on-error: true
+      - name: Build docs with Asciidoctor
+        run: ./mvnw generate-resources -pl docs --no-transfer-progress -q
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
@@ -48,7 +41,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/build/site/
+          path: docs/target/generated-docs/
 
   deploy-pages:
     name: Deploy to GitHub Pages
