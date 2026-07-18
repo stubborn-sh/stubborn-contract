@@ -131,6 +131,7 @@
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-jsonassert</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
