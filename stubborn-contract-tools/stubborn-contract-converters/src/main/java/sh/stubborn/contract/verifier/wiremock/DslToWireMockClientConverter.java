@@ -30,8 +30,6 @@ import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubStrategy;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.NamesUtil;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Converts DSLs to WireMock stubs.
  *
@@ -89,8 +87,8 @@ public class DslToWireMockClientConverter extends DslToWireMockConverter {
 		Map<Contract, String> convertedContracts = new LinkedHashMap<>();
 		for (int i = 0; i < contractsWithRequest.size(); i++) {
 			Contract dsl = contractsWithRequest.get(i);
-			String name = StringUtils.hasText(dsl.getName()) ? NamesUtil.convertIllegalPackageChars(dsl.getName())
-					: rootName + "_" + i;
+			String name = (dsl.getName() != null && !dsl.getName().isBlank())
+					? NamesUtil.convertIllegalPackageChars(dsl.getName()) : rootName + "_" + i;
 			convertedContracts.put(dsl, convertASingleContract(name, contract, dsl));
 		}
 		return convertedContracts;

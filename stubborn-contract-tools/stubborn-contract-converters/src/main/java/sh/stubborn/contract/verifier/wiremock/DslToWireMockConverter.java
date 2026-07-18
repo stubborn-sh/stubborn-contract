@@ -28,8 +28,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import sh.stubborn.contract.verifier.converter.StubGenerator;
 
-import org.springframework.util.StreamUtils;
-
 /**
  * WireMock implementation of the {@link StubGenerator}.
  *
@@ -58,7 +56,7 @@ public abstract class DslToWireMockConverter implements StubGenerator<StubMappin
 			return false;
 		}
 		try (InputStream stream = Files.newInputStream(mapping.toPath())) {
-			StubMapping.buildFrom(StreamUtils.copyToString(stream, Charset.forName("UTF-8")));
+			StubMapping.buildFrom(new String(stream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8));
 			return true;
 		}
 		catch (IOException | JsonException e) {
