@@ -1,4 +1,4 @@
-spring.cloud.contract.stubrunner:
+stubborn.contract.stubrunner:
   idsToServiceIds:
     fraudDetectionServer: someNameThatShouldMapFraudDetectionServer
 server:
