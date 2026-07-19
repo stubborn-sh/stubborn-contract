@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Import;
 @Configuration(proxyBeanMethods = false)
 class StubRunnerServerConfiguration {
 
-	@ConditionalOnProperty(name = "spring.cloud.contract.stubrunner.messaging.enabled", havingValue = "true",
+	@ConditionalOnProperty(name = "stubborn.contract.stubrunner.messaging.enabled", havingValue = "true",
 			matchIfMissing = true)
 	@AutoConfigureMessageVerifier
 	@Import({ TriggerController.class })

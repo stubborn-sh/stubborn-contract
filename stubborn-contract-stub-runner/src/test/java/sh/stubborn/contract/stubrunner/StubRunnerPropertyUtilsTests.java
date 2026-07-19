@@ -66,7 +66,7 @@ class StubRunnerPropertyUtilsTests {
 			@Override
 			public String envVar(String prop) {
 				assertThat(prop).matches(p -> p.equals(expectedEnvVar)
-						|| p.equals("SPRING_CLOUD_CONTRACT_STUBRUNNER_PROPERTIES_" + expectedEnvVar));
+						|| p.equals("STUBBORN_CONTRACT_STUBRUNNER_PROPERTIES_" + expectedEnvVar));
 				return envVariable;
 			}
 		};
@@ -79,17 +79,16 @@ class StubRunnerPropertyUtilsTests {
 	static Stream<Arguments> getPropertyArgs() {
 		return Stream.of(
 				Arguments.of("foo.bar-baz", Map.of("foo.bar-baz", "faz"), "ab", "bc", "faz",
-						"spring.cloud.contract.stubrunner.properties.foo.bar-baz",
-						"SPRING_CLOUD_CONTRACT_STUBRUNNER_PROPERTIES_FOO_BAR_BAZ"),
+						"stubborn.contract.stubrunner.properties.foo.bar-baz",
+						"STUBBORN_CONTRACT_STUBRUNNER_PROPERTIES_FOO_BAR_BAZ"),
 				Arguments.of("foo.bar-baz", Map.of(), "ab", "bc", "ab",
-						"spring.cloud.contract.stubrunner.properties.foo.bar-baz",
-						"SPRING_CLOUD_CONTRACT_STUBRUNNER_PROPERTIES_FOO_BAR_BAZ"),
+						"stubborn.contract.stubrunner.properties.foo.bar-baz",
+						"STUBBORN_CONTRACT_STUBRUNNER_PROPERTIES_FOO_BAR_BAZ"),
 				Arguments.of("foo.bar-baz", Map.of(), "", "bc", "bc",
-						"spring.cloud.contract.stubrunner.properties.foo.bar-baz",
-						"SPRING_CLOUD_CONTRACT_STUBRUNNER_PROPERTIES_FOO_BAR_BAZ"),
-				Arguments.of("foo.bar-baz", null, "", "bc", "bc",
-						"spring.cloud.contract.stubrunner.properties.foo.bar-baz",
-						"SPRING_CLOUD_CONTRACT_STUBRUNNER_PROPERTIES_FOO_BAR_BAZ"));
+						"stubborn.contract.stubrunner.properties.foo.bar-baz",
+						"STUBBORN_CONTRACT_STUBRUNNER_PROPERTIES_FOO_BAR_BAZ"),
+				Arguments.of("foo.bar-baz", null, "", "bc", "bc", "stubborn.contract.stubrunner.properties.foo.bar-baz",
+						"STUBBORN_CONTRACT_STUBRUNNER_PROPERTIES_FOO_BAR_BAZ"));
 	}
 
 	@ParameterizedTest
@@ -101,14 +100,14 @@ class StubRunnerPropertyUtilsTests {
 			@Override
 			public String systemProp(String prop) {
 				assertThat(prop).matches(p -> p.equals(assertedSystemProp)
-						|| p.equals(assertedSystemProp.replace("spring.cloud.contract.stubrunner.properties.", "")));
+						|| p.equals(assertedSystemProp.replace("stubborn.contract.stubrunner.properties.", "")));
 				return systemProperty;
 			}
 
 			@Override
 			public String envVar(String prop) {
 				assertThat(prop).matches(p -> p.equals(assertedEnvVar)
-						|| p.equals(assertedEnvVar.replace("SPRING_CLOUD_CONTRACT_STUBRUNNER_PROPERTIES_", "")));
+						|| p.equals(assertedEnvVar.replace("STUBBORN_CONTRACT_STUBRUNNER_PROPERTIES_", "")));
 				return envVariable;
 			}
 		};

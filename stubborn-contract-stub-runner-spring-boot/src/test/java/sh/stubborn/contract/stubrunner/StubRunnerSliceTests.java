@@ -49,10 +49,10 @@ public class StubRunnerSliceTests {
 	@Autowired
 	private StubRunnerProperties properties;
 
-	@Value("${spring.cloud.contract.stubrunner.runningstubs.fraudDetectionServer.port}")
+	@Value("${stubborn.contract.stubrunner.runningstubs.fraudDetectionServer.port}")
 	private Integer fraudDetectionServerPort;
 
-	@Value("${spring.cloud.contract.stubrunner.runningstubs.loanIssuance.port}")
+	@Value("${stubborn.contract.stubrunner.runningstubs.loanIssuance.port}")
 	private Integer loanIssuancePort;
 
 	@Test

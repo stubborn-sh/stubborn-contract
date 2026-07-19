@@ -43,9 +43,9 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest(classes = StubRunnerSpringCloudConsulAutoConfigurationTests.Config.class,
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		properties = { "eureka.client.enabled=false", "spring.cloud.zookeeper.enabled=false",
-				"spring.cloud.contract.stubrunner.cloud.stubbed.discovery.enabled=false",
-				"spring.cloud.contract.stubrunner.cloud.eureka.enabled=false",
-				"spring.cloud.contract.stubrunner.cloud.consul.enabled=true" })
+				"stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=false",
+				"stubborn.contract.stubrunner.cloud.eureka.enabled=false",
+				"stubborn.contract.stubrunner.cloud.consul.enabled=true" })
 @AutoConfigureStubRunner(repositoryRoot = "classpath:m2repo/repository/",
 		ids = "sh.stubborn.contract.verifier.stubs:fraudDetectionServer", stubsMode = StubsMode.REMOTE)
 class StubRunnerSpringCloudConsulAutoConfigurationTests {
@@ -58,8 +58,8 @@ class StubRunnerSpringCloudConsulAutoConfigurationTests {
 
 	@BeforeAll
 	static void setup() {
-		System.clearProperty("spring.cloud.contract.stubrunner.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.classifier");
 	}
 
 	@AfterAll
@@ -71,8 +71,7 @@ class StubRunnerSpringCloudConsulAutoConfigurationTests {
 	void shouldRegisterStubsInConsul() {
 		assertThat(this.stubFinder.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer")).isNotNull();
 		verify(this.consulClient).agentServiceRegister(
-				argThat(new NewServiceMatcher("sh.stubborn.contract.verifier.stubs:fraudDetectionServer",
-						"sh.stubborn.contract.verifier.stubs:fraudDetectionServer")));
+				argThat(new NewServiceMatcher("fraudDetectionServer", "someNameThatShouldMapFraudDetectionServer")));
 	}
 
 	static class NewServiceMatcher implements ArgumentMatcher<NewService> {

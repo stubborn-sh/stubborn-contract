@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Biju Kunjummen
  */
 @SpringBootTest(
-		properties = { "ping.url=http://localhost:${spring.cloud.contract.stubrunner.runningstubs.loanIssuance.port}" })
+		properties = { "ping.url=http://localhost:${stubborn.contract.stubrunner.runningstubs.loanIssuance.port}" })
 @AutoConfigureStubRunner(ids = { "sh.stubborn.contract.verifier.stubs:loanIssuance:+:stubs",
 		"sh.stubborn.contract.verifier.stubs:fraudDetectionServer:+:stubs" })
 @ActiveProfiles("test")

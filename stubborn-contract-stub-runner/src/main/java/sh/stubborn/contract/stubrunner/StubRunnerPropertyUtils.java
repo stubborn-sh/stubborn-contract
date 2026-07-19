@@ -33,7 +33,7 @@ public final class StubRunnerPropertyUtils {
 
 	private static final Log log = LogFactory.getLog(StubRunnerPropertyUtils.class);
 
-	private static final String STUBRUNNER_PROPERTIES = "spring.cloud.contract.stubrunner.properties";
+	private static final String STUBRUNNER_PROPERTIES = "stubborn.contract.stubrunner.properties";
 
 	static PropertyFetcher FETCHER = new PropertyFetcher();
 
@@ -80,7 +80,7 @@ public final class StubRunnerPropertyUtils {
 	}
 
 	private static String appendPrefixIfNecessary(String prop) {
-		if (prop.toLowerCase(Locale.ROOT).startsWith("spring.cloud.contract.stubrunner")) {
+		if (prop.toLowerCase(Locale.ROOT).startsWith("stubborn.contract.stubrunner")) {
 			return prop;
 		}
 		return STUBRUNNER_PROPERTIES + "." + prop;

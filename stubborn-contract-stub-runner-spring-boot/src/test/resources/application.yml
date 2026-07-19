@@ -4,7 +4,7 @@ spring.cloud:
 eureka.client.enabled: false
 stubrunner.camel.enabled: false
 # tag::ids[]
-spring.cloud.contract.stubrunner:
+stubborn.contract.stubrunner:
   idsToServiceIds:
     ivyNotation: someValueInsideYourCode
     fraudDetectionServer: someNameThatShouldMapFraudDetectionServer

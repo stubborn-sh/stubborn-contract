@@ -41,7 +41,7 @@ import static org.springframework.boot.test.context.PropertyMapping.Skip.ON_DEFA
 @Documented
 @ImportAutoConfiguration
 @AutoConfigureMessageVerifier
-@PropertyMapping(value = "spring.cloud.contract.stubrunner", skip = ON_DEFAULT_VALUE)
+@PropertyMapping(value = "stubborn.contract.stubrunner", skip = ON_DEFAULT_VALUE)
 public @interface AutoConfigureStubRunner {
 
 	/**

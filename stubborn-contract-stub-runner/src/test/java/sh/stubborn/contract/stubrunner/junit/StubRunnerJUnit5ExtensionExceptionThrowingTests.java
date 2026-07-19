@@ -39,8 +39,8 @@ public class StubRunnerJUnit5ExtensionExceptionThrowingTests {
 	@BeforeAll
 	@AfterAll
 	static void setupProps() {
-		System.clearProperty("spring.cloud.contract.stubrunner.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.classifier");
 	}
 
 	private static String repoRoot() {

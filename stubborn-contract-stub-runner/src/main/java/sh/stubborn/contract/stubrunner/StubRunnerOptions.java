@@ -168,40 +168,38 @@ public class StubRunnerOptions {
 
 	public static StubRunnerOptions fromSystemProps() {
 		StubRunnerOptionsBuilder builder = new StubRunnerOptionsBuilder()
-			.withMinPort(
-					Integer.valueOf(System.getProperty("spring.cloud.contract.stubrunner.port.range.min", "10000")))
-			.withMaxPort(
-					Integer.valueOf(System.getProperty("spring.cloud.contract.stubrunner.port.range.max", "15000")))
-			.withStubRepositoryRoot(ResourceResolver
-				.resource(System.getProperty("spring.cloud.contract.stubrunner.repository.root", "")))
-			.withStubsMode(System.getProperty("spring.cloud.contract.stubrunner.stubs-mode", "LOCAL"))
-			.withStubsClassifier(System.getProperty("spring.cloud.contract.stubrunner.classifier", "stubs"))
-			.withStubs(System.getProperty("spring.cloud.contract.stubrunner.ids", ""))
-			.withUsername(System.getProperty("spring.cloud.contract.stubrunner.username"))
-			.withPassword(System.getProperty("spring.cloud.contract.stubrunner.password"))
+			.withMinPort(Integer.valueOf(System.getProperty("stubborn.contract.stubrunner.port.range.min", "10000")))
+			.withMaxPort(Integer.valueOf(System.getProperty("stubborn.contract.stubrunner.port.range.max", "15000")))
+			.withStubRepositoryRoot(
+					ResourceResolver.resource(System.getProperty("stubborn.contract.stubrunner.repository.root", "")))
+			.withStubsMode(System.getProperty("stubborn.contract.stubrunner.stubs-mode", "LOCAL"))
+			.withStubsClassifier(System.getProperty("stubborn.contract.stubrunner.classifier", "stubs"))
+			.withStubs(System.getProperty("stubborn.contract.stubrunner.ids", ""))
+			.withUsername(System.getProperty("stubborn.contract.stubrunner.username"))
+			.withPassword(System.getProperty("stubborn.contract.stubrunner.password"))
 			.withStubPerConsumer(Boolean
-				.parseBoolean(System.getProperty("spring.cloud.contract.stubrunner.stubs-per-consumer", "false")))
-			.withConsumerName(System.getProperty("spring.cloud.contract.stubrunner.consumer-name"))
-			.withMappingsOutputFolder(System.getProperty("spring.cloud.contract.stubrunner.mappings-output-folder"))
+				.parseBoolean(System.getProperty("stubborn.contract.stubrunner.stubs-per-consumer", "false")))
+			.withConsumerName(System.getProperty("stubborn.contract.stubrunner.consumer-name"))
+			.withMappingsOutputFolder(System.getProperty("stubborn.contract.stubrunner.mappings-output-folder"))
 			.withDeleteStubsAfterTest(Boolean
-				.parseBoolean(System.getProperty("spring.cloud.contract.stubrunner.delete-stubs-after-test", "true")))
-			.withGenerateStubs(Boolean
-				.parseBoolean(System.getProperty("spring.cloud.contract.stubrunner.generate-stubs", "false")))
-			.withFailOnNoStubs(Boolean
-				.parseBoolean(System.getProperty("spring.cloud.contract.stubrunner.fail-on-no-stubs", "false")))
+				.parseBoolean(System.getProperty("stubborn.contract.stubrunner.delete-stubs-after-test", "true")))
+			.withGenerateStubs(
+					Boolean.parseBoolean(System.getProperty("stubborn.contract.stubrunner.generate-stubs", "false")))
+			.withFailOnNoStubs(
+					Boolean.parseBoolean(System.getProperty("stubborn.contract.stubrunner.fail-on-no-stubs", "false")))
 			.withProperties(stubRunnerProps())
-			.withServerId(System.getProperty("spring.cloud.contract.stubrunner.server-id", ""));
+			.withServerId(System.getProperty("stubborn.contract.stubrunner.server-id", ""));
 		builder = httpStubConfigurer(builder);
-		String proxyHost = System.getProperty("spring.cloud.contract.stubrunner.proxy.host");
+		String proxyHost = System.getProperty("stubborn.contract.stubrunner.proxy.host");
 		if (proxyHost != null) {
 			builder.withProxy(proxyHost,
-					Integer.parseInt(System.getProperty("spring.cloud.contract.stubrunner.proxy.port")));
+					Integer.parseInt(System.getProperty("stubborn.contract.stubrunner.proxy.port")));
 		}
 		return builder.build();
 	}
 
 	private static StubRunnerOptionsBuilder httpStubConfigurer(StubRunnerOptionsBuilder builder) {
-		String classProperty = System.getProperty("spring.cloud.contract.stubrunner.http-server-stub-configurer",
+		String classProperty = System.getProperty("stubborn.contract.stubrunner.http-server-stub-configurer",
 				HttpServerStubConfigurer.NoOpHttpServerStubConfigurer.class.getName());
 		try {
 			Class clazz = Class.forName(classProperty);
@@ -217,10 +215,10 @@ public class StubRunnerOptions {
 		Properties properties = System.getProperties();
 		Set<String> propertyNames = properties.stringPropertyNames();
 		propertyNames.stream()
-			// spring.cloud.contract.stubrunner.properties.foo.bar=baz
-			.filter(s -> s.toLowerCase(Locale.ROOT).startsWith("spring.cloud.contract.stubrunner.properties"))
+			// stubborn.contract.stubrunner.properties.foo.bar=baz
+			.filter(s -> s.toLowerCase(Locale.ROOT).startsWith("stubborn.contract.stubrunner.properties"))
 			// foo.bar=baz
-			.forEach(s -> map.put(s.substring("spring.cloud.contract.stubrunner.properties".length() + 1),
+			.forEach(s -> map.put(s.substring("stubborn.contract.stubrunner.properties".length() + 1),
 					System.getProperty(s)));
 		return map;
 	}

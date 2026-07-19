@@ -44,8 +44,8 @@ import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStubC
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = StubRunnerConfigurationTests.Config.class, properties = { "stubrunner.cloud.enabled=false",
-		"foo=${spring.cloud.contract.stubrunner.runningstubs.fraudDetectionServer.port}",
-		"fooWithGroup=${spring.cloud.contract.stubrunner.runningstubs.sh.stubborn.contract.verifier.stubs.fraudDetectionServer.port}" })
+		"foo=${stubborn.contract.stubrunner.runningstubs.fraudDetectionServer.port}",
+		"fooWithGroup=${stubborn.contract.stubrunner.runningstubs.sh.stubborn.contract.verifier.stubs.fraudDetectionServer.port}" })
 @AutoConfigureStubRunner(mappingsOutputFolder = "target/outputmappings/",
 		httpServerStubConfigurer = StubRunnerConfigurationTests.HttpsForFraudDetection.class)
 @ActiveProfiles("test")
@@ -68,8 +68,8 @@ class StubRunnerConfigurationTests {
 
 	@BeforeAll
 	static void setupSpec() {
-		System.clearProperty("spring.cloud.contract.stubrunner.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.classifier");
 		WireMockHttpServerStubAccessor.clear();
 	}
 
@@ -117,15 +117,14 @@ class StubRunnerConfigurationTests {
 
 	@Test
 	void shouldRegisterStartedServersAsEnvironmentVariables() {
-		assertThat(this.environment.getProperty("spring.cloud.contract.stubrunner.runningstubs.loanIssuance.port"))
+		assertThat(this.environment.getProperty("stubborn.contract.stubrunner.runningstubs.loanIssuance.port"))
 			.isNotNull();
 		assertThat(this.stubFinder.findAllRunningStubs().getPort("loanIssuance")).isEqualTo(this.environment
-			.getProperty("spring.cloud.contract.stubrunner.runningstubs.loanIssuance.port", Integer.class));
-		assertThat(
-				this.environment.getProperty("spring.cloud.contract.stubrunner.runningstubs.fraudDetectionServer.port"))
+			.getProperty("stubborn.contract.stubrunner.runningstubs.loanIssuance.port", Integer.class));
+		assertThat(this.environment.getProperty("stubborn.contract.stubrunner.runningstubs.fraudDetectionServer.port"))
 			.isNotNull();
 		assertThat(this.stubFinder.findAllRunningStubs().getPort("fraudDetectionServer")).isEqualTo(this.environment
-			.getProperty("spring.cloud.contract.stubrunner.runningstubs.fraudDetectionServer.port", Integer.class));
+			.getProperty("stubborn.contract.stubrunner.runningstubs.fraudDetectionServer.port", Integer.class));
 	}
 
 	@Test

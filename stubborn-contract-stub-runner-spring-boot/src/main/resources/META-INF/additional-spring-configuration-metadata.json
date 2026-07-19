@@ -6,7 +6,7 @@
       "description": "Min value of a port for the automatically started WireMock server.",
       "defaultValue": 10000,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.minPort",
+        "replacement": "stubborn.contract.stubrunner.minPort",
         "since": "5.0.0"
       }
     },
@@ -16,7 +16,7 @@
       "description": "Max value of a port for the automatically started WireMock server.",
       "defaultValue": 15000,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.maxPort",
+        "replacement": "stubborn.contract.stubrunner.maxPort",
         "since": "5.0.0"
       }
     },
@@ -25,7 +25,7 @@
       "type": "java.lang.String",
       "description": "The repository root to use (where the stubs should be downloaded from).",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.repositoryRoot",
+        "replacement": "stubborn.contract.stubrunner.repositoryRoot",
         "since": "5.0.0"
       }
     },
@@ -34,7 +34,7 @@
       "type": "java.lang.String[]",
       "description": "The ids of the stubs to run in \"ivy\" notation ([groupId]:artifactId:[version]:[classifier][:port]).",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.ids",
+        "replacement": "stubborn.contract.stubrunner.ids",
         "since": "5.0.0"
       }
     },
@@ -44,7 +44,7 @@
       "description": "The classifier to use by default in ivy co-ordinates for a stub.",
       "defaultValue": "stubs",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.classifier",
+        "replacement": "stubborn.contract.stubrunner.classifier",
         "since": "5.0.0"
       }
     },
@@ -53,7 +53,7 @@
       "type": "java.lang.String",
       "description": "Repository username.",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.username",
+        "replacement": "stubborn.contract.stubrunner.username",
         "since": "5.0.0"
       }
     },
@@ -62,7 +62,7 @@
       "type": "java.lang.String",
       "description": "Repository password.",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.password",
+        "replacement": "stubborn.contract.stubrunner.password",
         "since": "5.0.0"
       }
     },
@@ -72,7 +72,7 @@
       "description": "Should only stubs for this particular consumer get registered in HTTP server stub.",
       "defaultValue": false,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.stubsPerConsumer",
+        "replacement": "stubborn.contract.stubrunner.stubsPerConsumer",
         "since": "5.0.0"
       }
     },
@@ -81,7 +81,7 @@
       "type": "java.lang.String",
       "description": "You can override the default spring.application.name of this field by setting a value to this parameter.",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.consumerName",
+        "replacement": "stubborn.contract.stubrunner.consumerName",
         "since": "5.0.0"
       }
     },
@@ -90,7 +90,7 @@
       "type": "sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode",
       "description": "Pick where the stubs should come from.",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.stubsMode",
+        "replacement": "stubborn.contract.stubrunner.stubsMode",
         "since": "5.0.0"
       }
     },
@@ -99,7 +99,7 @@
       "type": "java.util.Map<java.lang.String,java.lang.String>",
       "description": "Mapping of Ivy notation based ids to serviceIds inside your application.",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.idsToServiceIds",
+        "replacement": "stubborn.contract.stubrunner.idsToServiceIds",
         "since": "5.0.0"
       }
     },
@@ -109,7 +109,7 @@
       "description": "Whether to enable DiscoveryClient's Stub Runner implementation.",
       "defaultValue": true,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.cloud.delegate.enabled",
+        "replacement": "stubborn.contract.stubrunner.cloud.delegate.enabled",
         "since": "5.0.0"
       }
     },
@@ -119,7 +119,7 @@
       "description": "Whether to enable Stub Runner integration with Spring Cloud Stream.",
       "defaultValue": true,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.stream.enabled",
+        "replacement": "stubborn.contract.stubrunner.stream.enabled",
         "since": "5.0.0"
       }
     },
@@ -129,7 +129,7 @@
       "description": "Whether to enable Stub Runner integration with Spring Integration.",
       "defaultValue": true,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.integration.enabled",
+        "replacement": "stubborn.contract.stubrunner.integration.enabled",
         "since": "5.0.0"
       }
     },
@@ -139,7 +139,7 @@
       "description": "Whether to enable Stub Runner integration with Apache Camel.",
       "defaultValue": true,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.camel.enabled",
+        "replacement": "stubborn.contract.stubrunner.camel.enabled",
         "since": "5.0.0"
       }
     },
@@ -149,7 +149,7 @@
       "description": "Branch to check out for the git repository.",
       "defaultValue": "master",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.properties.git.branch",
+        "replacement": "stubborn.contract.stubrunner.properties.git.branch",
         "since": "5.0.0"
       }
     },
@@ -158,7 +158,7 @@
       "type": "java.lang.String",
       "description": "Git repository username.",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.properties.git.username",
+        "replacement": "stubborn.contract.stubrunner.properties.git.username",
         "since": "5.0.0"
       }
     },
@@ -167,7 +167,7 @@
       "type": "java.lang.String",
       "description": "Git repository password.",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.properties.git.password",
+        "replacement": "stubborn.contract.stubrunner.properties.git.password",
         "since": "5.0.0"
       }
     },
@@ -177,7 +177,7 @@
       "description": "Commit message when updating stubs in the git repository.",
       "defaultValue": "Updating project [$project] with stubs",
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.properties.git.commit-message",
+        "replacement": "stubborn.contract.stubrunner.properties.git.commit-message",
         "since": "5.0.0"
       }
     },
@@ -187,7 +187,7 @@
       "description": "Number of attempts to push changes to the git repository.",
       "defaultValue": 10,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.properties.git.no-of-attempts",
+        "replacement": "stubborn.contract.stubrunner.properties.git.no-of-attempts",
         "since": "5.0.0"
       }
     },
@@ -197,7 +197,7 @@
       "description": "Wait time in ms between attempts to push changes to the git repository.",
       "defaultValue": 1000,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.properties.git.wait-between-attempts",
+        "replacement": "stubborn.contract.stubrunner.properties.git.wait-between-attempts",
         "since": "5.0.0"
       }
     },
@@ -207,7 +207,7 @@
       "description": "Whether to ensure the .git suffix is appended to the repository URL.",
       "defaultValue": true,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.properties.git.ensure-git-suffix",
+        "replacement": "stubborn.contract.stubrunner.properties.git.ensure-git-suffix",
         "since": "5.0.0"
       }
     },
@@ -217,93 +217,309 @@
       "description": "Whether to find the producer from the stubs protocol path.",
       "defaultValue": false,
       "deprecation": {
-        "replacement": "spring.cloud.contract.stubrunner.properties.stubs.find-producer",
+        "replacement": "stubborn.contract.stubrunner.properties.stubs.find-producer",
         "since": "5.0.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.minPort",
+      "type": "java.lang.Integer",
+      "description": "Min value of a port for the automatically started WireMock server.",
+      "defaultValue": 10000,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.minPort",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.maxPort",
+      "type": "java.lang.Integer",
+      "description": "Max value of a port for the automatically started WireMock server.",
+      "defaultValue": 15000,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.maxPort",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.repositoryRoot",
+      "type": "java.lang.String",
+      "description": "The repository root to use (where the stubs should be downloaded from).",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.repositoryRoot",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.ids",
+      "type": "java.lang.String[]",
+      "description": "The ids of the stubs to run in \"ivy\" notation ([groupId]:artifactId:[version]:[classifier][:port]).",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.ids",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.classifier",
+      "type": "java.lang.String",
+      "description": "The classifier to use by default in ivy co-ordinates for a stub.",
+      "defaultValue": "stubs",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.classifier",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.username",
+      "type": "java.lang.String",
+      "description": "Repository username.",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.username",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.password",
+      "type": "java.lang.String",
+      "description": "Repository password.",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.password",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.proxyPort",
+      "type": "java.lang.Integer",
+      "description": "Repository proxy port.",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.proxyPort",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.proxyHost",
+      "type": "java.lang.String",
+      "description": "Repository proxy host.",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.proxyHost",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.stubsPerConsumer",
+      "type": "java.lang.Boolean",
+      "description": "Should only stubs for this particular consumer get registered in HTTP server stub.",
+      "defaultValue": false,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.stubsPerConsumer",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.consumerName",
+      "type": "java.lang.String",
+      "description": "You can override the default spring.application.name of this field by setting a value to this parameter.",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.consumerName",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.mappingsOutputFolder",
+      "type": "java.lang.String",
+      "description": "Dumps mappings of each HTTP server to the selected folder.",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.mappingsOutputFolder",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.stubsMode",
+      "type": "sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode",
+      "description": "Pick where the stubs should come from.",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.stubsMode",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.deleteStubsAfterTest",
+      "type": "java.lang.Boolean",
+      "description": "If set to false will NOT delete stubs from a temporary folder after running tests.",
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.deleteStubsAfterTest",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.generateStubs",
+      "type": "java.lang.Boolean",
+      "description": "When enabled, will tell stub runner to not load the generated stubs, but convert found contracts at runtime to stubs.",
+      "defaultValue": false,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.generateStubs",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.failOnNoStubs",
+      "type": "java.lang.Boolean",
+      "description": "When enabled, will tell stub runner to throw an exception when no stubs or contracts were found.",
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.failOnNoStubs",
+        "since": "0.1.0"
+      }
+    },
+    {
+      "name": "spring.cloud.contract.stubrunner.idsToServiceIds",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "description": "Mapping of Ivy notation based ids to serviceIds inside your application.",
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.idsToServiceIds",
+        "since": "0.1.0"
       }
     },
     {
       "name": "spring.cloud.contract.stubrunner.amqp.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable support for Stub Runner and AMQP.",
-      "defaultValue": false
+      "defaultValue": false,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.amqp.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.amqp.mockCOnnection",
       "type": "java.lang.Boolean",
       "description": "Whether to enable support for Stub Runner and AMQP mocked connection factory.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.amqp.mockCOnnection",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.cloud.consul.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable stubs registration in Consul.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.cloud.consul.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.cloud.delegate.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable DiscoveryClient's Stub Runner implementation.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.cloud.delegate.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.cloud.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable Spring Cloud support for Stub Runner.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.cloud.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.cloud.eureka.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable stubs registration in Eureka.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.cloud.eureka.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.cloud.loadbalancer.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable Stub Runner's Spring Cloud Load Balancer integration.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.cloud.loadbalancer.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.cloud.stubbed.discovery.enabled",
       "type": "java.lang.Boolean",
-      "description": "Whether Service Discovery should be stubbed for Stub Runner. If set to false, stubs will get registered in real service discovery.",
-      "defaultValue": true
+      "description": "Whether Service Discovery should be stubbed for Stub Runner.",
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.cloud.zookeeper.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable stubs registration in Zookeeper.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.cloud.zookeeper.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.integration.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable Stub Runner integration with Spring Integration.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.integration.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.stream.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable Stub Runner integration with Spring Cloud Stream.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.stream.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.jms.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable Stub Runner integration with Spring JMS.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.jms.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.kafka.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether to enable Stub Runner integration with Spring Kafka.",
-      "defaultValue": true
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.kafka.enabled",
+        "since": "0.1.0"
+      }
     },
     {
       "name": "spring.cloud.contract.stubrunner.kafka.initializer.enabled",
       "type": "java.lang.Boolean",
-      "description": "Whether to allow Stub Runner to take care of polling for messages instead of the KafkaStubMessages component. The latter should be used only on the producer side.",
-      "defaultValue": true
+      "description": "Whether to allow Stub Runner to take care of polling for messages instead of the KafkaStubMessages component.",
+      "defaultValue": true,
+      "deprecation": {
+        "replacement": "stubborn.contract.stubrunner.kafka.initializer.enabled",
+        "since": "0.1.0"
+      }
     }
   ]
 }

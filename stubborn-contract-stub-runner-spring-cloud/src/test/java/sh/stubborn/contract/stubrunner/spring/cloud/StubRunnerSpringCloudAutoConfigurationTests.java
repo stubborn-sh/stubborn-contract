@@ -40,8 +40,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = StubRunnerSpringCloudAutoConfigurationTests.Config.class,
 		properties = { "eureka.client.enabled=false", "spring.cloud.zookeeper.enabled=false",
-				"spring.cloud.contract.stubrunner.cloud.stubbed.discovery.enabled=true",
-				"spring.cloud.contract.stubrunner.cloud.eureka.enabled=false" })
+				"stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=true",
+				"stubborn.contract.stubrunner.cloud.eureka.enabled=false" })
 @AutoConfigureStubRunner(repositoryRoot = "classpath:m2repo/repository/",
 		ids = { "sh.stubborn.contract.verifier.stubs:fraudDetectionServer",
 				"sh.stubborn.contract.verifier.stubs:loanIssuance" },
@@ -57,8 +57,8 @@ class StubRunnerSpringCloudAutoConfigurationTests {
 
 	@BeforeAll
 	static void setup() {
-		System.clearProperty("spring.cloud.contract.stubrunner.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.classifier");
 	}
 
 	@AfterAll

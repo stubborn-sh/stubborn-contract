@@ -34,7 +34,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Documented
-@ConditionalOnProperty(value = "spring.cloud.contract.stubrunner.cloud.stubbed.discovery.enabled", havingValue = "true",
+@ConditionalOnProperty(value = "stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled", havingValue = "true",
 		matchIfMissing = true)
 public @interface ConditionalOnStubbedDiscoveryEnabled {
 

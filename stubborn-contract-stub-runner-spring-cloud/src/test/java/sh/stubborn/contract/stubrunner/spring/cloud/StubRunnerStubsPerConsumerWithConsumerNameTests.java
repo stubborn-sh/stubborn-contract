@@ -44,7 +44,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = StubRunnerStubsPerConsumerWithConsumerNameTests.Config.class,
-		properties = { "spring.cloud.contract.stubrunner.jms.enabled=false" })
+		properties = { "stubborn.contract.stubrunner.jms.enabled=false" })
 @AutoConfigureStubRunner(ids = "sh.stubborn.contract.verifier.stubs:producerWithMultipleConsumers",
 		repositoryRoot = "classpath:m2repo/repository/", consumerName = "foo-consumer", stubsMode = StubsMode.REMOTE,
 		stubsPerConsumer = true)

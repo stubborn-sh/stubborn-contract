@@ -1,4 +1,4 @@
-spring.cloud.contract.stubrunner:
+stubborn.contract.stubrunner:
   cloud.stubbed.discovery.enabled: true
 spring.cloud:
   zookeeper:

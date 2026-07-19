@@ -32,7 +32,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * @author Dave Syer
  */
-@ConfigurationProperties("spring.cloud.contract.stubrunner")
+@ConfigurationProperties("stubborn.contract.stubrunner")
 public class StubRunnerProperties {
 
 	/**

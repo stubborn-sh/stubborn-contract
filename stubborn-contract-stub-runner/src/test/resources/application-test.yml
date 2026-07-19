@@ -1,5 +1,5 @@
 # tag::test[]
-spring.cloud.contract.stubrunner:
+stubborn.contract.stubrunner:
   repositoryRoot: classpath:m2repo/repository/
   ids:
     - sh.stubborn.contract.verifier.stubs:loanIssuance

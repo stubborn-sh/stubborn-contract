@@ -206,26 +206,26 @@ class StubRunnerOptionsBuilderTests {
 
 	@Test
 	void shouldSetAllPropsFromSystemProps() {
-		System.setProperty("spring.cloud.contract.stubrunner.port.range.min", "1");
-		System.setProperty("spring.cloud.contract.stubrunner.port.range.max", "2");
-		System.setProperty("spring.cloud.contract.stubrunner.repository.root", "root");
-		System.setProperty("spring.cloud.contract.stubrunner.stubs-mode", "LOCAL");
-		System.setProperty("spring.cloud.contract.stubrunner.classifier", "classifier");
-		System.setProperty("spring.cloud.contract.stubrunner.ids", "a:b:c,foo:bar:baz:classifier");
-		System.setProperty("spring.cloud.contract.stubrunner.username", "foo");
-		System.setProperty("spring.cloud.contract.stubrunner.password", "bar");
-		System.setProperty("spring.cloud.contract.stubrunner.stubs-per-consumer", "true");
-		System.setProperty("spring.cloud.contract.stubrunner.consumer-name", "consumer");
-		System.setProperty("spring.cloud.contract.stubrunner.proxy.host", "host");
-		System.setProperty("spring.cloud.contract.stubrunner.proxy.port", "4");
-		System.setProperty("spring.cloud.contract.stubrunner.mappings-output-folder", "folder");
-		System.setProperty("spring.cloud.contract.stubrunner.properties.foo-bar", "bar");
-		System.setProperty("spring.cloud.contract.stubrunner.properties.foo-baz", "baz");
-		System.setProperty("spring.cloud.contract.stubrunner.properties.bar.bar", "foo");
-		System.setProperty("spring.cloud.contract.stubrunner.delete-stubs-after-test", "false");
-		System.setProperty("spring.cloud.contract.stubrunner.generate-stubs", "true");
-		System.setProperty("spring.cloud.contract.stubrunner.fail-on-no-stubs", "false");
-		System.setProperty("spring.cloud.contract.stubrunner.http-server-stub-configurer",
+		System.setProperty("stubborn.contract.stubrunner.port.range.min", "1");
+		System.setProperty("stubborn.contract.stubrunner.port.range.max", "2");
+		System.setProperty("stubborn.contract.stubrunner.repository.root", "root");
+		System.setProperty("stubborn.contract.stubrunner.stubs-mode", "LOCAL");
+		System.setProperty("stubborn.contract.stubrunner.classifier", "classifier");
+		System.setProperty("stubborn.contract.stubrunner.ids", "a:b:c,foo:bar:baz:classifier");
+		System.setProperty("stubborn.contract.stubrunner.username", "foo");
+		System.setProperty("stubborn.contract.stubrunner.password", "bar");
+		System.setProperty("stubborn.contract.stubrunner.stubs-per-consumer", "true");
+		System.setProperty("stubborn.contract.stubrunner.consumer-name", "consumer");
+		System.setProperty("stubborn.contract.stubrunner.proxy.host", "host");
+		System.setProperty("stubborn.contract.stubrunner.proxy.port", "4");
+		System.setProperty("stubborn.contract.stubrunner.mappings-output-folder", "folder");
+		System.setProperty("stubborn.contract.stubrunner.properties.foo-bar", "bar");
+		System.setProperty("stubborn.contract.stubrunner.properties.foo-baz", "baz");
+		System.setProperty("stubborn.contract.stubrunner.properties.bar.bar", "foo");
+		System.setProperty("stubborn.contract.stubrunner.delete-stubs-after-test", "false");
+		System.setProperty("stubborn.contract.stubrunner.generate-stubs", "true");
+		System.setProperty("stubborn.contract.stubrunner.fail-on-no-stubs", "false");
+		System.setProperty("stubborn.contract.stubrunner.http-server-stub-configurer",
 				"sh.stubborn.contract.stubrunner.Foo");
 		StubRunnerOptions options = StubRunnerOptions.fromSystemProps();
 		assertThat(options.getMinPortValue()).isEqualTo(1);
@@ -252,20 +252,18 @@ class StubRunnerOptionsBuilderTests {
 	}
 
 	private static void clearStubRunnerSystemProps() {
-		for (String key : List.of("spring.cloud.contract.stubrunner.port.range.min",
-				"spring.cloud.contract.stubrunner.port.range.max", "spring.cloud.contract.stubrunner.repository.root",
-				"spring.cloud.contract.stubrunner.stubs-mode", "spring.cloud.contract.stubrunner.classifier",
-				"spring.cloud.contract.stubrunner.ids", "spring.cloud.contract.stubrunner.username",
-				"spring.cloud.contract.stubrunner.password", "spring.cloud.contract.stubrunner.stubs-per-consumer",
-				"spring.cloud.contract.stubrunner.consumer-name", "spring.cloud.contract.stubrunner.proxy.host",
-				"spring.cloud.contract.stubrunner.proxy.port",
-				"spring.cloud.contract.stubrunner.mappings-output-folder",
-				"spring.cloud.contract.stubrunner.properties.foo-bar",
-				"spring.cloud.contract.stubrunner.properties.foo-baz",
-				"spring.cloud.contract.stubrunner.properties.bar.bar",
-				"spring.cloud.contract.stubrunner.delete-stubs-after-test",
-				"spring.cloud.contract.stubrunner.generate-stubs", "spring.cloud.contract.stubrunner.fail-on-no-stubs",
-				"spring.cloud.contract.stubrunner.http-server-stub-configurer")) {
+		for (String key : List.of("stubborn.contract.stubrunner.port.range.min",
+				"stubborn.contract.stubrunner.port.range.max", "stubborn.contract.stubrunner.repository.root",
+				"stubborn.contract.stubrunner.stubs-mode", "stubborn.contract.stubrunner.classifier",
+				"stubborn.contract.stubrunner.ids", "stubborn.contract.stubrunner.username",
+				"stubborn.contract.stubrunner.password", "stubborn.contract.stubrunner.stubs-per-consumer",
+				"stubborn.contract.stubrunner.consumer-name", "stubborn.contract.stubrunner.proxy.host",
+				"stubborn.contract.stubrunner.proxy.port", "stubborn.contract.stubrunner.mappings-output-folder",
+				"stubborn.contract.stubrunner.properties.foo-bar", "stubborn.contract.stubrunner.properties.foo-baz",
+				"stubborn.contract.stubrunner.properties.bar.bar",
+				"stubborn.contract.stubrunner.delete-stubs-after-test", "stubborn.contract.stubrunner.generate-stubs",
+				"stubborn.contract.stubrunner.fail-on-no-stubs",
+				"stubborn.contract.stubrunner.http-server-stub-configurer")) {
 			System.clearProperty(key);
 		}
 	}
