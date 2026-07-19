@@ -30,13 +30,13 @@
 				</phases>
 				<default-phases>
 					<process-test-resources>
-						sh.stubborn:stubborn-maven-plugin:${project.version}:convert
+						sh.stubborn:stubborn-contract-maven-plugin:${project.version}:convert
 					</process-test-resources>
 					<generate-test-sources>
-						sh.stubborn:stubborn-maven-plugin:${project.version}:generateTests
+						sh.stubborn:stubborn-contract-maven-plugin:${project.version}:generateTests
 					</generate-test-sources>
 					<package>
-						sh.stubborn:stubborn-maven-plugin:${project.version}:generateStubs
+						sh.stubborn:stubborn-contract-maven-plugin:${project.version}:generateStubs
 					</package>
 				</default-phases>
 			</configuration>

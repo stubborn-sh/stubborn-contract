@@ -31,7 +31,7 @@
 			<!-- tag::convention[] -->
 			<plugin>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-maven-plugin</artifactId>
+				<artifactId>stubborn-contract-maven-plugin</artifactId>
 				<configuration>
 					<packageWithBaseClasses>hello</packageWithBaseClasses>
 				</configuration>

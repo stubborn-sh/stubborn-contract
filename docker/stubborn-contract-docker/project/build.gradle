@@ -10,7 +10,7 @@ buildscript {
 
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-		classpath "sh.stubborn:stubborn-gradle-plugin:${verifierVersion}"
+		classpath "sh.stubborn:stubborn-contract-gradle-plugin:${verifierVersion}"
 	}
 }
 

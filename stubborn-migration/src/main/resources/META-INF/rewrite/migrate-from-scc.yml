@@ -75,7 +75,7 @@ recipeList:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-contract-maven-plugin
       newGroupId: sh.stubborn
-      newArtifactId: stubborn-maven-plugin
+      newArtifactId: stubborn-contract-maven-plugin
 
 ---
 type: specs.openrewrite.org/v1beta/recipe

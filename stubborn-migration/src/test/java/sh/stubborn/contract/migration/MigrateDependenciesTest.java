@@ -97,7 +97,7 @@ class MigrateDependenciesTest implements RewriteTest {
 				</project>
 				""", spec -> spec.after(actual -> {
 			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
-				.contains("<artifactId>stubborn-maven-plugin</artifactId>")
+				.contains("<artifactId>stubborn-contract-maven-plugin</artifactId>")
 				.doesNotContain("spring-cloud-contract-maven-plugin");
 			return actual;
 		})));

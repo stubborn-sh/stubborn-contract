@@ -53,7 +53,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-gradle-plugin</artifactId>
+			<artifactId>stubborn-contract-gradle-plugin</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -120,7 +120,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-maven-plugin</artifactId>
+			<artifactId>stubborn-contract-maven-plugin</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

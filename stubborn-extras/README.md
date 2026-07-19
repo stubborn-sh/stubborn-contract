@@ -9,8 +9,8 @@ and may have a different compatibility matrix or release cadence.
 | Module | Description | Status |
 |--------|-------------|--------|
 | `stubborn-spec-kotlin` | Kotlin DSL for writing contracts (`.kt` files) | Best effort |
-| `stubborn-gradle-plugin` | Gradle plugin for contract verification and stub publishing | Best effort |
-| `stubborn-gradle-portal-plugin` | Gradle Plugin Portal publishing helper | Best effort |
+| `stubborn-contract-gradle-plugin` | Gradle plugin for contract verification and stub publishing | Best effort |
+| `stubborn-contract-gradle-portal-plugin` | Gradle Plugin Portal publishing helper | Best effort |
 
 ## Support policy
 

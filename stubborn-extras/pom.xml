@@ -19,8 +19,8 @@
 
 	<modules>
 		<module>stubborn-spec-kotlin</module>
-		<module>stubborn-gradle-plugin</module>
-		<module>stubborn-gradle-portal-plugin</module>
+		<module>stubborn-contract-gradle-plugin</module>
+		<module>stubborn-contract-gradle-portal-plugin</module>
 	</modules>
 
 </project>

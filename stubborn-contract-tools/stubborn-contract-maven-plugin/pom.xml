@@ -15,7 +15,7 @@
 		<maven>3.9</maven>
 	</prerequisites>
 
-	<artifactId>stubborn-maven-plugin</artifactId>
+	<artifactId>stubborn-contract-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 
 	<name>Stubborn Contract Maven Plugin</name>

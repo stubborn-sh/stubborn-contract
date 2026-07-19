@@ -50,7 +50,7 @@ final class ManifestCreator {
 
 	private static Plugin findMavenPlugin(List<Plugin> plugins) {
 		for (Plugin plugin : plugins) {
-			if ("stubborn-maven-plugin".equals(plugin.getArtifactId())) {
+			if ("stubborn-contract-maven-plugin".equals(plugin.getArtifactId())) {
 				return plugin;
 			}
 		}

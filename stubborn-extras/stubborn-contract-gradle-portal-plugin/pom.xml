@@ -20,7 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-gradle-plugin</artifactId>
+			<artifactId>stubborn-contract-gradle-plugin</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

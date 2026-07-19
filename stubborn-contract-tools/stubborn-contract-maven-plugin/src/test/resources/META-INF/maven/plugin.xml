@@ -6,7 +6,7 @@
   <name>Spring Cloud Contract Maven Plugin</name>
   <description>Spring Cloud Contract Maven Plugin</description>
   <groupId>org.springframework.cloud</groupId>
-  <artifactId>stubborn-maven-plugin</artifactId>
+  <artifactId>stubborn-contract-maven-plugin</artifactId>
   <version>5.0.1-SNAPSHOT</version>
   <goalPrefix>stubborn-contract</goalPrefix>
   <isolatedRealm>false</isolatedRealm>
@@ -666,7 +666,7 @@ This parameter is only used when goal is executed outside of maven project.
     </mojo>
     <mojo>
       <goal>help</goal>
-      <description>Display help information on stubborn-maven-plugin. 
+      <description>Display help information on stubborn-contract-maven-plugin. 
 Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to display parameter details.</description>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>false</requiresProject>
