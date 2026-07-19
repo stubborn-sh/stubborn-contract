@@ -99,9 +99,16 @@ class ClasspathStubResourceScanner {
 		while (jars.hasMoreElements()) {
 			URL url = jars.nextElement();
 			String external = url.toExternalForm();
+			if (log.isTraceEnabled()) {
+				log.trace("Scanning classpath entry: " + external + " for pattern: " + globPattern);
+			}
 			if (external.startsWith("jar:")) {
 				String jarPath = external.substring("jar:".length(), external.lastIndexOf("!/"));
-				result.addAll(scanJar(jarPath, globPattern));
+				List<StubResource> found = scanJar(jarPath, globPattern);
+				if (log.isTraceEnabled() && !found.isEmpty()) {
+					log.trace("Found " + found.size() + " resources in " + jarPath);
+				}
+				result.addAll(found);
 			}
 		}
 		return result;
@@ -202,8 +209,7 @@ class ClasspathStubResourceScanner {
 	}
 
 	private static String toGlob(String subPattern) {
-		String p = subPattern.startsWith("/") ? subPattern.substring(1) : subPattern;
-		return "**/" + p;
+		return subPattern.startsWith("/") ? subPattern.substring(1) : subPattern;
 	}
 
 	private static StubResource pathToResource(Path path) {

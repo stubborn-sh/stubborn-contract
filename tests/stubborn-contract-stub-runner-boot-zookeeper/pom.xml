@@ -19,6 +19,11 @@
 			<artifactId>stubborn-stub-runner</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-stub-runner-spring-cloud</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-test-support</artifactId>
 			<scope>test</scope>

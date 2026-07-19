@@ -68,7 +68,7 @@ public class ClasspathStubProvider implements StubDownloaderBuilder {
 				return RepoRoots.asList(new RepoRoot(stubRunnerOptions.getStubRepositoryRootAsString()));
 			}
 		}
-		String path = "/**/" + configuration.getGroupId() + "/" + configuration.getArtifactId();
+		String path = "/" + configuration.getGroupId() + "/" + configuration.getArtifactId();
 		return RepoRoots.asList(new RepoRoot("classpath*:/META-INF" + path, "/**/*.*"),
 				new RepoRoot("classpath*:/contracts" + path, "/**/*.*"),
 				new RepoRoot("classpath*:/mappings" + path, "/**/*.*"));

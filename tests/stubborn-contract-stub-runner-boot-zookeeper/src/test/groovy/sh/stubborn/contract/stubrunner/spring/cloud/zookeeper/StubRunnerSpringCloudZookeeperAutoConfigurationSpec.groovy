@@ -39,7 +39,7 @@ import org.springframework.web.client.RestTemplate
  * @author Marcin Grzejszczak
  */
 @SpringBootTest(classes = Config, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		properties = ["spring.cloud.contract.stubrunner.cloud.stubbed.discovery.enabled=false",
+		properties = ["stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=false",
 				"debug=true"])
 @AutoConfigureStubRunner(ids = ["sh.stubborn.contract.verifier.stubs:loanIssuance",
  "sh.stubborn.contract.verifier.stubs:fraudDetectionServer",
