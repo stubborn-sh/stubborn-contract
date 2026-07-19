@@ -23,8 +23,8 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -40,14 +40,14 @@ class ContractVerifierJmsConfigurationTests {
 
 	@Test
 	public void shouldNotCreateBeansWhenDisabled() {
-		this.contextRunner.withPropertyValues("spring.cloud.contract.stubrunner.jms.enabled=false").run((context) -> {
+		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.jms.enabled=false").run((context) -> {
 			assertThat(context.getBeansOfType(ContractVerifierJmsHelper.class)).hasSize(0);
 		});
 	}
 
 	@Test
 	public void shouldCreateBeansWhenExplicitlyEnabled() {
-		this.contextRunner.withPropertyValues("spring.cloud.contract.stubrunner.jms.enabled=true").run((context) -> {
+		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.jms.enabled=true").run((context) -> {
 			assertThat(context.getBeansOfType(ContractVerifierJmsHelper.class)).hasSize(1);
 		});
 	}

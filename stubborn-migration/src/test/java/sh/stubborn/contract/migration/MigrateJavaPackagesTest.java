@@ -28,7 +28,21 @@ class MigrateJavaPackagesTest implements RewriteTest {
 	@Override
 	public void defaults(RecipeSpec spec) {
 		spec.recipeFromResources("sh.stubborn.contract.migration.RenameJavaPackages")
-			.parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(false));
+			.parser(JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(false).dependsOn("""
+					package org.springframework.cloud.contract.stubrunner.spring;
+					import java.lang.annotation.*;
+					@Retention(RetentionPolicy.RUNTIME)
+					@Target(ElementType.TYPE)
+					public @interface AutoConfigureStubRunner {
+						StubsMode stubsMode() default StubsMode.CLASSPATH;
+					}
+					""", """
+					package org.springframework.cloud.contract.stubrunner;
+					public enum StubsMode { CLASSPATH, REMOTE, LOCAL }
+					""", """
+					package org.springframework.cloud.contract.verifier.config;
+					public enum TestFramework { JUNIT5, SPOCK, JUNIT }
+					"""));
 	}
 
 	@Test

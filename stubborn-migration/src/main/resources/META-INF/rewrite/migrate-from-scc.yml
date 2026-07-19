@@ -2,7 +2,7 @@
 type: specs.openrewrite.org/v1beta/recipe
 name: sh.stubborn.contract.migration.MigrateFromSpringCloudContract
 displayName: Migrate from Spring Cloud Contract to Stubborn Contract
-description: >
+description: >-
   Composite recipe that updates Maven/Gradle coordinates, Java package names, and
   drops JUnit 4 StubRunner / Verifier usage. Run this after adding stubborn-migration
   to your build's rewrite plugin configuration.
@@ -19,7 +19,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: sh.stubborn.contract.migration.UpdateMavenDependencies
 displayName: Update Spring Cloud Contract Maven coordinates to Stubborn Contract
-description: >
+description: >-
   Replaces org.springframework.cloud:spring-cloud-contract-* GAVs with
   sh.stubborn:stubborn-* equivalents and updates the Maven plugin and BOM.
 tags:
@@ -81,7 +81,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: sh.stubborn.contract.migration.RenameJavaPackages
 displayName: Rename org.springframework.cloud.contract packages to sh.stubborn.contract
-description: >
+description: >-
   Recursively rewrites all Java import statements from
   org.springframework.cloud.contract.* to sh.stubborn.contract.*.
 tags:
@@ -97,7 +97,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: sh.stubborn.contract.migration.DropJUnit4Support
 displayName: Migrate StubRunner JUnit 4 Rule to JUnit 5 Extension
-description: >
+description: >-
   Replaces @Rule StubRunnerRule / StubRunnerClassRule with
   @RegisterExtension StubRunnerExtension (JUnit 5). Requires JUnit 5 on the
   test classpath.
@@ -112,13 +112,3 @@ recipeList:
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: sh.stubborn.contract.stubrunner.junit.StubRunnerClassRule
       newFullyQualifiedTypeName: sh.stubborn.contract.stubrunner.junit5.StubRunnerExtension
-  - org.openrewrite.java.ChangeAnnotation:
-      annotationPattern: "@org.junit.Rule"
-      newAnnotationPattern: "@org.junit.jupiter.api.extension.RegisterExtension"
-  - org.openrewrite.java.AddImport:
-      fullyQualifiedClassName: org.junit.jupiter.api.extension.RegisterExtension
-      onlyIfReferenced: true
-  - org.openrewrite.java.RemoveImport:
-      typeName: org.junit.Rule
-  - org.openrewrite.java.RemoveImport:
-      typeName: org.junit.ClassRule

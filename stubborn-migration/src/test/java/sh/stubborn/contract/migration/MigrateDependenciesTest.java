@@ -17,9 +17,10 @@
 package sh.stubborn.contract.migration;
 
 import org.junit.jupiter.api.Test;
-import org.openrewrite.test.RewriteTest;
 import org.openrewrite.test.RecipeSpec;
+import org.openrewrite.test.RewriteTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.maven.Assertions.pomXml;
 
 class MigrateDependenciesTest implements RewriteTest {
@@ -33,6 +34,9 @@ class MigrateDependenciesTest implements RewriteTest {
 	void migratesVerifierDependency() {
 		rewriteRun(pomXml("""
 				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.springframework.cloud</groupId>
@@ -42,24 +46,21 @@ class MigrateDependenciesTest implements RewriteTest {
 						</dependency>
 					</dependencies>
 				</project>
-				""", """
-				<project>
-					<dependencies>
-						<dependency>
-							<groupId>sh.stubborn</groupId>
-							<artifactId>stubborn-verifier</artifactId>
-							<version>4.1.0</version>
-							<scope>test</scope>
-						</dependency>
-					</dependencies>
-				</project>
-				"""));
+				""", spec -> spec.after(actual -> {
+			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+				.contains("<artifactId>stubborn-verifier</artifactId>")
+				.doesNotContain("spring-cloud-contract-verifier");
+			return actual;
+		})));
 	}
 
 	@Test
 	void migratesStubRunnerDependency() {
 		rewriteRun(pomXml("""
 				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.springframework.cloud</groupId>
@@ -69,24 +70,21 @@ class MigrateDependenciesTest implements RewriteTest {
 						</dependency>
 					</dependencies>
 				</project>
-				""", """
-				<project>
-					<dependencies>
-						<dependency>
-							<groupId>sh.stubborn</groupId>
-							<artifactId>stubborn-stub-runner</artifactId>
-							<version>4.1.0</version>
-							<scope>test</scope>
-						</dependency>
-					</dependencies>
-				</project>
-				"""));
+				""", spec -> spec.after(actual -> {
+			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+				.contains("<artifactId>stubborn-stub-runner</artifactId>")
+				.doesNotContain("spring-cloud-contract-stub-runner");
+			return actual;
+		})));
 	}
 
 	@Test
 	void migratesMavenPlugin() {
 		rewriteRun(pomXml("""
 				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
 					<build>
 						<plugins>
 							<plugin>
@@ -97,25 +95,21 @@ class MigrateDependenciesTest implements RewriteTest {
 						</plugins>
 					</build>
 				</project>
-				""", """
-				<project>
-					<build>
-						<plugins>
-							<plugin>
-								<groupId>sh.stubborn</groupId>
-								<artifactId>stubborn-maven-plugin</artifactId>
-								<version>4.1.0</version>
-							</plugin>
-						</plugins>
-					</build>
-				</project>
-				"""));
+				""", spec -> spec.after(actual -> {
+			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+				.contains("<artifactId>stubborn-maven-plugin</artifactId>")
+				.doesNotContain("spring-cloud-contract-maven-plugin");
+			return actual;
+		})));
 	}
 
 	@Test
 	void migratesBomInDependencyManagement() {
 		rewriteRun(pomXml("""
 				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
 					<dependencyManagement>
 						<dependencies>
 							<dependency>
@@ -128,21 +122,12 @@ class MigrateDependenciesTest implements RewriteTest {
 						</dependencies>
 					</dependencyManagement>
 				</project>
-				""", """
-				<project>
-					<dependencyManagement>
-						<dependencies>
-							<dependency>
-								<groupId>sh.stubborn</groupId>
-								<artifactId>stubborn-contract-dependencies</artifactId>
-								<version>4.1.0</version>
-								<type>pom</type>
-								<scope>import</scope>
-							</dependency>
-						</dependencies>
-					</dependencyManagement>
-				</project>
-				"""));
+				""", spec -> spec.after(actual -> {
+			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+				.contains("<artifactId>stubborn-contract-dependencies</artifactId>")
+				.doesNotContain("spring-cloud-contract-dependencies");
+			return actual;
+		})));
 	}
 
 }

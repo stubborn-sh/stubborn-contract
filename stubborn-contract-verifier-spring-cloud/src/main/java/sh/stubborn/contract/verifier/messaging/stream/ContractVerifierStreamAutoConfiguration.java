@@ -45,7 +45,7 @@ import org.springframework.util.Assert;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Binder.class)
-@ConditionalOnProperty(name = "spring.cloud.contract.stubrunner.stream.enabled", havingValue = "true",
+@ConditionalOnProperty(name = "stubborn.contract.stubrunner.stream.enabled", havingValue = "true",
 		matchIfMissing = true)
 @AutoConfigureBefore({ NoOpContractVerifierAutoConfiguration.class, ContractVerifierIntegrationConfiguration.class })
 public class ContractVerifierStreamAutoConfiguration {

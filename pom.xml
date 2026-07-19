@@ -75,11 +75,11 @@
 		<module>stubborn-contract-dependencies</module>
 		<!-- TODO: temporarily disable -->
 		<!--<module>docker</module>-->
-		<module>docs</module>
 		<module>stubborn-contract-wiremock</module>
 		<module>stubborn-wiremock-spring</module>
 		<module>stubborn-wiremock-spring-boot</module>
 		<module>stubborn-contract-verifier</module>
+		<module>docs</module>
 		<module>stubborn-contract-verifier-spring</module>
 		<module>stubborn-contract-verifier-spring-boot</module>
 		<module>stubborn-contract-verifier-spring-cloud</module>

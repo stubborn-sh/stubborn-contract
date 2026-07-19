@@ -69,13 +69,27 @@
 			<plugin>
 				<groupId>org.jetbrains.kotlin</groupId>
 				<artifactId>kotlin-maven-plugin</artifactId>
-				<!-- Version and base configuration inherited from spring-cloud-build parent -->
 				<configuration>
+					<jvmTarget>${java.version}</jvmTarget>
 					<args combine.children="append">
 						<arg>-Xjvm-default=all</arg>
 						<arg>-Xbackend-threads=0</arg>
 					</args>
 				</configuration>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<goals>
+							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.jetbrains.dokka</groupId>
@@ -95,6 +109,16 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

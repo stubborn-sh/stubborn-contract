@@ -78,6 +78,7 @@ dependencies {
 		exclude(group: 'org.jetbrains.kotlin')
 	}
 
+	testImplementation(platform("org.springframework.boot:spring-boot-dependencies:4.1.0"))
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
 	testImplementation localGroovy()
 	testImplementation gradleTestKit()

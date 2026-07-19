@@ -43,16 +43,15 @@ class ContractVerifierStreamAutoConfigurationTests {
 
 	@Test
 	public void shouldNotCreateBeansWhenDisabled() {
-		this.contextRunner.withPropertyValues("spring.cloud.contract.stubrunner.stream.enabled=false")
-			.run((context) -> {
-				assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(0);
-				assertThat(context.getBeansOfType(MessageVerifierSender.class)).hasSize(0);
-			});
+		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.stream.enabled=false").run((context) -> {
+			assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(0);
+			assertThat(context.getBeansOfType(MessageVerifierSender.class)).hasSize(0);
+		});
 	}
 
 	@Test
 	public void shouldCreateBeansWhenExplicitlyEnabled() {
-		this.contextRunner.withPropertyValues("spring.cloud.contract.stubrunner.stream.enabled=true").run((context) -> {
+		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.stream.enabled=true").run((context) -> {
 			assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(1);
 			assertThat(context.getBeansOfType(MessageVerifierSender.class)).hasSize(1);
 		});
