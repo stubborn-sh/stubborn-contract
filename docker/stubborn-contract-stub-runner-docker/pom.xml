@@ -73,20 +73,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-dependencies-parent</artifactId>
-			<version>${spring-cloud-build.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-build-dependencies</artifactId>
-			<version>${spring-cloud-build.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot.experimental</groupId>
 			<artifactId>spring-boot-thin-layout</artifactId>
 			<version>${thin-jar.version}</version>
@@ -180,12 +166,6 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-build</artifactId>
-			<version>${spring-cloud-build.version}</version>
-			<type>pom</type>
 		</dependency>
 	</dependencies>
 

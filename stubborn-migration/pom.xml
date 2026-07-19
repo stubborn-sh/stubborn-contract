@@ -46,6 +46,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openrewrite</groupId>
+			<artifactId>rewrite-java-17</artifactId>
+			<version>${openrewrite.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrewrite</groupId>
 			<artifactId>rewrite-java-21</artifactId>
 			<version>${openrewrite.version}</version>
 			<scope>test</scope>
