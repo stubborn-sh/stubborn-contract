@@ -10,11 +10,10 @@ ADDITIONAL_OPTS="${ADDITIONAL_OPTS:-}"
 MESSAGING_TYPE="${MESSAGING_TYPE:-}"
 
 if [[ "${MESSAGING_TYPE}" != "" ]]; then
-  echo "Messaging type passed, will active thin profile [${MESSAGING_TYPE}]"
-  ADDITIONAL_OPTS="${ADDITIONAL_OPTS} --thin.profile=${MESSAGING_TYPE}"
+  echo "Messaging type passed, will activate profile [${MESSAGING_TYPE}]"
+  ADDITIONAL_OPTS="${ADDITIONAL_OPTS} --spring.profiles.active=${MESSAGING_TYPE}"
 fi
 
-echo "Please wait for the dependencies to be downloaded..."
 exec \
  java \
   -Djava.security.egd=file:/dev/./urandom \

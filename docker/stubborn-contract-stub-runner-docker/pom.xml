@@ -17,154 +17,10 @@
 	<name>Stubborn Contract Stub Runner Docker</name>
 	<description>Stubborn Contract Stub Runner Docker</description>
 
-	<properties>
-		<thin.repo>https://central.sonatype.com/repository/maven-snapshots/</thin.repo>
-	</properties>
-
 	<dependencies>
-		<!-- Required, otherwise the docker image generation fails for GA -->
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-parent</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-commons-dependencies</artifactId>
-			<version>${spring-cloud-commons.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-dependencies</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-netflix-dependencies</artifactId>
-			<version>${spring-cloud-netflix.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-zookeeper-dependencies</artifactId>
-			<version>${spring-cloud-zookeeper.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-consul-dependencies</artifactId>
-			<version>${spring-cloud-consul.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-dependencies</artifactId>
-			<version>${spring-cloud-stream.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot.experimental</groupId>
-			<artifactId>spring-boot-thin-layout</artifactId>
-			<version>${thin-jar.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot.experimental</groupId>
-			<artifactId>spring-boot-thin-launcher</artifactId>
-			<version>${thin-jar.version}</version>
-			<classifier>exec</classifier>
-		</dependency>
-
-
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-stub-runner-boot</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-wiremock</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-tools</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-java</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-groovy</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-kotlin</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-converters</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-verifier</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-stub-runner</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot.experimental</groupId>
-			<artifactId>spring-boot-thin-launcher</artifactId>
-			<version>${thin-jar.version}</version>
-			<classifier>exec</classifier>
-			<scope>compile</scope>
-		</dependency>
-
-		<!-- Otherwise dependency is provided and class is missing -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
@@ -178,29 +34,10 @@
 					<failIfNoTests>false</failIfNoTests>
 				</configuration>
 			</plugin>
-			<!-- Required, otherwise the docker image generation fails for GA -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>copy-all-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/maven_dependencies
-							</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-							<useRepositoryLayout>true</useRepositoryLayout>
-							<copyPom>true</copyPom>
-							<excludeTransitive>false</excludeTransitive>
-						</configuration>
-					</execution>
 					<execution>
 						<id>copy-dependencies</id>
 						<phase>package</phase>
@@ -244,9 +81,6 @@
 					<tag>${project.version}</tag>
 					<username>${env.DOCKER_HUB_USERNAME}</username>
 					<password>${env.DOCKER_HUB_PASSWORD}</password>
-					<buildArgs>
-						<THIN_REPO>${thin.repo}</THIN_REPO>
-					</buildArgs>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -258,18 +92,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<profiles>
-		<profile>
-			<id>milestone</id>
-			<properties>
-				<thin.repo>https://repo.maven.apache.org/maven2</thin.repo>
-			</properties>
-		</profile>
-		<profile>
-			<id>central</id>
-			<properties>
-				<thin.repo>https://repo.maven.apache.org/maven2</thin.repo>
-			</properties>
-		</profile>
-	</profiles>
 </project>

@@ -827,14 +827,14 @@
 						<artifactId>central-publishing-maven-plugin</artifactId>
 						<configuration>
 							<excludeArtifacts>
-								<artifactId>stubborn-contract-stub-runner-boot</artifactId>
-								<artifactId>stubborn-contract-docker-parent</artifactId>
-								<artifactId>stubborn-contract-specs</artifactId>
-								<artifactId>stubborn-contract-tests</artifactId>
-								<artifactId>stubborn-contract-stub-runner-boot-zookeeper</artifactId>
-								<artifactId>stubborn-contract-stub-runner-boot-eureka</artifactId>
-								<artifactId>stubborn-contract-sample-jms</artifactId>
-								<artifactId>stubborn-contract-stub-runner-kafka</artifactId>
+								<artifactId>stubborn-stub-runner-boot</artifactId>
+								<artifactId>stubborn-docker-parent</artifactId>
+								<artifactId>stubborn-specs</artifactId>
+								<artifactId>stubborn-tests</artifactId>
+								<artifactId>stubborn-stub-runner-boot-zookeeper</artifactId>
+								<artifactId>stubborn-stub-runner-boot-eureka</artifactId>
+								<artifactId>stubborn-sample-jms</artifactId>
+								<artifactId>stubborn-stub-runner-kafka</artifactId>
 								<artifactId>stubborn-sample-amqp</artifactId>
 								<artifactId>stubborn-stub-runner-integration</artifactId>
 								<artifactId>stubborn-stub-runner-amqp</artifactId>
