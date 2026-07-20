@@ -11,7 +11,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>stubborn-specs</artifactId>
+	<artifactId>stubborn-contract-specs</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>Stubborn Contract Specs</name>

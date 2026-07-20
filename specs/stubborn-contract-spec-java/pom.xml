@@ -13,7 +13,7 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
-	<artifactId>stubborn-spec-java</artifactId>
+	<artifactId>stubborn-contract-spec-java</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Spec Java</name>
 	<description>Stubborn Contract Spec Java</description>

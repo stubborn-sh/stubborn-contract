@@ -6,12 +6,12 @@
 
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-docker-parent</artifactId>
+		<artifactId>stubborn-contract-docker-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>stubborn-stub-runner-docker</artifactId>
+	<artifactId>stubborn-contract-stub-runner-docker</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>Stubborn Contract Stub Runner Docker</name>
@@ -20,7 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-boot</artifactId>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
@@ -48,7 +48,7 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
-									<artifactId>stubborn-stub-runner-boot</artifactId>
+									<artifactId>stubborn-contract-stub-runner-boot</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>

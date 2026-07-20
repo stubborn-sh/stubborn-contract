@@ -9,14 +9,14 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-stub-runner-spring-cloud</artifactId>
+	<artifactId>stubborn-contract-stub-runner-spring-cloud</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner Spring Cloud</name>
 	<description>Spring Cloud discovery integration for Stubborn Contract Stub Runner</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

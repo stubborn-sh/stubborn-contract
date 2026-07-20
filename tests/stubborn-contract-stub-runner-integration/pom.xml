@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-tests</artifactId>
+		<artifactId>stubborn-contract-tests</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-stub-runner-integration</artifactId>
+	<artifactId>stubborn-contract-stub-runner-integration</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner Integration</name>
 	<description>Stubborn Contract Stub Runner Integration</description>
@@ -23,16 +23,16 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner</artifactId>
+			<artifactId>stubborn-contract-stub-runner</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
+			<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

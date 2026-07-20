@@ -10,7 +10,7 @@
 		<relativePath>../stubborn-build/pom.xml</relativePath>
 	</parent>
 	<groupId>sh.stubborn</groupId>
-	<artifactId>stubborn-dependencies</artifactId>
+	<artifactId>stubborn-contract-dependencies</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>stubborn-contract-dependencies</name>
@@ -24,7 +24,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-wiremock</artifactId>
+				<artifactId>stubborn-contract-wiremock</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -44,17 +44,17 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-spec</artifactId>
+				<artifactId>stubborn-contract-spec</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-spec-java</artifactId>
+				<artifactId>stubborn-contract-spec-java</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-spec-groovy</artifactId>
+				<artifactId>stubborn-contract-spec-groovy</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -64,62 +64,62 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-verifier</artifactId>
+				<artifactId>stubborn-contract-verifier</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-verifier-spring</artifactId>
+				<artifactId>stubborn-contract-verifier-spring</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-verifier-spring-boot</artifactId>
+				<artifactId>stubborn-contract-verifier-spring-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-verifier-spring-cloud</artifactId>
+				<artifactId>stubborn-contract-verifier-spring-cloud</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-converters</artifactId>
+				<artifactId>stubborn-contract-converters</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-stub-runner</artifactId>
+				<artifactId>stubborn-contract-stub-runner</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-stub-runner-boot</artifactId>
+				<artifactId>stubborn-contract-stub-runner-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+				<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-stub-runner-spring-cloud</artifactId>
+				<artifactId>stubborn-contract-stub-runner-spring-cloud</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-verifier</artifactId>
+				<artifactId>stubborn-starter-contract-verifier</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-stub-runner</artifactId>
+				<artifactId>stubborn-starter-contract-stub-runner</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
+				<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -151,7 +151,7 @@
 			  wiremock-jetty12:3.13.2 uses jetty-ee10-*:12.0.30 which calls APIs only present in
 			  Jetty 12.0.x (e.g. ByteBufferPool.acquire(int,boolean), Environment.ensure(String)).
 			  Spring Boot 4 forces all org.eclipse.jetty:* to 12.1.x where those methods were removed.
-			  Pin the Jetty core artifacts to 12.0.30 so consumers who import stubborn-dependencies
+			  Pin the Jetty core artifacts to 12.0.30 so consumers who import stubborn-contract-dependencies
 			  get Jetty 12.0.x in their own dependencyManagement (which beats the parent BOM).
 			-->
 			<dependency>

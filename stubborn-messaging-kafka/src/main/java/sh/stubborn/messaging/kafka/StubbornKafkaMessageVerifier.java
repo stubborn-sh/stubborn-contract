@@ -109,7 +109,7 @@ class StubbornKafkaMessageVerifier implements MessageVerifierSender<Message<?>>,
 		}
 		Properties props = new Properties();
 		props.put("bootstrap.servers", bootstrapServers);
-		props.put("group.id", "stubborn-verifier-" + System.nanoTime());
+		props.put("group.id", "stubborn-contract-verifier-" + System.nanoTime());
 		props.put("auto.offset.reset", "earliest");
 		props.put("key.deserializer", StringDeserializer.class.getName());
 		props.put("value.deserializer", StringDeserializer.class.getName());

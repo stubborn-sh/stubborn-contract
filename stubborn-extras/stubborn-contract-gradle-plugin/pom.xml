@@ -27,7 +27,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -37,7 +37,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-converters</artifactId>
+			<artifactId>stubborn-contract-converters</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -47,7 +47,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner</artifactId>
+			<artifactId>stubborn-contract-stub-runner</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>

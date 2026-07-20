@@ -101,7 +101,7 @@ class EnvVar {
 }
 
 dependencies {
-	testImplementation(platform("sh.stubborn:stubborn-dependencies:${verifierVersion}"))
+	testImplementation(platform("sh.stubborn:stubborn-contract-dependencies:${verifierVersion}"))
 	testImplementation(platform("org.apache.camel.springboot:camel-spring-boot-dependencies:${camelVersion}"))
 
 	testImplementation("org.springframework.boot:spring-boot-starter-web")

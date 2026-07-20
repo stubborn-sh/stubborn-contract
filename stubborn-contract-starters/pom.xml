@@ -11,7 +11,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>stubborn-starters</artifactId>
+	<artifactId>stubborn-contract-starters</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Stubborn Contract Starters</name>

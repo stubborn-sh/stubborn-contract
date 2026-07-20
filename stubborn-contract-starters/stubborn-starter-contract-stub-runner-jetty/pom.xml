@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-starters</artifactId>
+		<artifactId>stubborn-contract-starters</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
+	<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner Starter Jetty</name>
 	<description>Stubborn Contract Stub Runner Jetty runs wiremock stubs with "native"
@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>

@@ -9,19 +9,19 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+	<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner Spring Boot</name>
 	<description>Spring Boot autoconfiguration for Stubborn Contract Stub Runner</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner</artifactId>
+			<artifactId>stubborn-contract-stub-runner</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier-spring-boot</artifactId>
+			<artifactId>stubborn-contract-verifier-spring-boot</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -56,7 +56,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-wiremock</artifactId>
+			<artifactId>stubborn-contract-wiremock</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<!-- test -->

@@ -16,12 +16,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier-spring-boot</artifactId>
+			<artifactId>stubborn-contract-verifier-spring-boot</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

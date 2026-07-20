@@ -57,7 +57,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-verifier</artifactId>
+			<artifactId>stubborn-starter-contract-verifier</artifactId>
 			<version>${it-plugin.version}</version>
 			<scope>test</scope>
 		</dependency>

@@ -51,7 +51,7 @@ subprojects {
 		testImplementation "com.github.tomakehurst:wiremock:${wiremockVersion}"
 		testImplementation "sh.stubborn:stubborn-jsonassert:${verifierVersion}"
 		testImplementation "org.assertj:assertj-core:2.4.1"
-		testImplementation "sh.stubborn:stubborn-verifier:${verifierVersion}"
+		testImplementation "sh.stubborn:stubborn-contract-verifier:${verifierVersion}"
 	}
 }
 

@@ -16,7 +16,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-wiremock</artifactId>
+			<artifactId>stubborn-contract-wiremock</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.wiremock</groupId>
@@ -57,12 +57,12 @@
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-java</artifactId>
+			<artifactId>stubborn-contract-spec-java</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

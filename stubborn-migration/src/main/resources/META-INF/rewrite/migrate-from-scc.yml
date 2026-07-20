@@ -30,37 +30,37 @@ recipeList:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-contract-verifier
       newGroupId: sh.stubborn
-      newArtifactId: stubborn-verifier
+      newArtifactId: stubborn-contract-verifier
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-contract-stub-runner
       newGroupId: sh.stubborn
-      newArtifactId: stubborn-stub-runner
+      newArtifactId: stubborn-contract-stub-runner
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-starter-contract-verifier
       newGroupId: sh.stubborn
-      newArtifactId: stubborn-starter-verifier
+      newArtifactId: stubborn-starter-contract-verifier
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-starter-contract-stub-runner
       newGroupId: sh.stubborn
-      newArtifactId: stubborn-starter-stub-runner
+      newArtifactId: stubborn-starter-contract-stub-runner
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-contract-wiremock
       newGroupId: sh.stubborn
-      newArtifactId: stubborn-wiremock
+      newArtifactId: stubborn-contract-wiremock
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-contract-spec-java
       newGroupId: sh.stubborn
-      newArtifactId: stubborn-spec-java
+      newArtifactId: stubborn-contract-spec-java
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-contract-spec-groovy
       newGroupId: sh.stubborn
-      newArtifactId: stubborn-spec-groovy
+      newArtifactId: stubborn-contract-spec-groovy
   - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-contract-spec-kotlin

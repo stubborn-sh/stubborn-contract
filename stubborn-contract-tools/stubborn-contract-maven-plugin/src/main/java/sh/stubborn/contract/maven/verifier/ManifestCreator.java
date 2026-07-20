@@ -59,7 +59,7 @@ final class ManifestCreator {
 
 	private static Dependency findVerifierDependency(List<Dependency> deps) {
 		for (Dependency dep : deps) {
-			if ("stubborn-verifier".equals(dep.getArtifactId())) {
+			if ("stubborn-contract-verifier".equals(dep.getArtifactId())) {
 				return dep;
 			}
 		}

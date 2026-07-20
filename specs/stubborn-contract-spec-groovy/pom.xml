@@ -9,14 +9,14 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
-	<artifactId>stubborn-spec-groovy</artifactId>
+	<artifactId>stubborn-contract-spec-groovy</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Spec Groovy</name>
 	<description>Stubborn Contract Spec Groovy</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-java</artifactId>
+			<artifactId>stubborn-contract-spec-java</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.groovy</groupId>

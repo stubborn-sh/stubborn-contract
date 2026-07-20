@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-tests</artifactId>
+		<artifactId>stubborn-contract-tests</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-stub-runner-jms</artifactId>
+	<artifactId>stubborn-contract-stub-runner-jms</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner JMS</name>
 	<description>Stubborn Contract Stub Runner JMS</description>
@@ -24,11 +24,11 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner</artifactId>
+			<artifactId>stubborn-contract-stub-runner</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

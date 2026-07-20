@@ -6,7 +6,7 @@
 
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-tools</artifactId>
+		<artifactId>stubborn-contract-tools</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
@@ -231,11 +231,11 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-converters</artifactId>
+			<artifactId>stubborn-contract-converters</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -245,11 +245,11 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner</artifactId>
+			<artifactId>stubborn-contract-stub-runner</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-wiremock</artifactId>
+			<artifactId>stubborn-contract-wiremock</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

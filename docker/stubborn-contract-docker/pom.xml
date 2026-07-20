@@ -11,12 +11,12 @@
 
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-docker-parent</artifactId>
+		<artifactId>stubborn-contract-docker-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>stubborn-docker</artifactId>
+	<artifactId>stubborn-contract-docker</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>Stubborn Contract Docker</name>
@@ -25,7 +25,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-dependencies</artifactId>
+			<artifactId>stubborn-contract-dependencies</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 			<scope>runtime</scope>
@@ -48,7 +48,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-verifier</artifactId>
+			<artifactId>stubborn-starter-contract-verifier</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -58,29 +58,29 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-wiremock</artifactId>
+			<artifactId>stubborn-contract-wiremock</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec</artifactId>
+			<artifactId>stubborn-contract-spec</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-tools</artifactId>
+			<artifactId>stubborn-contract-tools</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-java</artifactId>
+			<artifactId>stubborn-contract-spec-java</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-groovy</artifactId>
+			<artifactId>stubborn-contract-spec-groovy</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -90,32 +90,32 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-converters</artifactId>
+			<artifactId>stubborn-contract-converters</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner</artifactId>
+			<artifactId>stubborn-contract-stub-runner</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-boot</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-stub-runner</artifactId>
+			<artifactId>stubborn-starter-contract-stub-runner</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
+			<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

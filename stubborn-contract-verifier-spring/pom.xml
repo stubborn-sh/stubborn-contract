@@ -13,14 +13,14 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-verifier-spring</artifactId>
+	<artifactId>stubborn-contract-verifier-spring</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Verifier Spring</name>
 	<description>Spring Framework messaging bridge for Stubborn Contract Verifier</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

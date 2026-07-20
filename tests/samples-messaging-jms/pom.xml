@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-tests</artifactId>
+		<artifactId>stubborn-contract-tests</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-sample-jms</artifactId>
+	<artifactId>stubborn-contract-sample-jms</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Sample Jms</name>
 	<description>Stubborn Contract Sample Jms</description>
@@ -28,12 +28,12 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier-spring-boot</artifactId>
+			<artifactId>stubborn-contract-verifier-spring-boot</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

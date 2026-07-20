@@ -278,7 +278,7 @@
 			<!-- Git Stub Downloader -->
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-dependencies</artifactId>
+				<artifactId>stubborn-contract-dependencies</artifactId>
 				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -827,24 +827,24 @@
 						<artifactId>central-publishing-maven-plugin</artifactId>
 						<configuration>
 							<excludeArtifacts>
-								<artifactId>stubborn-stub-runner-boot</artifactId>
-								<artifactId>stubborn-docker-parent</artifactId>
-								<artifactId>stubborn-specs</artifactId>
-								<artifactId>stubborn-tests</artifactId>
-								<artifactId>stubborn-stub-runner-boot-zookeeper</artifactId>
-								<artifactId>stubborn-stub-runner-boot-eureka</artifactId>
-								<artifactId>stubborn-sample-jms</artifactId>
-								<artifactId>stubborn-stub-runner-kafka</artifactId>
+								<artifactId>stubborn-contract-stub-runner-boot</artifactId>
+								<artifactId>stubborn-contract-docker-parent</artifactId>
+								<artifactId>stubborn-contract-specs</artifactId>
+								<artifactId>stubborn-contract-tests</artifactId>
+								<artifactId>stubborn-contract-stub-runner-boot-zookeeper</artifactId>
+								<artifactId>stubborn-contract-stub-runner-boot-eureka</artifactId>
+								<artifactId>stubborn-contract-sample-jms</artifactId>
+								<artifactId>stubborn-contract-stub-runner-kafka</artifactId>
 								<artifactId>stubborn-sample-amqp</artifactId>
-								<artifactId>stubborn-stub-runner-integration</artifactId>
-								<artifactId>stubborn-stub-runner-amqp</artifactId>
+								<artifactId>stubborn-contract-stub-runner-integration</artifactId>
+								<artifactId>stubborn-contract-stub-runner-amqp</artifactId>
 								<artifactId>stubborn-sample-integration</artifactId>
-								<artifactId>stubborn-stub-runner-jms</artifactId>
+								<artifactId>stubborn-contract-stub-runner-jms</artifactId>
 								<artifactId>stubborn-sample-camel</artifactId>
-								<artifactId>stubborn-stub-runner-stream</artifactId>
-								<artifactId>stubborn-stub-runner-context-path</artifactId>
-								<artifactId>stubborn-stub-runner-moco</artifactId>
-								<artifactId>stubborn-stub-runner-moco-contract-jar</artifactId>
+								<artifactId>stubborn-contract-stub-runner-stream</artifactId>
+								<artifactId>stubborn-contract-stub-runner-context-path</artifactId>
+								<artifactId>stubborn-contract-stub-runner-moco</artifactId>
+								<artifactId>stubborn-contract-stub-runner-moco-contract-jar</artifactId>
 							</excludeArtifacts>
 						</configuration>
 					</plugin>

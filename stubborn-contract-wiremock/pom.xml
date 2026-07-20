@@ -9,7 +9,7 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-wiremock</artifactId>
+	<artifactId>stubborn-contract-wiremock</artifactId>
 	<packaging>jar</packaging>
 	<name>stubborn-contract-wiremock</name>
 	<description>Spring-free WireMock core: WireMockSpring and WireMockStubMapping utilities</description>

@@ -22,11 +22,11 @@
 		<component>
 			<role>org.apache.maven.lifecycle.Lifecycle</role>
 			<implementation>org.apache.maven.lifecycle.Lifecycle</implementation>
-			<role-hint>stubborn-verifier</role-hint>
+			<role-hint>stubborn-contract-verifier</role-hint>
 			<configuration>
-				<id>stubborn-verifier</id>
+				<id>stubborn-contract-verifier</id>
 				<phases>
-					<phase>stubborn-verifier-not-used-phase</phase>
+					<phase>stubborn-contract-verifier-not-used-phase</phase>
 				</phases>
 				<default-phases>
 					<process-test-resources>

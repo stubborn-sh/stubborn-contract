@@ -74,8 +74,8 @@ cd ../consumer && ./mvnw test
 
 | Module | Description |
 |--------|-------------|
-| `stubborn-contract-dependencies` | Consumer BOM (`stubborn-dependencies`) — pin once, get all |
-| `stubborn-contract-starters` | `stubborn-starter-contract-verifier`, `stubborn-starter-stub-runner` |
+| `stubborn-contract-dependencies` | Consumer BOM (`stubborn-contract-dependencies`) — pin once, get all |
+| `stubborn-contract-starters` | `stubborn-starter-contract-verifier`, `stubborn-starter-contract-stub-runner` |
 | `stubborn-build` | Parent POM (no spring-cloud-build) |
 | `stubborn-migration` | OpenRewrite recipes for SCC → Stubborn migration |
 | `stubborn-extras` | Kotlin DSL + Gradle plugin (designed for separate repo extraction) |

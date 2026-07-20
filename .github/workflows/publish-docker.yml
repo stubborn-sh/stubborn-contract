@@ -69,7 +69,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & push stubborn-stub-runner Docker image
+      - name: Build & push stubborn-contract-stub-runner Docker image
         run: |
           ./mvnw package -f docker/stubborn-contract-stub-runner-docker/pom.xml \
             -Ddocker.registry.organization=${{ env.DOCKER_ORG }} \

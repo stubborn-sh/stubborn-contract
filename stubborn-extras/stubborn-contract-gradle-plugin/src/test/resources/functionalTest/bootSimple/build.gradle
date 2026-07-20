@@ -42,7 +42,7 @@ dependencies {
 	testImplementation "io.restassured:rest-assured:$restAssuredVersion"
 	testImplementation "io.restassured:spring-mock-mvc:$restAssuredVersion"
 	testImplementation "ch.qos.logback:logback-classic:1.1.2"
-	testImplementation "sh.stubborn:stubborn-verifier:${verifierVersion}"
+	testImplementation "sh.stubborn:stubborn-contract-verifier:${verifierVersion}"
 }
 
 contracts {

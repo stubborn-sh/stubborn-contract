@@ -16,14 +16,14 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-verifier</artifactId>
+	<artifactId>stubborn-contract-verifier</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Verifier</name>
 	<description>Stubborn Contract Verifier</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec</artifactId>
+			<artifactId>stubborn-contract-spec</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>tools.jackson.core</groupId>

@@ -11,7 +11,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>stubborn-tools</artifactId>
+	<artifactId>stubborn-contract-tools</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Stubborn Contract Tools</name>

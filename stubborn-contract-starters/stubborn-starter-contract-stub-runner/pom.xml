@@ -22,22 +22,22 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-starters</artifactId>
+		<artifactId>stubborn-contract-starters</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-starter-stub-runner</artifactId>
+	<artifactId>stubborn-starter-contract-stub-runner</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner Starter</name>
 	<description>Stubborn Contract Stub Runner Starter</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-wiremock</artifactId>
+			<artifactId>stubborn-contract-wiremock</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

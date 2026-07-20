@@ -951,19 +951,19 @@ Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to displa
   <dependencies>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>stubborn-verifier</artifactId>
+      <artifactId>stubborn-contract-verifier</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>stubborn-spec</artifactId>
+      <artifactId>stubborn-contract-spec</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>stubborn-spec-java</artifactId>
+      <artifactId>stubborn-contract-spec-java</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
@@ -975,7 +975,7 @@ Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to displa
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>stubborn-spec-groovy</artifactId>
+      <artifactId>stubborn-contract-spec-groovy</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
@@ -1311,7 +1311,7 @@ Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to displa
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>stubborn-converters</artifactId>
+      <artifactId>stubborn-contract-converters</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
@@ -1371,7 +1371,7 @@ Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to displa
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>stubborn-stub-runner</artifactId>
+      <artifactId>stubborn-contract-stub-runner</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
@@ -1443,7 +1443,7 @@ Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to displa
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>stubborn-wiremock</artifactId>
+      <artifactId>stubborn-contract-wiremock</artifactId>
       <type>jar</type>
       <version>5.0.1-SNAPSHOT</version>
     </dependency>
