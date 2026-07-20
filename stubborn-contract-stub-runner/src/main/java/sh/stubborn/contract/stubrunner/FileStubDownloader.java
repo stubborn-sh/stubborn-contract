@@ -192,7 +192,7 @@ class StubsStubDownloader implements StubDownloader {
 			StubConfiguration configuration) {
 		String specificPart = schemeSpecificPart();
 		specificPart = specificPart.endsWith("/") ? specificPart : (specificPart + "/");
-		specificPart = specificPart + "**/*.*";
+		specificPart = specificPart + "**";
 		return new RepoRoots(Collections.singleton(new RepoRoot(specificPart)));
 	}
 
