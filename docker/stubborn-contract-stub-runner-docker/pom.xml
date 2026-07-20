@@ -18,7 +18,7 @@
 	<description>Stubborn Contract Stub Runner Docker</description>
 
 	<properties>
-		<thin.repo>https://repo.spring.io/snapshot</thin.repo>
+		<thin.repo>https://central.sonatype.com/repository/maven-snapshots/</thin.repo>
 	</properties>
 
 	<dependencies>
@@ -211,8 +211,7 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
-									<artifactId>stubborn-contract-stub-runner-boot
-									</artifactId>
+									<artifactId>stubborn-stub-runner-boot</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>
