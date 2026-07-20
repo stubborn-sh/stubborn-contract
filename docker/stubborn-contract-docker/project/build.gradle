@@ -4,7 +4,7 @@ buildscript {
 	repositories {
 		mavenLocal()
 		mavenCentral()
-			maven { url "https://repo.spring.io/snapshot" }
+			maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
 			maven { url "https://repo.spring.io/milestone" }
 	}
 
@@ -50,7 +50,7 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 	if ("${verifierVersion}".contains("SNAPSHOT")) {
-		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
 	} else if ("${verifierVersion}".contains("M") || "${verifierVersion}".contains("RC")) {
 		maven { url "https://repo.spring.io/milestone" }
 	}
