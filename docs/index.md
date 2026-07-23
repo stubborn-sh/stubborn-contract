@@ -16,8 +16,14 @@ hero:
 features:
   - title: Consumer-Driven
     details: Contracts are defined by the consumer, ensuring the producer always satisfies real-world usage.
+    link: /getting-started/cdc
+    linkText: How CDC works
   - title: Polyglot
     details: JVM-native (REST Assured, MockMvc, WebTestClient, Spock) and Node.js-native (@stubborn-sh/jest, stub-server). Any HTTP service can be a producer.
+    link: /howto/non-jvm
+    linkText: Node.js guide
   - title: Stub Runner
     details: Automatically downloads and runs stubs from Maven repositories or Git — no manual setup.
+    link: /reference/stub-runner
+    linkText: Stub Runner docs
 ---
