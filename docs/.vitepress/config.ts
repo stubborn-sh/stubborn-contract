@@ -4,11 +4,15 @@ import { asciidocTagsPlugin } from './plugins/asciidoc-tags'
 export default defineConfig({
   lang: 'en-US',
   title: 'Stubborn Contract',
-  description: 'Consumer-driven contract testing for the JVM. Brings TDD to architectural level.',
-  base: '/stubborn-contract/',
+  description: 'Consumer-driven contract testing for any stack — JVM, Node.js, and beyond. Brings TDD to the architectural level.',
+  base: '/contract/',
 
   head: [
-    ['link', { rel: 'icon', href: '/stubborn-contract/favicon.ico' }],
+    ['link', { rel: 'icon', href: '/contract/favicon.ico' }],
+  ],
+
+  ignoreDeadLinks: [
+    /^\/stubborn\//,
   ],
 
   vite: {
@@ -27,6 +31,13 @@ export default defineConfig({
         text: 'Migration',
         items: [
           { text: 'From Spring Cloud Contract', link: '/migration/from-spring-cloud-contract' },
+        ],
+      },
+      {
+        text: 'Stubborn Ecosystem',
+        items: [
+          { text: 'Contract (this site)', link: '/contract/' },
+          { text: 'Broker', link: '/stubborn/' },
         ],
       },
       {

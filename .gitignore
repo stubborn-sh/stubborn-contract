@@ -49,3 +49,7 @@ node
 node_modules
 build
 package-lock.json
+
+# VitePress build output
+docs/.vitepress/dist/
+docs/.vitepress/cache/
