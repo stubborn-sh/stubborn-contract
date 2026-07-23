@@ -36,7 +36,7 @@ class BaseClassProvider {
 		String contractPackage = includedDirectoryRelativePath.replace(File.separator, SEPARATOR);
 		// package mapping takes super precedence
 		if (baseClassMappings != null && !baseClassMappings.isEmpty()) {
-			Optional<Map.Entry<String, String>> mapping = baseClassMappings.entrySet().stream().filter(entry -> {
+			Optional<Map.Entry<String, String>> mapping = baseClassMappings.entrySet().stream().filter((entry) -> {
 				String pattern = entry.getKey();
 				return contractPathAsPackage.matches(pattern);
 			}).findFirst();

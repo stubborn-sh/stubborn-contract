@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.crypto.DefaultSettingsDecryptionRequest;
@@ -43,13 +44,11 @@ import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions.StubRunnerProxyOptions;
-import sh.stubborn.contract.stubrunner.StubsMode;
-
-import static sh.stubborn.contract.stubrunner.AetherFactories.newSession;
-import static sh.stubborn.contract.stubrunner.AetherFactories.settings;
-import static sh.stubborn.contract.stubrunner.util.ZipCategory.unzipTo;
+import sh.stubborn.contract.stubrunner.util.ZipCategory;
 
 /**
+ * Downloads and unpacks stub JARs using Eclipse Aether (Maven Resolver).
+ *
  * @author Mariusz Smykula
  * @author Eddú Meléndez
  */
@@ -69,7 +68,7 @@ public class AetherStubDownloader implements StubDownloader {
 	private static final Class CLAZZ = TemporaryFileStorage.class;
 
 	// In order to allow to pass the injected values from Maven
-	private static RepositorySystem repositorySystemFromMaven;
+	private static @Nullable RepositorySystem repositorySystemFromMaven;
 
 	private final List<RemoteRepository> remoteRepos;
 
@@ -88,7 +87,7 @@ public class AetherStubDownloader implements StubDownloader {
 		if (log.isDebugEnabled()) {
 			log.debug("Will be resolving versions for the following options: [" + stubRunnerOptions + "]");
 		}
-		this.settings = settings();
+		this.settings = AetherFactories.settings();
 		this.remoteRepos = remoteRepositories(stubRunnerOptions);
 		boolean remoteReposMissing = remoteReposMissing();
 		switch (stubRunnerOptions.stubsMode) {
@@ -108,15 +107,16 @@ public class AetherStubDownloader implements StubDownloader {
 		}
 		this.repositorySystem = AetherFactories.repositorySystemOr(repositorySystemFromMaven);
 		this.workOffline = stubRunnerOptions.stubsMode == StubsMode.LOCAL;
-		this.session = newSession(this.repositorySystem, this.workOffline);
+		this.session = AetherFactories.newSession(this.repositorySystem, this.workOffline);
 		registerShutdownHook();
 	}
 
 	/**
-	 * Used by the Maven Plugin.
+	 * used by the Maven Plugin.
 	 * @param repositorySystem Maven repository system
 	 * @param remoteRepositories remote artifact repositories
 	 * @param session repository system session
+	 * @param settings the Maven settings
 	 */
 	public AetherStubDownloader(RepositorySystem repositorySystem, List<RemoteRepository> remoteRepositories,
 			RepositorySystemSession session, Settings settings) {
@@ -135,7 +135,7 @@ public class AetherStubDownloader implements StubDownloader {
 	private static File unpackStubJarToATemporaryFolder(URI stubJarUri) {
 		File tmpDirWhereStubsWillBeUnzipped = TemporaryFileStorage.createTempDir(TEMP_DIR_PREFIX);
 		log.info("Unpacking stub from JAR [URI: " + stubJarUri + "]");
-		unzipTo(new File(stubJarUri), tmpDirWhereStubsWillBeUnzipped);
+		ZipCategory.unzipTo(new File(stubJarUri), tmpDirWhereStubsWillBeUnzipped);
 		TemporaryFileStorage.add(tmpDirWhereStubsWillBeUnzipped);
 		return tmpDirWhereStubsWillBeUnzipped;
 	}
@@ -189,7 +189,8 @@ public class AetherStubDownloader implements StubDownloader {
 		return new AuthenticationBuilder().addUsername(username).addPassword(stubServerPassword).build();
 	}
 
-	private File unpackedJar(String resolvedVersion, String stubsGroup, String stubsModule, String classifier) {
+	private @Nullable File unpackedJar(String resolvedVersion, String stubsGroup, String stubsModule,
+			String classifier) {
 		try {
 			log.info("Resolved version is [" + resolvedVersion + "]");
 			if (resolvedVersion == null || resolvedVersion.isBlank()) {
@@ -229,7 +230,7 @@ public class AetherStubDownloader implements StubDownloader {
 	}
 
 	@Override
-	public Map.Entry<StubConfiguration, File> downloadAndUnpackStubJar(StubConfiguration stubConfiguration) {
+	public Map.@Nullable Entry<StubConfiguration, File> downloadAndUnpackStubJar(StubConfiguration stubConfiguration) {
 		try {
 			String version = getVersion(stubConfiguration.groupId, stubConfiguration.artifactId,
 					stubConfiguration.version, stubConfiguration.classifier);
@@ -270,7 +271,7 @@ public class AetherStubDownloader implements StubDownloader {
 							+ classifier + "] the version was not resolved! The following exceptions took place "
 							+ rangeResult.getExceptions());
 		}
-		return rangeResult.getHighestVersion() == null ? null : rangeResult.getHighestVersion().toString();
+		return rangeResult.getHighestVersion().toString();
 	}
 
 	private void registerShutdownHook() {

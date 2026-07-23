@@ -19,6 +19,7 @@ package sh.stubborn.contract.spec.internal;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
 import repackaged.nl.flotsam.xeger.Xeger;
 
 /**
@@ -47,7 +48,7 @@ public class OptionalProperty implements Serializable, CanBeDynamic {
 		return valueToCheck(this.value).toString();
 	}
 
-	private Object valueToCheck(Object value) {
+	private Object valueToCheck(@Nullable Object value) {
 		if (value == null) {
 			return "";
 		}

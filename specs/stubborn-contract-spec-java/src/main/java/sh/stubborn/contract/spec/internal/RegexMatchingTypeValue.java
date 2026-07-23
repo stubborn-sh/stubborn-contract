@@ -16,12 +16,15 @@
 
 package sh.stubborn.contract.spec.internal;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Matching type with corresponding values.
  */
 public class RegexMatchingTypeValue extends MatchingTypeValue {
 
-	RegexMatchingTypeValue(MatchingType type, Object value, Integer minTypeOccurrence, Integer maxTypeOccurrence) {
+	RegexMatchingTypeValue(@Nullable MatchingType type, @Nullable Object value, @Nullable Integer minTypeOccurrence,
+			@Nullable Integer maxTypeOccurrence) {
 		super(type, value, minTypeOccurrence, maxTypeOccurrence);
 	}
 

@@ -25,10 +25,10 @@ import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.Session;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessagePostProcessor;
 
 class JmsStubMessages implements sh.stubborn.contract.verifier.messaging.MessageVerifierSender<Message>,
 		sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver<Message> {
@@ -40,26 +40,27 @@ class JmsStubMessages implements sh.stubborn.contract.verifier.messaging.Message
 	}
 
 	@Override
-	public void send(Message message, String destination, YamlContract contract) {
-		jmsTemplate.convertAndSend(destination, message, new ReplyToProcessor());
+	public void send(Message message, String destination, @Nullable YamlContract contract) {
+		this.jmsTemplate.convertAndSend(destination, message, new ReplyToProcessor());
 	}
 
 	@Override
-	public Message receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
-		jmsTemplate.setReceiveTimeout(timeUnit.toMillis(timeout));
-		return jmsTemplate.receive(destination);
+	public @Nullable Message receive(String destination, long timeout, TimeUnit timeUnit,
+			@Nullable YamlContract contract) {
+		this.jmsTemplate.setReceiveTimeout(timeUnit.toMillis(timeout));
+		return this.jmsTemplate.receive(destination);
 	}
 
 	@Override
-	public Message receive(String destination, YamlContract contract) {
+	public @Nullable Message receive(String destination, @Nullable YamlContract contract) {
 		return receive(destination, 5, TimeUnit.SECONDS, contract);
 	}
 
 	@Override
-	public void send(Object payload, Map headers, String destination, YamlContract contract) {
-		jmsTemplate.send(destination, session -> {
+	public void send(Object payload, @Nullable Map headers, String destination, @Nullable YamlContract contract) {
+		this.jmsTemplate.send(destination, (session) -> {
 			Message message = createMessage(session, payload);
-			setHeaders(message, headers == null ? Collections.emptyMap() : headers);
+			setHeaders(message, (headers == null) ? Collections.emptyMap() : headers);
 			return message;
 		});
 	}
@@ -98,16 +99,6 @@ class JmsStubMessages implements sh.stubborn.contract.verifier.messaging.Message
 				throw new IllegalStateException(ex);
 			}
 		}
-	}
-
-}
-
-class ReplyToProcessor implements MessagePostProcessor {
-
-	@Override
-	public Message postProcessMessage(Message message) throws JMSException {
-		message.setStringProperty("requiresReply", "no");
-		return message;
 	}
 
 }

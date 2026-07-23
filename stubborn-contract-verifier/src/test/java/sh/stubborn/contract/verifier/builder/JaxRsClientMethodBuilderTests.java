@@ -17,7 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.io.File;
-import java.nio.file.Path;
+
 import java.util.List;
 
 import com.jayway.jsonpath.DocumentContext;
@@ -48,23 +48,23 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 			new SingleTestGenerator.GeneratedClassData("foo", "bar", new File(".").toPath()), "method");
 
 	// tag::contract_with_cookies[]
-	final Contract contractDslWithCookiesValue = Contract.make(c -> {
-		c.request(r -> {
+	final Contract contractDslWithCookiesValue = Contract.make((c) -> {
+		c.request((r) -> {
 			r.method("GET");
 			r.url("/foo");
-			r.headers(h -> {
+			r.headers((h) -> {
 				h.header("Accept", "application/json");
 			});
-			r.cookies(cookies -> {
+			r.cookies((cookies) -> {
 				cookies.cookie("cookie-key", "cookie-value");
 			});
 		});
-		c.response(r -> {
+		c.response((r) -> {
 			r.status(200);
-			r.headers(h -> {
+			r.headers((h) -> {
 				h.header("Content-Type", "application/json");
 			});
-			r.cookies(cookies -> {
+			r.cookies((cookies) -> {
 				cookies.cookie("cookie-key", "new-cookie-value");
 			});
 			r.body(java.util.Map.of("status", "OK"));
@@ -73,38 +73,38 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	// end::contract_with_cookies[]
 
-	final Contract contractDslWithCookiesPattern = Contract.make(c -> {
-		c.request(r -> {
+	final Contract contractDslWithCookiesPattern = Contract.make((c) -> {
+		c.request((r) -> {
 			r.method("GET");
 			r.url("/foo");
-			r.headers(h -> {
+			r.headers((h) -> {
 				h.header("Accept", "application/json");
 			});
-			r.cookies(cookies -> {
+			r.cookies((cookies) -> {
 				cookies.cookie("cookie-key", r.regex("[A-Za-z]+"));
 			});
 		});
-		c.response(r -> {
+		c.response((r) -> {
 			r.status(200);
-			r.headers(h -> {
+			r.headers((h) -> {
 				h.header("Content-Type", "application/json");
 			});
-			r.cookies(cookies -> {
+			r.cookies((cookies) -> {
 				cookies.cookie("cookie-key", r.regex("[A-Za-z]+"));
 			});
 			r.body(java.util.Map.of("status", "OK"));
 		});
 	});
 
-	final Contract contractDslWithAbsentCookies = Contract.make(c -> {
-		c.request(r -> {
+	final Contract contractDslWithAbsentCookies = Contract.make((c) -> {
+		c.request((r) -> {
 			r.method("GET");
 			r.url("/foo");
-			r.cookies(cookies -> {
+			r.cookies((cookies) -> {
 				cookies.cookie("cookie-key", r.absent());
 			});
 		});
-		c.response(r -> {
+		c.response((r) -> {
 			r.status(200);
 			r.body(java.util.Map.of("status", "OK"));
 		});
@@ -165,12 +165,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate assertions for simple response body with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_assertions_for_simple_response_body(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("{\"property1\": \"a\",\"property2\": \"b\"}");
 			});
@@ -187,12 +187,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate assertions for null and boolean values with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_assertions_for_null_and_boolean_values(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("{\"property1\": \"true\",\"property2\": null,\"property3\": false}");
 			});
@@ -213,12 +213,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 			name = "should generate assertions for simple response body constructed from map with a list with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_assertions_for_response_body_from_map_with_list(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(java.util.Map.of("property1", "a", "property2",
 						java.util.List.of(java.util.Map.of("a", "sth"), java.util.Map.of("b", "sthElse"))));
@@ -246,12 +246,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 		String prev = System.getProperty("spring.cloud.contract.verifier.assert.size");
 		try {
 			System.setProperty("spring.cloud.contract.verifier.assert.size", "true");
-			Contract contractDsl = Contract.make(c -> {
-				c.request(r -> {
+			Contract contractDsl = Contract.make((c) -> {
+				c.request((r) -> {
 					r.method("GET");
 					r.url("test");
 				});
-				c.response(r -> {
+				c.response((r) -> {
 					r.status(r.OK());
 					r.body(java.util.Map.of("property1", "a", "property2",
 							java.util.List.of(java.util.Map.of("a", "sth"), java.util.Map.of("b", "sthElse"))));
@@ -283,13 +283,13 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate proper request when body constructed from map with a list with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_proper_request_when_body_from_map_with_list(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 				r.body(java.util.Map.of("items", java.util.List.of("HOP")));
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 			});
 		});
@@ -304,13 +304,13 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate proper request when body constructed from GString with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_proper_request_when_body_from_gstring(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 				r.body("property1=VAL1");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 			});
 		});
@@ -325,12 +325,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate assertions for array in response body with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_assertions_for_array_in_response_body(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("[{\"property1\": \"a\"},{\"property2\": \"b\"}]");
 			});
@@ -349,12 +349,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate assertions for array inside response body element with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_assertions_for_array_inside_response_body_element(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("{\"property1\": [{\"property2\": \"test1\"},{\"property3\": \"test2\"}]}");
 			});
@@ -373,12 +373,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate assertions for nested objects in response body with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_assertions_for_nested_objects_in_response_body(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("{\"property1\": \"a\",\"property2\": {\"property3\": \"b\"}}");
 			});
@@ -396,16 +396,16 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate regex assertions for map objects in response body with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_regex_assertions_for_map_objects_in_response_body(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(java.util.Map.of("property1", "a", "property2",
 						r.$(r.consumer("123"), r.producer(r.regex("[0-9]{3}")))));
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Content-Type", "application/json");
 				});
 			});
@@ -422,18 +422,18 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate regex assertions for string objects in response body with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_regex_assertions_for_string_objects_in_response_body(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				// The body uses a value with consumer/producer - we embed via map
 				// approach
 				r.body(java.util.Map.of("property1", "a", "property2",
 						r.$(r.consumer("123"), r.producer(r.regex("[0-9]{3}")))));
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Content-Type", "application/json");
 				});
 			});
@@ -450,15 +450,15 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should ignore Accept header and use request method with {0}")
 	@MethodSource("jaxrsParams")
 	void should_ignore_accept_header_and_use_request_method(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Accept", "text/plain");
 				});
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 			});
 		});
@@ -473,17 +473,17 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should ignore Content-Type header and use entity method with {0}")
 	@MethodSource("jaxrsParams")
 	void should_ignore_content_type_header_and_use_entity_method(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Content-Type", "text/plain");
 					h.header("Timer", "123");
 				});
 				r.body("");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 			});
 		});
@@ -547,11 +547,11 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	}
 
 	private Contract buildQueryParamContractWithNameWithDoubleQuote() {
-		return Contract.make(c -> {
-			c.request(r -> {
+		return Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
-				r.urlPath("/users", up -> {
-					up.queryParameters(qp -> {
+				r.urlPath("/users", (up) -> {
+					up.queryParameters((qp) -> {
 						qp.parameter("limit", r.$(r.consumer(r.equalTo("20")), r.producer(r.equalTo("10"))));
 						qp.parameter("offset", r.$(r.consumer(r.containing("20")), r.producer(r.equalTo("20"))));
 						qp.parameter("filter", "email");
@@ -567,7 +567,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 					});
 				});
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("{\"property1\": \"a\",\"property2\": \"b\"}");
 			});
@@ -579,11 +579,11 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@MethodSource("jaxrsParams")
 	void should_generate_a_call_with_url_path_and_query_parameters_with_url_containing_a_pattern(
 			MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
-				r.url(r.$(r.consumer(r.regex("/foo/[0-9]+")), r.producer("/foo/123456")), u -> {
-					u.queryParameters(qp -> {
+				r.url(r.$(r.consumer(r.regex("/foo/[0-9]+")), r.producer("/foo/123456")), (u) -> {
+					u.queryParameters((qp) -> {
 						qp.parameter("limit", r.$(r.consumer(r.equalTo("20")), r.producer(r.equalTo("10"))));
 						qp.parameter("offset", r.$(r.consumer(r.containing("20")), r.producer(r.equalTo("20"))));
 						qp.parameter("filter", "email");
@@ -597,7 +597,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 					});
 				});
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("{\"property1\": \"a\",\"property2\": \"b\"}");
 			});
@@ -640,13 +640,13 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate test for empty body with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_test_for_empty_body(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("/ws/payments");
 				r.body("");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(406);
 			});
 		});
@@ -662,12 +662,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 			name = "should not parse the response body if there is no response body specified in the contract with {0}")
 	@MethodSource("jaxrsParams")
 	void should_not_parse_response_body_if_no_response_body_specified(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("HEAD");
 				r.url("head");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 			});
 		});
@@ -687,12 +687,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate test for String in response body with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_test_for_string_in_response_body(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("test");
 			});
@@ -715,14 +715,14 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should generate test with uppercase method name with {0}")
 	@MethodSource("jaxrsParams")
 	void should_generate_test_with_uppercase_method_name(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("get");
 				r.url("/v1/some_cool_requests/e86df6f693de4b35ae648464c5b0dc08");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.contentType(h.applicationJson());
 				});
 				r.body("{\"id\":\"789fgh\",\"other_data\":1268}");
@@ -738,11 +738,11 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_generate_a_call_with_url_path_and_query_parameters_with_junit_docs_example() {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
-				r.urlPath("/users", up -> {
-					up.queryParameters(qp -> {
+				r.urlPath("/users", (up) -> {
+					up.queryParameters((qp) -> {
 						qp.parameter("limit", r.$(r.consumer(r.equalTo("20")), r.producer(r.equalTo("10"))));
 						qp.parameter("offset", r.$(r.consumer(r.containing("20")), r.producer(r.equalTo("20"))));
 						qp.parameter("filter", "email");
@@ -756,7 +756,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 					});
 				});
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body("{\"property1\": \"a\"}");
 			});
@@ -817,12 +817,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_execute_custom_method_for_complex_structures_on_response_side() {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.urlPath("/get");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(java.util.Map.of("fraudCheckStatus", "OK", "rejectionReason", java.util.Map.of("title", r
 					.$(r.consumer((Object) null), r.producer(r.execute("assertThatRejectionReasonIsNull($it)"))))));
@@ -862,12 +862,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	}
 
 	private Contract buildContractWithExecuteMethod() {
-		return Contract.make(c -> {
-			c.request(r -> {
+		return Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.urlPath("/get");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(java.util.List.of(
 						java.util.Map.of("name",
@@ -881,12 +881,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_support_body_matching_in_response() {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/get");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(r.$(r.stub("HELLO FROM STUB"), r.server(r.regex(".*"))));
 			});
@@ -900,12 +900,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_support_body_matching_in_response_in_spock() {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/get");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(r.$(r.stub("HELLO FROM STUB"), r.server(r.regex(".*"))));
 			});
@@ -919,12 +919,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_support_custom_method_execution_in_response() {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/get");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(r.$(r.stub("HELLO FROM STUB"), r.server(r.execute("foo($it)"))));
 			});
@@ -937,12 +937,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_support_custom_method_execution_in_response_in_spock() {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/get");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(r.$(r.stub("HELLO FROM STUB"), r.server(r.execute("foo($it)"))));
 			});
@@ -959,15 +959,15 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should allow c/p version of consumer producer with {0}")
 	@MethodSource("jaxrsParams")
 	void should_allow_cp_version_of_consumer_producer(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(java.util.Map.of("property1", "a", "property2", r.$(r.c("123"), r.p(r.regex("[0-9]{3}")))));
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Content-Type", "application/json");
 				});
 			});
@@ -984,8 +984,8 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should allow easier way of providing dynamic values for [{0}]")
 	@MethodSource("jaxrsParams")
 	void should_allow_easier_way_of_providing_dynamic_values(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.urlPath("/get");
 				r.body(java.util.Map.ofEntries(java.util.Map.entry("alpha", r.$(r.anyAlphaUnicode())),
@@ -1004,11 +1004,11 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 						java.util.Map.entry("nonBlankString", r.$(r.anyNonBlankString())),
 						java.util.Map.entry("nonEmptyString", r.$(r.anyNonEmptyString())),
 						java.util.Map.entry("anyOf", r.$(r.anyOf("foo", "bar")))));
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.contentType(h.applicationJson());
 				});
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(r.OK());
 				r.body(java.util.Map.ofEntries(java.util.Map.entry("alpha", r.$(r.anyAlphaUnicode())),
 						java.util.Map.entry("number", r.$(r.anyNumber())),
@@ -1026,7 +1026,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 						java.util.Map.entry("nonBlankString", r.$(r.anyNonBlankString())),
 						java.util.Map.entry("nonEmptyString", r.$(r.anyNonEmptyString())),
 						java.util.Map.entry("anyOf", r.$(r.anyOf("foo", "bar")))));
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.contentType(h.applicationJson());
 				});
 			});
@@ -1073,21 +1073,21 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should resolve Optional object when used in query parameters for [{0}]")
 	@MethodSource("jaxrsParams")
 	void should_resolve_optional_object_when_used_in_query_parameters(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
-				r.urlPath("/blacklist", up -> {
-					up.queryParameters(qp -> {
+				r.urlPath("/blacklist", (up) -> {
+					up.queryParameters((qp) -> {
 						qp.parameter("isActive", r.value(r.consumer(r.optional(r.regex("(true|false)")))));
 						qp.parameter("limit", r.value(r.consumer(r.optional(r.regex("([0-9]{1,10})")))));
 						qp.parameter("offset", r.value(r.consumer(r.optional(r.regex("([0-9]{1,10})")))));
 					});
 				});
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Content-Type", "application/json");
 				});
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(200);
 			});
 		});
@@ -1102,16 +1102,16 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should keep the custom content type that includes the +json suffix [{0}]")
 	@MethodSource("jaxrsParams")
 	void should_keep_the_custom_content_type_that_includes_json_suffix(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("/ping");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Content-Type", "application/my-content-type+json");
 				});
 				r.body(r.$(r.test(r.value("test")), r.stub(r.anyNonEmptyString())));
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(200);
 			});
 		});
@@ -1126,11 +1126,11 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should not produce any additional quotes for [{0}]")
 	@MethodSource("jaxrsOnlyParams")
 	void should_not_produce_any_additional_quotes(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("/v2/applications/a-TEST-upload/documents");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Authorization", "foo");
 					h.header("Content-Type", "multipart/form-data;boundary=Boundary_1_1831312172_1491482784697");
 				});
@@ -1138,7 +1138,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 						+ "Content-Disposition: form-data; name=\"file\"\n\nDATA\n"
 						+ "--Boundary_1_1831312172_1491482784697--\n");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(400);
 				r.body("File name is required");
 			});
@@ -1155,16 +1155,16 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@ParameterizedTest(name = "should not produce any additional quotes for json body [{0}]")
 	@MethodSource("jaxrsOnlyParams")
 	void should_not_produce_any_additional_quotes_for_json_body(MethodBuilderParams params) {
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("/foo");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Content-Type", "application/json");
 				});
 				r.body("{ \"foo\": \"bar\"}");
 			});
-			c.response(r -> {
+			c.response((r) -> {
 				r.status(400);
 				r.body("File name is required");
 			});

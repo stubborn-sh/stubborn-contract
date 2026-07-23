@@ -106,8 +106,8 @@ public class HandlebarsTemplateProcessor implements TemplateProcessor, ContractT
 		try {
 			return template.apply(context);
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -117,12 +117,12 @@ public class HandlebarsTemplateProcessor implements TemplateProcessor, ContractT
 			handlebars.registerHelper(HandlebarsJsonPathHelper.NAME, new HandlebarsJsonPathHelper());
 			handlebars.registerHelper(WireMockHelpers.jsonPath.name(), new HandlebarsJsonPathHelper());
 			Arrays.stream(WireMockHelpers.values())
-				.filter(helper -> !helper.equals(WireMockHelpers.jsonPath))
-				.forEach(helper -> handlebars.registerHelper(helper.name(), helper));
+				.filter((helper) -> !helper.equals(WireMockHelpers.jsonPath))
+				.forEach((helper) -> handlebars.registerHelper(helper.name(), helper));
 			return handlebars.compileInline(content);
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 

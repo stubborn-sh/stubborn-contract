@@ -42,7 +42,7 @@ class JUnit5OrderClassAnnotation implements ClassAnnotation {
 	@Override
 	public boolean accept() {
 		return this.generatedClassMetaData.configProperties.getTestFramework() == TestFramework.JUNIT5
-				&& this.generatedClassMetaData.listOfFiles.stream().anyMatch(meta -> meta.getOrder() != null);
+				&& this.generatedClassMetaData.listOfFiles.stream().anyMatch((meta) -> meta.getOrder() != null);
 	}
 
 }

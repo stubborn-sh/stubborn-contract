@@ -19,11 +19,10 @@ package sh.stubborn.contract.wiremock;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
+import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.junit.jupiter.api.Test;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
-
-class NoSpringArchTest {
+class NoSpringArchTests {
 
 	private final JavaClasses classes = new ClassFileImporter()
 		.withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
@@ -31,7 +30,8 @@ class NoSpringArchTest {
 
 	@Test
 	void productionCodeHasNoSpringDependencies() {
-		noClasses().should()
+		ArchRuleDefinition.noClasses()
+			.should()
 			.dependOnClassesThat()
 			.resideInAPackage("org.springframework..")
 			.as("Core wiremock module must not depend on Spring — use stubborn-wiremock-spring for Spring integration instead")

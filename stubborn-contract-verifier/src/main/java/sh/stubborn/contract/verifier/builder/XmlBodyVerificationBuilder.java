@@ -61,7 +61,7 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 					"DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder()",
 					"Document parsedXml = documentBuilder.parse(new InputSource(new StringReader(" + responseString
 							+ ")))")
-			.forEach(it -> {
+			.forEach((it) -> {
 				blockBuilder.addLine(it);
 				addColonIfRequired(lineSuffix, blockBuilder);
 			});

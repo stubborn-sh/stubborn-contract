@@ -28,6 +28,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import groovy.json.JsonOutput;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
@@ -115,7 +116,7 @@ class JsonBodyVerificationBuilder implements BodyMethodGeneration, ClassVerifier
 			.transformToJsonPathWithTestsSideValues(convertedResponseBody, parsingFunction, includeEmptyCheck);
 
 		DocumentContext finalParsedRequestBody = parsedRequestBody;
-		jsonPaths.forEach(it -> {
+		jsonPaths.forEach((it) -> {
 			String method = it.method();
 			method = processIfTemplateIsPresent(method, finalParsedRequestBody);
 			String postProcessedMethod = templateProcessor.containsJsonPathTemplateEntry(method) ? method
@@ -209,8 +210,8 @@ class JsonBodyVerificationBuilder implements BodyMethodGeneration, ClassVerifier
 		return String.valueOf(value);
 	}
 
-	protected String processIfTemplateIsPresent(String method, DocumentContext parsedRequestBody) {
-		if (textContainsJsonPathTemplate(method) && hasRequestBody()) {
+	protected String processIfTemplateIsPresent(String method, @Nullable DocumentContext parsedRequestBody) {
+		if (textContainsJsonPathTemplate(method) && hasRequestBody() && parsedRequestBody != null) {
 			// Unquoting the values of non strings
 			String jsonPathEntry = templateProcessor.jsonPathFromTemplateEntry(method);
 			Object object = parsedRequestBody.read(jsonPathEntry);
@@ -274,14 +275,14 @@ class JsonBodyVerificationBuilder implements BodyMethodGeneration, ClassVerifier
 		try {
 			return JsonPath.parse(body).read(path);
 		}
-		catch (PathNotFoundException e) {
+		catch (PathNotFoundException ex) {
 			throw new IllegalStateException("Entry for the provided JSON path <" + path
-					+ "> doesn't exist in the body <" + JsonOutput.toJson(body) + ">", e);
+					+ "> doesn't exist in the body <" + JsonOutput.toJson(body) + ">", ex);
 		}
 	}
 
-	private Function<Object, ?> returnReferencedEntries(TestSideRequestTemplateModel templateModel) {
-		return entry -> {
+	private Function<Object, ?> returnReferencedEntries(@Nullable TestSideRequestTemplateModel templateModel) {
+		return (entry) -> {
 			if (!(entry instanceof String) || templateModel == null) {
 				return entry;
 			}

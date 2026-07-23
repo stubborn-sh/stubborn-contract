@@ -48,8 +48,8 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().equals("$[?(@.['name'] == 'John')]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().equals("$[?(@.['age'] == 30)]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().equals("$[?(@.['name'] == 'John')]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().equals("$[?(@.['age'] == 30)]"));
 	}
 
 	@Test
@@ -63,9 +63,9 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[0]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[1]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[2]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[0]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[1]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[2]"));
 	}
 
 	@Test
@@ -79,12 +79,12 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("@ == 1"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("@ == 2"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("@ == 3"));
-		assertThat(collected).noneMatch(v -> v.jsonPath().contains("[0]"));
-		assertThat(collected).noneMatch(v -> v.jsonPath().contains("[1]"));
-		assertThat(collected).noneMatch(v -> v.jsonPath().contains("[2]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("@ == 1"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("@ == 2"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("@ == 3"));
+		assertThat(collected).noneMatch((v) -> v.jsonPath().contains("[0]"));
+		assertThat(collected).noneMatch((v) -> v.jsonPath().contains("[1]"));
+		assertThat(collected).noneMatch((v) -> v.jsonPath().contains("[2]"));
 	}
 
 	@Test
@@ -102,13 +102,13 @@ class JsonPathTraverserTests {
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
 		assertThat(collected)
-			.anyMatch(v -> v.jsonPath().contains("[0]") && v.jsonPath().contains("id") && v.jsonPath().contains("1"));
+			.anyMatch((v) -> v.jsonPath().contains("[0]") && v.jsonPath().contains("id") && v.jsonPath().contains("1"));
 		assertThat(collected).anyMatch(
-				v -> v.jsonPath().contains("[0]") && v.jsonPath().contains("name") && v.jsonPath().contains("first"));
+				(v) -> v.jsonPath().contains("[0]") && v.jsonPath().contains("name") && v.jsonPath().contains("first"));
 		assertThat(collected)
-			.anyMatch(v -> v.jsonPath().contains("[1]") && v.jsonPath().contains("id") && v.jsonPath().contains("2"));
-		assertThat(collected).anyMatch(
-				v -> v.jsonPath().contains("[1]") && v.jsonPath().contains("name") && v.jsonPath().contains("second"));
+			.anyMatch((v) -> v.jsonPath().contains("[1]") && v.jsonPath().contains("id") && v.jsonPath().contains("2"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[1]") && v.jsonPath().contains("name")
+				&& v.jsonPath().contains("second"));
 	}
 
 	@Test
@@ -126,13 +126,13 @@ class JsonPathTraverserTests {
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
 		assertThat(collected)
-			.anyMatch(v -> v.jsonPath().contains("[*]") && v.jsonPath().contains("id") && v.jsonPath().contains("1"));
+			.anyMatch((v) -> v.jsonPath().contains("[*]") && v.jsonPath().contains("id") && v.jsonPath().contains("1"));
 		assertThat(collected).anyMatch(
-				v -> v.jsonPath().contains("[*]") && v.jsonPath().contains("name") && v.jsonPath().contains("first"));
+				(v) -> v.jsonPath().contains("[*]") && v.jsonPath().contains("name") && v.jsonPath().contains("first"));
 		assertThat(collected)
-			.anyMatch(v -> v.jsonPath().contains("[*]") && v.jsonPath().contains("id") && v.jsonPath().contains("2"));
-		assertThat(collected).anyMatch(
-				v -> v.jsonPath().contains("[*]") && v.jsonPath().contains("name") && v.jsonPath().contains("second"));
+			.anyMatch((v) -> v.jsonPath().contains("[*]") && v.jsonPath().contains("id") && v.jsonPath().contains("2"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[*]") && v.jsonPath().contains("name")
+				&& v.jsonPath().contains("second"));
 	}
 
 	@Test
@@ -151,8 +151,8 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("city") && v.jsonPath().contains("NYC"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("zip") && v.jsonPath().contains("10001"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("city") && v.jsonPath().contains("NYC"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("zip") && v.jsonPath().contains("10001"));
 	}
 
 	@Test
@@ -166,7 +166,7 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("empty"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("empty"));
 	}
 
 	@Test
@@ -180,7 +180,7 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("items"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("items"));
 	}
 
 	@Test
@@ -194,9 +194,9 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[0]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[1]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[2]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[0]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[1]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[2]"));
 	}
 
 	@Test
@@ -210,8 +210,8 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[0]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[1]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[0]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[1]"));
 	}
 
 	@Test
@@ -227,9 +227,9 @@ class JsonPathTraverserTests {
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
 		assertThat(collected)
-			.anyMatch(v -> v.jsonPath().contains("[0]") && v.jsonPath().contains("id") && v.jsonPath().contains("1"));
+			.anyMatch((v) -> v.jsonPath().contains("[0]") && v.jsonPath().contains("id") && v.jsonPath().contains("1"));
 		assertThat(collected)
-			.anyMatch(v -> v.jsonPath().contains("[1]") && v.jsonPath().contains("id") && v.jsonPath().contains("2"));
+			.anyMatch((v) -> v.jsonPath().contains("[1]") && v.jsonPath().contains("id") && v.jsonPath().contains("2"));
 	}
 
 	@Test
@@ -245,9 +245,9 @@ class JsonPathTraverserTests {
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
 		assertThat(collected)
-			.anyMatch(v -> v.jsonPath().contains("[*]") && v.jsonPath().contains("id") && v.jsonPath().contains("1"));
+			.anyMatch((v) -> v.jsonPath().contains("[*]") && v.jsonPath().contains("id") && v.jsonPath().contains("1"));
 		assertThat(collected)
-			.anyMatch(v -> v.jsonPath().contains("[*]") && v.jsonPath().contains("id") && v.jsonPath().contains("2"));
+			.anyMatch((v) -> v.jsonPath().contains("[*]") && v.jsonPath().contains("id") && v.jsonPath().contains("2"));
 	}
 
 	@Test
@@ -261,7 +261,7 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("hasSize") || v.method().contains("hasSize"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("hasSize") || v.method().contains("hasSize"));
 	}
 
 	@Test
@@ -275,7 +275,7 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).noneMatch(v -> v.method().contains("hasSize"));
+		assertThat(collected).noneMatch((v) -> v.method().contains("hasSize"));
 	}
 
 	@Test
@@ -289,10 +289,10 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[0]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[1]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[2]"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[3]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[0]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[1]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[2]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[3]"));
 	}
 
 	@Test
@@ -314,7 +314,7 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("value") && v.jsonPath().contains("deep"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("value") && v.jsonPath().contains("deep"));
 	}
 
 	@Test
@@ -329,8 +329,8 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("active") && v.jsonPath().contains("true"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("deleted") && v.jsonPath().contains("false"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("active") && v.jsonPath().contains("true"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("deleted") && v.jsonPath().contains("false"));
 	}
 
 	@Test
@@ -341,7 +341,7 @@ class JsonPathTraverserTests {
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
 		assertThat(collected).isNotEmpty();
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("[0]"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("[0]"));
 	}
 
 	@Test
@@ -356,8 +356,9 @@ class JsonPathTraverserTests {
 		MethodBufferingJsonVerifiable rootKey = createRootVerifiable(json);
 		List<MethodBufferingJsonVerifiable> collected = new ArrayList<>();
 		traverser.traverse(json, rootKey, collected::add);
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("special-key") && v.jsonPath().contains("value1"));
-		assertThat(collected).anyMatch(v -> v.jsonPath().contains("key.with.dots") && v.jsonPath().contains("value2"));
+		assertThat(collected).anyMatch((v) -> v.jsonPath().contains("special-key") && v.jsonPath().contains("value1"));
+		assertThat(collected)
+			.anyMatch((v) -> v.jsonPath().contains("key.with.dots") && v.jsonPath().contains("value2"));
 	}
 
 	private MethodBufferingJsonVerifiable createRootVerifiable(Object json) {

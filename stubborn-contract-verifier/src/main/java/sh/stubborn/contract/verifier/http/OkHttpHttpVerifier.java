@@ -63,7 +63,7 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 					request.cookies()
 						.entrySet()
 						.stream()
-						.map(e -> e.getKey() + "=" + e.getValue().toString())
+						.map((e) -> e.getKey() + "=" + e.getValue().toString())
 						.collect(Collectors.joining(";")));
 		}
 		okhttp3.Request req = new okhttp3.Request.Builder().url(url(request))
@@ -73,8 +73,8 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 		try (okhttp3.Response res = client.newCall(req).execute()) {
 			return response(res);
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 			return url + "?"
 					+ request.queryParams()
 						.stream()
-						.map(e -> e.getKey() + "=" + e.getValue())
+						.map((e) -> e.getKey() + "=" + e.getValue())
 						.collect(Collectors.joining("&"));
 		}
 		return url;
@@ -106,8 +106,8 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 			}
 			return Collections.emptyList();
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -117,12 +117,14 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 			.body(responseBody)
 			.statusCode(res.code())
 			.headers(withSingleHeader(res))
-			.cookies(res.headers().values("Set-Cookie").stream().flatMap(s -> Arrays.stream(s.split(";"))).map(s -> {
-				String[] singleCookie = s.split("=");
-				return new AbstractMap.SimpleEntry<>(singleCookie[0], singleCookie.length > 1 ? singleCookie[1] : "");
-			})
-				.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue,
-						(a, b) -> a, HashMap::new)))
+			.cookies(
+					res.headers().values("Set-Cookie").stream().flatMap((s) -> Arrays.stream(s.split(";"))).map((s) -> {
+						String[] singleCookie = s.split("=");
+						return new AbstractMap.SimpleEntry<>(singleCookie[0],
+								singleCookie.length > 1 ? singleCookie[1] : "");
+					})
+						.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue,
+								(a, b) -> a, HashMap::new)))
 			.build();
 	}
 
@@ -143,11 +145,11 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 			.toMultimap()
 			.entrySet()
 			.stream()
-			.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0), (a, b) -> a, HashMap::new));
+			.collect(Collectors.toMap(Map.Entry::getKey, (e) -> e.getValue().get(0), (a, b) -> a, HashMap::new));
 	}
 
 	private Map<String, String> stringTyped(Map<String, Object> headers) {
-		return headers.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString()));
+		return headers.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, (e) -> e.getValue().toString()));
 	}
 
 }

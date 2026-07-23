@@ -20,6 +20,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
+ * Spring Boot application entry point for the Stub Runner server.
+ *
  * @author Marcin Grzejszczak
  */
 @SpringBootApplication

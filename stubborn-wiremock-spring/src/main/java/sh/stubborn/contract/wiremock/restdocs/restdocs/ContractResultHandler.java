@@ -41,6 +41,7 @@ import com.github.tomakehurst.wiremock.http.QueryParameter;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
@@ -100,12 +101,14 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 		return new Request() {
 			@Override
 			public String getUrl() {
-				return result.getRequest().getRequestURI();
+				String uri = result.getRequest().getRequestURI();
+				return uri != null ? uri : "";
 			}
 
 			@Override
 			public String getAbsoluteUrl() {
-				return result.getRequest().getRequestURI();
+				String uri = result.getRequest().getRequestURI();
+				return uri != null ? uri : "";
 			}
 
 			@Override
@@ -134,7 +137,7 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 			}
 
 			@Override
-			public String getHeader(String key) {
+			public @Nullable String getHeader(String key) {
 				return result.getRequest().getHeader(key);
 			}
 
@@ -210,17 +213,23 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 
 			@Override
 			public byte[] getBody() {
-				return result.getRequest().getContentAsByteArray();
+				byte[] content = result.getRequest().getContentAsByteArray();
+				return content != null ? content : new byte[0];
 			}
 
 			@Override
 			public String getBodyAsString() {
 				try {
-					return result.getRequest().getContentAsString();
+					String s = result.getRequest().getContentAsString();
+					if (s != null) {
+						return s;
+					}
 				}
 				catch (Exception ex) {
-					return new String(result.getRequest().getContentAsByteArray());
+					// fall through
 				}
+				byte[] content = result.getRequest().getContentAsByteArray();
+				return new String(content != null ? content : new byte[0]);
 			}
 
 			@Override
@@ -279,7 +288,7 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 			}
 
 			@Override
-			public Part getPart(String name) {
+			public @Nullable Part getPart(String name) {
 				return getParts().stream().filter(part -> part.getName().equals(name)).findFirst().orElse(null);
 			}
 
@@ -301,14 +310,14 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 	}
 
 	@Override
-	protected MediaType getContentType(MvcResult result) {
-		return MediaType.valueOf(result.getRequest().getContentType());
+	protected @Nullable MediaType getContentType(MvcResult result) {
+		String contentType = result.getRequest().getContentType();
+		return contentType != null ? MediaType.valueOf(contentType) : null;
 	}
 
 	@Override
-	protected byte[] getRequestBodyContent(MvcResult result) {
-		byte[] body = getWireMockRequest(result).getBody();
-		return body != null ? body : new byte[0];
+	protected @Nullable byte[] getRequestBodyContent(MvcResult result) {
+		return getWireMockRequest(result).getBody();
 	}
 
 }

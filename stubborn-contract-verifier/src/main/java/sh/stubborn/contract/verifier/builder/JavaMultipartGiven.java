@@ -47,7 +47,7 @@ class JavaMultipartGiven implements Given, RestAssuredAcceptor {
 	@Override
 	public MethodVisitor<Given> apply(SingleContractMetadata metadata) {
 		getMultipartParameters(metadata).entrySet()
-			.forEach(entry -> this.blockBuilder.addLine(getMultipartParameterLine(metadata, entry)));
+			.forEach((entry) -> this.blockBuilder.addLine(getMultipartParameterLine(metadata, entry)));
 		return this;
 	}
 
@@ -67,7 +67,7 @@ class JavaMultipartGiven implements Given, RestAssuredAcceptor {
 	private String getMultipartFileParameterContent(SingleContractMetadata metadata, String propertyName,
 			NamedProperty propertyValue) {
 		return getJavaMultipartFileParameterContent(propertyName, propertyValue,
-				fileProp -> this.bodyReader.readBytesFromFileString(metadata, fileProp, CommunicationType.REQUEST));
+				(fileProp) -> this.bodyReader.readBytesFromFileString(metadata, fileProp, CommunicationType.REQUEST));
 	}
 
 	private String getParameterString(Map.Entry<String, Object> parameter) {

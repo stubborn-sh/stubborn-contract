@@ -20,92 +20,94 @@ import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Test;
 
 /**
+ * Tests for {@link MediaTypes} constants.
+ *
  * @author Tim Ysewyn
  */
 class MediaTypesTests {
 
 	@Test
-	public void ALL_VALUE() {
+	void ALL_VALUE() {
 		BDDAssertions.then(MediaTypes.ALL_VALUE).isEqualTo("*/*");
 	}
 
 	@Test
-	public void APPLICATION_ATOM_XML() {
+	void APPLICATION_ATOM_XML() {
 		BDDAssertions.then(MediaTypes.APPLICATION_ATOM_XML).isEqualTo("application/atom+xml");
 	}
 
 	@Test
-	public void APPLICATION_FORM_URLENCODED() {
+	void APPLICATION_FORM_URLENCODED() {
 		BDDAssertions.then(MediaTypes.APPLICATION_FORM_URLENCODED).isEqualTo("application/x-www-form-urlencoded");
 	}
 
 	@Test
-	public void APPLICATION_JSON() {
+	void APPLICATION_JSON() {
 		BDDAssertions.then(MediaTypes.APPLICATION_JSON).isEqualTo("application/json");
 	}
 
 	@Test
-	public void APPLICATION_JSON_UTF8() {
+	void APPLICATION_JSON_UTF8() {
 		BDDAssertions.then(MediaTypes.APPLICATION_JSON_UTF8).isEqualTo("application/json;charset=UTF-8");
 	}
 
 	@Test
-	public void APPLICATION_OCTET_STREAM() {
+	void APPLICATION_OCTET_STREAM() {
 		BDDAssertions.then(MediaTypes.APPLICATION_OCTET_STREAM).isEqualTo("application/octet-stream");
 	}
 
 	@Test
-	public void APPLICATION_PDF() {
+	void APPLICATION_PDF() {
 		BDDAssertions.then(MediaTypes.APPLICATION_PDF).isEqualTo("application/pdf");
 	}
 
 	@Test
-	public void APPLICATION_XHTML_XML() {
+	void APPLICATION_XHTML_XML() {
 		BDDAssertions.then(MediaTypes.APPLICATION_XHTML_XML).isEqualTo("application/xhtml+xml");
 	}
 
 	@Test
-	public void APPLICATION_XML() {
+	void APPLICATION_XML() {
 		BDDAssertions.then(MediaTypes.APPLICATION_XML).isEqualTo("application/xml");
 	}
 
 	@Test
-	public void IMAGE_GIF() {
+	void IMAGE_GIF() {
 		BDDAssertions.then(MediaTypes.IMAGE_GIF).isEqualTo("image/gif");
 	}
 
 	@Test
-	public void IMAGE_JPEG() {
+	void IMAGE_JPEG() {
 		BDDAssertions.then(MediaTypes.IMAGE_JPEG).isEqualTo("image/jpeg");
 	}
 
 	@Test
-	public void IMAGE_PNG() {
+	void IMAGE_PNG() {
 		BDDAssertions.then(MediaTypes.IMAGE_PNG).isEqualTo("image/png");
 	}
 
 	@Test
-	public void MULTIPART_FORM_DATA() {
+	void MULTIPART_FORM_DATA() {
 		BDDAssertions.then(MediaTypes.MULTIPART_FORM_DATA).isEqualTo("multipart/form-data");
 	}
 
 	@Test
-	public void TEXT_HTML() {
+	void TEXT_HTML() {
 		BDDAssertions.then(MediaTypes.TEXT_HTML).isEqualTo("text/html");
 	}
 
 	@Test
-	public void TEXT_MARKDOWN() {
+	void TEXT_MARKDOWN() {
 		BDDAssertions.then(MediaTypes.TEXT_MARKDOWN).isEqualTo("text/markdown");
 	}
 
 	@Test
-	public void TEXT_PLAIN() {
+	void TEXT_PLAIN() {
 		BDDAssertions.then(MediaTypes.TEXT_PLAIN).isEqualTo("text/plain");
 	}
 
 	@Test
-	public void TEXT_XML() {
+	void TEXT_XML() {
 		BDDAssertions.then(MediaTypes.TEXT_XML).isEqualTo("text/xml");
 	}
 

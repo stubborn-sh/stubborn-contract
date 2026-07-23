@@ -67,9 +67,9 @@ public class SpringCloudContractRequestMatcher extends RequestMatcherExtension {
 		try {
 			contracts = YamlContractConverter.INSTANCE.read(string.getBytes());
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			if (log.isWarnEnabled()) {
-				log.warn("An exception occurred while trying to parse the contract", e);
+				log.warn("An exception occurred while trying to parse the contract", ex);
 			}
 			return MatchResult.noMatch();
 		}
@@ -97,7 +97,7 @@ class RequestMatcherFactory {
 
 	RequestMatcher pick(String tool) {
 		return this.matchers.stream()
-			.filter(m -> m.isApplicable(tool))
+			.filter((m) -> m.isApplicable(tool))
 			.findFirst()
 			.orElse(new NotMatchingRequestMatcher());
 	}
@@ -167,9 +167,9 @@ class GraphQlMatcher implements RequestMatcher {
 			boolean operationMatches = StringUtils.equals(operationName, operationNameFromRequest);
 			return MatchResult.of(queryMatches && variablesMatch && operationMatches);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			if (log.isWarnEnabled()) {
-				log.warn("An exception occurred while trying to parse the graphql entries", e);
+				log.warn("An exception occurred while trying to parse the graphql entries", ex);
 			}
 			return MatchResult.noMatch();
 		}

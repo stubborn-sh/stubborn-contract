@@ -56,8 +56,8 @@ class CustomModeGiven implements Given, BodyMethodVisitor, CustomModeAcceptor {
 	}
 
 	private void addRequestGivenLine(SingleContractMetadata singleContractMetadata) {
-		this.requestGivens.stream()
-			.filter(given -> given.accept(singleContractMetadata))
+		var unused = this.requestGivens.stream()
+			.filter((given) -> given.accept(singleContractMetadata))
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException(
 					"No matching request building Given implementation for a custom test mode"))

@@ -23,11 +23,14 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 
 /**
+ * Builds Spring Messaging {@link Message} instances from payload and headers for stream
+ * contract tests.
+ *
  * @author Marcin Grzejszczak
  */
 class ContractVerifierStreamMessageBuilder {
 
-	public <T> Message<?> create(T payload, Map<String, Object> headers) {
+	<T> Message<?> create(T payload, Map<String, Object> headers) {
 		Object payloadToSend = payload;
 		if (payload instanceof String) {
 			payloadToSend = ((String) payload).getBytes();

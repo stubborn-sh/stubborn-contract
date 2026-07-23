@@ -7,14 +7,13 @@ asciidoc:
     chomp: 'all'
     project-root: @maven.multiModuleProjectDirectory@
     github-repo: @docs.main@
-    github-raw: https://raw.githubusercontent.com/spring-cloud/@docs.main@/@github-tag@
-    github-code: https://github.com/spring-cloud/@docs.main@/tree/@github-tag@
-    github-issues: https://github.com/spring-cloud/@docs.main@/issues/
-    github-wiki: https://github.com/spring-cloud/@docs.main@/wiki
-    spring-cloud-version: @project.version@
+    github-raw: https://raw.githubusercontent.com/stubborn-sh/@docs.main@/@github-tag@
+    github-code: https://github.com/stubborn-sh/@docs.main@/tree/@github-tag@
+    github-issues: https://github.com/stubborn-sh/@docs.main@/issues/
+    github-wiki: https://github.com/stubborn-sh/@docs.main@/wiki
+    project-version: @project.version@
     github-tag: @github-tag@
     version-type: @version-type@
-    docs-url: https://docs.spring.io/@docs.main@/docs/@project.version@
-    raw-docs-url: https://raw.githubusercontent.com/spring-cloud/@docs.main@/@github-tag@
-    project-version: @project.version@
+    docs-url: https://stubborn-sh.github.io/stubborn-contract
+    raw-docs-url: https://raw.githubusercontent.com/stubborn-sh/@docs.main@/@github-tag@
     project-name: @docs.main@

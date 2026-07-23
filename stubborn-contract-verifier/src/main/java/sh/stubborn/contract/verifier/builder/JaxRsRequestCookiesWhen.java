@@ -46,7 +46,7 @@ class JaxRsRequestCookiesWhen implements When {
 		Iterator<Cookie> iterator = request.getCookies()
 			.getEntries()
 			.stream()
-			.filter(cookie -> !cookieOfAbsentType(cookie))
+			.filter((cookie) -> !cookieOfAbsentType(cookie))
 			.iterator();
 		while (iterator.hasNext()) {
 			Cookie cookie = iterator.next();

@@ -164,7 +164,7 @@ public class ResourcesFileSource implements FileSource {
 				}
 			}
 		}
-		return null;
+		throw new IllegalStateException("Cannot find text file named " + name);
 	}
 
 	@Override

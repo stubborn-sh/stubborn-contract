@@ -123,8 +123,8 @@ public final class KafkaAvroMessageVerifierSender implements MessageVerifierSend
 		GenericRecordBuilder builder = new GenericRecordBuilder(schema);
 		schema.getFields()
 			.stream()
-			.filter(field -> payloadMap.containsKey(field.name()))
-			.forEach(field -> builder.set(field, payloadMap.get(field.name())));
+			.filter((field) -> payloadMap.containsKey(field.name()))
+			.forEach((field) -> builder.set(field, payloadMap.get(field.name())));
 		return builder.build();
 	}
 

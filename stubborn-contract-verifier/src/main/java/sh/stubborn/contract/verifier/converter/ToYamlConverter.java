@@ -77,8 +77,8 @@ public final class ToYamlConverter {
 			try {
 				Files.write(ymlContractVersion.toPath(), value);
 			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
+			catch (IOException ex) {
+				throw new RuntimeException(ex);
 			}
 			if (log.isDebugEnabled()) {
 				log.debug("Written file [{}] with YAML contract definition", ymlContractVersion);
@@ -97,13 +97,13 @@ public final class ToYamlConverter {
 		try {
 			Files.walk(baseDir.toPath())
 				.map(Path::toFile)
-				.forEach(file -> CONTRACT_CONVERTERS.stream()
-					.filter(converter -> converter.isAccepted(file))
+				.forEach((file) -> CONTRACT_CONVERTERS.stream()
+					.filter((converter) -> converter.isAccepted(file))
 					.findFirst()
-					.ifPresent(converter -> doReplaceContractWithYaml(converter, file)));
+					.ifPresent((converter) -> doReplaceContractWithYaml(converter, file)));
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 

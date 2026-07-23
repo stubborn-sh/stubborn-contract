@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Marcin Grzejszczak
  */
-public class WireMockStubMappingTest {
+public class WireMockStubMappingTests {
 
 	private static final String stub_2_1_7 = "{\"request\" : { \"method\" : \"GET\" }, "
 			+ "\"response\" : { \"status\" : 200 }}";

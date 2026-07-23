@@ -72,7 +72,7 @@ public final class HttpServerStubConfiguration {
 	}
 
 	public String toColonSeparatedDependencyNotation() {
-		return this.stubConfiguration != null ? this.stubConfiguration.toColonSeparatedDependencyNotation() : "";
+		return (this.stubConfiguration != null) ? this.stubConfiguration.toColonSeparatedDependencyNotation() : "";
 	}
 
 }

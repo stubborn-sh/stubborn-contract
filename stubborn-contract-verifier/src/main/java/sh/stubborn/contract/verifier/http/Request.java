@@ -70,7 +70,7 @@ public class Request {
 	public String contentType() {
 		Object value = this.headers.entrySet()
 			.stream()
-			.filter(e -> e.getKey().toLowerCase(Locale.ROOT).equals("content-type"))
+			.filter((e) -> e.getKey().toLowerCase(Locale.ROOT).equals("content-type"))
 			.findFirst()
 			.orElse(new AbstractMap.SimpleEntry<>("", null))
 			.getValue();

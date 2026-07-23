@@ -34,7 +34,7 @@ public class JsonAssertion {
 			documentContext = JsonPath.parse(body);
 			CACHE.put(body, documentContext);
 		}
-		this.parsedJson = documentContext;
+		this.parsedJson = documentContext != null ? documentContext : JsonPath.parse("{}");
 	}
 
 	private boolean empty(String text) {

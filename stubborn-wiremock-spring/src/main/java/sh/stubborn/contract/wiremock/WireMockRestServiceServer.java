@@ -305,7 +305,8 @@ public final class WireMockRestServiceServer {
 	}
 
 	private String pattern(String location) {
-		if (!StringUtils.getFilename(location).contains(".") && !location.contains("*")) {
+		String filename = StringUtils.getFilename(location);
+		if ((filename == null || !filename.contains(".")) && !location.contains("*")) {
 			if (!location.endsWith("/")) {
 				location = location + "/";
 			}

@@ -19,7 +19,7 @@ package sh.stubborn.contract.verifier.builder;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
+
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -217,10 +217,10 @@ class MessagingMethodBodyBuilderTests {
 	static Stream<Arguments> shouldAllowEasierWayOfProvidingDynamicValues() {
 		return Stream.of(
 				Arguments.of("spock",
-						(Consumer<ContractVerifierConfigProperties>) props -> props
+						(Consumer<ContractVerifierConfigProperties>) (props) -> props
 							.setTestFramework(TestFramework.SPOCK),
 						"\\$"),
-				Arguments.of("junit", (Consumer<ContractVerifierConfigProperties>) props -> props
+				Arguments.of("junit", (Consumer<ContractVerifierConfigProperties>) (props) -> props
 					.setTestFramework(TestFramework.JUNIT5), "$"));
 	}
 
@@ -515,10 +515,10 @@ class MessagingMethodBodyBuilderTests {
 				+ "}\n";
 		return Stream.of(
 				Arguments.of("spock",
-						(Consumer<ContractVerifierConfigProperties>) props -> props
+						(Consumer<ContractVerifierConfigProperties>) (props) -> props
 							.setTestFramework(TestFramework.SPOCK),
 						spockExpected),
-				Arguments.of("junit", (Consumer<ContractVerifierConfigProperties>) props -> props
+				Arguments.of("junit", (Consumer<ContractVerifierConfigProperties>) (props) -> props
 					.setTestFramework(TestFramework.JUNIT5), junitExpected));
 	}
 

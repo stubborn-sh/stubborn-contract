@@ -31,6 +31,7 @@ import java.util.ServiceLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
@@ -125,7 +126,7 @@ public class StubRunner implements StubRunning {
 	}
 
 	@Override
-	public URL findStubUrl(String groupId, String artifactId) {
+	public URL findStubUrl(@Nullable String groupId, String artifactId) {
 		return this.localStubRunner.findStubUrl(groupId, artifactId);
 	}
 

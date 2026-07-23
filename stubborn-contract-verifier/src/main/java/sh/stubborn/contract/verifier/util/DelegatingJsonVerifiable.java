@@ -257,7 +257,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 		try {
 			return Pattern.compile(value);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.warn("Exception occurred while trying to compile the pattern [" + value
 					+ "]. Will return the value explicitly. Hopefully, you know what you're doing...");
 			return value;

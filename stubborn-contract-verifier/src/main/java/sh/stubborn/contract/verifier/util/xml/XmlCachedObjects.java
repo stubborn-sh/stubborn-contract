@@ -63,8 +63,8 @@ class XmlCachedObjects {
 			transformer.transform(new DOMSource(this.document), new StreamResult(writer));
 			return writer.getBuffer().toString().replaceAll("\n|\r", "");
 		}
-		catch (TransformerException e) {
-			throw new RuntimeException("Exception occured while trying to convert XML Document to String", e);
+		catch (TransformerException ex) {
+			throw new RuntimeException("Exception occured while trying to convert XML Document to String", ex);
 		}
 	}
 

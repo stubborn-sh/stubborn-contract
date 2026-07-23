@@ -83,12 +83,12 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 			Object object = groovyShell(urlCl, rootFolder).evaluate(dsl);
 			return listOfContracts(object);
 		}
-		catch (DslParseException e) {
-			throw e;
+		catch (DslParseException ex) {
+			throw ex;
 		}
-		catch (Exception e) {
-			LOG.error("Exception occurred while trying to evaluate the contract", e);
-			throw new DslParseException(e);
+		catch (Exception ex) {
+			LOG.error("Exception occurred while trying to evaluate the contract", ex);
+			throw new DslParseException(ex);
 		}
 		finally {
 			Thread.currentThread().setContextClassLoader(classLoader);
@@ -106,12 +106,12 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 			Object object = toObject(urlCl, rootFolder, dsl);
 			return listOfContracts(dsl, object);
 		}
-		catch (DslParseException e) {
-			throw e;
+		catch (DslParseException ex) {
+			throw ex;
 		}
-		catch (Exception e) {
-			LOG.error("Exception occurred while trying to evaluate the contract at path [" + dsl.getPath() + "]", e);
-			throw new DslParseException(e);
+		catch (Exception ex) {
+			LOG.error("Exception occurred while trying to evaluate the contract at path [" + dsl.getPath() + "]", ex);
+			throw new DslParseException(ex);
 		}
 		finally {
 			Thread.currentThread().setContextClassLoader(classLoader);
@@ -124,10 +124,10 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 			urlCl = URLClassLoader
 				.newInstance(Collections.singletonList(rootFolder.toURI().toURL()).toArray(new URL[0]), classLoader);
 		}
-		catch (MalformedURLException e) {
+		catch (MalformedURLException ex) {
 			LOG.error("Exception occurred while trying to construct the URL from the root folder at path ["
-					+ rootFolder.getPath() + "]", e);
-			throw new DslParseException(e);
+					+ rootFolder.getPath() + "]", ex);
+			throw new DslParseException(ex);
 		}
 		updateTheThreadClassLoader(urlCl);
 		return urlCl;
@@ -193,8 +193,8 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 					throw new IllegalStateException(
 							"Exceptions occurred while trying to compile the file \n" + diagnostics.getDiagnostics()
 								.stream()
-								.map(d -> "Error " + d.getMessage(Locale.getDefault()) + " on line " + d.getLineNumber()
-										+ " in " + d.getSource())
+								.map((d) -> "Error " + d.getMessage(Locale.getDefault()) + " on line "
+										+ d.getLineNumber() + " in " + d.getSource())
 								.collect(Collectors.joining("\n")));
 				}
 				try {
@@ -207,7 +207,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 					constructor.setAccessible(true);
 					return constructor;
 				}
-				catch (ClassNotFoundException e) {
+				catch (ClassNotFoundException ex) {
 					throw new IllegalStateException("Class with name [" + fqn + "] not found");
 				}
 			}
@@ -229,7 +229,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		if (classLoader instanceof URLClassLoader urlClassLoader) {
 			URL[] urLs = urlClassLoader.getURLs();
 			if (urLs.length > 0) {
-				Arrays.stream(urLs).forEach(url -> files.add(new File(url.getFile())));
+				Arrays.stream(urLs).forEach((url) -> files.add(new File(url.getFile())));
 			}
 		}
 	}
@@ -282,12 +282,12 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 	}
 
 	private static boolean isACollectionOfContracts(Object object) {
-		return object instanceof Collection && ((Collection) object).stream().allMatch(it -> it instanceof Contract);
+		return object instanceof Collection && ((Collection) object).stream().allMatch((it) -> it instanceof Contract);
 	}
 
 	private static Collection<Contract> withName(File file, Collection<Contract> contracts) {
 		AtomicInteger counter = new AtomicInteger(0);
-		return contracts.stream().peek(it -> {
+		return contracts.stream().peek((it) -> {
 			if (contractNameEmpty(it)) {
 				it.name(NamesUtil.defaultContractName(file, contracts, counter.get()));
 			}

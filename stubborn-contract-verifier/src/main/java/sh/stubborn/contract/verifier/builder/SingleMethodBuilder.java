@@ -160,7 +160,7 @@ final class SingleMethodBuilder {
 		MethodMetadata methodMetadatum = pickMetadatum();
 		// \n
 		this.blockBuilder.addEmptyLine();
-		this.generatedClassMetaData.toSingleContractMetadata().forEach(metaData -> {
+		this.generatedClassMetaData.toSingleContractMetadata().forEach((metaData) -> {
 			boolean stopProcessing = shouldStopProcessing(metaData);
 			if (stopProcessing) {
 				if (log.isDebugEnabled()) {
@@ -194,8 +194,10 @@ final class SingleMethodBuilder {
 			this.blockBuilder.addEmptyLine();
 			this.methodPostProcessors
 				.stream()
-				.filter(m -> m.accept(metaData))
-				.forEach(m -> m.apply(metaData));
+				.filter((m) -> m.accept(metaData))
+				.forEach((m) -> {
+					var unused = m.apply(metaData);
+				});
 			// }
 		});
 		// @formatter:on
@@ -204,10 +206,10 @@ final class SingleMethodBuilder {
 
 	private boolean shouldStopProcessing(SingleContractMetadata metaData) {
 		List<MethodPreProcessor> matchingPreProcessors = this.methodPreProcessors.stream()
-			.filter(m -> m.accept(metaData))
+			.filter((m) -> m.accept(metaData))
 			.collect(Collectors.toCollection(LinkedList::new));
-		matchingPreProcessors.forEach(m -> m.apply(metaData));
-		return matchingPreProcessors.stream().anyMatch(m -> !m.shouldContinue());
+		matchingPreProcessors.forEach((m) -> m.apply(metaData));
+		return matchingPreProcessors.stream().anyMatch((m) -> !m.shouldContinue());
 	}
 
 	private MethodMetadata pickMetadatum() {
@@ -223,12 +225,12 @@ final class SingleMethodBuilder {
 
 	private boolean visit(List<? extends MethodVisitor> list, SingleContractMetadata metaData, boolean addLineEnding) {
 		List<? extends MethodVisitor> visitors = list.stream()
-			.filter(o -> o.accept(metaData))
+			.filter((o) -> o.accept(metaData))
 			.collect(Collectors.toList());
 		Iterator<? extends MethodVisitor> iterator = visitors.iterator();
 		while (iterator.hasNext()) {
 			MethodVisitor visitor = iterator.next();
-			visitor.apply(metaData);
+			var unused = visitor.apply(metaData);
 			if (addLineEnding) {
 				this.blockBuilder.addEndingIfNotPresent();
 			}

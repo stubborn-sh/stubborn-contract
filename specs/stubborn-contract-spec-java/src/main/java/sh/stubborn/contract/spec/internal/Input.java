@@ -19,6 +19,8 @@ package sh.stubborn.contract.spec.internal;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Represents an input for messaging. The input can be a message or some action inside the
  * application.
@@ -31,9 +33,9 @@ public class Input extends Common implements RegexCreatingProperty<ClientDslProp
 
 	private ClientPatternValueDslProperty property = new ClientPatternValueDslProperty();
 
-	private ExecutionProperty triggeredBy;
+	private @Nullable ExecutionProperty triggeredBy;
 
-	private ExecutionProperty assertThat;
+	private @Nullable ExecutionProperty assertThat;
 
 	/**
 	 * Function that needs to be executed to trigger action in the system.
@@ -81,19 +83,19 @@ public class Input extends Common implements RegexCreatingProperty<ClientDslProp
 		this.property = property;
 	}
 
-	public ExecutionProperty getTriggeredBy() {
+	public @Nullable ExecutionProperty getTriggeredBy() {
 		return triggeredBy;
 	}
 
-	public void setTriggeredBy(ExecutionProperty triggeredBy) {
+	public void setTriggeredBy(@Nullable ExecutionProperty triggeredBy) {
 		this.triggeredBy = triggeredBy;
 	}
 
-	public ExecutionProperty getAssertThat() {
+	public @Nullable ExecutionProperty getAssertThat() {
 		return assertThat;
 	}
 
-	public void setAssertThat(ExecutionProperty assertThat) {
+	public void setAssertThat(@Nullable ExecutionProperty assertThat) {
 		this.assertThat = assertThat;
 	}
 
@@ -228,7 +230,7 @@ public class Input extends Common implements RegexCreatingProperty<ClientDslProp
 	private static final class ClientPatternValueDslProperty extends PatternValueDslProperty<ClientDslProperty> {
 
 		@Override
-		protected ClientDslProperty createProperty(Pattern pattern, Object generatedValue) {
+		protected ClientDslProperty createProperty(Pattern pattern, @Nullable Object generatedValue) {
 			return new ClientDslProperty(pattern, generatedValue);
 		}
 

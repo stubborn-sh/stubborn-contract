@@ -58,9 +58,9 @@ public class Response {
 	public String header(String key) {
 		return this.headers.entrySet()
 			.stream()
-			.filter(e -> e.getKey().equalsIgnoreCase(key))
+			.filter((e) -> e.getKey().equalsIgnoreCase(key))
 			.findFirst()
-			.map(e -> e.getValue().toString())
+			.map((e) -> e.getValue().toString())
 			.orElse(null);
 	}
 
@@ -71,9 +71,9 @@ public class Response {
 	public String cookie(String key) {
 		return this.cookies.entrySet()
 			.stream()
-			.filter(e -> e.getKey().equalsIgnoreCase(key))
+			.filter((e) -> e.getKey().equalsIgnoreCase(key))
 			.findFirst()
-			.map(e -> e.getValue().toString())
+			.map((e) -> e.getValue().toString())
 			.orElse(null);
 	}
 

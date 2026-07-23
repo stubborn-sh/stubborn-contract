@@ -37,7 +37,7 @@ interface BodyMethodGeneration {
 	}
 
 	default void addColonIfRequired(Optional<String> lineSuffix, BlockBuilder blockBuilder) {
-		lineSuffix.ifPresent(s -> blockBuilder.addAtTheEnd(lineSuffix.get()));
+		lineSuffix.ifPresent((s) -> blockBuilder.addAtTheEnd(lineSuffix.get()));
 	}
 
 	default void addBodyMatchingBlock(List<BodyMatcher> matchers, BlockBuilder blockBuilder, Object responseBody,
@@ -45,7 +45,7 @@ interface BodyMethodGeneration {
 		blockBuilder.endBlock();
 		blockBuilder.addLine(getAssertionJoiner(shouldCommentOutBDDBlocks));
 		blockBuilder.startBlock();
-		matchers.forEach(it -> {
+		matchers.forEach((it) -> {
 			if (it.matchingType() == MatchingType.NULL) {
 				methodForNullCheck(it, blockBuilder);
 			}

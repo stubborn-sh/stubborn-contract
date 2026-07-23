@@ -49,7 +49,7 @@ public interface MessageVerifierSender<M> {
 	 * @param headers headers to send
 	 * @param destination destination to which the message will be sent
 	 */
-	default <T> void send(T payload, Map<String, Object> headers, String destination) {
+	default <T> void send(T payload, @Nullable Map<String, Object> headers, String destination) {
 		send(payload, headers, destination, null);
 	}
 
@@ -69,6 +69,7 @@ public interface MessageVerifierSender<M> {
 	 * @param destination destination to which the message will be sent
 	 * @param contract contract related to this method
 	 */
-	<T> void send(T payload, Map<String, Object> headers, String destination, @Nullable YamlContract contract);
+	<T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract);
 
 }

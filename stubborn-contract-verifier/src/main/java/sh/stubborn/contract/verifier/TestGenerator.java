@@ -151,14 +151,14 @@ public class TestGenerator {
 	private Set<Map.Entry<Path, List<ContractMetadata>>> inProgress(Map<Path, List<ContractMetadata>> contracts) {
 		return contracts.entrySet()
 			.stream()
-			.filter(entry -> entry.getValue().stream().anyMatch(ContractMetadata::anyInProgress))
+			.filter((entry) -> entry.getValue().stream().anyMatch(ContractMetadata::anyInProgress))
 			.collect(Collectors.toSet());
 	}
 
 	void processAll(Map<Path, List<ContractMetadata>> contracts, final String basePackageName) {
 		contracts.entrySet()
 			.stream()
-			.forEach(entry -> processIncludedDirectory(relativizeContractPath(entry), entry.getValue(),
+			.forEach((entry) -> processIncludedDirectory(relativizeContractPath(entry), entry.getValue(),
 					basePackageName));
 	}
 

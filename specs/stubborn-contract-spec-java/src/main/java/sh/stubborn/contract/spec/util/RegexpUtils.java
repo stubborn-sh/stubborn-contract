@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 /**
  * Useful utility methods to work with regular expressions.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.2
  */
 public final class RegexpUtils {

@@ -129,7 +129,7 @@ class GenericJsonBodyThen implements Then {
 	}
 
 	private void processBodyElement(String property, Map map) {
-		map.entrySet().forEach(o -> processBodyElement(property, (Map.Entry) o));
+		map.entrySet().forEach((o) -> processBodyElement(property, (Map.Entry) o));
 	}
 
 	private void processBodyElement(String property, List list) {

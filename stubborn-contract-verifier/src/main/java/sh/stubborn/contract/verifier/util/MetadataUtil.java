@@ -82,8 +82,8 @@ public final class MetadataUtil {
 			bytes = MAPPER.writer().writeValueAsBytes(patch);
 			return MAPPER.readerForUpdating(objectToMerge).readValue(bytes);
 		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -94,16 +94,16 @@ public final class MetadataUtil {
 	private static JsonMapper buildJsonMapper() {
 		return JsonMapper.builder()
 			.withConfigOverride(Object.class,
-					o -> o.setIncludeAsProperty(
+					(o) -> o.setIncludeAsProperty(
 							JsonInclude.Value.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL)))
 			.withConfigOverride(Object.class,
-					o -> o.setIncludeAsProperty(JsonInclude.Value.construct(JsonInclude.Include.NON_DEFAULT,
+					(o) -> o.setIncludeAsProperty(JsonInclude.Value.construct(JsonInclude.Include.NON_DEFAULT,
 							JsonInclude.Include.NON_DEFAULT)))
 			.withConfigOverride(Object.class,
-					o -> o.setIncludeAsProperty(
+					(o) -> o.setIncludeAsProperty(
 							JsonInclude.Value.construct(JsonInclude.Include.NON_EMPTY, JsonInclude.Include.NON_EMPTY)))
 			.withConfigOverride(Object.class,
-					o -> o.setIncludeAsProperty(JsonInclude.Value.construct(JsonInclude.Include.NON_ABSENT,
+					(o) -> o.setIncludeAsProperty(JsonInclude.Value.construct(JsonInclude.Include.NON_ABSENT,
 							JsonInclude.Include.NON_ABSENT)))
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 			.addMixIn(Object.class, PropertyFilterMixIn.class)
@@ -225,7 +225,7 @@ class MyFilter extends SimpleBeanPropertyFilter implements Serializable {
 		try {
 			return aClass.getDeclaredConstructor().newInstance();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return new CantInstantiateThisClass();
 		}
 	}
@@ -239,8 +239,8 @@ class MyFilter extends SimpleBeanPropertyFilter implements Serializable {
 		try {
 			return Objects.equals(field.get(pojo), field.get(defaultInstance));
 		}
-		catch (IllegalAccessException e) {
-			throw new IllegalStateException(e);
+		catch (IllegalAccessException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 

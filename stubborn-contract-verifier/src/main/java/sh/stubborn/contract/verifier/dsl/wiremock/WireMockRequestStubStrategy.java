@@ -143,8 +143,8 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 		if (request.getMethod() == null) {
 			return null;
 		}
-		RequestMethod requestMethod = RequestMethod
-			.fromString(Optional.ofNullable(request.getMethod().getClientValue()).map(c -> c.toString()).orElse(null));
+		RequestMethod requestMethod = RequestMethod.fromString(
+				Optional.ofNullable(request.getMethod().getClientValue()).map((c) -> c.toString()).orElse(null));
 		UrlPattern urlPattern = urlPattern();
 		return RequestPatternBuilder.newRequestPattern(requestMethod, urlPattern);
 	}
@@ -177,20 +177,20 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 										getMatchingStrategy(request.getBody().getClientValue()).getClientValue()),
 								false, false));
 					}
-					catch (JacksonException e) {
-						throw new IllegalArgumentException("The MatchingStrategy could not be serialized", e);
+					catch (JacksonException ex) {
+						throw new IllegalArgumentException("The MatchingStrategy could not be serialized", ex);
 					}
 				}
 				else {
 					values.stream()
-						.filter(v -> !v.assertsSize())
-						.forEach(it -> requestPattern
+						.filter((v) -> !v.assertsSize())
+						.forEach((it) -> requestPattern
 							.withRequestBody(WireMock.matchingJsonPath(it.jsonPath().replace("\\\\", "\\"))));
 				}
 			}
 			Optional.ofNullable(request.getBodyMatchers())
 				.map(BodyMatchers::matchers)
-				.ifPresent(bodyMatchers -> bodyMatchers.forEach(bodyMatcher -> {
+				.ifPresent((bodyMatchers) -> bodyMatchers.forEach((bodyMatcher) -> {
 					String newPath = JsonToJsonPathsConverter.convertJsonPathAndRegexToAJsonPath(bodyMatcher,
 							originalBody);
 					requestPattern.withRequestBody(WireMock.matchingJsonPath(newPath.replace("\\\\", "\\")));
@@ -204,13 +204,13 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 			else {
 				Object body = XmlToXPathsConverter.removeMatchingXPaths(originalBody, request.getBodyMatchers());
 				List<BodyMatcher> byEqualityMatchersFromXml = XmlToXPathsConverter.mapToMatchers(body);
-				byEqualityMatchersFromXml
-					.forEach(bodyMatcher -> addWireMockStubMatchingSection(bodyMatcher, requestPattern, originalBody));
+				byEqualityMatchersFromXml.forEach(
+						(bodyMatcher) -> addWireMockStubMatchingSection(bodyMatcher, requestPattern, originalBody));
 			}
 			Optional.ofNullable(request.getBodyMatchers())
 				.map(BodyMatchers::matchers)
-				.ifPresent(bodyMatchers -> bodyMatchers
-					.forEach(bodyMatcher -> addWireMockStubMatchingSection(bodyMatcher, requestPattern, originalBody)));
+				.ifPresent((bodyMatchers) -> bodyMatchers.forEach(
+						(bodyMatcher) -> addWireMockStubMatchingSection(bodyMatcher, requestPattern, originalBody)));
 		}
 		else if (containsPattern(request.getBody())) {
 			requestPattern.withRequestBody(convertToValuePattern(appendBodyRegexpMatchPattern(request.getBody())));
@@ -278,7 +278,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 		if (request.getMultipart().getClientValue() instanceof Map) {
 			List<StringValuePattern> multipartPattern = ((Map<?, ?>) request.getMultipart().getClientValue()).entrySet()
 				.stream()
-				.map(it -> it.getValue() instanceof NamedProperty
+				.map((it) -> it.getValue() instanceof NamedProperty
 						? WireMock.matching(RegexPatterns.multipartFile(it.getKey(),
 								((NamedProperty) it.getValue()).getName().getClientValue(),
 								((NamedProperty) it.getValue()).getValue().getClientValue(),
@@ -298,7 +298,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 		if (request.getHeaders() != null) {
 			request.getHeaders()
 				.getEntries()
-				.forEach(header -> requestPattern.withHeader(header.getName(),
+				.forEach((header) -> requestPattern.withHeader(header.getName(),
 						(StringValuePattern) convertToValuePattern(header.getClientValue())));
 		}
 	}
@@ -309,7 +309,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 		}
 		request.getCookies()
 			.getEntries()
-			.forEach(cookie -> requestPattern.withCookie(cookie.getKey(),
+			.forEach((cookie) -> requestPattern.withCookie(cookie.getKey(),
 					(StringValuePattern) convertToValuePattern(cookie.getClientValue())));
 	}
 
@@ -354,7 +354,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 
 	private Object getUrlIfGstring(Object clientSide) {
 		if (clientSide instanceof GString) {
-			if (Arrays.stream(((GString) clientSide).getValues()).anyMatch(it -> {
+			if (Arrays.stream(((GString) clientSide).getValues()).anyMatch((it) -> {
 				Object value = getStubSideValue(it);
 				return value instanceof Pattern || value instanceof RegexProperty;
 			})) {
@@ -377,8 +377,9 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 
 		Optional.ofNullable(queryParameters)
 			.map(QueryParameters::getParameters)
-			.ifPresent(parameters -> parameters.forEach(parameter -> requestPattern.withQueryParam(parameter.getName(),
-					(StringValuePattern) convertToValuePattern(parameter.getClientValue()))));
+			.ifPresent(
+					(parameters) -> parameters.forEach((parameter) -> requestPattern.withQueryParam(parameter.getName(),
+							(StringValuePattern) convertToValuePattern(parameter.getClientValue()))));
 	}
 
 	protected ContentPattern<?> convertToValuePattern(Object object) {
@@ -426,13 +427,13 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 				// [a:3, b:4] == "a=3&b=4"
 				return ((Map<?, ?>) bodyValue).entrySet()
 					.stream()
-					.map(e -> StringEscapeUtils.unescapeEcmaScript(e.getKey().toString() + "=" + e.getValue()))
+					.map((e) -> StringEscapeUtils.unescapeEcmaScript(e.getKey().toString() + "=" + e.getValue()))
 					.collect(Collectors.joining("&"));
 			}
 			else if (bodyValue instanceof List) {
 				// ["a=3", "b=4"] == "a=3&b=4"
 				return ((List<?>) bodyValue).stream()
-					.map(it -> StringEscapeUtils.unescapeEcmaScript(it.toString()))
+					.map((it) -> StringEscapeUtils.unescapeEcmaScript(it.toString()))
 					.collect(Collectors.joining("&"));
 			}
 		}
@@ -481,7 +482,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 			return new MatchingStrategy("", MatchingStrategy.Type.EQUAL_TO);
 		}
 		Object extractedValue = ContentUtils.extractValue(gString,
-				it -> it instanceof DslProperty ? ((DslProperty<?>) it).getClientValue() : getStringFromGString(it));
+				(it) -> it instanceof DslProperty ? ((DslProperty<?>) it).getClientValue() : getStringFromGString(it));
 
 		Object value = getStringFromGString(extractedValue);
 		return getMatchingStrategy(value);

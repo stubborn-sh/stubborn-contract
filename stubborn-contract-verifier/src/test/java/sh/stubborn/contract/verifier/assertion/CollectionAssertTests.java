@@ -46,8 +46,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).allElementsMatch("[0-9]");
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("The value <a> doesn't match the regex <[0-9]>");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("The value <a> doesn't match the regex <[0-9]>");
 		}
 	}
 
@@ -59,8 +59,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).allElementsMatch("[0-9]");
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("The value <null> doesn't match the regex <[0-9]>");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("The value <null> doesn't match the regex <[0-9]>");
 		}
 	}
 
@@ -72,8 +72,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).allElementsMatch("foo");
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("Expecting actual not to be null");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("Expecting actual not to be null");
 		}
 	}
 
@@ -85,8 +85,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).allElementsMatch("foo");
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("Expecting actual not to be empty");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("Expecting actual not to be empty");
 		}
 	}
 
@@ -107,8 +107,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasFlattenedSizeGreaterThanOrEqualTo(8);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("The flattened size <7> is not greater or equal to <8>");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("The flattened size <7> is not greater or equal to <8>");
 		}
 	}
 
@@ -120,8 +120,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasFlattenedSizeGreaterThanOrEqualTo(1);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("Expecting actual not to be null");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("Expecting actual not to be null");
 		}
 	}
 
@@ -142,8 +142,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasFlattenedSizeLessThanOrEqualTo(1);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("The flattened size <7> is not less or equal to <1>");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("The flattened size <7> is not less or equal to <1>");
 		}
 	}
 
@@ -155,8 +155,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasFlattenedSizeLessThanOrEqualTo(1);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("Expecting actual not to be null");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("Expecting actual not to be null");
 		}
 	}
 
@@ -177,8 +177,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasFlattenedSizeBetween(8, 9);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("The flattened size <7> is not between <8> and <9>");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("The flattened size <7> is not between <8> and <9>");
 		}
 	}
 
@@ -190,8 +190,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasFlattenedSizeBetween(1, 2);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("Expecting actual not to be null");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("Expecting actual not to be null");
 		}
 	}
 
@@ -212,8 +212,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasSizeGreaterThanOrEqualTo(5);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("The size <3> is not greater or equal to <5>");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("The size <3> is not greater or equal to <5>");
 		}
 	}
 
@@ -225,8 +225,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasSizeGreaterThanOrEqualTo(1);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("Expecting actual not to be null");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("Expecting actual not to be null");
 		}
 	}
 
@@ -245,8 +245,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasSizeLessThanOrEqualTo(1);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("The size <3> is not less or equal to <1>");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("The size <3> is not less or equal to <1>");
 		}
 	}
 
@@ -258,8 +258,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasSizeLessThanOrEqualTo(1);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("Expecting actual not to be null");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("Expecting actual not to be null");
 		}
 	}
 
@@ -278,8 +278,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasSizeBetween(5, 7);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("The size <3> is not between <5> and <7>");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("The size <3> is not between <5> and <7>");
 		}
 	}
 
@@ -291,8 +291,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).as("for jsonpath x.y.z").hasSizeBetween(5, 7);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e)
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex)
 				.hasMessageContaining("[for jsonpath x.y.z] The size <3> is not between <5> and <7>");
 		}
 	}
@@ -305,8 +305,8 @@ public class CollectionAssertTests {
 			SpringCloudContractAssertions.assertThat(collection).hasSizeBetween(1, 2);
 			Assertions.fail("should throw exception");
 		}
-		catch (AssertionError e) {
-			Assertions.assertThat(e).hasMessageContaining("Expecting actual not to be null");
+		catch (AssertionError ex) {
+			Assertions.assertThat(ex).hasMessageContaining("Expecting actual not to be null");
 		}
 	}
 

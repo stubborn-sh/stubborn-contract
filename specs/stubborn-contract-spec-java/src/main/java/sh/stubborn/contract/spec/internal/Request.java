@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.util.RegexpUtils;
@@ -41,21 +42,21 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 
 	private ClientPatternValueDslProperty property = new ClientPatternValueDslProperty();
 
-	private DslProperty method;
+	private @Nullable DslProperty method;
 
-	private Url url;
+	private @Nullable Url url;
 
-	private UrlPath urlPath;
+	private @Nullable UrlPath urlPath;
 
-	private Headers headers;
+	private @Nullable Headers headers;
 
-	private Cookies cookies;
+	private @Nullable Cookies cookies;
 
-	private Body body;
+	private @Nullable Body body;
 
-	private Multipart multipart;
+	private @Nullable Multipart multipart;
 
-	private BodyMatchers bodyMatchers;
+	private @Nullable BodyMatchers bodyMatchers;
 
 	public Request() {
 	}
@@ -161,11 +162,11 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 		this.body = new Body(bodyAsValue);
 	}
 
-	public Body getBody() {
+	public @Nullable Body getBody() {
 		return body;
 	}
 
-	public void setBody(Body body) {
+	public void setBody(@Nullable Body body) {
 		this.body = body;
 	}
 
@@ -264,7 +265,7 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 	}
 
 	@Override
-	public void assertThatSidesMatch(Object stubSide, Object testSide) {
+	public void assertThatSidesMatch(@Nullable Object stubSide, @Nullable Object testSide) {
 		if (testSide instanceof OptionalProperty) {
 			throw new IllegalStateException("Optional can be used only for the stub side of the request!");
 		}
@@ -376,59 +377,59 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 		this.property = property;
 	}
 
-	public DslProperty getMethod() {
+	public @Nullable DslProperty getMethod() {
 		return method;
 	}
 
-	public void setMethod(DslProperty method) {
+	public void setMethod(@Nullable DslProperty method) {
 		this.method = method;
 	}
 
-	public Url getUrl() {
+	public @Nullable Url getUrl() {
 		return url;
 	}
 
-	public void setUrl(Url url) {
+	public void setUrl(@Nullable Url url) {
 		this.url = url;
 	}
 
-	public UrlPath getUrlPath() {
+	public @Nullable UrlPath getUrlPath() {
 		return urlPath;
 	}
 
-	public void setUrlPath(UrlPath urlPath) {
+	public void setUrlPath(@Nullable UrlPath urlPath) {
 		this.urlPath = urlPath;
 	}
 
-	public Headers getHeaders() {
+	public @Nullable Headers getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(Headers headers) {
+	public void setHeaders(@Nullable Headers headers) {
 		this.headers = headers;
 	}
 
-	public Cookies getCookies() {
+	public @Nullable Cookies getCookies() {
 		return cookies;
 	}
 
-	public void setCookies(Cookies cookies) {
+	public void setCookies(@Nullable Cookies cookies) {
 		this.cookies = cookies;
 	}
 
-	public Multipart getMultipart() {
+	public @Nullable Multipart getMultipart() {
 		return multipart;
 	}
 
-	public void setMultipart(Multipart multipart) {
+	public void setMultipart(@Nullable Multipart multipart) {
 		this.multipart = multipart;
 	}
 
-	public BodyMatchers getBodyMatchers() {
+	public @Nullable BodyMatchers getBodyMatchers() {
 		return bodyMatchers;
 	}
 
-	public void setBodyMatchers(BodyMatchers bodyMatchers) {
+	public void setBodyMatchers(@Nullable BodyMatchers bodyMatchers) {
 		this.bodyMatchers = bodyMatchers;
 	}
 
@@ -788,7 +789,7 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 	private static final class ClientPatternValueDslProperty extends PatternValueDslProperty<ClientDslProperty> {
 
 		@Override
-		protected ClientDslProperty createProperty(Pattern pattern, Object generatedValue) {
+		protected ClientDslProperty createProperty(Pattern pattern, @Nullable Object generatedValue) {
 			return new ClientDslProperty(pattern, generatedValue);
 		}
 

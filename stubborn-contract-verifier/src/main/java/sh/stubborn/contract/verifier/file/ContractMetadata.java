@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 
 import static java.util.Collections.singletonList;
@@ -53,7 +54,7 @@ public class ContractMetadata {
 	/**
 	 * If scenario related will contain an order of execution.
 	 */
-	private final Integer order;
+	private final @Nullable Integer order;
 
 	/**
 	 * The list of contracts for the given file.
@@ -65,11 +66,12 @@ public class ContractMetadata {
 	 */
 	private final Collection<SingleContractMetadata> convertedContractWithMetadata = new ArrayList<>();
 
-	public ContractMetadata(Path path, boolean ignored, int groupSize, Integer order, Contract convertedContract) {
+	public ContractMetadata(Path path, boolean ignored, int groupSize, @Nullable Integer order,
+			Contract convertedContract) {
 		this(path, ignored, groupSize, order, singletonList(convertedContract));
 	}
 
-	public ContractMetadata(Path path, boolean ignored, int groupSize, Integer order,
+	public ContractMetadata(Path path, boolean ignored, int groupSize, @Nullable Integer order,
 			Collection<Contract> convertedContract) {
 		this.groupSize = groupSize;
 		this.path = path;
@@ -78,13 +80,13 @@ public class ContractMetadata {
 		this.convertedContract.addAll(convertedContract);
 		this.convertedContractWithMetadata.addAll(this.convertedContract.stream()
 			.filter(Objects::nonNull)
-			.map(it -> new SingleContractMetadata(it, this))
+			.map((it) -> new SingleContractMetadata(it, this))
 			.collect(toList()));
 	}
 
-	public SingleContractMetadata forContract(Contract contract) {
+	public @Nullable SingleContractMetadata forContract(Contract contract) {
 		return this.convertedContractWithMetadata.stream()
-			.filter(it -> it.getContract().equals(contract))
+			.filter((it) -> it.getContract().equals(contract))
 			.findFirst()
 			.orElse(null);
 	}
@@ -109,7 +111,7 @@ public class ContractMetadata {
 		return groupSize;
 	}
 
-	public Integer getOrder() {
+	public @Nullable Integer getOrder() {
 		return order;
 	}
 

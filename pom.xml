@@ -672,10 +672,6 @@
 				<artifactId>spring-javaformat-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
 			</plugin>
@@ -847,6 +843,30 @@
 								<artifactId>stubborn-contract-stub-runner-moco-contract-jar</artifactId>
 							</excludeArtifacts>
 						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!--
+		  OWASP dependency-check: run with -Psecurity from reactor root.
+		  Requires: NVD_API_KEY env var.
+		  Usage: NVD_API_KEY=xxx ./mvnw verify -Psecurity -DskipTests
+		-->
+		<profile>
+			<id>security</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.owasp</groupId>
+						<artifactId>dependency-check-maven</artifactId>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

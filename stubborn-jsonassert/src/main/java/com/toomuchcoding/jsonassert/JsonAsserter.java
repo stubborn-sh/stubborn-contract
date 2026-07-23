@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +21,11 @@ class JsonAsserter implements JsonVerifiable {
 
 	protected final LinkedList<String> jsonPathBuffer;
 
-	protected final Object fieldName;
+	protected final @Nullable Object fieldName;
 
 	protected final JsonAsserterConfiguration jsonAsserterConfiguration;
 
-	protected JsonAsserter(DocumentContext parsedJson, LinkedList<String> jsonPathBuffer, Object fieldName,
+	protected JsonAsserter(DocumentContext parsedJson, LinkedList<String> jsonPathBuffer, @Nullable Object fieldName,
 			JsonAsserterConfiguration jsonAsserterConfiguration) {
 		this.parsedJson = parsedJson;
 		this.jsonPathBuffer = new LinkedList<String>(jsonPathBuffer);
@@ -50,9 +51,12 @@ class JsonAsserter implements JsonVerifiable {
 
 	@Override
 	public FieldAssertion field(String... fields) {
-		FieldAssertion assertion = null;
-		for (String field : fields) {
-			assertion = assertion == null ? field(field) : assertion.field(field);
+		if (fields.length == 0) {
+			throw new IllegalArgumentException("At least one field name must be provided");
+		}
+		FieldAssertion assertion = field(fields[0]);
+		for (int i = 1; i < fields.length; i++) {
+			assertion = assertion.field(fields[i]);
 		}
 		return assertion;
 	}
@@ -228,7 +232,7 @@ class JsonAsserter implements JsonVerifiable {
 		return this;
 	}
 
-	private JSONArray check(String jsonPathString) {
+	private @Nullable JSONArray check(String jsonPathString) {
 		if (jsonAsserterConfiguration.ignoreJsonPathException) {
 			logOverridingWarning();
 			return null;
@@ -278,7 +282,7 @@ class JsonAsserter implements JsonVerifiable {
 		}
 	}
 
-	JSONArray checkBufferedJsonPathString() {
+	@Nullable JSONArray checkBufferedJsonPathString() {
 		return check(createJsonPathString());
 	}
 

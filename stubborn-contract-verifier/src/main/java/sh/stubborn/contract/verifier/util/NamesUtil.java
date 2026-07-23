@@ -201,8 +201,8 @@ public final class NamesUtil {
 			return FileVisitResult.CONTINUE;
 		}
 
-		public void rename() {
-			this.filesToRename.forEach(fileAndNewName -> {
+		void rename() {
+			this.filesToRename.forEach((fileAndNewName) -> {
 				fileAndNewName.file.renameTo(new File(fileAndNewName.file.getParentFile(), fileAndNewName.newName));
 			});
 		}

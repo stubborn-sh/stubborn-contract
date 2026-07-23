@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 
 /**
@@ -36,21 +37,21 @@ import sh.stubborn.contract.spec.Contract;
  */
 public class YamlContract {
 
-	public Request request;
+	public @Nullable Request request;
 
-	public Response response;
+	public @Nullable Response response;
 
-	public Input input;
+	public @Nullable Input input;
 
-	public OutputMessage outputMessage;
+	public @Nullable OutputMessage outputMessage;
 
-	public String description;
+	public @Nullable String description;
 
-	public String label;
+	public @Nullable String label;
 
-	public String name;
+	public @Nullable String name;
 
-	public Integer priority;
+	public @Nullable Integer priority;
 
 	public boolean ignored;
 
@@ -83,27 +84,27 @@ public class YamlContract {
 
 	public static class Request {
 
-		public String method;
+		public @Nullable String method;
 
-		public String url;
+		public @Nullable String url;
 
-		public String urlPath;
+		public @Nullable String urlPath;
 
 		public Map<String, Object> queryParameters = new LinkedHashMap<String, Object>();
 
-		public Map<String, Object> headers = new LinkedHashMap<String, Object>();
+		public @Nullable Map<String, Object> headers = new LinkedHashMap<String, Object>();
 
-		public Map<String, Object> cookies = new LinkedHashMap<String, Object>();
+		public @Nullable Map<String, Object> cookies = new LinkedHashMap<String, Object>();
 
-		public Object body;
+		public @Nullable Object body;
 
-		public String bodyFromFile;
+		public @Nullable String bodyFromFile;
 
-		public String bodyFromFileAsBytes;
+		public @Nullable String bodyFromFileAsBytes;
 
 		public StubMatchers matchers = new StubMatchers();
 
-		public Multipart multipart;
+		public @Nullable Multipart multipart;
 
 		@Override
 		public boolean equals(Object o) {
@@ -171,23 +172,23 @@ public class YamlContract {
 
 	public static class Named {
 
-		public String paramName;
+		public @Nullable String paramName;
 
-		public String fileName;
+		public @Nullable String fileName;
 
-		public String fileContent;
+		public @Nullable String fileContent;
 
-		public String fileContentAsBytes;
+		public @Nullable String fileContentAsBytes;
 
-		public String fileContentFromFileAsBytes;
+		public @Nullable String fileContentFromFileAsBytes;
 
-		public String contentType;
+		public @Nullable String contentType;
 
-		public String fileNameCommand;
+		public @Nullable String fileNameCommand;
 
-		public String fileContentCommand;
+		public @Nullable String fileContentCommand;
 
-		public String contentTypeCommand;
+		public @Nullable String contentTypeCommand;
 
 		@Override
 		public boolean equals(Object o) {
@@ -227,7 +228,7 @@ public class YamlContract {
 
 	public static class StubMatchers {
 
-		public KeyValueMatcher url;
+		public @Nullable KeyValueMatcher url;
 
 		public List<BodyStubMatcher> body = new ArrayList<BodyStubMatcher>();
 
@@ -237,7 +238,7 @@ public class YamlContract {
 
 		public List<KeyValueMatcher> cookies = new ArrayList<KeyValueMatcher>();
 
-		public MultipartStubMatcher multipart;
+		public @Nullable MultipartStubMatcher multipart;
 
 		@Override
 		public boolean equals(Object o) {
@@ -270,9 +271,9 @@ public class YamlContract {
 
 		equal_to, containing, matching, not_matching, equal_to_json, equal_to_xml, absent, binary_equal_to;
 
-		static MatchingType from(String string) {
+		static @Nullable MatchingType from(String string) {
 			return Arrays.stream(values())
-				.filter(matchingType -> matchingType.name()
+				.filter((matchingType) -> matchingType.name()
 					.replace("_", "")
 					.equalsIgnoreCase(string.toLowerCase(Locale.ROOT).replace("_", "")))
 				.findFirst()
@@ -283,19 +284,19 @@ public class YamlContract {
 
 	public static class BodyStubMatcher {
 
-		public String path;
+		public @Nullable String path;
 
-		public StubMatcherType type;
+		public @Nullable StubMatcherType type;
 
-		public String value;
+		public @Nullable String value;
 
-		public PredefinedRegex predefined;
+		public @Nullable PredefinedRegex predefined;
 
-		public Integer minOccurrence;
+		public @Nullable Integer minOccurrence;
 
-		public Integer maxOccurrence;
+		public @Nullable Integer maxOccurrence;
 
-		public RegexType regexType;
+		public @Nullable RegexType regexType;
 
 		@Override
 		public boolean equals(Object o) {
@@ -327,7 +328,7 @@ public class YamlContract {
 
 	public enum RegexType {
 
-		as_integer, as_double, as_float, as_long, as_short, as_boolean, as_string;
+		as_integer, as_double, as_float, as_long, as_short, as_boolean, as_string
 
 	}
 
@@ -363,13 +364,13 @@ public class YamlContract {
 
 	public static class MultipartNamedStubMatcher {
 
-		public String paramName;
+		public @Nullable String paramName;
 
-		public ValueMatcher fileName;
+		public @Nullable ValueMatcher fileName;
 
-		public ValueMatcher fileContent;
+		public @Nullable ValueMatcher fileContent;
 
-		public ValueMatcher contentType;
+		public @Nullable ValueMatcher contentType;
 
 		@Override
 		public boolean equals(Object o) {
@@ -399,9 +400,9 @@ public class YamlContract {
 
 	public static class ValueMatcher {
 
-		public String regex;
+		public @Nullable String regex;
 
-		public PredefinedRegex predefined;
+		public @Nullable PredefinedRegex predefined;
 
 		public ValueMatcher() {
 		}
@@ -436,19 +437,19 @@ public class YamlContract {
 
 	public static class BodyTestMatcher {
 
-		public String path;
+		public @Nullable String path;
 
-		public TestMatcherType type;
+		public @Nullable TestMatcherType type;
 
-		public String value;
+		public @Nullable String value;
 
-		public Integer minOccurrence;
+		public @Nullable Integer minOccurrence;
 
-		public Integer maxOccurrence;
+		public @Nullable Integer maxOccurrence;
 
-		public PredefinedRegex predefined;
+		public @Nullable PredefinedRegex predefined;
 
-		public RegexType regexType;
+		public @Nullable RegexType regexType;
 
 		@Override
 		public boolean equals(Object o) {
@@ -481,15 +482,15 @@ public class YamlContract {
 
 	public static class KeyValueMatcher {
 
-		public String key;
+		public @Nullable String key;
 
-		public String regex;
+		public @Nullable String regex;
 
-		public PredefinedRegex predefined;
+		public @Nullable PredefinedRegex predefined;
 
-		public String command;
+		public @Nullable String command;
 
-		public RegexType regexType;
+		public @Nullable RegexType regexType;
 
 		@Override
 		public boolean equals(Object o) {
@@ -523,11 +524,11 @@ public class YamlContract {
 
 	public static class QueryParameterMatcher {
 
-		public String key;
+		public @Nullable String key;
 
-		public MatchingType type;
+		public @Nullable MatchingType type;
 
-		public Object value;
+		public @Nullable Object value;
 
 		@Override
 		public boolean equals(Object o) {
@@ -555,15 +556,15 @@ public class YamlContract {
 
 	public static class TestHeaderMatcher {
 
-		public String key;
+		public @Nullable String key;
 
-		public String regex;
+		public @Nullable String regex;
 
-		public String command;
+		public @Nullable String command;
 
-		public PredefinedRegex predefined;
+		public @Nullable PredefinedRegex predefined;
 
-		public RegexType regexType;
+		public @Nullable RegexType regexType;
 
 		@Override
 		public boolean equals(Object o) {
@@ -594,15 +595,15 @@ public class YamlContract {
 
 	public static class TestCookieMatcher {
 
-		public String key;
+		public @Nullable String key;
 
-		public String regex;
+		public @Nullable String regex;
 
-		public String command;
+		public @Nullable String command;
 
-		public PredefinedRegex predefined;
+		public @Nullable PredefinedRegex predefined;
 
-		public RegexType regexType;
+		public @Nullable RegexType regexType;
 
 		@Override
 		public boolean equals(Object o) {
@@ -634,41 +635,41 @@ public class YamlContract {
 	public enum PredefinedRegex {
 
 		only_alpha_unicode, number, any_double, any_boolean, ip_address, hostname, email, url, uuid, iso_date,
-		iso_date_time, iso_time, iso_8601_with_offset, non_empty, non_blank;
+		iso_date_time, iso_time, iso_8601_with_offset, non_empty, non_blank
 
 	}
 
 	public enum StubMatcherType {
 
-		by_date, by_time, by_timestamp, by_regex, by_equality, by_type, by_null;
+		by_date, by_time, by_timestamp, by_regex, by_equality, by_type, by_null
 
 	}
 
 	public enum TestMatcherType {
 
-		by_date, by_time, by_timestamp, by_regex, by_equality, by_type, by_command, by_null;
+		by_date, by_time, by_timestamp, by_regex, by_equality, by_type, by_command, by_null
 
 	}
 
 	public static class Response {
 
-		public int status;
+		public @Nullable Integer status;
 
-		public Map<String, Object> headers = new LinkedHashMap<String, Object>();
+		public @Nullable Map<String, Object> headers = new LinkedHashMap<String, Object>();
 
-		public Map<String, Object> cookies = new LinkedHashMap<String, Object>();
+		public @Nullable Map<String, Object> cookies = new LinkedHashMap<String, Object>();
 
-		public Object body;
+		public @Nullable Object body;
 
-		public String bodyFromFile;
+		public @Nullable String bodyFromFile;
 
-		public String bodyFromFileAsBytes;
+		public @Nullable String bodyFromFileAsBytes;
 
 		public TestMatchers matchers = new TestMatchers();
 
-		public Boolean async;
+		public @Nullable Boolean async;
 
-		public Integer fixedDelayMilliseconds;
+		public @Nullable Integer fixedDelayMilliseconds;
 
 		@Override
 		public boolean equals(Object o) {
@@ -679,7 +680,7 @@ public class YamlContract {
 				return false;
 			}
 			Response response = (Response) o;
-			return status == response.status && Objects.equals(headers, response.headers)
+			return Objects.equals(status, response.status) && Objects.equals(headers, response.headers)
 					&& Objects.equals(cookies, response.cookies) && Objects.equals(body, response.body)
 					&& Objects.equals(bodyFromFile, response.bodyFromFile)
 					&& Objects.equals(bodyFromFileAsBytes, response.bodyFromFileAsBytes)
@@ -738,9 +739,9 @@ public class YamlContract {
 
 	public static class Input {
 
-		public String triggeredBy;
+		public @Nullable String triggeredBy;
 
-		public String assertThat;
+		public @Nullable String assertThat;
 
 		@Override
 		public boolean equals(Object o) {
@@ -768,17 +769,17 @@ public class YamlContract {
 
 	public static class OutputMessage {
 
-		public String sentTo;
+		public @Nullable String sentTo;
 
-		public Map<String, Object> headers = new LinkedHashMap<String, Object>();
+		public @Nullable Map<String, Object> headers = new LinkedHashMap<String, Object>();
 
-		public Object body;
+		public @Nullable Object body;
 
-		public String bodyFromFile;
+		public @Nullable String bodyFromFile;
 
-		public String bodyFromFileAsBytes;
+		public @Nullable String bodyFromFileAsBytes;
 
-		public String assertThat;
+		public @Nullable String assertThat;
 
 		public TestMatchers matchers = new TestMatchers();
 
@@ -792,7 +793,7 @@ public class YamlContract {
 			}
 			OutputMessage that = (OutputMessage) o;
 			return Objects.equals(sentTo, that.sentTo) && Objects.equals(headers, that.headers)
-					&& Objects.equals(body, that.body) && Objects.equals(bodyFromFile, that.bodyFromFile)
+					&& Objects.equals(body, that.body) && Objects.equals(this.bodyFromFile, that.bodyFromFile)
 					&& Objects.equals(bodyFromFileAsBytes, that.bodyFromFileAsBytes)
 					&& Objects.equals(assertThat, that.assertThat) && Objects.equals(matchers, that.matchers);
 		}

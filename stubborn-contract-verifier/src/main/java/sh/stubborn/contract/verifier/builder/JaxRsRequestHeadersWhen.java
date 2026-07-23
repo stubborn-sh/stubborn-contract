@@ -47,7 +47,7 @@ class JaxRsRequestHeadersWhen implements When {
 		Iterator<Header> iterator = request.getHeaders()
 			.getEntries()
 			.stream()
-			.filter(header -> !headerToIgnore(header))
+			.filter((header) -> !headerToIgnore(header))
 			.iterator();
 		while (iterator.hasNext()) {
 			Header header = iterator.next();

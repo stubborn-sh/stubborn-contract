@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.stubrunner;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Exception thrown when a stub was not found.
  *
@@ -24,7 +26,7 @@ package sh.stubborn.contract.stubrunner;
  */
 public class StubNotFoundException extends RuntimeException {
 
-	public StubNotFoundException(String groupId, String artifactId) {
+	public StubNotFoundException(@Nullable String groupId, String artifactId) {
 		super("Stub not found for groupid [" + groupId + "] and artifactid [" + artifactId + "]");
 	}
 

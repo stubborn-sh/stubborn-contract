@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,15 +38,15 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 
 	private static final Logger log = LoggerFactory.getLogger(OutputMessage.class);
 
-	private DslProperty<String> sentTo;
+	private @Nullable DslProperty<String> sentTo;
 
-	private Headers headers;
+	private @Nullable Headers headers;
 
-	private DslProperty body;
+	private @Nullable DslProperty body;
 
-	private ExecutionProperty assertThat;
+	private @Nullable ExecutionProperty assertThat;
 
-	private ResponseBodyMatchers bodyMatchers;
+	private @Nullable ResponseBodyMatchers bodyMatchers;
 
 	private ServerPatternValueDslProperty property = new ServerPatternValueDslProperty();
 
@@ -123,43 +124,43 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 		this.property = property;
 	}
 
-	public DslProperty<String> getSentTo() {
+	public @Nullable DslProperty<String> getSentTo() {
 		return sentTo;
 	}
 
-	public void setSentTo(DslProperty<String> sentTo) {
+	public void setSentTo(@Nullable DslProperty<String> sentTo) {
 		this.sentTo = sentTo;
 	}
 
-	public Headers getHeaders() {
+	public @Nullable Headers getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(Headers headers) {
+	public void setHeaders(@Nullable Headers headers) {
 		this.headers = headers;
 	}
 
-	public DslProperty getBody() {
+	public @Nullable DslProperty getBody() {
 		return body;
 	}
 
-	public void setBody(DslProperty body) {
+	public void setBody(@Nullable DslProperty body) {
 		this.body = body;
 	}
 
-	public ExecutionProperty getAssertThat() {
+	public @Nullable ExecutionProperty getAssertThat() {
 		return assertThat;
 	}
 
-	public void setAssertThat(ExecutionProperty assertThat) {
+	public void setAssertThat(@Nullable ExecutionProperty assertThat) {
 		this.assertThat = assertThat;
 	}
 
-	public ResponseBodyMatchers getBodyMatchers() {
+	public @Nullable ResponseBodyMatchers getBodyMatchers() {
 		return bodyMatchers;
 	}
 
-	public void setBodyMatchers(ResponseBodyMatchers bodyMatchers) {
+	public void setBodyMatchers(@Nullable ResponseBodyMatchers bodyMatchers) {
 		this.bodyMatchers = bodyMatchers;
 	}
 
@@ -334,7 +335,7 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 	private static final class ServerPatternValueDslProperty extends PatternValueDslProperty<ServerDslProperty> {
 
 		@Override
-		protected ServerDslProperty createProperty(Pattern pattern, Object generatedValue) {
+		protected ServerDslProperty createProperty(Pattern pattern, @Nullable Object generatedValue) {
 			return new ServerDslProperty(pattern, generatedValue);
 		}
 

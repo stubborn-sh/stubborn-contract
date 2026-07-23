@@ -20,12 +20,14 @@ import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Test;
 
 /**
+ * Tests for {@link MessagingHeaders} constants.
+ *
  * @author Tim Ysewyn
  */
 class MessagingHeadersTests {
 
 	@Test
-	public void MESSAGING_CONTENT_TYPE() {
+	void MESSAGING_CONTENT_TYPE() {
 		BDDAssertions.then(MessagingHeaders.MESSAGING_CONTENT_TYPE).isEqualTo("contentType");
 	}
 

@@ -21,8 +21,12 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.jspecify.annotations.Nullable;
 
 /**
+ * Base class for creating DSL properties backed by regex patterns.
+ *
+ * @param <T> the type of DslProperty to create
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
  */
@@ -30,7 +34,7 @@ abstract class PatternValueDslProperty<T extends DslProperty> implements RegexCr
 
 	private final Random random = new Random();
 
-	protected T createAndValidateProperty(Pattern pattern, Object object) {
+	protected T createAndValidateProperty(Pattern pattern, @Nullable Object object) {
 		if (object != null) {
 			String generatedValue = object.toString();
 			boolean matches = pattern.matcher(generatedValue).matches();
@@ -56,7 +60,7 @@ abstract class PatternValueDslProperty<T extends DslProperty> implements RegexCr
 	 * @param generatedValue - Nullable - potential generated value to be reused
 	 * @return {@link DslProperty} wrapping a pattern and generated value
 	 */
-	protected abstract T createProperty(Pattern pattern, Object generatedValue);
+	protected abstract T createProperty(Pattern pattern, @Nullable Object generatedValue);
 
 	@Override
 	public T anyAlphaUnicode() {

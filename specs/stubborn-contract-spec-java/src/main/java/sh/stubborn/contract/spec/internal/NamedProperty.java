@@ -19,9 +19,12 @@ package sh.stubborn.contract.spec.internal;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Represents a property that has name and content. Used together with multipart requests.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class NamedProperty {
@@ -32,19 +35,19 @@ public class NamedProperty {
 
 	private static final String CONTENT_TYPE = "contentType";
 
-	private DslProperty name;
+	private @Nullable DslProperty name;
 
-	private DslProperty value;
+	private @Nullable DslProperty value;
 
-	private DslProperty contentType;
+	private @Nullable DslProperty contentType;
 
-	public NamedProperty(DslProperty name, DslProperty value) {
+	public NamedProperty(@Nullable DslProperty name, @Nullable DslProperty value) {
 		this.name = name;
 		this.value = value;
 		this.contentType = null;
 	}
 
-	public NamedProperty(DslProperty name, DslProperty value, DslProperty contentType) {
+	public NamedProperty(@Nullable DslProperty name, @Nullable DslProperty value, @Nullable DslProperty contentType) {
 		this.name = name;
 		this.value = value;
 		this.contentType = contentType;
@@ -55,7 +58,7 @@ public class NamedProperty {
 				asDslProperty(value(namedMap, CONTENT_TYPE)));
 	}
 
-	private static DslProperty value(Map<String, DslProperty> namedMap, String key) {
+	private static @Nullable DslProperty value(Map<String, DslProperty> namedMap, String key) {
 		if (namedMap == null) {
 			return null;
 		}
@@ -63,7 +66,7 @@ public class NamedProperty {
 		return namedMap.get(key);
 	}
 
-	public static DslProperty asDslProperty(Object o) {
+	public static @Nullable DslProperty asDslProperty(@Nullable Object o) {
 		if (o == null) {
 			return null;
 		}
@@ -75,24 +78,24 @@ public class NamedProperty {
 		return new DslProperty(o);
 	}
 
-	public DslProperty getName() {
-		return name;
+	public @Nullable DslProperty getName() {
+		return this.name;
 	}
 
-	public void setName(DslProperty name) {
+	public void setName(@Nullable DslProperty name) {
 		this.name = name;
 	}
 
-	public DslProperty getValue() {
-		return value;
+	public @Nullable DslProperty getValue() {
+		return this.value;
 	}
 
-	public void setValue(DslProperty value) {
+	public void setValue(@Nullable DslProperty value) {
 		this.value = value;
 	}
 
-	public DslProperty getContentType() {
-		return contentType;
+	public @Nullable DslProperty getContentType() {
+		return this.contentType;
 	}
 
 	public void setContentType(DslProperty contentType) {
@@ -108,8 +111,8 @@ public class NamedProperty {
 			return false;
 		}
 		NamedProperty that = (NamedProperty) o;
-		return Objects.equals(name, that.name) && Objects.equals(value, that.value)
-				&& Objects.equals(contentType, that.contentType);
+		return Objects.equals(this.name, that.name) && Objects.equals(this.value, that.value)
+				&& Objects.equals(this.contentType, that.contentType);
 	}
 
 	@Override

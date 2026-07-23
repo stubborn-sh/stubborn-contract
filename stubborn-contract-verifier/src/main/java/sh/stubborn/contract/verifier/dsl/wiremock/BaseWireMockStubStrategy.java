@@ -155,7 +155,7 @@ abstract class BaseWireMockStubStrategy {
 	 */
 	String parseBody(List<?> list, ContentType contentType) {
 		final List<Object> result = new ArrayList<>();
-		list.forEach(l -> {
+		list.forEach((l) -> {
 			if (l instanceof Map) {
 				result.add(MapConverter.getStubSideValues(l));
 			}
@@ -207,7 +207,7 @@ abstract class BaseWireMockStubStrategy {
 			}
 			return new JsonMapper().writeValueAsString(value);
 		}
-		catch (JacksonException e) {
+		catch (JacksonException ex) {
 			throw new IllegalArgumentException("The current object [" + value + "] could not be serialized");
 		}
 	}

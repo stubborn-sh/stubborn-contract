@@ -18,82 +18,87 @@ package sh.stubborn.contract.spec.internal;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Matching type with corresponding values.
+ *
+ * @author Marcin Grzejszczak
  */
 public class MatchingTypeValue {
 
-	private MatchingType type;
+	private @Nullable MatchingType type;
 
 	/**
 	 * Value to check.
 	 */
-	private Object value;
+	private @Nullable Object value;
 
 	/**
 	 * Min occurrence when matching by type.
 	 */
-	private Integer minTypeOccurrence;
+	private @Nullable Integer minTypeOccurrence;
 
 	/**
 	 * Max occurrence when matching by type.
 	 */
-	private Integer maxTypeOccurrence;
+	private @Nullable Integer maxTypeOccurrence;
 
 	MatchingTypeValue() {
 	}
 
-	MatchingTypeValue(MatchingType type) {
+	MatchingTypeValue(@Nullable MatchingType type) {
 		this.type = type;
 	}
 
-	MatchingTypeValue(MatchingType type, Object value) {
+	MatchingTypeValue(@Nullable MatchingType type, @Nullable Object value) {
 		this.type = type;
 		this.value = value;
 	}
 
-	MatchingTypeValue(MatchingType type, Object value, Integer minTypeOccurrence) {
+	MatchingTypeValue(@Nullable MatchingType type, @Nullable Object value, @Nullable Integer minTypeOccurrence) {
 		this.type = type;
 		this.value = value;
 		this.minTypeOccurrence = minTypeOccurrence;
 	}
 
-	MatchingTypeValue(MatchingType type, Object value, Integer minTypeOccurrence, Integer maxTypeOccurrence) {
+	MatchingTypeValue(@Nullable MatchingType type, @Nullable Object value, @Nullable Integer minTypeOccurrence,
+			@Nullable Integer maxTypeOccurrence) {
 		this.type = type;
 		this.value = value;
 		this.minTypeOccurrence = minTypeOccurrence;
 		this.maxTypeOccurrence = maxTypeOccurrence;
 	}
 
-	public MatchingType getType() {
-		return type;
+	public @Nullable MatchingType getType() {
+		return this.type;
 	}
 
-	public void setType(MatchingType type) {
+	public void setType(@Nullable MatchingType type) {
 		this.type = type;
 	}
 
-	public Object getValue() {
-		return value;
+	public @Nullable Object getValue() {
+		return this.value;
 	}
 
-	public void setValue(Object value) {
+	public void setValue(@Nullable Object value) {
 		this.value = value;
 	}
 
-	public Integer getMinTypeOccurrence() {
-		return minTypeOccurrence;
+	public @Nullable Integer getMinTypeOccurrence() {
+		return this.minTypeOccurrence;
 	}
 
-	public void setMinTypeOccurrence(Integer minTypeOccurrence) {
+	public void setMinTypeOccurrence(@Nullable Integer minTypeOccurrence) {
 		this.minTypeOccurrence = minTypeOccurrence;
 	}
 
-	public Integer getMaxTypeOccurrence() {
-		return maxTypeOccurrence;
+	public @Nullable Integer getMaxTypeOccurrence() {
+		return this.maxTypeOccurrence;
 	}
 
-	public void setMaxTypeOccurrence(Integer maxTypeOccurrence) {
+	public void setMaxTypeOccurrence(@Nullable Integer maxTypeOccurrence) {
 		this.maxTypeOccurrence = maxTypeOccurrence;
 	}
 
@@ -106,20 +111,20 @@ public class MatchingTypeValue {
 			return false;
 		}
 		MatchingTypeValue value1 = (MatchingTypeValue) o;
-		return type == value1.type && Objects.equals(value, value1.value)
-				&& Objects.equals(minTypeOccurrence, value1.minTypeOccurrence)
-				&& Objects.equals(maxTypeOccurrence, value1.maxTypeOccurrence);
+		return this.type == value1.type && Objects.equals(this.value, value1.value)
+				&& Objects.equals(this.minTypeOccurrence, value1.minTypeOccurrence)
+				&& Objects.equals(this.maxTypeOccurrence, value1.maxTypeOccurrence);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(type, value, minTypeOccurrence, maxTypeOccurrence);
+		return Objects.hash(this.type, this.value, this.minTypeOccurrence, this.maxTypeOccurrence);
 	}
 
 	@Override
 	public String toString() {
-		return "MatchingTypeValue{" + "type=" + type + ", value=" + value + ", minTypeOccurrence=" + minTypeOccurrence
-				+ ", maxTypeOccurrence=" + maxTypeOccurrence + '}';
+		return "MatchingTypeValue{" + "type=" + this.type + ", value=" + this.value + ", minTypeOccurrence="
+				+ this.minTypeOccurrence + ", maxTypeOccurrence=" + this.maxTypeOccurrence + '}';
 	}
 
 }

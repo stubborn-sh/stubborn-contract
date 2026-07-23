@@ -44,13 +44,13 @@ class FileSaver {
 		this.fileExtension = fileExtension;
 	}
 
-	public void saveClassFile(Path classPath, byte[] classBytes) {
+	void saveClassFile(Path classPath, byte[] classBytes) {
 		log.info("Creating new class file [{}]", classPath);
 		try {
 			Files.write(classPath, classBytes, CREATE, TRUNCATE_EXISTING);
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -64,8 +64,8 @@ class FileSaver {
 		try {
 			Files.createDirectories(testBaseDir);
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 		return testBaseDir;
 	}

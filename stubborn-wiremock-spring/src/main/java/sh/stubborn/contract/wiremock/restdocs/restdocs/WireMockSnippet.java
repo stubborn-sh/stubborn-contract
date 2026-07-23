@@ -22,8 +22,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.jspecify.annotations.Nullable;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
@@ -86,11 +89,11 @@ public class WireMockSnippet implements Snippet {
 
 	private Set<String> headerBlackList = new HashSet<>(Arrays.asList("host", "content-length"));
 
-	private Set<String> jsonPaths = new LinkedHashSet<>();
+	@Nullable private Set<String> jsonPaths = new LinkedHashSet<>();
 
-	private MediaType contentType;
+	@Nullable private MediaType contentType;
 
-	private StubMapping stubMapping;
+	@Nullable private StubMapping stubMapping;
 
 	private boolean hasJsonBodyRequestToMatch = false;
 
@@ -103,8 +106,9 @@ public class WireMockSnippet implements Snippet {
 			this.stubMapping = request(operation).willReturn(response(operation)).build();
 		}
 		String json = Json.write(this.stubMapping);
-		RestDocumentationContext context;
-		context = (RestDocumentationContext) operation.getAttributes().get(RestDocumentationContext.class.getName());
+		RestDocumentationContext context = (RestDocumentationContext) operation.getAttributes()
+			.get(RestDocumentationContext.class.getName());
+		Objects.requireNonNull(context, "RestDocumentationContext not found in operation attributes");
 		RestDocumentationContextPlaceholderResolverFactory placeholders;
 		placeholders = new RestDocumentationContextPlaceholderResolverFactory();
 		WriterResolver writerResolver = new StandardWriterResolver(placeholders, "UTF-8", TEMPLATE_FORMAT);

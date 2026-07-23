@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.verifier.messaging.camel;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -25,6 +26,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.support.DefaultExchange;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
@@ -35,6 +37,9 @@ import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessageM
 import org.springframework.util.StringUtils;
 
 /**
+ * Apache Camel implementation of {@link MessageVerifierSender} and
+ * {@link MessageVerifierReceiver} for contract testing.
+ *
  * @author Marcin Grzejszczak
  */
 public class CamelStubMessages implements MessageVerifierSender<Message>, MessageVerifierReceiver<Message> {
@@ -58,23 +63,23 @@ public class CamelStubMessages implements MessageVerifierSender<Message>, Messag
 	}
 
 	@Override
-	public void send(Message message, String destination, YamlContract contract) {
+	public void send(Message message, String destination, @Nullable YamlContract contract) {
 		try {
 			Exchange exchange = new DefaultExchange(this.context);
 			exchange.setIn(message);
-			StandaloneMetadata standaloneMetadata = StandaloneMetadata
-				.fromMetadata(contract != null ? contract.metadata : null);
+			Map<String, Object> contractMetadata = (contract != null) ? contract.metadata : Collections.emptyMap();
+			StandaloneMetadata standaloneMetadata = StandaloneMetadata.fromMetadata(contractMetadata);
 			ContractVerifierMessageMetadata verifierMessageMetadata = ContractVerifierMessageMetadata
-				.fromMetadata(contract != null ? contract.metadata : null);
+				.fromMetadata(contractMetadata);
 			String finalDestination = finalDestination(destination,
 					additionalOptions(verifierMessageMetadata, standaloneMetadata), verifierMessageMetadata);
 			log.info("Will send a message to URI [" + finalDestination + "]");
 			this.producerTemplate.send(finalDestination, exchange);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.error("Exception occurred while trying to send a message [" + message + "] "
-					+ "to a channel with name [" + destination + "]", e);
-			throw e;
+					+ "to a channel with name [" + destination + "]", ex);
+			throw ex;
 		}
 	}
 
@@ -97,32 +102,33 @@ public class CamelStubMessages implements MessageVerifierSender<Message>, Messag
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
+	public <T> void send(T payload, Map<String, Object> headers, String destination, @Nullable YamlContract contract) {
 		send(this.builder.create(payload, headers), destination, contract);
 	}
 
 	@Override
-	public Message receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+	public @Nullable Message receive(String destination, long timeout, TimeUnit timeUnit,
+			@Nullable YamlContract contract) {
 		try {
-			StandaloneMetadata standaloneMetadata = StandaloneMetadata
-				.fromMetadata(contract != null ? contract.metadata : null);
+			Map<String, Object> contractMetadata = (contract != null) ? contract.metadata : Collections.emptyMap();
+			StandaloneMetadata standaloneMetadata = StandaloneMetadata.fromMetadata(contractMetadata);
 			ContractVerifierMessageMetadata verifierMessageMetadata = ContractVerifierMessageMetadata
-				.fromMetadata(contract != null ? contract.metadata : null);
+				.fromMetadata(contractMetadata);
 			String finalDestination = finalDestination(destination,
 					additionalOptions(verifierMessageMetadata, standaloneMetadata), verifierMessageMetadata);
 			log.info("Will receive a message from URI [" + finalDestination + "]");
 			Exchange exchange = this.consumerTemplate.receive(finalDestination, timeUnit.toMillis(timeout));
-			return exchange != null ? exchange.getIn() : null;
+			return (exchange != null) ? exchange.getIn() : null;
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.error("Exception occurred while trying to read a message from " + " a channel with name [" + destination
-					+ "]", e);
-			throw new IllegalStateException(e);
+					+ "]", ex);
+			throw new IllegalStateException(ex);
 		}
 	}
 
 	@Override
-	public Message receive(String destination, YamlContract contract) {
+	public @Nullable Message receive(String destination, @Nullable YamlContract contract) {
 		return receive(destination, 5, TimeUnit.SECONDS, contract);
 	}
 

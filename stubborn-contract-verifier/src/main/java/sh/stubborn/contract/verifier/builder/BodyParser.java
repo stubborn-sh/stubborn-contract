@@ -73,7 +73,7 @@ interface BodyParser extends BodyThen {
 		}
 		else if (responseBody instanceof GString) {
 			responseBody = extractValue((GString) responseBody, contentType,
-					o -> o instanceof DslProperty ? ((DslProperty) o).getServerValue() : o);
+					(o) -> o instanceof DslProperty ? ((DslProperty) o).getServerValue() : o);
 		}
 		else if (responseBody instanceof DslProperty) {
 			responseBody = MapConverter.getTestSideValues(responseBody);
@@ -91,7 +91,7 @@ interface BodyParser extends BodyThen {
 		if (contentType == ContentType.FORM) {
 			if (bodyValue instanceof Map) {
 				// [a:3, b:4] == "a=3&b=4"
-				return ((Map) bodyValue).entrySet().stream().map(o -> {
+				return ((Map) bodyValue).entrySet().stream().map((o) -> {
 					Map.Entry entry = (Map.Entry) o;
 					return convertUnicodeEscapesIfRequired(
 							entry.getKey().toString() + "=" + MapConverter.getTestSideValuesForText(entry.getValue()));
@@ -100,7 +100,7 @@ interface BodyParser extends BodyThen {
 			else if (bodyValue instanceof List) {
 				// ["a=3", "b=4"] == "a=3&b=4"
 				return ((List) bodyValue).stream()
-					.map(o -> convertUnicodeEscapesIfRequired(MapConverter.getTestSideValuesForText(o).toString()))
+					.map((o) -> convertUnicodeEscapesIfRequired(MapConverter.getTestSideValuesForText(o).toString()))
 					.collect(Collectors.joining("&"))
 					.toString();
 			}

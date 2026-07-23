@@ -117,7 +117,7 @@ class SingleTestGeneratorTests {
 			"import static io.restassured.RestAssured.*", "@Stepwise", "@Ignore",
 			"sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat");
 
-	static final Consumer<String> JAVA_ASSERTER = classToTest -> {
+	static final Consumer<String> JAVA_ASSERTER = (classToTest) -> {
 		int name = Math.abs(new java.util.Random().nextInt());
 		String changedTest = classToTest.replace("public class Test", "public class Test" + name)
 			.replace("public class ContractsTest", "public class Test" + name);
@@ -131,7 +131,7 @@ class SingleTestGeneratorTests {
 				: "test.Test";
 	}
 
-	static final Consumer<String> JAVA_JAXRS_ASSERTER = classToTest -> {
+	static final Consumer<String> JAVA_JAXRS_ASSERTER = (classToTest) -> {
 		int name = Math.abs(new java.util.Random().nextInt());
 		String changedTest = classToTest
 			.replace("public class Test {",
@@ -142,7 +142,7 @@ class SingleTestGeneratorTests {
 		SyntaxChecker.tryToCompileJavaWithoutImports(fqn + name, changedTest);
 	};
 
-	static final Consumer<String> GROOVY_ASSERTER = classToTest -> SyntaxChecker
+	static final Consumer<String> GROOVY_ASSERTER = (classToTest) -> SyntaxChecker
 		.tryToCompileGroovyWithoutImports(classToTest);
 
 	@BeforeEach
@@ -243,30 +243,28 @@ class SingleTestGeneratorTests {
 	}
 
 	static Stream<Arguments> shouldBuildTestClassWithTwoFiles() {
-		return Stream.of(
-				Arguments.of(JUNIT5, MOCKMVC, JAVA_ASSERTER,
-						(Consumer<String>) test -> assertThat(
-								countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
-							.isEqualTo(2)),
+		return Stream.of(Arguments.of(JUNIT5, MOCKMVC, JAVA_ASSERTER,
+				(Consumer<String>) (test) -> assertThat(countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
+					.isEqualTo(2)),
 				Arguments.of(JUNIT5, EXPLICIT, JAVA_ASSERTER,
-						(Consumer<String>) test -> assertThat(
-								countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
-							.isEqualTo(2)),
+						(Consumer<String>) (
+								test) -> assertThat(countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
+									.isEqualTo(2)),
 				Arguments.of(TESTNG, MOCKMVC, JAVA_ASSERTER,
-						(Consumer<String>) test -> assertThat(
-								countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
-							.isEqualTo(2)),
+						(Consumer<String>) (
+								test) -> assertThat(countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
+									.isEqualTo(2)),
 				Arguments.of(TESTNG, EXPLICIT, JAVA_ASSERTER,
-						(Consumer<String>) test -> assertThat(
-								countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
-							.isEqualTo(2)),
+						(Consumer<String>) (
+								test) -> assertThat(countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
+									.isEqualTo(2)),
 				Arguments.of(SPOCK, MOCKMVC, GROOVY_ASSERTER,
-						(Consumer<String>) test -> assertThat(
-								countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
-							.isEqualTo(2)),
+						(Consumer<String>) (
+								test) -> assertThat(countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification"))
+									.isEqualTo(2)),
 				Arguments
 					.of(SPOCK, EXPLICIT, GROOVY_ASSERTER,
-							(Consumer<String>) test -> assertThat(
+							(Consumer<String>) (test) -> assertThat(
 									countOccurrencesOf(test, "\t\t\tMockMvcRequestSpecification request"))
 								.isEqualTo(2)));
 	}

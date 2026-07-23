@@ -329,8 +329,8 @@ class XmlAsserter implements XmlVerifiable {
 			return expr.evaluate(new DynamicContextBuilder(this.cachedObjects.xpathBuilder),
 					new Object[] { this.cachedObjects.document });
 		}
-		catch (Exception e) {
-			throw new XmlAsserterXpathException(xPath(), this.cachedObjects.xmlAsString, e);
+		catch (Exception ex) {
+			throw new XmlAsserterXpathException(xPath(), this.cachedObjects.xmlAsString, ex);
 		}
 	}
 

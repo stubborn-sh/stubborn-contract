@@ -19,6 +19,8 @@ package sh.stubborn.contract.wiremock;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 /**
+ * Utility for building WireMock stub mappings from JSON.
+ *
  * @author Marcin Grzejszczak
  */
 public final class WireMockStubMapping {

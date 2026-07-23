@@ -43,6 +43,7 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import java.util.Base64;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -82,18 +83,28 @@ public class ContractExchangeHandler extends WireMockVerifyHelper<EntityExchange
 
 	private void addResponseHeaders(ResponseDefinitionBuilder definition, HttpHeaders httpHeaders) {
 		for (String name : httpHeaders.headerNames()) {
-			definition.withHeader(name, httpHeaders.get(name).toArray(new String[0]));
+			List<String> values = httpHeaders.get(name);
+			if (values != null) {
+				definition.withHeader(name, values.toArray(new String[0]));
+			}
 		}
 	}
 
 	@Override
 	protected Map<String, Object> getConfiguration(EntityExchangeResult<?> result) {
 		Field field = ReflectionUtils.findField(WebTestClientRestDocumentationConfigurer.class, "configurations");
+		if (field == null) {
+			return new HashMap<>();
+		}
 		ReflectionUtils.makeAccessible(field);
 		String index = result.getRequestHeaders().getFirst(WebTestClient.WEBTESTCLIENT_REQUEST_ID);
 		@SuppressWarnings("unchecked")
-		Map<String, Object> map = (((Map<String, Map<String, Object>>) ReflectionUtils.getField(field, null))
-			.get(index));
+		Map<String, Map<String, Object>> configurations = (Map<String, Map<String, Object>>) ReflectionUtils
+			.getField(field, null);
+		if (configurations == null) {
+			return new HashMap<>();
+		}
+		Map<String, Object> map = configurations.get(index);
 		if (map == null) {
 			return new HashMap<>();
 		}
@@ -106,13 +117,14 @@ public class ContractExchangeHandler extends WireMockVerifyHelper<EntityExchange
 	}
 
 	@Override
-	protected MediaType getContentType(EntityExchangeResult<?> result) {
+	protected @Nullable MediaType getContentType(EntityExchangeResult<?> result) {
 		return result.getRequestHeaders().getContentType();
 	}
 
 	@Override
 	protected byte[] getRequestBodyContent(EntityExchangeResult<?> result) {
-		return result.getRequestBodyContent();
+		byte[] content = result.getRequestBodyContent();
+		return content != null ? content : new byte[0];
 	}
 
 }
@@ -163,19 +175,19 @@ class WireMockHttpRequestAdapter implements Request {
 	}
 
 	@Override
-	public String getHeader(String key) {
+	public @Nullable String getHeader(String key) {
 		HttpHeaders headers = this.result.getRequestHeaders();
 		return headers.containsHeader(key) ? headers.getFirst(key) : null;
 	}
 
 	@Override
-	public HttpHeader header(String key) {
+	public @Nullable HttpHeader header(String key) {
 		HttpHeaders headers = this.result.getRequestHeaders();
 		return headers.containsHeader(key) ? new HttpHeader(key, headers.getValuesAsList(key)) : null;
 	}
 
 	@Override
-	public ContentTypeHeader contentTypeHeader() {
+	public @Nullable ContentTypeHeader contentTypeHeader() {
 		MediaType contentType = this.result.getRequestHeaders().getContentType();
 		if (contentType == null) {
 			return null;
@@ -209,7 +221,7 @@ class WireMockHttpRequestAdapter implements Request {
 	}
 
 	@Override
-	public QueryParameter queryParameter(String key) {
+	public @Nullable QueryParameter queryParameter(String key) {
 		String query = this.result.getUrl().getRawQuery();
 		if (query == null) {
 			return null;
@@ -264,7 +276,7 @@ class WireMockHttpRequestAdapter implements Request {
 		MultiValueMap<String, String> params = parseFormData();
 		List<String> values = params.get(key);
 		if (values == null || values.isEmpty()) {
-			return null;
+			return FormParameter.absent(key);
 		}
 		return new FormParameter(key, values);
 	}
@@ -284,22 +296,26 @@ class WireMockHttpRequestAdapter implements Request {
 
 	@Override
 	public byte[] getBody() {
-		return this.result.getRequestBodyContent();
+		byte[] content = this.result.getRequestBodyContent();
+		return content != null ? content : new byte[0];
 	}
 
 	@Override
 	public String getBodyAsString() {
-		return new String(this.result.getRequestBodyContent(), Charset.forName("UTF-8"));
+		byte[] content = this.result.getRequestBodyContent();
+		return new String(content != null ? content : new byte[0], Charset.forName("UTF-8"));
 	}
 
 	@Override
 	public String getBodyAsBase64() {
-		return Base64.getEncoder().encodeToString(this.result.getRequestBodyContent());
+		byte[] content = this.result.getRequestBodyContent();
+		return Base64.getEncoder().encodeToString(content != null ? content : new byte[0]);
 	}
 
 	@Override
 	public boolean isMultipart() {
-		return MediaType.MULTIPART_FORM_DATA.isCompatibleWith(this.result.getRequestHeaders().getContentType());
+		MediaType contentType = this.result.getRequestHeaders().getContentType();
+		return contentType != null && MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType);
 	}
 
 	@Override
@@ -317,10 +333,12 @@ class WireMockHttpRequestAdapter implements Request {
 
 	// TODO: Consider caching this
 	private Collection<Part> getWireMockParts() {
+		@Nullable String uriTemplate = this.result.getUriTemplate();
+		@Nullable MediaType contentType = this.result.getRequestHeaders().getContentType();
 		MockHttpServletRequest request = MockMvcRequestBuilders
-			.request(this.result.getMethod(), this.result.getUriTemplate())
-			.contentType(this.result.getRequestHeaders().getContentType())
-			.content(this.result.getRequestBodyContent())
+			.request(this.result.getMethod(), uriTemplate != null ? uriTemplate : "/")
+			.contentType(contentType != null ? contentType : MediaType.MULTIPART_FORM_DATA)
+			.content(getBody())
 			.buildRequest(new MockServletContext());
 		try {
 			return new StandardMultipartHttpServletRequest(request).getParts()

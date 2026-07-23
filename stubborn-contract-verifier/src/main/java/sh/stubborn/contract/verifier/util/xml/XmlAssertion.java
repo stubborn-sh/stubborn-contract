@@ -59,8 +59,8 @@ public final class XmlAssertion {
 				Document document = loader.load(inputXml);
 				cachedObjects = new XmlCachedObjects(document, xml);
 			}
-			catch (Exception e) {
-				throw new IllegalStateException("Exception occurred while trying to parse the XML", e);
+			catch (Exception ex) {
+				throw new IllegalStateException("Exception occurred while trying to parse the XML", ex);
 			}
 			CACHE.put(xml, cachedObjects);
 		}

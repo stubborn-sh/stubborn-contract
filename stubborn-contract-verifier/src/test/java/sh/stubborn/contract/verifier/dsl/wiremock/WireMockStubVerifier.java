@@ -37,8 +37,8 @@ public interface WireMockStubVerifier {
 			mappingDefinition.getRequest()
 				.getBodyPatterns()
 				.stream()
-				.filter(p -> p instanceof RegexPattern)
-				.forEach(p -> Pattern.compile((String) ((RegexPattern) p).getValue()));
+				.filter((p) -> p instanceof RegexPattern)
+				.forEach((p) -> Pattern.compile((String) ((RegexPattern) p).getValue()));
 		}
 		String definition = mappingDefinition.toString();
 		assertThat(definition).doesNotContain("sh.stubborn.contract.spec.internal");

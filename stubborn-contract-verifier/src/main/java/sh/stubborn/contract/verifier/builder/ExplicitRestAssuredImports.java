@@ -36,7 +36,7 @@ class ExplicitRestAssuredImports implements Imports {
 
 	@Override
 	public Imports call() {
-		Arrays.stream(REST_ASSURED_3_IMPORTS).forEach(s -> this.blockBuilder.addLineWithEnding("import " + s));
+		Arrays.stream(REST_ASSURED_3_IMPORTS).forEach((s) -> this.blockBuilder.addLineWithEnding("import " + s));
 		return this;
 	}
 

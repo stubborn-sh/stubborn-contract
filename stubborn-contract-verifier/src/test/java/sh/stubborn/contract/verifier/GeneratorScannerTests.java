@@ -61,11 +61,11 @@ class GeneratorScannerTests {
 		properties.setContractsDslDir(new File(getClass().getResource("/directory/with/stubs/package").toURI()));
 		TestGenerator testGenerator = new TestGenerator(properties, classGenerator, fileSaver);
 		testGenerator.generateTestClasses("sh.stubborn.contract.verifier");
-		verify(classGenerator).buildClass(any(), any(), any(), argThat(it -> "exceptionsSpec".equals(it.className)
+		verify(classGenerator).buildClass(any(), any(), any(), argThat((it) -> "exceptionsSpec".equals(it.className)
 				&& "sh.stubborn.contract.verifier".equals(it.classPackage)));
-		verify(classGenerator).buildClass(any(), any(), any(), argThat(it -> "exceptionsSpec".equals(it.className)
+		verify(classGenerator).buildClass(any(), any(), any(), argThat((it) -> "exceptionsSpec".equals(it.className)
 				&& "sh.stubborn.contract.verifier.v1".equals(it.classPackage)));
-		verify(classGenerator).buildClass(any(), any(), any(), argThat(it -> "exceptionsSpec".equals(it.className)
+		verify(classGenerator).buildClass(any(), any(), any(), argThat((it) -> "exceptionsSpec".equals(it.className)
 				&& "sh.stubborn.contract.verifier.v2".equals(it.classPackage)));
 	}
 
@@ -77,7 +77,7 @@ class GeneratorScannerTests {
 		properties.setContractsDslDir(new File(getClass().getResource("/directory/with/name-with-hyphen").toURI()));
 		TestGenerator testGenerator = new TestGenerator(properties, classGenerator, fileSaver);
 		testGenerator.generateTestClasses("sh.stubborn.contract.verifier");
-		verify(classGenerator).buildClass(any(), any(), any(), argThat(it -> "car_rentalSpec".equals(it.className)
+		verify(classGenerator).buildClass(any(), any(), any(), argThat((it) -> "car_rentalSpec".equals(it.className)
 				&& "sh.stubborn.contract.verifier".equals(it.classPackage)));
 	}
 

@@ -79,14 +79,13 @@ public class JsonPathAssert extends AbstractAssert<JsonPathAssert, JsonVerifiabl
 	 */
 	public JsonPathAssert isEqualTo(String value) {
 		isNotNull();
-		JsonVerifiable jsonVerifiable = null;
 		try {
-			jsonVerifiable = actual.isEqualTo(value);
+			return new JsonPathAssert(actual.isEqualTo(value));
 		}
 		catch (IllegalStateException e) {
 			failWithMessage("Expected JSON to match JSON Path <%s> but it didn't", actual.jsonPath());
+			return this;
 		}
-		return new JsonPathAssert(jsonVerifiable);
 	}
 
 	/**
@@ -94,14 +93,13 @@ public class JsonPathAssert extends AbstractAssert<JsonPathAssert, JsonVerifiabl
 	 */
 	public JsonPathAssert isEqualTo(Number value) {
 		isNotNull();
-		JsonVerifiable jsonVerifiable = null;
 		try {
-			jsonVerifiable = actual.isEqualTo(value);
+			return new JsonPathAssert(actual.isEqualTo(value));
 		}
 		catch (IllegalStateException e) {
 			failWithMessage("Expected JSON to match JSON Path <%s> but it didn't", actual.jsonPath());
+			return this;
 		}
-		return new JsonPathAssert(jsonVerifiable);
 	}
 
 	/**
@@ -109,14 +107,13 @@ public class JsonPathAssert extends AbstractAssert<JsonPathAssert, JsonVerifiabl
 	 */
 	public JsonPathAssert isInstanceOf(Class clazz) {
 		isNotNull();
-		JsonVerifiable jsonVerifiable = null;
 		try {
-			jsonVerifiable = actual.isInstanceOf(clazz);
+			return new JsonPathAssert(actual.isInstanceOf(clazz));
 		}
 		catch (IllegalStateException e) {
 			failWithMessage(e.getMessage());
+			return this;
 		}
-		return new JsonPathAssert(jsonVerifiable);
 	}
 
 	/**
@@ -124,14 +121,13 @@ public class JsonPathAssert extends AbstractAssert<JsonPathAssert, JsonVerifiabl
 	 */
 	public JsonPathAssert matches(String value) {
 		isNotNull();
-		JsonVerifiable jsonVerifiable = null;
 		try {
-			jsonVerifiable = actual.matches(value);
+			return new JsonPathAssert(actual.matches(value));
 		}
 		catch (IllegalStateException e) {
 			failWithMessage("Expected JSON to match JSON Path <%s> but it didn't", actual.jsonPath());
+			return this;
 		}
-		return new JsonPathAssert(jsonVerifiable);
 	}
 
 	/**
@@ -139,14 +135,13 @@ public class JsonPathAssert extends AbstractAssert<JsonPathAssert, JsonVerifiabl
 	 */
 	public JsonPathAssert isEqualTo(Boolean value) {
 		isNotNull();
-		JsonVerifiable jsonVerifiable = null;
 		try {
-			jsonVerifiable = actual.isEqualTo(value);
+			return new JsonPathAssert(actual.isEqualTo(value));
 		}
 		catch (IllegalStateException e) {
 			failWithMessage("Expected JSON to match JSON Path <%s> but it didn't", actual.jsonPath());
+			return this;
 		}
-		return new JsonPathAssert(jsonVerifiable);
 	}
 
 	/**
@@ -154,14 +149,13 @@ public class JsonPathAssert extends AbstractAssert<JsonPathAssert, JsonVerifiabl
 	 */
 	public JsonPathAssert value() {
 		isNotNull();
-		JsonVerifiable jsonVerifiable = null;
 		try {
-			jsonVerifiable = actual.value();
+			return new JsonPathAssert(actual.value());
 		}
 		catch (IllegalStateException e) {
 			failWithMessage("Expected JSON to match JSON Path <%s> but it didn't", actual.jsonPath());
+			return this;
 		}
-		return new JsonPathAssert(jsonVerifiable);
 	}
 
 	/**

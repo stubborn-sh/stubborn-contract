@@ -26,6 +26,7 @@ package sh.stubborn.contract.spec.internal;
 public interface CanBeDynamic {
 
 	/**
+	 * Returns a generated, concrete value.
 	 * @return a generated, concrete value.
 	 */
 	Object generateConcreteValue();

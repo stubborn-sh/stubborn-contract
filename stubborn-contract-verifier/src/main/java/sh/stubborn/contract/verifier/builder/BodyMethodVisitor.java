@@ -65,7 +65,7 @@ interface BodyMethodVisitor {
 	default List<MethodVisitor> filterVisitors(List<? extends MethodVisitor> methodVisitors,
 			SingleContractMetadata singleContractMetadata) {
 		return methodVisitors.stream()
-			.filter(given -> given.accept(singleContractMetadata))
+			.filter((given) -> given.accept(singleContractMetadata))
 			.collect(Collectors.toList());
 	}
 
@@ -98,7 +98,7 @@ interface BodyMethodVisitor {
 		Iterator<MethodVisitor> iterator = visitors.iterator();
 		while (iterator.hasNext()) {
 			MethodVisitor visitor = iterator.next();
-			visitor.apply(singleContractMetadata);
+			var unused = visitor.apply(singleContractMetadata);
 			if (iterator.hasNext()) {
 				blockBuilder.addEmptyLine();
 			}
@@ -117,7 +117,7 @@ interface BodyMethodVisitor {
 		Iterator<MethodVisitor> iterator = visitors.iterator();
 		while (iterator.hasNext()) {
 			MethodVisitor visitor = iterator.next();
-			visitor.apply(singleContractMetadata);
+			var unused = visitor.apply(singleContractMetadata);
 			blockBuilder.addEndingIfNotPresent();
 			if (iterator.hasNext()) {
 				blockBuilder.addEmptyLine();

@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.messaging.stream;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -26,6 +27,9 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import org.springframework.messaging.Message;
 
 /**
+ * Delegates {@link MessageVerifierSender} and {@link MessageVerifierReceiver} to separate
+ * sender and receiver instances for Spring Cloud Stream.
+ *
  * @author Marcin Grzejszczak
  */
 public class StreamStubMessages implements MessageVerifierSender<Message<?>>, MessageVerifierReceiver<Message<?>> {
@@ -40,22 +44,23 @@ public class StreamStubMessages implements MessageVerifierSender<Message<?>>, Me
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
+	public <T> void send(T payload, Map<String, Object> headers, String destination, @Nullable YamlContract contract) {
 		this.sender.send(payload, headers, destination, contract);
 	}
 
 	@Override
-	public void send(Message<?> message, String destination, YamlContract contract) {
+	public void send(Message<?> message, String destination, @Nullable YamlContract contract) {
 		this.sender.send(message, destination, contract);
 	}
 
 	@Override
-	public Message<?> receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+	public @Nullable Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
+			@Nullable YamlContract contract) {
 		return this.receiver.receive(destination, timeout, timeUnit, contract);
 	}
 
 	@Override
-	public Message<?> receive(String destination, YamlContract contract) {
+	public @Nullable Message<?> receive(String destination, @Nullable YamlContract contract) {
 		return this.receiver.receive(destination, contract);
 	}
 

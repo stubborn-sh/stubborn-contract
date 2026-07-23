@@ -18,6 +18,8 @@ package sh.stubborn.contract.spec.internal;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * @author Marcin Grzejszczak
  */
@@ -33,7 +35,7 @@ public class PathBodyMatcher implements BodyMatcher {
 	}
 
 	@Override
-	public MatchingType matchingType() {
+	public @Nullable MatchingType matchingType() {
 		return this.matchingTypeValue.getType();
 	}
 
@@ -43,17 +45,17 @@ public class PathBodyMatcher implements BodyMatcher {
 	}
 
 	@Override
-	public Object value() {
+	public @Nullable Object value() {
 		return this.matchingTypeValue.getValue();
 	}
 
 	@Override
-	public Integer minTypeOccurrence() {
+	public @Nullable Integer minTypeOccurrence() {
 		return this.matchingTypeValue.getMinTypeOccurrence();
 	}
 
 	@Override
-	public Integer maxTypeOccurrence() {
+	public @Nullable Integer maxTypeOccurrence() {
 		return this.matchingTypeValue.getMaxTypeOccurrence();
 	}
 

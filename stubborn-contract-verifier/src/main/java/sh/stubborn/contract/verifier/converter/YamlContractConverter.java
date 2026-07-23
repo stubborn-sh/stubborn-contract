@@ -59,8 +59,8 @@ public class YamlContractConverter implements ContractConverter<List<YamlContrac
 			try {
 				this.yamlToContracts.convertFrom(file);
 			}
-			catch (Exception e) {
-				log.warn("Error Processing yaml file. Skipping Contract Generation ", e);
+			catch (Exception ex) {
+				log.warn("Error Processing yaml file. Skipping Contract Generation ", ex);
 				acceptFile = false;
 			}
 		}
@@ -87,7 +87,7 @@ public class YamlContractConverter implements ContractConverter<List<YamlContrac
 		try {
 			return singletonList(this.mapper.readValue(bytes, YamlContract.class));
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return this.mapper.readerForListOf(YamlContract.class).readValue(bytes);
 		}
 	}

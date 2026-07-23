@@ -23,6 +23,7 @@ import java.util.Random;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
@@ -80,7 +81,7 @@ final class AetherFactories {
 	 * Return the injected system if available, otherwise create a new one via a
 	 * {@link DefaultServiceLocator} without hard-linking to optional providers.
 	 */
-	static RepositorySystem repositorySystemOr(RepositorySystem injectedOrNull) {
+	static RepositorySystem repositorySystemOr(@Nullable RepositorySystem injectedOrNull) {
 		if (injectedOrNull != null) {
 			if (log.isDebugEnabled()) {
 				log.debug("Using Maven-injected RepositorySystem");

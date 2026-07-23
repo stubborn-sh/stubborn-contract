@@ -57,7 +57,7 @@ public class MapConverter {
 		try {
 			return new JsonMapper().readValue(value, Object.class);
 		}
-		catch (JacksonException e) {
+		catch (JacksonException ex) {
 			throw new IllegalArgumentException("The current json [" + value + "] could not be deserialized");
 		}
 	};
@@ -175,7 +175,7 @@ public class MapConverter {
 	 */
 	public static Object getClientOrServerSideValues(Object json, boolean clientSide,
 			Function<String, Object> parsingFunction) {
-		return transformValues(json, val -> {
+		return transformValues(json, (val) -> {
 			if (val instanceof DslProperty) {
 				DslProperty<?> dslProperty = ((DslProperty<?>) val);
 				return clientSide

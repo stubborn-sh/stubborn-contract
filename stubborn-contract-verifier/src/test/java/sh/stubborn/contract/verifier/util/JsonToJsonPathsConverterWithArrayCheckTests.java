@@ -55,22 +55,22 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
 		// size check
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").hasSize(3)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items']");
 		});
 		// first element
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(0).isEqualTo(\"first\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][0]");
 		});
 		// second element
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(1).isEqualTo(\"second\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][1]");
 		});
 		// third element
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(2).isEqualTo(\"third\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][2]");
 		});
@@ -83,23 +83,23 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		Map<String, Object> json = Map.of("numbers", List.of(10, 20, 30, 40));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['numbers']\").hasSize(4)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['numbers']");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['numbers']\").elementWithIndex(0).isEqualTo(10)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['numbers'][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['numbers']\").elementWithIndex(1).isEqualTo(20)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['numbers'][1]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['numbers']\").elementWithIndex(2).isEqualTo(30)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['numbers'][2]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['numbers']\").elementWithIndex(3).isEqualTo(40)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['numbers'][3]");
 		});
@@ -112,19 +112,19 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		Map<String, Object> json = Map.of("flags", List.of(true, false, true));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['flags']\").hasSize(3)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['flags']");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['flags']\").elementWithIndex(0).isEqualTo(true)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['flags'][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['flags']\").elementWithIndex(1).isEqualTo(false)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['flags'][1]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['flags']\").elementWithIndex(2).isEqualTo(true)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['flags'][2]");
 		});
@@ -137,19 +137,19 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		Map<String, Object> json = Map.of("mixed", List.of("text", 123, true));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['mixed']\").hasSize(3)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['mixed']");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['mixed']\").elementWithIndex(0).isEqualTo(\"text\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['mixed'][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['mixed']\").elementWithIndex(1).isEqualTo(123)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['mixed'][1]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['mixed']\").elementWithIndex(2).isEqualTo(true)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['mixed'][2]");
 		});
@@ -165,22 +165,22 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 				List.of(Map.of("name", "Alice", "age", 30), Map.of("name", "Bob", "age", 25)));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['users']\").elementWithIndex(0).field(\"['name']\").isEqualTo(\"Alice\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['users'][0][?(@.['name'] == 'Alice')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['users']\").elementWithIndex(0).field(\"['age']\").isEqualTo(30)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['users'][0][?(@.['age'] == 30)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['users']\").elementWithIndex(1).field(\"['name']\").isEqualTo(\"Bob\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['users'][1][?(@.['name'] == 'Bob')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['users']\").elementWithIndex(1).field(\"['age']\").isEqualTo(25)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['users'][1][?(@.['age'] == 25)]");
@@ -195,18 +195,18 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 				List.of(Map.of("status", "active"), Map.of("status", "active"), Map.of("status", "inactive")));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['entries']\").elementWithIndex(0).field(\"['status']\").isEqualTo(\"active\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['entries'][0][?(@.['status'] == 'active')]");
 		});
 		// same value, different index
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['entries']\").elementWithIndex(1).field(\"['status']\").isEqualTo(\"active\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['entries'][1][?(@.['status'] == 'active')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['entries']\").elementWithIndex(2).field(\"['status']\").isEqualTo(\"inactive\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['entries'][2][?(@.['status'] == 'inactive')]");
@@ -223,13 +223,13 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
 		assertThat(pathAndValues).anySatisfy(
-				entry -> assertThat(entry.method()).contains("elementWithIndex(0)").contains("isEqualTo(\"a\")"));
+				(entry) -> assertThat(entry.method()).contains("elementWithIndex(0)").contains("isEqualTo(\"a\")"));
 		assertThat(pathAndValues).anySatisfy(
-				entry -> assertThat(entry.method()).contains("elementWithIndex(0)").contains("isEqualTo(\"b\")"));
+				(entry) -> assertThat(entry.method()).contains("elementWithIndex(0)").contains("isEqualTo(\"b\")"));
 		assertThat(pathAndValues).anySatisfy(
-				entry -> assertThat(entry.method()).contains("elementWithIndex(1)").contains("isEqualTo(\"c\")"));
+				(entry) -> assertThat(entry.method()).contains("elementWithIndex(1)").contains("isEqualTo(\"c\")"));
 		assertThat(pathAndValues).anySatisfy(
-				entry -> assertThat(entry.method()).contains("elementWithIndex(1)").contains("isEqualTo(\"d\")"));
+				(entry) -> assertThat(entry.method()).contains("elementWithIndex(1)").contains("isEqualTo(\"d\")"));
 	}
 
 	@Test
@@ -240,37 +240,37 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 						Map.of("id", 2, "items", List.of(Map.of("name", "item3", "qty", 1)))));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['orders']\").elementWithIndex(0).field(\"['id']\").isEqualTo(1)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['orders'][0][?(@.['id'] == 1)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> assertThat(entry.method()).contains("elementWithIndex(0)")
+		assertThat(pathAndValues).anySatisfy((entry) -> assertThat(entry.method()).contains("elementWithIndex(0)")
 			.contains("['items']")
 			.contains("['name']")
 			.contains("isEqualTo(\"item1\")"));
-		assertThat(pathAndValues).anySatisfy(entry -> assertThat(entry.method()).contains("elementWithIndex(0)")
+		assertThat(pathAndValues).anySatisfy((entry) -> assertThat(entry.method()).contains("elementWithIndex(0)")
 			.contains("['items']")
 			.contains("['qty']")
 			.contains("isEqualTo(2)"));
-		assertThat(pathAndValues).anySatisfy(entry -> assertThat(entry.method()).contains("elementWithIndex(0)")
+		assertThat(pathAndValues).anySatisfy((entry) -> assertThat(entry.method()).contains("elementWithIndex(0)")
 			.contains("['items']")
 			.contains("['name']")
 			.contains("isEqualTo(\"item2\")"));
-		assertThat(pathAndValues).anySatisfy(entry -> assertThat(entry.method()).contains("elementWithIndex(0)")
+		assertThat(pathAndValues).anySatisfy((entry) -> assertThat(entry.method()).contains("elementWithIndex(0)")
 			.contains("['items']")
 			.contains("['qty']")
 			.contains("isEqualTo(3)"));
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['orders']\").elementWithIndex(1).field(\"['id']\").isEqualTo(2)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['orders'][1][?(@.['id'] == 2)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> assertThat(entry.method()).contains("elementWithIndex(1)")
+		assertThat(pathAndValues).anySatisfy((entry) -> assertThat(entry.method()).contains("elementWithIndex(1)")
 			.contains("['items']")
 			.contains("['name']")
 			.contains("isEqualTo(\"item3\")"));
-		assertThat(pathAndValues).anySatisfy(entry -> assertThat(entry.method()).contains("elementWithIndex(1)")
+		assertThat(pathAndValues).anySatisfy((entry) -> assertThat(entry.method()).contains("elementWithIndex(1)")
 			.contains("['items']")
 			.contains("['qty']")
 			.contains("isEqualTo(1)"));
@@ -285,19 +285,19 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
 		// size check for root array
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".hasSize(3)");
 			assertThat(entry.jsonPath()).isEqualTo("$");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array().elementWithIndex(0).isEqualTo(\"first\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array().elementWithIndex(1).isEqualTo(\"second\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][1]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array().elementWithIndex(2).isEqualTo(\"third\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][2]");
 		});
@@ -314,12 +314,12 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 				]""";
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array().elementWithIndex(0).field(\"['property1']\").isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0][?(@.['property1'] == 'a')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array().elementWithIndex(1).field(\"['property2']\").isEqualTo(\"b\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][1][?(@.['property2'] == 'b')]");
@@ -338,32 +338,32 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 						Map.of("property", "age", "message", "must be positive")));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['errors']\").elementWithIndex(0).field(\"['property']\").isEqualTo(\"email\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][0][?(@.['property'] == 'email')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['errors']\").elementWithIndex(0).field(\"['message']\").isEqualTo(\"invalid format\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][0][?(@.['message'] == 'invalid format')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['errors']\").elementWithIndex(1).field(\"['property']\").isEqualTo(\"phone\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][1][?(@.['property'] == 'phone')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['errors']\").elementWithIndex(1).field(\"['message']\").isEqualTo(\"required field\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][1][?(@.['message'] == 'required field')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['errors']\").elementWithIndex(2).field(\"['property']\").isEqualTo(\"age\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][2][?(@.['property'] == 'age')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['errors']\").elementWithIndex(2).field(\"['message']\").isEqualTo(\"must be positive\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][2][?(@.['message'] == 'must be positive')]");
@@ -379,40 +379,40 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 						Map.of("id", 103, "name", "Third Item")));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['page']\").isEqualTo(1)");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['page'] == 1)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['totalPages']\").isEqualTo(5)");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['totalPages'] == 5)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['data']\").elementWithIndex(0).field(\"['id']\").isEqualTo(101)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['data'][0][?(@.['id'] == 101)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['data']\").elementWithIndex(0).field(\"['name']\").isEqualTo(\"First Item\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['data'][0][?(@.['name'] == 'First Item')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['data']\").elementWithIndex(1).field(\"['id']\").isEqualTo(102)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['data'][1][?(@.['id'] == 102)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['data']\").elementWithIndex(1).field(\"['name']\").isEqualTo(\"Second Item\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['data'][1][?(@.['name'] == 'Second Item')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['data']\").elementWithIndex(2).field(\"['id']\").isEqualTo(103)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['data'][2][?(@.['id'] == 103)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['data']\").elementWithIndex(2).field(\"['name']\").isEqualTo(\"Third Item\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['data'][2][?(@.['name'] == 'Third Item')]");
@@ -429,32 +429,32 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 						Map.of("timestamp", "2024-01-01T10:10:00Z", "action", "published")));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['events']\").elementWithIndex(0).field(\"['timestamp']\").isEqualTo(\"2024-01-01T10:00:00Z\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['events'][0][?(@.['timestamp'] == '2024-01-01T10:00:00Z')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['events']\").elementWithIndex(0).field(\"['action']\").isEqualTo(\"created\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['events'][0][?(@.['action'] == 'created')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['events']\").elementWithIndex(1).field(\"['timestamp']\").isEqualTo(\"2024-01-01T10:05:00Z\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['events'][1][?(@.['timestamp'] == '2024-01-01T10:05:00Z')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['events']\").elementWithIndex(1).field(\"['action']\").isEqualTo(\"updated\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['events'][1][?(@.['action'] == 'updated')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['events']\").elementWithIndex(2).field(\"['timestamp']\").isEqualTo(\"2024-01-01T10:10:00Z\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['events'][2][?(@.['timestamp'] == '2024-01-01T10:10:00Z')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['events']\").elementWithIndex(2).field(\"['action']\").isEqualTo(\"published\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['events'][2][?(@.['action'] == 'published')]");
@@ -470,11 +470,11 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		Map<String, Object> json = Map.of("items", List.of("only"));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").hasSize(1)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items']");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(0).isEqualTo(\"only\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][0]");
 		});
@@ -490,7 +490,7 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		// exactly 1 assertion (empty array check)
 		assertThat(pathAndValues).hasSize(1);
 		// no elementWithIndex assertions
-		assertThat(pathAndValues).noneMatch(entry -> entry.method().contains("elementWithIndex"));
+		assertThat(pathAndValues).noneMatch((entry) -> entry.method().contains("elementWithIndex"));
 	}
 
 	@Test
@@ -498,19 +498,19 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		Map<String, Object> json = Map.of("prices", List.of(19.99, 29.99, 9.99));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['prices']\").hasSize(3)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['prices']");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['prices']\").elementWithIndex(0).isEqualTo(19.99)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['prices'][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['prices']\").elementWithIndex(1).isEqualTo(29.99)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['prices'][1]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['prices']\").elementWithIndex(2).isEqualTo(9.99)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['prices'][2]");
 		});
@@ -527,32 +527,32 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		JsonPaths unorderedPaths = new JsonToJsonPathsConverter(false).transformToJsonPathWithTestsSideValues(json);
 
 		// ordered should use elementWithIndex
-		assertThat(orderedPaths).anyMatch(entry -> entry.method().contains("elementWithIndex"));
+		assertThat(orderedPaths).anyMatch((entry) -> entry.method().contains("elementWithIndex"));
 		// unordered should not use elementWithIndex
-		assertThat(unorderedPaths).noneMatch(entry -> entry.method().contains("elementWithIndex"));
+		assertThat(unorderedPaths).noneMatch((entry) -> entry.method().contains("elementWithIndex"));
 		// ordered should have exact index paths
-		assertThat(orderedPaths).anySatisfy(entry -> {
+		assertThat(orderedPaths).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(0).isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][0]");
 		});
-		assertThat(orderedPaths).anySatisfy(entry -> {
+		assertThat(orderedPaths).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(1).isEqualTo(\"b\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][1]");
 		});
-		assertThat(orderedPaths).anySatisfy(entry -> {
+		assertThat(orderedPaths).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(2).isEqualTo(\"c\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][2]");
 		});
 		// unordered should use arrayField with filtered json paths
-		assertThat(unorderedPaths).anySatisfy(entry -> {
+		assertThat(unorderedPaths).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").arrayField().isEqualTo(\"a\").value()");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][?(@ == 'a')]");
 		});
-		assertThat(unorderedPaths).anySatisfy(entry -> {
+		assertThat(unorderedPaths).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").arrayField().isEqualTo(\"b\").value()");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][?(@ == 'b')]");
 		});
-		assertThat(unorderedPaths).anySatisfy(entry -> {
+		assertThat(unorderedPaths).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").arrayField().isEqualTo(\"c\").value()");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][?(@ == 'c')]");
 		});
@@ -574,22 +574,22 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 			try {
 				context.read(entry.jsonPath());
 			}
-			catch (Exception e) {
+			catch (Exception ex) {
 				// Some paths with filters may not match but should still be valid syntax
 				assertThat(entry.jsonPath()).startsWith("$");
 			}
 		}
 
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(0)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(0)")
 				&& entry.method().contains("['name']") && entry.method().contains("Alice"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(1)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(1)")
 				&& entry.method().contains("['name']") && entry.method().contains("Bob"));
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("['version']") && entry.method().contains("1.0"));
+			.anyMatch((entry) -> entry.method().contains("['version']") && entry.method().contains("1.0"));
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("['tags']") && entry.method().contains("important"));
+			.anyMatch((entry) -> entry.method().contains("['tags']") && entry.method().contains("important"));
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("['tags']") && entry.method().contains("reviewed"));
+			.anyMatch((entry) -> entry.method().contains("['tags']") && entry.method().contains("reviewed"));
 	}
 
 	// ========== Stub Side Values ==========
@@ -599,12 +599,12 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		Map<String, Object> json = Map.of("items", List.of("one", "two", "three"));
 		JsonPaths pathAndValues = converter().transformToJsonPathWithStubsSideValues(json);
 
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("hasSize(3)"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(0)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("hasSize(3)"));
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(0)")
 				&& entry.method().contains("isEqualTo(\"one\")"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(1)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(1)")
 				&& entry.method().contains("isEqualTo(\"two\")"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(2)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(2)")
 				&& entry.method().contains("isEqualTo(\"three\")"));
 		// exactly 4 assertions (1 size + 3 elements)
 		assertThat(pathAndValues).hasSize(4);
@@ -619,16 +619,16 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("['level1']") && entry.method().contains("['level2']")
+			.anyMatch((entry) -> entry.method().contains("['level1']") && entry.method().contains("['level2']")
 					&& entry.method().contains("['items']") && entry.method().contains("elementWithIndex(0)")
 					&& entry.method().contains("['id']") && entry.method().contains("isEqualTo(1)"));
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("elementWithIndex(0)") && entry.method().contains("['data']")
+			.anyMatch((entry) -> entry.method().contains("elementWithIndex(0)") && entry.method().contains("['data']")
 					&& entry.method().contains("['value']") && entry.method().contains("isEqualTo(\"a\")"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(1)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(1)")
 				&& entry.method().contains("['id']") && entry.method().contains("isEqualTo(2)"));
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("elementWithIndex(1)") && entry.method().contains("['data']")
+			.anyMatch((entry) -> entry.method().contains("elementWithIndex(1)") && entry.method().contains("['data']")
 					&& entry.method().contains("['value']") && entry.method().contains("isEqualTo(\"b\")"));
 	}
 
@@ -642,13 +642,13 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 
 		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(0)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(0)")
 				&& entry.method().contains("['name']") && entry.method().contains("isEqualTo(\"first\")"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(0)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(0)")
 				&& entry.method().contains("['value']") && entry.method().contains("isNull()"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(1)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(1)")
 				&& entry.method().contains("['name']") && entry.method().contains("isEqualTo(\"second\")"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("elementWithIndex(1)")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("elementWithIndex(1)")
 				&& entry.method().contains("['value']") && entry.method().contains("isEqualTo(123)"));
 	}
 
@@ -660,25 +660,25 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 
 		// size checks for all arrays
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("['names']") && entry.method().contains("hasSize(2)"));
+			.anyMatch((entry) -> entry.method().contains("['names']") && entry.method().contains("hasSize(2)"));
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("['ages']") && entry.method().contains("hasSize(2)"));
+			.anyMatch((entry) -> entry.method().contains("['ages']") && entry.method().contains("hasSize(2)"));
 		assertThat(pathAndValues)
-			.anyMatch(entry -> entry.method().contains("['active']") && entry.method().contains("hasSize(2)"));
+			.anyMatch((entry) -> entry.method().contains("['active']") && entry.method().contains("hasSize(2)"));
 		// names array
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("['names']")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("['names']")
 				&& entry.method().contains("elementWithIndex(0)") && entry.method().contains("Alice"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("['names']")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("['names']")
 				&& entry.method().contains("elementWithIndex(1)") && entry.method().contains("Bob"));
 		// ages array
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("['ages']")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("['ages']")
 				&& entry.method().contains("elementWithIndex(0)") && entry.method().contains("isEqualTo(30)"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("['ages']")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("['ages']")
 				&& entry.method().contains("elementWithIndex(1)") && entry.method().contains("isEqualTo(25)"));
 		// active array
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("['active']")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("['active']")
 				&& entry.method().contains("elementWithIndex(0)") && entry.method().contains("isEqualTo(true)"));
-		assertThat(pathAndValues).anyMatch(entry -> entry.method().contains("['active']")
+		assertThat(pathAndValues).anyMatch((entry) -> entry.method().contains("['active']")
 				&& entry.method().contains("elementWithIndex(1)") && entry.method().contains("isEqualTo(false)"));
 		// exactly 9 assertions (3 arrays x (1 size + 2 elements))
 		assertThat(pathAndValues).hasSize(9);

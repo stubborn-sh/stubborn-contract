@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 
 /**
@@ -35,27 +36,29 @@ public interface StubFinder extends StubTrigger {
 	 * @param groupId - might be null. In that case a search only via artifactId takes
 	 * place
 	 * @param artifactId - artifact id of the stub
-	 * @return URL of a running stub or throws exception if not found
+	 * @return url of a running stub or throws exception if not found
 	 * @throws StubNotFoundException in case of not finding a stub
 	 */
-	URL findStubUrl(String groupId, String artifactId) throws StubNotFoundException;
+	URL findStubUrl(@Nullable String groupId, String artifactId) throws StubNotFoundException;
 
 	/**
 	 * For the given Ivy notation {@code [groupId]:artifactId:[version]:[classifier]}
 	 * tries to find the matching URL of the running stub. You can also pass only
 	 * {@code artifactId}.
 	 * @param ivyNotation - Ivy representation of the Maven artifact
-	 * @return URL of a running stub or throws exception if not found
+	 * @return url of a running stub or throws exception if not found
 	 * @throws StubNotFoundException in case of not finding a stub
 	 */
 	URL findStubUrl(String ivyNotation) throws StubNotFoundException;
 
 	/**
+	 * Returns all running stubs.
 	 * @return all running stubs
 	 */
 	RunningStubs findAllRunningStubs();
 
 	/**
+	 * Returns the list of Contracts.
 	 * @return the list of Contracts
 	 */
 	Map<StubConfiguration, Collection<Contract>> getContracts();

@@ -135,9 +135,9 @@ public final class JsonPathMatcherUtils {
 					pathsToDelete.add(path);
 				}
 			}
-			catch (RuntimeException e) {
+			catch (RuntimeException ex) {
 				if (log.isTraceEnabled()) {
-					log.trace("Exception deleting path [" + path + "]", e);
+					log.trace("Exception deleting path [" + path + "]", ex);
 				}
 			}
 		}
@@ -182,9 +182,9 @@ public final class JsonPathMatcherUtils {
 			}
 			return false;
 		}
-		catch (RuntimeException e) {
+		catch (RuntimeException ex) {
 			if (log.isTraceEnabled()) {
-				log.trace("Exception removing trailing containers for [" + matcherPath + "]", e);
+				log.trace("Exception removing trailing containers for [" + matcherPath + "]", ex);
 			}
 			return false;
 		}
@@ -203,7 +203,7 @@ public final class JsonPathMatcherUtils {
 		try {
 			return context.read(path);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return null;
 		}
 	}
@@ -299,9 +299,9 @@ public final class JsonPathMatcherUtils {
 					: "'" + retrievedValue.toString() + "'";
 			return propertyName + " == " + wrappedValue;
 		}
-		catch (PathNotFoundException e) {
+		catch (PathNotFoundException ex) {
 			throw new IllegalStateException(
-					"Value [" + bodyMatcher.path() + "] not found in JSON [" + JsonOutput.toJson(body) + "]", e);
+					"Value [" + bodyMatcher.path() + "] not found in JSON [" + JsonOutput.toJson(body) + "]", ex);
 		}
 	}
 

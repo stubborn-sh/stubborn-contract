@@ -35,6 +35,8 @@ import sh.stubborn.contract.verifier.util.ContentType;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 import static sh.stubborn.contract.verifier.util.ContentType.DEFINED;
 import static sh.stubborn.contract.verifier.util.ContentType.JSON;
 import static sh.stubborn.contract.verifier.util.ContentType.UNKNOWN;
@@ -84,7 +86,7 @@ public class SingleContractMetadata {
 
 	private final ContentType evaluatedOutputTestContentType;
 
-	private String methodName;
+	private @Nullable String methodName;
 
 	private final boolean http;
 
@@ -127,34 +129,34 @@ public class SingleContractMetadata {
 		this.stubsPath = contractMetadata.getPath();
 	}
 
-	private Header contentTypeHeader(Headers headers) {
+	private @Nullable Header contentTypeHeader(@Nullable Headers headers) {
 		return headers == null ? null
 				: headers.getEntries()
 					.stream()
-					.filter(it -> "Content-Type".equalsIgnoreCase(it.getName()))
+					.filter((it) -> "Content-Type".equalsIgnoreCase(it.getName()))
 					.findFirst()
 					.orElse(null);
 	}
 
-	private ContentType tryToEvaluateStubContentType(Headers mainHeaders, DslProperty<?> body) {
-		Object clientValue = Optional.ofNullable(body).map(DslProperty::getClientValue).orElse(null);
+	private ContentType tryToEvaluateStubContentType(Headers mainHeaders, @Nullable DslProperty<?> body) {
+		Object clientValue = body != null ? Objects.requireNonNullElse(body.getClientValue(), "") : "";
 		ContentType contentType = evaluateClientSideContentType(mainHeaders, clientValue);
 		if (contentType == DEFINED || contentType == UNKNOWN) {
 			// try to retrieve from the other side (e.g. stub side was a regex, but test
 			// side is concrete)
-			Object serverValue = Optional.ofNullable(body).map(DslProperty::getServerValue).orElse(null);
+			Object serverValue = body != null ? Objects.requireNonNullElse(body.getServerValue(), "") : "";
 			return evaluateServerSideContentType(mainHeaders, serverValue);
 		}
 		return contentType;
 	}
 
-	private ContentType tryToEvaluateTestContentType(Headers mainHeaders, DslProperty<?> body) {
-		Object serverValue = Optional.ofNullable(body).map(DslProperty::getServerValue).orElse(null);
+	private ContentType tryToEvaluateTestContentType(Headers mainHeaders, @Nullable DslProperty<?> body) {
+		Object serverValue = body != null ? Objects.requireNonNullElse(body.getServerValue(), "") : "";
 		ContentType contentType = evaluateClientSideContentType(mainHeaders, serverValue);
 		if (contentType == DEFINED || contentType == UNKNOWN) {
 			// try to retrieve from the other side (e.g. stub side was a regex, but test
 			// side is concrete)
-			Object clientValue = Optional.ofNullable(body).map(DslProperty::getClientValue).orElse(null);
+			Object clientValue = body != null ? Objects.requireNonNullElse(body.getClientValue(), "") : "";
 			return evaluateServerSideContentType(mainHeaders, clientValue);
 		}
 		return contentType;
@@ -192,7 +194,7 @@ public class SingleContractMetadata {
 		return !isHttp();
 	}
 
-	private DslProperty<?> inputBody(Contract contract) {
+	private @Nullable DslProperty<?> inputBody(Contract contract) {
 		return Optional.ofNullable(contract.getRequest())
 			.map(Request::getBody)
 			.map(DslProperty.class::cast)
@@ -200,10 +202,11 @@ public class SingleContractMetadata {
 	}
 
 	private Headers inputHeaders(Contract contract) {
-		return Optional.ofNullable(contract.getRequest()).map(Request::getHeaders).orElse(null);
+		Headers found = Optional.ofNullable(contract.getRequest()).map(Request::getHeaders).orElse(null);
+		return found != null ? found : new Headers();
 	}
 
-	private DslProperty<?> outputBody(Contract contract) {
+	private @Nullable DslProperty<?> outputBody(Contract contract) {
 		return Optional.ofNullable(contract.getResponse())
 			.map(Response::getBody)
 			.map(DslProperty.class::cast)
@@ -211,10 +214,11 @@ public class SingleContractMetadata {
 	}
 
 	private Headers outputHeaders(Contract contract) {
-		return Optional.ofNullable(contract.getResponse())
+		Headers found = Optional.ofNullable(contract.getResponse())
 			.map(Response::getHeaders)
 			.orElseGet(
 					() -> Optional.ofNullable(contract.getOutputMessage()).map(OutputMessage::getHeaders).orElse(null));
+		return found != null ? found : new Headers();
 	}
 
 	public String methodName() {
@@ -225,8 +229,9 @@ public class SingleContractMetadata {
 	}
 
 	private String calculateMethodName() {
-		if (!isEmpty(contract.getName())) {
-			String name = camelCase(convertIllegalPackageChars(contract.getName()));
+		String contractName = contract.getName();
+		if (contractName != null && !isEmpty(contractName)) {
+			String name = camelCase(convertIllegalPackageChars(contractName));
 			log.trace("Overriding the default test name with [{}]", name);
 			return name;
 		}

@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import groovy.json.JsonOutput;
+import org.jspecify.annotations.Nullable;
 import groovy.lang.GString;
 import groovy.transform.CompileStatic;
 import org.apache.commons.text.StringEscapeUtils;
@@ -136,7 +137,7 @@ public final class TestSideRequestTemplateModel {
 			.getEntries()
 			.stream()
 			.collect(Collectors.groupingBy(Header::getName,
-					Collectors.mapping((Function<Object, String>) o -> MapConverter.getTestSideValues(o).toString(),
+					Collectors.mapping((Function<Object, String>) (o) -> MapConverter.getTestSideValues(o).toString(),
 							Collectors.toList()))));
 	}
 
@@ -146,7 +147,10 @@ public final class TestSideRequestTemplateModel {
 		}
 		String joinedParams = query.entrySet()
 			.stream()
-			.map(entry -> entry.getValue().stream().map(s -> entry.getKey() + "=" + s).collect(Collectors.joining("&")))
+			.map((entry) -> entry.getValue()
+				.stream()
+				.map((s) -> entry.getKey() + "=" + s)
+				.collect(Collectors.joining("&")))
 			.collect(Collectors.joining("&"));
 		return url + "?" + joinedParams;
 	}
@@ -181,7 +185,7 @@ public final class TestSideRequestTemplateModel {
 		return StringEscapeUtils.escapeJava(rawBody);
 	}
 
-	private static String getBodyAsRawJson(Object body) {
+	private static @Nullable String getBodyAsRawJson(Object body) {
 		Object bodyValue = extractServerValueFromBody(body);
 		if (bodyValue instanceof GString || bodyValue instanceof String) {
 			return bodyValue.toString();

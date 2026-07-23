@@ -35,7 +35,7 @@ class CustomModeImports implements Imports, CustomModeAcceptor {
 
 	@Override
 	public Imports call() {
-		Arrays.stream(IMPORTS).forEach(s -> this.blockBuilder.addLineWithEnding("import " + s));
+		Arrays.stream(IMPORTS).forEach((s) -> this.blockBuilder.addLineWithEnding("import " + s));
 		return this;
 	}
 

@@ -26,6 +26,7 @@ import java.nio.file.Files;
 /**
  * Represents a property that will become a File content.
  *
+ * @author Marcin Grzejszczak
  * @since 2.1.0
  */
 public class FromFileProperty implements Serializable {
@@ -90,15 +91,15 @@ public class FromFileProperty implements Serializable {
 	}
 
 	public final File getFile() {
-		return file;
+		return this.file;
 	}
 
 	public final String getCharset() {
-		return charset;
+		return this.charset;
 	}
 
 	public final Class getType() {
-		return type;
+		return this.type;
 	}
 
 }

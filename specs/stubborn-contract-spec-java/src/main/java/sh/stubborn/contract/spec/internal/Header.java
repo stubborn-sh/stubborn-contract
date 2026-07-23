@@ -21,6 +21,7 @@ import java.util.Objects;
 /**
  * Represents a header of a request / response or a message.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class Header extends DslProperty {
@@ -50,7 +51,7 @@ public class Header extends DslProperty {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -69,17 +70,17 @@ public class Header extends DslProperty {
 			return false;
 		}
 		Header header = (Header) o;
-		return Objects.equals(name, header.name);
+		return Objects.equals(this.name, header.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), name);
+		return Objects.hash(super.hashCode(), this.name);
 	}
 
 	@Override
 	public String toString() {
-		return "Header{" + "\nname='" + name + '\'' + "} \n" + super.toString();
+		return "Header{" + "\nname='" + this.name + '\'' + "} \n" + super.toString();
 	}
 
 }

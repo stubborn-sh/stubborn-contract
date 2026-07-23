@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.jspecify.annotations.Nullable;
 import repackaged.nl.flotsam.xeger.Xeger;
 
 /**
@@ -33,21 +34,21 @@ import repackaged.nl.flotsam.xeger.Xeger;
  */
 public class RegexProperty extends DslProperty implements CanBeDynamic {
 
-	final Pattern pattern;
+	final @Nullable Pattern pattern;
 
 	String charset = StandardCharsets.UTF_8.name();
 
-	private final Class clazz;
+	private final @Nullable Class clazz;
 
-	public RegexProperty(Object value) {
+	public RegexProperty(@Nullable Object value) {
 		this(value, value, null);
 	}
 
-	public RegexProperty(Object client, Object server) {
+	public RegexProperty(@Nullable Object client, @Nullable Object server) {
 		this(client, server, null);
 	}
 
-	public RegexProperty(Object client, Object server, Class clazz) {
+	public RegexProperty(@Nullable Object client, @Nullable Object server, @Nullable Class clazz) {
 		super(client, server);
 		boolean clientDynamic = client instanceof Pattern || client instanceof RegexProperty;
 		boolean serverDynamic = server instanceof Pattern || server instanceof RegexProperty;
@@ -71,11 +72,11 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 	}
 
 	public Matcher matcher(CharSequence input) {
-		return this.pattern.matcher(input);
+		return Objects.requireNonNull(this.pattern, "pattern must not be null").matcher(input);
 	}
 
 	public String pattern() {
-		return this.pattern.pattern();
+		return Objects.requireNonNull(this.pattern, "pattern must not be null").pattern();
 	}
 
 	public Class clazz() {
@@ -128,7 +129,8 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 
 	private Object doGenerate(int retries) {
 		try {
-			String generatedValue = new Xeger(this.pattern.pattern()).generate();
+			Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+			String generatedValue = new Xeger(p.pattern()).generate();
 			if (Integer.class.equals(this.clazz)) {
 				return Integer.parseInt(generatedValue);
 			}
@@ -170,23 +172,27 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 	}
 
 	private boolean isNumber() {
-		return Number.class.isAssignableFrom(this.clazz);
+		return this.clazz != null && Number.class.isAssignableFrom(this.clazz);
 	}
 
 	public RegexProperty dynamicClientConcreteProducer() {
-		return new RegexProperty(this.pattern, generate(), this.clazz);
+		Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+		return new RegexProperty(p, generate(), this.clazz);
 	}
 
 	public RegexProperty concreteClientDynamicProducer() {
-		return new RegexProperty(generate(), this.pattern, this.clazz);
+		Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+		return new RegexProperty(generate(), p, this.clazz);
 	}
 
 	public RegexProperty concreteClientEscapedDynamicProducer() {
-		return new RegexProperty(generateAndEscapeJavaStringIfNeeded(), this.pattern, this.clazz);
+		Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+		return new RegexProperty(generateAndEscapeJavaStringIfNeeded(), p, this.clazz);
 	}
 
 	public RegexProperty dynamicClientEscapedConcreteProducer() {
-		return new RegexProperty(this.pattern, generateAndEscapeJavaStringIfNeeded(), this.clazz);
+		Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+		return new RegexProperty(p, generateAndEscapeJavaStringIfNeeded(), this.clazz);
 	}
 
 	@Override
@@ -202,7 +208,7 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 				&& Objects.equals(clazz, that.clazz);
 	}
 
-	private Object stringPatternIfPresent(Pattern value) {
+	private @Nullable Object stringPatternIfPresent(@Nullable Pattern value) {
 		return value != null ? value.pattern() : null;
 	}
 
@@ -221,11 +227,11 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 		return generate();
 	}
 
-	public Pattern getPattern() {
+	public @Nullable Pattern getPattern() {
 		return pattern;
 	}
 
-	public Class getClazz() {
+	public @Nullable Class getClazz() {
 		return clazz;
 	}
 

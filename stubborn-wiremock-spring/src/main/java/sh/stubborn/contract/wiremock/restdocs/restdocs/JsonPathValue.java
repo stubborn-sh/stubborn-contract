@@ -18,6 +18,7 @@ package sh.stubborn.contract.wiremock.restdocs;
 
 import com.jayway.jsonpath.JsonPath;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -57,7 +58,7 @@ class JsonPathValue {
 		return ObjectUtils.isEmpty(getValue(false));
 	}
 
-	public Object getValue(boolean required) {
+	public @Nullable Object getValue(boolean required) {
 		try {
 			CharSequence json = this.actual;
 			return this.jsonPath.read(json == null ? null : json.toString());

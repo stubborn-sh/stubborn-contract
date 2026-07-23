@@ -82,8 +82,8 @@ public class StubConfiguration {
 		if (splitPath.length >= 2) {
 			stubsGroupId = splitPath[0];
 			stubsArtifactId = splitPath[1];
-			stubsVersion = splitPath.length >= 3 ? splitPath[2] : DEFAULT_VERSION;
-			stubsClassifier = splitPath.length >= 4 ? splitPath[3] : defaultClassifier;
+			stubsVersion = (splitPath.length >= 3) ? splitPath[2] : DEFAULT_VERSION;
+			stubsClassifier = (splitPath.length >= 4) ? splitPath[3] : defaultClassifier;
 		}
 		return new String[] { stubsGroupId, stubsArtifactId, stubsVersion, stubsClassifier };
 	}
@@ -93,6 +93,7 @@ public class StubConfiguration {
 	}
 
 	/**
+	 * Returns a colon separated representation of the stub configuration.
 	 * @return a colon separated representation of the stub configuration (e.g.
 	 * groupid:artifactid:version:classifier)
 	 */
@@ -105,7 +106,7 @@ public class StubConfiguration {
 	}
 
 	private String nullCheck(String value) {
-		return value != null && !value.isBlank() ? value : "";
+		return (value != null && !value.isBlank()) ? value : "";
 	}
 
 	/**
@@ -125,6 +126,7 @@ public class StubConfiguration {
 	}
 
 	/**
+	 * Checks if this stub has a changing version.
 	 * @return {@code true} for a snapshot or a LATEST (+) version.
 	 */
 	public boolean isVersionChanging() {
@@ -145,15 +147,6 @@ public class StubConfiguration {
 
 	public String getVersion() {
 		return this.version;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.artifactId == null) ? 0 : this.artifactId.hashCode());
-		result = prime * result + ((this.groupId == null) ? 0 : this.groupId.hashCode());
-		return result;
 	}
 
 	@Override
@@ -185,6 +178,15 @@ public class StubConfiguration {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.artifactId == null) ? 0 : this.artifactId.hashCode());
+		result = prime * result + ((this.groupId == null) ? 0 : this.groupId.hashCode());
+		return result;
 	}
 
 	public boolean matchesIvyNotation(String ivyNotationAsString) {

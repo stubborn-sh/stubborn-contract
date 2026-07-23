@@ -26,7 +26,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.RestDocumentationContext;
@@ -64,7 +67,7 @@ public class ContractDslSnippet extends TemplatedSnippet {
 	 * Creates a new {@code ContractDslSnippet} with no additional attributes.
 	 */
 	protected ContractDslSnippet() {
-		this(null);
+		this(new HashMap<>());
 	}
 
 	/**
@@ -84,6 +87,7 @@ public class ContractDslSnippet extends TemplatedSnippet {
 	@Override
 	public void document(Operation operation) throws IOException {
 		TemplateEngine templateEngine = (TemplateEngine) operation.getAttributes().get(TemplateEngine.class.getName());
+		Objects.requireNonNull(templateEngine, "TemplateEngine not found in operation attributes");
 		String renderedContract = templateEngine.compileTemplate(getTemplate())
 			.render(createModelForContract(operation));
 		this.model.put("contract", renderedContract);
@@ -106,7 +110,7 @@ public class ContractDslSnippet extends TemplatedSnippet {
 		model.put("response_headers", headers.entrySet());
 	}
 
-	private Set<JsonPaths> jsonPaths(Set<String> jsonPaths) {
+	private Set<JsonPaths> jsonPaths(@Nullable Set<String> jsonPaths) {
 		Set<JsonPaths> paths = new HashSet<>();
 		if (jsonPaths == null) {
 			return paths;
@@ -173,6 +177,7 @@ public class ContractDslSnippet extends TemplatedSnippet {
 	private void storeDslContract(Operation operation, String content) throws IOException {
 		RestDocumentationContext context = (RestDocumentationContext) operation.getAttributes()
 			.get(RestDocumentationContext.class.getName());
+		Objects.requireNonNull(context, "RestDocumentationContext not found in operation attributes");
 		RestDocumentationContextPlaceholderResolver resolver = new RestDocumentationContextPlaceholderResolver(context);
 		String resolvedName = replacePlaceholders(resolver, operation.getName());
 		File output = new File(context.getOutputDirectory(), CONTRACTS_FOLDER + "/" + resolvedName + ".groovy");

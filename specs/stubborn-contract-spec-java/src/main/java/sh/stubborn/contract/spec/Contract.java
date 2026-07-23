@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.Input;
 import sh.stubborn.contract.spec.internal.OutputMessage;
 import sh.stubborn.contract.spec.internal.Request;
@@ -42,27 +43,27 @@ public class Contract {
 	 * take precedence. A priority of 1 is highest and takes precedence over a priority of
 	 * 2.
 	 */
-	private Integer priority;
+	private @Nullable Integer priority;
 
 	/**
 	 * The HTTP request part of the contract.
 	 */
-	private Request request;
+	private @Nullable Request request;
 
 	/**
 	 * The HTTP response part of the contract.
 	 */
-	private Response response;
+	private @Nullable Response response;
 
 	/**
 	 * The label by which you'll reference the contract on the message consumer side.
 	 */
-	private String label;
+	private @Nullable String label;
 
 	/**
 	 * Description of a contract. May be used in the documentation generation.
 	 */
-	private String description;
+	private @Nullable String description;
 
 	/**
 	 * Name of the generated test / stub. If not provided then the file name will be used.
@@ -73,17 +74,17 @@ public class Contract {
 	 * Remember to have a unique name for every single contract. Otherwise you might
 	 * generate tests that have two identical methods or you will override the stubs.
 	 */
-	private String name;
+	private @Nullable String name;
 
 	/**
 	 * The input side of a messaging contract.
 	 */
-	private Input input;
+	private @Nullable Input input;
 
 	/**
 	 * The output side of a messaging contract.
 	 */
-	private OutputMessage outputMessage;
+	private @Nullable OutputMessage outputMessage;
 
 	/**
 	 * Whether the contract should be ignored or not.
@@ -147,16 +148,18 @@ public class Contract {
 	}
 
 	public static void assertContract(Contract dsl) {
-		if (dsl.getRequest() != null) {
-			if (dsl.request.getUrl() == null && dsl.request.getUrlPath() == null) {
+		Request request = dsl.getRequest();
+		if (request != null) {
+			if (request.getUrl() == null && request.getUrlPath() == null) {
 				throw new IllegalStateException("URL is missing for HTTP contract");
 			}
-			if (dsl.request.getMethod() == null) {
+			if (request.getMethod() == null) {
 				throw new IllegalStateException("Method is missing for HTTP contract");
 			}
 		}
-		if (dsl.response != null) {
-			if (dsl.response.getStatus() == null) {
+		Response response = dsl.getResponse();
+		if (response != null) {
+			if (response.getStatus() == null) {
 				throw new IllegalStateException("Status is missing for HTTP contract");
 			}
 		}
@@ -289,67 +292,67 @@ public class Contract {
 		return this.inProgress;
 	}
 
-	public Integer getPriority() {
+	public @Nullable Integer getPriority() {
 		return priority;
 	}
 
-	public void setPriority(Integer priority) {
+	public void setPriority(@Nullable Integer priority) {
 		this.priority = priority;
 	}
 
-	public Request getRequest() {
+	public @Nullable Request getRequest() {
 		return request;
 	}
 
-	public void setRequest(Request request) {
+	public void setRequest(@Nullable Request request) {
 		this.request = request;
 	}
 
-	public Response getResponse() {
+	public @Nullable Response getResponse() {
 		return response;
 	}
 
-	public void setResponse(Response response) {
+	public void setResponse(@Nullable Response response) {
 		this.response = response;
 	}
 
-	public String getLabel() {
+	public @Nullable String getLabel() {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public void setLabel(@Nullable String label) {
 		this.label = label;
 	}
 
-	public String getDescription() {
+	public @Nullable String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(@Nullable String description) {
 		this.description = description;
 	}
 
-	public String getName() {
+	public @Nullable String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(@Nullable String name) {
 		this.name = name;
 	}
 
-	public Input getInput() {
+	public @Nullable Input getInput() {
 		return input;
 	}
 
-	public void setInput(Input input) {
+	public void setInput(@Nullable Input input) {
 		this.input = input;
 	}
 
-	public OutputMessage getOutputMessage() {
+	public @Nullable OutputMessage getOutputMessage() {
 		return outputMessage;
 	}
 
-	public void setOutputMessage(OutputMessage outputMessage) {
+	public void setOutputMessage(@Nullable OutputMessage outputMessage) {
 		this.outputMessage = outputMessage;
 	}
 

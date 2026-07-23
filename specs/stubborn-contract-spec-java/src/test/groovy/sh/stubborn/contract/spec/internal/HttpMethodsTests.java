@@ -25,42 +25,42 @@ import org.junit.jupiter.api.Test;
 class HttpMethodsTests {
 
 	@Test
-	public void GET() {
+	void GET() {
 		BDDAssertions.then(HttpMethods.GET).isEqualTo("GET");
 	}
 
 	@Test
-	public void HEAD() {
+	void HEAD() {
 		BDDAssertions.then(HttpMethods.HEAD).isEqualTo("HEAD");
 	}
 
 	@Test
-	public void POST() {
+	void POST() {
 		BDDAssertions.then(HttpMethods.POST).isEqualTo("POST");
 	}
 
 	@Test
-	public void PUT() {
+	void PUT() {
 		BDDAssertions.then(HttpMethods.PUT).isEqualTo("PUT");
 	}
 
 	@Test
-	public void PATCH() {
+	void PATCH() {
 		BDDAssertions.then(HttpMethods.PATCH).isEqualTo("PATCH");
 	}
 
 	@Test
-	public void DELETE() {
+	void DELETE() {
 		BDDAssertions.then(HttpMethods.DELETE).isEqualTo("DELETE");
 	}
 
 	@Test
-	public void OPTIONS() {
+	void OPTIONS() {
 		BDDAssertions.then(HttpMethods.OPTIONS).isEqualTo("OPTIONS");
 	}
 
 	@Test
-	public void TRACE() {
+	void TRACE() {
 		BDDAssertions.then(HttpMethods.TRACE).isEqualTo("TRACE");
 	}
 

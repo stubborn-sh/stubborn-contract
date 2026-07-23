@@ -45,8 +45,8 @@ class CustomModeWhen implements When, BodyMethodVisitor, CustomModeAcceptor {
 	}
 
 	private void addResponseWhenLine(SingleContractMetadata singleContractMetadata) {
-		this.responseWhens.stream()
-			.filter(when -> when.accept(singleContractMetadata))
+		var unused = this.responseWhens.stream()
+			.filter((when) -> when.accept(singleContractMetadata))
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException(
 					"No matching request building When implementation for Rest Assured"))

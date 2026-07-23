@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.spec.internal;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Matchers for the given path.
  *
@@ -27,7 +29,7 @@ public interface BodyMatcher {
 	/**
 	 * @return What kind of matching are we dealing with.
 	 */
-	MatchingType matchingType();
+	@Nullable MatchingType matchingType();
 
 	/**
 	 * @return Path to the path. Example for JSON it will be JSON Path.
@@ -41,18 +43,18 @@ public interface BodyMatcher {
 	 * body contained an integer but the actual one contained a string then the assertion
 	 * should fail.
 	 */
-	Object value();
+	@Nullable Object value();
 
 	/**
 	 * @return Min no of occurrence when matching by type. In all other cases it will be
 	 * ignored.
 	 */
-	Integer minTypeOccurrence();
+	@Nullable Integer minTypeOccurrence();
 
 	/**
 	 * @return Max no of occurrence when matching by type. In all other cases it will be
 	 * ignored.
 	 */
-	Integer maxTypeOccurrence();
+	@Nullable Integer maxTypeOccurrence();
 
 }

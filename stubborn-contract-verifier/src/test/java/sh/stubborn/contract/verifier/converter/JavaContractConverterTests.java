@@ -51,8 +51,8 @@ class JavaContractConverterTests {
 		try {
 			return new File(JavaContractConverterTests.class.getResource(resource).toURI());
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -77,10 +77,10 @@ class JavaContractConverterTests {
 		assertThat(url.getQueryParameters().getParameters().get(1).getName()).isEqualTo("b");
 		assertThat(url.getQueryParameters().getParameters().get(1).getServerValue()).isEqualTo("c");
 		assertThat(contract.getRequest().getMethod().getClientValue()).isEqualTo("PUT");
-		assertThat(contract.getRequest().getHeaders().getEntries()).anyMatch(e -> "foo".equals(e.getName())
+		assertThat(contract.getRequest().getHeaders().getEntries()).anyMatch((e) -> "foo".equals(e.getName())
 				&& ((RegexProperty) e.getClientValue()).pattern().equals("bar") && "bar".equals(e.getServerValue()));
 		assertThat(contract.getRequest().getHeaders().getEntries())
-			.anyMatch(e -> "fooReq".equals(e.getName()) && "baz".equals(e.getServerValue()));
+			.anyMatch((e) -> "fooReq".equals(e.getName()) && "baz".equals(e.getServerValue()));
 		assertThat(MapConverter.getStubSideValues(contract.getRequest().getBody()))
 			.isEqualTo(new ObjectMapper().readValue("{\"foo\":\"bar\"}", Object.class));
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).path()).isEqualTo("$.foo");
@@ -90,13 +90,13 @@ class JavaContractConverterTests {
 			.isEqualTo("bar");
 		assertThat(contract.getResponse().getStatus().getClientValue()).isEqualTo(200);
 		assertThat(contract.getResponse().getDelay().getClientValue()).isEqualTo(1000);
-		assertThat(contract.getResponse().getHeaders().getEntries()).anyMatch(e -> "foo2".equals(e.getName())
+		assertThat(contract.getResponse().getHeaders().getEntries()).anyMatch((e) -> "foo2".equals(e.getName())
 				&& ((RegexProperty) e.getServerValue()).pattern().equals("bar") && "bar".equals(e.getClientValue()));
 		assertThat(contract.getResponse().getHeaders().getEntries())
-			.anyMatch(e -> "foo3".equals(e.getName()) && e.getServerValue() instanceof ExecutionProperty
+			.anyMatch((e) -> "foo3".equals(e.getName()) && e.getServerValue() instanceof ExecutionProperty
 					&& ((ExecutionProperty) e.getServerValue()).insertValue("foo").equals("andMeToo(foo)"));
 		assertThat(contract.getResponse().getHeaders().getEntries())
-			.anyMatch(e -> "fooRes".equals(e.getName()) && "baz".equals(e.getClientValue()));
+			.anyMatch((e) -> "fooRes".equals(e.getName()) && "baz".equals(e.getClientValue()));
 		assertThat(MapConverter.getStubSideValues(contract.getResponse().getBody())).isEqualTo(
 				new ObjectMapper().readValue("{\"foo2\":\"bar\",\"foo3\":\"baz\",\"nullValue\":null}", Object.class));
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).path()).isEqualTo("$.foo2");

@@ -24,6 +24,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import org.jspecify.annotations.Nullable;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -271,7 +274,7 @@ public class Common {
 		}
 	}
 
-	public void assertThatSidesMatch(Object firstSide, Object secondSide) {
+	public void assertThatSidesMatch(@Nullable Object firstSide, @Nullable Object secondSide) {
 		if (firstSide instanceof OptionalProperty) {
 			if (secondSide == null) {
 				return;
@@ -282,14 +285,14 @@ public class Common {
 		}
 		else if ((firstSide instanceof Pattern || firstSide instanceof RegexProperty) && secondSide instanceof String) {
 			Pattern pattern = firstSide instanceof Pattern ? (Pattern) firstSide
-					: ((RegexProperty) firstSide).getPattern();
+					: Objects.requireNonNull(((RegexProperty) firstSide).getPattern(), "RegexProperty pattern");
 			assertThat(((String) secondSide).toString().matches(pattern.pattern()),
 					"Pattern [" + pattern.pattern() + "] is not matched by [" + secondSide.toString() + "]");
 		}
 		else if ((secondSide instanceof Pattern || secondSide instanceof RegexProperty)
 				&& firstSide instanceof String) {
 			Pattern pattern = secondSide instanceof Pattern ? (Pattern) secondSide
-					: ((RegexProperty) secondSide).getPattern();
+					: Objects.requireNonNull(((RegexProperty) secondSide).getPattern(), "RegexProperty pattern");
 			assertThat(((String) firstSide).matches(pattern.pattern()),
 					"Pattern [" + pattern.pattern() + "] is not matched by [" + firstSide.toString() + "]");
 		}

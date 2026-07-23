@@ -71,7 +71,7 @@ public final class RegexpBuilders {
 		return new GStringImpl(
 				Stream.of(gString.getValues())
 					.map(RegexpBuilders::buildGStringRegexpForStubSide)
-					.map(s -> (Object) s)
+					.map((s) -> (Object) s)
 					.toArray(),
 				Stream.of(gString.getStrings()).map(RegexpBuilders::escapeSpecialRegexChars).toArray(String[]::new))
 			.toString();
@@ -101,7 +101,7 @@ public final class RegexpBuilders {
 		return new GStringImpl(
 				Stream.of(gString.getValues())
 					.map(RegexpBuilders::buildGStringRegexpForTestSide)
-					.map(s -> (Object) s)
+					.map((s) -> (Object) s)
 					.toArray(),
 				Stream.of(gString.getStrings()).map(RegexpBuilders::escapeSpecialRegexChars).toArray(String[]::new))
 			.toString();

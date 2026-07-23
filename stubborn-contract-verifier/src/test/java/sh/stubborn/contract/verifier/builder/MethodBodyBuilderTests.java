@@ -140,16 +140,16 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_work_with_execute_and_arrays(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.urlPath("/foo");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.accept(h.applicationJson());
 					h.contentType(h.applicationJson());
 				});
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Map.of("myArray", List.of(
 						Map.of("notABugGeneratedHere",
@@ -165,7 +165,7 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 												resp.p(resp.execute("assertThat((String)$it).isEqualTo(\"22\")")))))),
 						Map.of("anotherArrayNeededForBug2", List.of(Map.of("optionalNotEmpty", resp.$(resp.c("foo"),
 								resp.p(resp.execute("assertThat((String)$it).isEqualTo(\"122\")")))))))));
-				resp.headers(h -> h.contentType(h.applicationJson()));
+				resp.headers((h) -> h.contentType(h.applicationJson()));
 			});
 		});
 
@@ -181,12 +181,12 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_work_patterns_in_GString(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url(r.$(r.consumer(r.regex("/\\d+")), r.producer("/123")));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
 				resp.body(Map.of("ok", true));
 			});
@@ -204,14 +204,14 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_always_escape_generated_chars(String methodBuilderName, TestFramework framework, TestMode mode) {
 		for (int i = 1; i <= 200; i++) {
 			applyBuilder(framework, mode);
-			Contract contractDsl = Contract.make(c -> {
-				c.request(r -> {
+			Contract contractDsl = Contract.make((c) -> {
+				c.request((r) -> {
 					r.method("GET");
-					r.urlPath("/v1/users", up -> {
-						up.queryParameters(qp -> qp.parameter("userId", r.value(r.regex(r.nonBlank()))));
+					r.urlPath("/v1/users", (up) -> {
+						up.queryParameters((qp) -> qp.parameter("userId", r.value(r.regex(r.nonBlank()))));
 					});
 				});
-				c.response(resp -> {
+				c.response((resp) -> {
 					resp.status(200);
 					resp.body(Map.of("ok", resp.value(resp.regex(resp.nonBlank()))));
 				});
@@ -227,16 +227,16 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_work_with_execute_and_keys_with_dots(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.urlPath("/foo");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Map.of("foo", Map.of("my.dotted.response",
 						resp.$(resp.c("foo"), resp.p(resp.execute("\"foo\".equals($it)"))))));
-				resp.headers(h -> h.contentType(h.applicationJson()));
+				resp.headers((h) -> h.contentType(h.applicationJson()));
 			});
 		});
 
@@ -252,15 +252,15 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_fail_on_nonexistent_field(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/something");
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
-				resp.headers(h -> h.contentType(h.applicationJson()));
+				resp.headers((h) -> h.contentType(h.applicationJson()));
 				resp.body(Map.of("doesNotExist", resp.$(resp.p(resp.anyAlphaUnicode()), resp.c("123"))));
 			});
 		});
@@ -274,13 +274,13 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_allow_to_use_execute_in_request_body(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/something");
 				r.body(r.$(r.c("foo"), r.p(r.execute("hashCode()"))));
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 
 		String test = singleTestGenerator(contractDsl);
@@ -293,17 +293,17 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_assert_the_response_headers_properly(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.urlPath("/documents/app_statement_v1");
-				r.headers(h -> h.contentType(h.applicationPdf()));
+				r.headers((h) -> h.contentType(h.applicationPdf()));
 				r.body(Map.of("PESEL", "77100604360", "CLIENT_NAME", "STANISLAW STASZIC", "STATEMENT_NUMBER",
 						"00200001/C4/2017/1"));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
-				resp.headers(h -> {
+				resp.headers((h) -> {
 					h.contentType(h.applicationPdf());
 					h.header("Content-Length", 4);
 				});
@@ -319,12 +319,12 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_put_L_on_long_values(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Map.of("createdAt", 1502766000000L, "updatedAt", 1499476115000L));
 			});
@@ -343,17 +343,17 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_not_put_an_absent_header_to_the_request(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/mytest");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("header-before", r.anyNonBlankString());
 					h.header("myheader", r.absent());
 					h.header("header-after", r.anyNonBlankString());
 				});
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 
 		String test = singleTestGenerator(contractDsl);
@@ -370,13 +370,13 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_reference_request_from_body_when_body_is_a_string(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/mytest");
 				r.body("{ \"name\": \"My name\" }");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(resp.fromRequest().body("$.name"));
 			});
@@ -393,18 +393,18 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_reference_request_from_body_without_escaping_of_non_string(String methodBuilderName,
 			TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
-				r.url("/mytest", u -> {
-					u.queryParameters(qp -> {
+				r.url("/mytest", (u) -> {
+					u.queryParameters((qp) -> {
 						qp.parameter("foo", "bar");
 						qp.parameter("number", 1);
 					});
 				});
 				r.body("{ \"name\": \"My name\" }");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Map.of("foo", resp.fromRequest().query("foo"), "number", resp.fromRequest().query("number")));
 			});
@@ -423,18 +423,18 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_generate_proper_type_for_large_numbers(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("PUT");
 				r.urlPath("/example/create");
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 				r.body(Map.of("name", r.$(r.consumer(r.regex(".+")), r.producer("string-1")), "updatedTs",
 						r.$(r.consumer(r.regex(r.regex("1531916906000").asLong()))), "isDisabled",
 						r.$(r.consumer(r.regex(r.anyBoolean())), r.producer(true))));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
-				resp.headers(h -> h.contentType(h.applicationJsonUtf8()));
+				resp.headers((h) -> h.contentType(h.applicationJsonUtf8()));
 				resp.body(Map.of("id", resp.$(resp.consumer(2222L), resp.producer(resp.regex("\\d+"))), "name",
 						resp.fromRequest().body("name"), "updatedTs", resp.fromRequest().body("updatedTs"),
 						"isDisabled", resp.fromRequest().body("isDisabled")));
@@ -453,17 +453,17 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_work_for_root_url(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
+		Contract contractDsl = Contract.make((c) -> {
 			c.description("Represents a request to the shouldReturnName service\n\n"
 					+ "given:\n\ta request to the shouldReturnName service\nwhen:\n\tit is a GET\nthen:\n\treturn Ryan");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body("Ryan");
-				resp.headers(h -> h.contentType(h.textHtml()));
+				resp.headers((h) -> h.contentType(h.textHtml()));
 			});
 		});
 
@@ -478,12 +478,12 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_use_fixed_delay_milliseconds_in_generated_test(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.async();
 				resp.fixedDelayMilliseconds(10000);
@@ -503,14 +503,14 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_not_escape_a_form_URL_encoded_request_body(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("/api/form-endpoint");
-				r.headers(h -> h.header("Content-Type", "application/x-www-form-urlencoded"));
+				r.headers((h) -> h.header("Content-Type", "application/x-www-form-urlencoded"));
 				r.body("a=abc&b=123");
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 
 		String test = singleTestGenerator(contractDsl);
@@ -525,20 +525,20 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_not_escape_a_form_URL_encoded_request_body_with_oauth_token(String methodBuilderName,
 			TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.urlPath("/oauth/token");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header(h.authorization(), r.anyNonBlankString());
 					h.contentType("application/x-www-form-urlencoded; charset=UTF-8");
 					h.header(h.accept(), r.anyNonBlankString());
 				});
 				r.body("username=user&password=password&grant_type=password");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
-				resp.headers(h -> h.contentType(h.applicationJsonUtf8()));
+				resp.headers((h) -> h.contentType(h.applicationJsonUtf8()));
 				resp.body(Map.of("refresh_token", "RANDOM_REFRESH_TOKEN", "access_token", "RANDOM_ACCESS_TOKEN",
 						"token_type", "bearer", "expires_in", 3600, "scope", List.of("task"), "user",
 						Map.of("id", 1, "username", "user", "name", "User")));
@@ -558,20 +558,20 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_not_escape_a_form_URL_encoded_request_body_another_try(String methodBuilderName,
 			TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.urlPath("/oauth/token");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header(h.authorization(), r.anyNonBlankString());
 					h.contentType("application/x-www-form-urlencoded; charset=UTF-8");
 					h.header(h.accept(), r.anyNonBlankString());
 				});
 				r.body("username=user&password=password&grant_type=password");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
-				resp.headers(h -> h.contentType(h.applicationJsonUtf8()));
+				resp.headers((h) -> h.contentType(h.applicationJsonUtf8()));
 				resp.body(Map.of("refresh_token", "RANDOM_REFRESH_TOKEN", "access_token", "RANDOM_ACCESS_TOKEN",
 						"token_type", "bearer", "expires_in", 3600, "scope", List.of("task"), "user",
 						Map.of("id", 1, "username", "user", "name", "User")));
@@ -589,17 +589,17 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_work_with_files_that_have_new_lines(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("PUT");
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 				r.body(r.file("classpath/request.json"));
 				r.url("/1");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(resp.file("classpath/response.json"));
-				resp.headers(h -> h.contentType(h.applicationJson()));
+				resp.headers((h) -> h.contentType(h.applicationJson()));
 			});
 		});
 
@@ -629,12 +629,12 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_assert_null_values_without_matchers(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Collections.singletonMap("nullValue", null));
 			});
@@ -654,12 +654,12 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 		applyBuilder(framework, mode);
 		String pattern = "\\d+\\w?";
 		String escapedPattern = "\\\\d+\\\\w?";
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/api/arbitrary-url");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(resp.value(resp.stub("1"), resp.test(resp.regex(pattern))));
 			});
@@ -692,29 +692,29 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_not_create_an_unnecessary_empty_collection_check(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
+		Contract contractDsl = Contract.make((c) -> {
 			c.name("get_new_toy_specs");
 			c.description(
 					"Given: A new toy request is submitted\nWhen: I receive the response\nThen: I would receive the toy specs");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("GET");
-				r.urlPath("/toys", up -> {
-					up.queryParameters(qp -> qp.parameter("uuid", "d4d724c4-e36e-4fd2-9baa-af7f5df17399"));
+				r.urlPath("/toys", (up) -> {
+					up.queryParameters((qp) -> qp.parameter("uuid", "d4d724c4-e36e-4fd2-9baa-af7f5df17399"));
 				});
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
 				resp.body(Map.of("toyUuid", "d4d724c4-e36e-4fd2-9baa-af7f5df17399", "toyDescription",
 						Map.of("name", "Super Whiz Bang Toy", "stockNum", 1234, "manufacturer", "Toy Comp"),
 						"toyDetails", List.of(Map.of("inventory", 42, "description", "Toy of the year!!", "dimensions",
 								Map.of("height", 45.8, "weight", 12.3, "width", 8.6, "length", 9.3)))));
-				resp.bodyMatchers(bm -> {
+				resp.bodyMatchers((bm) -> {
 					bm.jsonPath("$.toyDetails[*].dimensions.height", bm.byRegex(RegexPatterns.nonBlank()));
 					bm.jsonPath("$.toyDetails[*].dimensions.weight", bm.byRegex(RegexPatterns.nonBlank()));
 					bm.jsonPath("$.toyDetails[*].dimensions.width", bm.byRegex(RegexPatterns.nonBlank()));
 					bm.jsonPath("$.toyDetails[*].dimensions.length", bm.byRegex(RegexPatterns.nonBlank()));
 				});
-				resp.headers(h -> h.contentType(h.applicationJson()));
+				resp.headers((h) -> h.contentType(h.applicationJson()));
 			});
 		});
 
@@ -730,20 +730,20 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("withoutTestNG")
 	void should_work_with_escaped_quotes(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/test");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.accept(h.applicationJson());
 					h.header("X-Authorization",
 							"eyJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJObyI6IjEyMzQ1In0.VdYumw6QkfxaBgFUZNyza1VfNKiZ2WW4JaxIKe-G8HA");
 				});
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Map.of("test", "\"escaped\""));
-				resp.headers(h -> h.contentType(h.applicationJson()));
+				resp.headers((h) -> h.contentType(h.applicationJson()));
 			});
 		});
 
@@ -759,26 +759,26 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_not_leave_unnecessary_isEmpty_when_using_matchers(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/test");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.accept(h.applicationJson());
 					h.header("X-Authorization",
 							"eyJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJObyI6IjEyMzQ1In0.VdYumw6QkfxaBgFUZNyza1VfNKiZ2WW4JaxIKe-G8HA");
 				});
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(List.of(Map.of("test", "testJson"), Map.of("test", "testJson")));
-				resp.headers(h -> h.contentType(h.applicationJson()));
-				resp.bodyMatchers(bm -> {
-					bm.jsonPath("$", bm.byType(t -> {
+				resp.headers((h) -> h.contentType(h.applicationJson()));
+				resp.bodyMatchers((bm) -> {
+					bm.jsonPath("$", bm.byType((t) -> {
 						t.minOccurrence(2);
 						t.maxOccurrence(2);
 					}));
-					bm.jsonPath("$[*].test", bm.byType(t -> {
+					bm.jsonPath("$[*].test", bm.byType((t) -> {
 						t.minOccurrence(2);
 						t.maxOccurrence(2);
 					}));
@@ -797,18 +797,18 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("withoutTestNGAndWebclient")
 	void should_not_parse_json_in_a_json(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
+		Contract contractDsl = Contract.make((c) -> {
 			c.name("insertSomething_ShouldReturnHttp200");
 			c.description("POST should do sth");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("/foo");
 				r.body(Map.of("value", "{}"));
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
-				resp.headers(h -> h.contentType(h.applicationJson()));
+				resp.headers((h) -> h.contentType(h.applicationJson()));
 				resp.body(Map.of("value", "{}"));
 			});
 		});
@@ -825,15 +825,15 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("withoutTestNG")
 	void should_not_leave_empty_arrays(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/list");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
 				resp.body(Map.of("content", Map.of("one", "two", "two", "two", "three", Map.of("six", "seven"))));
-				resp.bodyMatchers(bm -> {
+				resp.bodyMatchers((bm) -> {
 					bm.jsonPath("$.content.three.six", bm.byRegex(".*seven.*"));
 					bm.jsonPath("$.content.one", bm.byRegex(".*two.*"));
 				});
@@ -852,15 +852,15 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_not_leave_empty_arrays_in_a_simple_structure(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/list");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
 				resp.body(Map.of("content", Map.of("three", Map.of("six", "seven"))));
-				resp.bodyMatchers(bm -> {
+				resp.bodyMatchers((bm) -> {
 					bm.jsonPath("$.content.three.six", bm.byRegex(".*seven.*"));
 					bm.jsonPath("$.content.one", bm.byRegex(".*two.*"));
 				});
@@ -879,16 +879,16 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_not_unnecessarily_escape_non_json_body(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url(r.$(r.consumer(r.regex("/api/v1/files/" + r.uuid())),
 						r.producer("/api/v1/files/b0683f29-741a-4178-b5c6-6e62202e3cf1")));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(resp.$(resp.consumer("some-content"), resp.producer(resp.regex(resp.nonBlank()))));
-				resp.headers(h -> {
+				resp.headers((h) -> {
 					h.header(h.contentLength(),
 							resp.$(resp.consumer(2647691), resp.producer(resp.regex(resp.positiveInt()))));
 					h.header(h.contentType(), resp.$(resp.consumer(h.applicationOctetStream()),
@@ -907,18 +907,18 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_not_escape_headers_as_jsons(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
+		Contract contractDsl = Contract.make((c) -> {
 			c.name("my name");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.urlPath("/my-url");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.contentType(h.applicationJson());
 					h.accept(h.applicationJson());
 					h.header("my-json-header", " { \"value\": \"123\" } ");
 				});
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 
 		String test = singleTestGenerator(contractDsl);
@@ -978,14 +978,14 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_work_with_query_parameters_that_need_to_be_escaped(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
-				r.urlPath("/rest/something", up -> {
-					up.queryParameters(qp -> qp.parameter("quote", r.equalTo("\"")));
+				r.urlPath("/rest/something", (up) -> {
+					up.queryParameters((qp) -> qp.parameter("quote", r.equalTo("\"")));
 				});
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 
 		String test = singleTestGenerator(contractDsl);
@@ -999,15 +999,15 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("standardBuilders")
 	void should_call_execute_in_queryParameters(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
-				r.urlPath("/rest/something", up -> {
-					up.queryParameters(qp -> qp.parameter("someHashCode",
+				r.urlPath("/rest/something", (up) -> {
+					up.queryParameters((qp) -> qp.parameter("someHashCode",
 							r.$(r.consumer(r.regex(r.anInteger())), r.producer(r.execute("hashCode()")))));
 				});
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 
 		String test = singleTestGenerator(contractDsl);
@@ -1024,12 +1024,12 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_work_with_the_timeout_flag_for_groovy(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/hello");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
 				resp.fixedDelayMilliseconds(5000);
 			});
@@ -1070,14 +1070,14 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("withoutTestNG")
 	void should_work_with_body_having_new_lines(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/foo");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
-				resp.headers(h -> h.contentType("application/x-research-info-systems;charset=UTF-8"));
+				resp.headers((h) -> h.contentType("application/x-research-info-systems;charset=UTF-8"));
 				resp.body("1\n2\n3\n");
 			});
 		});
@@ -1093,17 +1093,17 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_resolve_headers_from_request_correctly(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("PUT");
 				r.url("/frauds/name");
 				r.body(Map.of("name", r.$(r.anyAlphaUnicode())));
-				r.headers(h -> h.contentType("application/json"));
+				r.headers((h) -> h.contentType("application/json"));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Map.of("result", "Don't worry you're not a fraud"));
-				resp.headers(h -> h.contentType("application/json;charset=UTF-8"));
+				resp.headers((h) -> h.contentType("application/json;charset=UTF-8"));
 			});
 		});
 
@@ -1119,15 +1119,15 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@MethodSource("withoutTestNG")
 	void should_work_with_an_array_of_uuids(String methodBuilderName, TestFramework framework, TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
+		Contract contractDsl = Contract.make((c) -> {
 			c.description("TEST ARRAY");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.urlPath(r.$(r.c("/TEST"), r.p("/TEST")));
 				r.body(List.of(r.$(r.c(r.anyUuid()), r.p("00000000-0000-0000-0000-000000000002")),
 						r.$(r.c(r.anyUuid()), r.p("00000000-0000-0000-0000-000000000001"))));
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 
 		String test = singleTestGenerator(contractDsl);
@@ -1142,14 +1142,14 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_work_with_anyOf_that_contains_special_chars(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
+		Contract contractDsl = Contract.make((c) -> {
 			c.name("anyOf test");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("hello");
 				r.body(Map.of("type", r.anyOf("VAL", "VAL+VAL")));
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 
 		String test = singleTestGenerator(contractDsl);
@@ -1164,11 +1164,11 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_correctly_process_optional_of_DslProperty_parameters(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/api/foo");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Content-Type", "application/json");
 					h.header("Accept", "application/json");
 				});
@@ -1177,9 +1177,9 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 						r.$(r.client(r.optional(r.anyEmail())), r.server("foo@bar.com")), "key4",
 						r.$(r.optional(r.anyNumber()))));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
-				resp.headers(h -> h.header("Content-Type", "application/json"));
+				resp.headers((h) -> h.header("Content-Type", "application/json"));
 				resp.body(Map.of("key1",
 						resp.$(resp.client("bar"), resp.server(resp.optional(resp.anyOf("foo", "bar")))), "key2",
 						resp.$(resp.client("bar"), resp.server(resp.optional(resp.anyNonBlankString()))), "key3",
@@ -1199,14 +1199,14 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	void should_correctly_work_with_Form_URL_encoded_request_body(String methodBuilderName, TestFramework framework,
 			TestMode mode) {
 		applyBuilder(framework, mode);
-		Contract contractDsl = Contract.make(c -> {
-			c.request(r -> {
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("/exportData");
-				r.headers(h -> h.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
+				r.headers((h) -> h.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8"));
 				r.body("fromDt=16-Aug-2023&toDt=25-Aug-2023");
 			});
-			c.response(resp -> resp.status(200));
+			c.response((resp) -> resp.status(200));
 		});
 
 		String test = singleTestGenerator(contractDsl);

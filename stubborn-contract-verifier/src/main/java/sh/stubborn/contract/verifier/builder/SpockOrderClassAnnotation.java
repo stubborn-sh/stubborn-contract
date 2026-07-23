@@ -42,7 +42,7 @@ class SpockOrderClassAnnotation implements ClassAnnotation {
 	@Override
 	public boolean accept() {
 		return this.generatedClassMetaData.configProperties.getTestFramework() == TestFramework.SPOCK
-				&& this.generatedClassMetaData.listOfFiles.stream().anyMatch(meta -> meta.getOrder() != null);
+				&& this.generatedClassMetaData.listOfFiles.stream().anyMatch((meta) -> meta.getOrder() != null);
 	}
 
 }

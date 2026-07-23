@@ -31,6 +31,6 @@ public enum CommunicationType {
 	/** Input communication type. */
 	INPUT,
 	/** Output communication type. */
-	OUTPUT;
+	OUTPUT
 
 }

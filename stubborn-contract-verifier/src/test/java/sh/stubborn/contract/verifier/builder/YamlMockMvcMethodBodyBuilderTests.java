@@ -93,8 +93,8 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 			Files.writeString(temp.toPath(), text);
 			return temp;
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 

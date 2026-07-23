@@ -38,6 +38,7 @@ import sh.stubborn.contract.spec.internal.Headers
 import sh.stubborn.contract.spec.internal.MatchingStrategy
 import sh.stubborn.contract.spec.internal.NamedProperty
 import sh.stubborn.contract.spec.internal.OptionalProperty
+import org.jspecify.annotations.Nullable
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor
 import static org.apache.commons.text.StringEscapeUtils.escapeJava
 import static org.apache.commons.text.StringEscapeUtils.escapeJson
@@ -666,7 +667,7 @@ class ContentUtils {
 				escapeJava(property.value.serverValue.toString()) + quote + ".getBytes()"
 	}
 
-	static ContentType evaluateClientSideContentType(Headers contractHeaders, Object body) {
+	static ContentType evaluateClientSideContentType(@Nullable Headers contractHeaders, @Nullable Object body) {
 		ContentType contentType = recognizeContentTypeFromHeader(contractHeaders)
 		if (UNKNOWN == contentType) {
 			contentType = recognizeContentTypeFromContent(body)

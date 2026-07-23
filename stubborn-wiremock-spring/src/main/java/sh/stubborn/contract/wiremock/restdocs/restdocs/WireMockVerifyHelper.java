@@ -27,6 +27,7 @@ import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.jayway.jsonpath.JsonPath;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,13 +41,13 @@ public abstract class WireMockVerifyHelper<T, S extends WireMockVerifyHelper<T, 
 
 	private Map<String, JsonPath> jsonPaths = new LinkedHashMap<>();
 
-	private MediaType contentType;
+	@Nullable private MediaType contentType;
 
-	private MappingBuilder builder;
+	@Nullable private MappingBuilder builder;
 
 	public void configure(T result) {
 		Map<String, Object> configuration = getConfiguration(result);
-		byte[] requestBodyContent = getRequestBodyContent(result);
+		@Nullable byte[] requestBodyContent = getRequestBodyContent(result);
 		if (requestBodyContent != null) {
 			String actual = new String(requestBodyContent, Charset.forName("UTF-8"));
 			for (JsonPath jsonPath : this.jsonPaths.values()) {
@@ -57,7 +58,7 @@ public abstract class WireMockVerifyHelper<T, S extends WireMockVerifyHelper<T, 
 		if (this.contentType != null) {
 			configuration.put("contract.contentType", this.contentType);
 			MediaType resultType = getContentType(result);
-			assertThat(resultType).isNotNull().as("no content type");
+			assertThat(resultType).as("no content type").isNotNull();
 			assertThat(this.contentType.includes(resultType)).isTrue().as("content type did not match");
 		}
 		if (this.builder != null) {
@@ -72,9 +73,9 @@ public abstract class WireMockVerifyHelper<T, S extends WireMockVerifyHelper<T, 
 
 	protected abstract Request getWireMockRequest(T result);
 
-	protected abstract MediaType getContentType(T result);
+	protected abstract @Nullable MediaType getContentType(T result);
 
-	protected abstract byte[] getRequestBodyContent(T result);
+	protected abstract @Nullable byte[] getRequestBodyContent(T result);
 
 	protected abstract ResponseDefinitionBuilder getResponseDefinition(T result);
 

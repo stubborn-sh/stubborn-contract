@@ -24,6 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 
 /**
@@ -51,12 +52,12 @@ public class BatchStubRunner implements StubRunning {
 	}
 
 	@Override
-	public URL findStubUrl(String groupId, String artifactId) {
+	public URL findStubUrl(@Nullable String groupId, String artifactId) {
 		for (StubRunner stubRunner : this.stubRunners) {
 			try {
 				return stubRunner.findStubUrl(groupId, artifactId);
 			}
-			catch (StubNotFoundException e) {
+			catch (StubNotFoundException ex) {
 			}
 		}
 		throw new StubNotFoundException(groupId, artifactId);
@@ -68,7 +69,7 @@ public class BatchStubRunner implements StubRunning {
 			try {
 				return stubRunner.findStubUrl(ivyNotation);
 			}
-			catch (StubNotFoundException e) {
+			catch (StubNotFoundException ex) {
 			}
 		}
 		throw new StubNotFoundException(ivyNotation);

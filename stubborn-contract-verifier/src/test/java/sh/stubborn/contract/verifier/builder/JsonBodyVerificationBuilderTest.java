@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JsonBodyVerificationBuilderTest {
 
 	@Test
-	public void should_resolve_request_template_values_when_body_present() {
+	void should_resolve_request_template_values_when_body_present() {
 		// given
 		Contract contract = contractWithRequest();
 		JsonBodyVerificationBuilder builder = jsonBuilder(contract);
@@ -39,7 +39,7 @@ class JsonBodyVerificationBuilderTest {
 	}
 
 	@Test
-	public void should_keep_template_entry_when_property_missing() {
+	void should_keep_template_entry_when_property_missing() {
 		// given
 		Contract contract = contractWithRequest();
 		JsonBodyVerificationBuilder builder = jsonBuilder(contract);
@@ -64,13 +64,13 @@ class JsonBodyVerificationBuilderTest {
 
 	private Contract contractWithRequest() {
 		Contract contract = new Contract();
-		contract.request(request -> {
+		contract.request((request) -> {
 			request.method("GET");
-			request.url("/users/12", url -> url.queryParameters(query -> {
+			request.url("/users/12", (url) -> url.queryParameters((query) -> {
 				query.parameter("foo", "bar");
 				query.parameter("foo", "baz");
 			}));
-			request.headers(headers -> {
+			request.headers((headers) -> {
 				headers.header("Authorization", "alpha");
 				headers.header("Authorization", "beta");
 			});

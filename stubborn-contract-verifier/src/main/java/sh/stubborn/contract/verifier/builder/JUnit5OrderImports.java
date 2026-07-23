@@ -36,14 +36,14 @@ class JUnit5OrderImports implements Imports {
 
 	@Override
 	public Imports call() {
-		Arrays.stream(IMPORTS).forEach(s -> this.blockBuilder.addLineWithEnding("import " + s));
+		Arrays.stream(IMPORTS).forEach((s) -> this.blockBuilder.addLineWithEnding("import " + s));
 		return this;
 	}
 
 	@Override
 	public boolean accept() {
 		return this.generatedClassMetaData.configProperties.getTestFramework() == TestFramework.JUNIT5
-				&& this.generatedClassMetaData.listOfFiles.stream().anyMatch(meta -> meta.getOrder() != null);
+				&& this.generatedClassMetaData.listOfFiles.stream().anyMatch((meta) -> meta.getOrder() != null);
 	}
 
 }

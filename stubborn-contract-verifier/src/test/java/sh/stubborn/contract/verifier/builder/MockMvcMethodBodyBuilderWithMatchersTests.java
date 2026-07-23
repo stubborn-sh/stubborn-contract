@@ -82,14 +82,14 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract dynamicValueContract() {
-		return Contract.make(c -> {
-			c.request(r -> {
+		return Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.urlPath("/get");
 				r.body(Map.of("duck", 123, "alpha", "abc", "number", 123, "aBoolean", true, "date", "2017-01-01",
 						"dateTime", "2017-01-01T01:23:45", "time", "01:02:34", "valueWithoutAMatcher", "foo",
 						"valueWithTypeMatch", "string", "key", Map.of("complex.key", "foo")));
-				r.bodyMatchers(bm -> {
+				r.bodyMatchers((bm) -> {
 					bm.jsonPath("$.duck", bm.byRegex("[0-9]{3}").asInteger());
 					bm.jsonPath("$.duck", bm.byEquality());
 					bm.jsonPath("$.alpha", bm.byRegex(RegexPatterns.onlyAlphaUnicode()).asString());
@@ -101,9 +101,9 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 					bm.jsonPath("$.time", bm.byTime());
 					bm.jsonPath("$.['key'].['complex.key']", bm.byEquality());
 				});
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				Map<String, Object> responseBody = new HashMap<>();
 				responseBody.put("duck", 123);
@@ -127,7 +127,7 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 				responseBody.put("key", Map.of("complex.key", "foo"));
 				responseBody.put("nullValue", null);
 				res.body(responseBody);
-				res.bodyMatchers(bm -> {
+				res.bodyMatchers((bm) -> {
 					bm.jsonPath("$.duck", bm.byRegex("[0-9]{3}").asInteger());
 					bm.jsonPath("$.duck", bm.byEquality());
 					bm.jsonPath("$.alpha", bm.byRegex(RegexPatterns.onlyAlphaUnicode()).asString());
@@ -142,19 +142,19 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 					bm.jsonPath("$.dateTime", bm.byTimestamp());
 					bm.jsonPath("$.time", bm.byTime());
 					bm.jsonPath("$.valueWithTypeMatch", bm.byType());
-					bm.jsonPath("$.valueWithMin", bm.byType(t -> t.minOccurrence(1)));
-					bm.jsonPath("$.valueWithMax", bm.byType(t -> t.maxOccurrence(3)));
-					bm.jsonPath("$.valueWithMinMax", bm.byType(t -> {
+					bm.jsonPath("$.valueWithMin", bm.byType((t) -> t.minOccurrence(1)));
+					bm.jsonPath("$.valueWithMax", bm.byType((t) -> t.maxOccurrence(3)));
+					bm.jsonPath("$.valueWithMinMax", bm.byType((t) -> {
 						t.minOccurrence(1);
 						t.maxOccurrence(3);
 					}));
-					bm.jsonPath("$.valueWithMinEmpty", bm.byType(t -> t.minOccurrence(0)));
-					bm.jsonPath("$.valueWithMaxEmpty", bm.byType(t -> t.maxOccurrence(0)));
+					bm.jsonPath("$.valueWithMinEmpty", bm.byType((t) -> t.minOccurrence(0)));
+					bm.jsonPath("$.valueWithMaxEmpty", bm.byType((t) -> t.maxOccurrence(0)));
 					bm.jsonPath("$.duck", bm.byCommand("assertThatValueIsANumber($it)"));
 					bm.jsonPath("$.['key'].['complex.key']", bm.byEquality());
 					bm.jsonPath("$.nullValue", bm.byNull());
 				});
-				res.headers(h -> {
+				res.headers((h) -> {
 					h.contentType(h.applicationJson());
 					h.header("Some-Header", res.$(res.c("someValue"), res.p(res.regex("[a-zA-Z]{9}"))));
 				});
@@ -258,26 +258,26 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract complexMatchersContract() {
-		return Contract.make(c -> {
-			c.request(r -> {
+		return Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("person");
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body(Map.of("firstName", "Jane", "lastName", "Doe", "isAlive", true, "address",
 						Map.of("postalCode", "98101"), "phoneNumbers",
 						List.of(Map.of("type", "home", "number", "999 999-9999")), "gender", Map.of("type", "female"),
 						"children", List.of(Map.of("firstName", "Kid", "age", 55))));
-				res.bodyMatchers(bm -> {
-					bm.jsonPath("$.phoneNumbers", bm.byType(t -> {
+				res.bodyMatchers((bm) -> {
+					bm.jsonPath("$.phoneNumbers", bm.byType((t) -> {
 						t.minOccurrence(0);
 						t.maxOccurrence(4);
 					}));
 					bm.jsonPath("$.phoneNumbers[*].number", bm.byRegex("^[0-9]{3} [0-9]{3}-[0-9]{4}$"));
 					bm.jsonPath("$..number", bm.byRegex("^[0-9]{3} [0-9]{3}-[0-9]{4}$"));
 				});
-				res.headers(h -> h.contentType("application/json"));
+				res.headers((h) -> h.contentType("application/json"));
 			});
 		});
 	}
@@ -325,21 +325,21 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract flattenedAssertionsContract() {
-		return Contract.make(c -> {
-			c.request(r -> {
+		return Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("person");
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body(Map.of("phoneNumbers", Map.of("number", "foo")));
-				res.bodyMatchers(bm -> {
-					bm.jsonPath("$.phoneNumbers[*].number", bm.byType(t -> {
+				res.bodyMatchers((bm) -> {
+					bm.jsonPath("$.phoneNumbers[*].number", bm.byType((t) -> {
 						t.minOccurrence(0);
 						t.maxOccurrence(4);
 					}));
-					bm.jsonPath("$.phoneNumbers[*].number", bm.byType(t -> t.minOccurrence(0)));
-					bm.jsonPath("$.phoneNumbers[*].number", bm.byType(t -> t.maxOccurrence(4)));
+					bm.jsonPath("$.phoneNumbers[*].number", bm.byType((t) -> t.minOccurrence(0)));
+					bm.jsonPath("$.phoneNumbers[*].number", bm.byType((t) -> t.maxOccurrence(4)));
 				});
 			});
 		});
@@ -391,15 +391,15 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract commandMatcherContract() {
-		return Contract.make(c -> {
-			c.request(r -> {
+		return Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("person");
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body(Map.of("phoneNumbers", Map.of("number", "foo")));
-				res.bodyMatchers(bm -> bm.jsonPath("$.phoneNumbers[*].number", bm.byCommand("foo($it)")));
+				res.bodyMatchers((bm) -> bm.jsonPath("$.phoneNumbers[*].number", bm.byCommand("foo($it)")));
 			});
 		});
 	}
@@ -434,15 +434,15 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract nonExistingJsonPathContract() {
-		return Contract.make(c -> {
-			c.request(r -> {
+		return Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("person");
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body(Map.of("phoneNumbers", Map.of("number", "foo")));
-				res.bodyMatchers(bm -> bm.jsonPath("$.nonExistingPhoneNumbers[*].number", bm.byCommand("foo($it)")));
+				res.bodyMatchers((bm) -> bm.jsonPath("$.nonExistingPhoneNumbers[*].number", bm.byCommand("foo($it)")));
 			});
 		});
 	}
@@ -478,17 +478,17 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract jsonArrayContract() {
-		return Contract.make(c -> {
-			c.request(r -> {
+		return Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/api/v1/xxxx");
 				r.body(12000);
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body(List.of(List.of(Map.of("access_token", "123"))));
-				res.headers(h -> h.contentType(h.applicationJson()));
-				res.bodyMatchers(bm -> bm.jsonPath("$[0][0].access_token", bm.byEquality()));
+				res.headers((h) -> h.contentType(h.applicationJson()));
+				res.bodyMatchers((bm) -> bm.jsonPath("$[0][0].access_token", bm.byEquality()));
 			});
 		});
 	}
@@ -525,23 +525,23 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract multilineStringContract() {
-		return Contract.make(c -> {
+		return Contract.make((c) -> {
 			c.name("ISSUE 391");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.urlPath("/item/factsheet?size=2&page=1");
-				r.headers(h -> h.header("accept", "application/...json"));
+				r.headers((h) -> h.header("accept", "application/...json"));
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body(
 						"{\n\t\"items\": [\n\t\t{\n\t\t\t\"id\": \"35309\",\n\t\t\t\"title\": \"lorem ipsum\"\n\t\t}\n\t]\n}");
-				res.bodyMatchers(bm -> {
+				res.bodyMatchers((bm) -> {
 					bm.jsonPath("$.items[*].id", bm.byRegex(RegexPatterns.nonBlank()));
 					bm.jsonPath("$.items[*].title", bm.byRegex(RegexPatterns.nonBlank()));
-					bm.jsonPath("$.items[*]", bm.byType(t -> t.occurrence(2)));
+					bm.jsonPath("$.items[*]", bm.byType((t) -> t.occurrence(2)));
 				});
-				res.headers(h -> h.header("content-type", "application/...json;charset=UTF-8"));
+				res.headers((h) -> h.header("content-type", "application/...json;charset=UTF-8"));
 			});
 		});
 	}
@@ -576,25 +576,25 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract multilineStringMapBodyContract() {
-		return Contract.make(c -> {
+		return Contract.make((c) -> {
 			c.name("ISSUE 391");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.urlPath("/item/factsheet?size=2&page=1");
-				r.headers(h -> h.header("accept", "application/...json"));
+				r.headers((h) -> h.header("accept", "application/...json"));
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body(Map.of("items", Map.of("id", "35309", "title", "lorem ipsum")));
-				res.bodyMatchers(bm -> {
+				res.bodyMatchers((bm) -> {
 					bm.jsonPath("$.items[*].id", bm.byRegex(RegexPatterns.nonBlank()));
 					bm.jsonPath("$.items[*].title", bm.byRegex(RegexPatterns.nonBlank()));
-					bm.jsonPath("$.items[*]", bm.byType(t -> {
+					bm.jsonPath("$.items[*]", bm.byType((t) -> {
 						t.minOccurrence(2);
 						t.maxOccurrence(2);
 					}));
 				});
-				res.headers(h -> h.header("content-type", "application/...json;charset=UTF-8"));
+				res.headers((h) -> h.header("content-type", "application/...json;charset=UTF-8"));
 			});
 		});
 	}
@@ -629,22 +629,22 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract pricesArrayContract() {
-		return Contract.make(c -> {
+		return Contract.make((c) -> {
 			c.name("ISSUE 1091");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/test");
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body("{\n" + "\"prices\": [\n" + "  {\n" + "    \"country\": \"ES\",\n"
 						+ "    \"originalPrice\": \"1500\"\n" + "  }\n" + "]\n" + "}");
-				res.bodyMatchers(bm -> {
+				res.bodyMatchers((bm) -> {
 					bm.jsonPath("$.prices[0].country", bm.byRegex(RegexPatterns.nonBlank()));
 					bm.jsonPath("$.prices[0].originalPrice", bm.byRegex(RegexPatterns.number()));
 				});
-				res.headers(h -> h.contentType(h.applicationJsonUtf8()));
+				res.headers((h) -> h.contentType(h.applicationJsonUtf8()));
 			});
 		});
 	}
@@ -679,19 +679,19 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract nestedArrayWithPricesContract() {
-		return Contract.make(c -> {
+		return Contract.make((c) -> {
 			c.name("ISSUE 1091");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/test");
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body("{\n" + "\"test\": [\n" + "  {\n" + "    \"prices\": [\n" + "      {\n"
 						+ "        \"country\": \"ES\",\n" + "        \"originalPrice\": 1500\n" + "      }\n"
 						+ "    ]\n" + "  }\n" + "]\n" + "}");
-				res.bodyMatchers(bm -> {
+				res.bodyMatchers((bm) -> {
 					bm.jsonPath("$.test[0].barcode", bm.byRegex(RegexPatterns.nonBlank()));
 					bm.jsonPath("$.test[0].id", bm.byRegex(RegexPatterns.nonBlank()));
 					bm.jsonPath("$.test[0].prices[0].country", bm.byRegex(RegexPatterns.nonBlank()));
@@ -699,7 +699,7 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 					bm.jsonPath("$.test[0].prices[?(@.originalPrice==1500)].originalPrice",
 							bm.byRegex(RegexPatterns.nonBlank()));
 				});
-				res.headers(h -> h.contentType(h.applicationJsonUtf8()));
+				res.headers((h) -> h.contentType(h.applicationJsonUtf8()));
 			});
 		});
 	}
@@ -735,14 +735,14 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	// ---------------------------------------------------------------------------
 
 	private static Contract noContentTypeContract() {
-		return Contract.make(c -> {
+		return Contract.make((c) -> {
 			c.description("Should return 200");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method(r.POST());
 				r.url("/get");
-				r.headers(h -> h.contentType("application/json;charset=UTF-8"));
+				r.headers((h) -> h.contentType("application/json;charset=UTF-8"));
 			});
-			c.response(res -> {
+			c.response((res) -> {
 				res.status(res.OK());
 				res.body(res.file("getBody.json"));
 			});

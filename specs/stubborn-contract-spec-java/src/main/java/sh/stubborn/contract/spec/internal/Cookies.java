@@ -40,17 +40,17 @@ public class Cookies {
 		if (iterator.hasNext()) {
 			Map.Entry<String, Object> first = iterator.next();
 			if (first != null) {
-				entries.add(Cookie.build(first.getKey(), first.getValue()));
+				this.entries.add(Cookie.build(first.getKey(), first.getValue()));
 			}
 		}
 	}
 
 	public void cookie(String cookieKey, Object cookieValue) {
-		entries.add(Cookie.build(cookieKey, cookieValue));
+		this.entries.add(Cookie.build(cookieKey, cookieValue));
 	}
 
 	public void executeForEachCookie(final Consumer<Cookie> consumer) {
-		entries.forEach(consumer::accept);
+		this.entries.forEach(consumer::accept);
 	}
 
 	public DslProperty matching(String value) {
@@ -66,17 +66,17 @@ public class Cookies {
 			return false;
 		}
 		Cookies cookies = (Cookies) o;
-		return Objects.equals(entries, cookies.entries);
+		return Objects.equals(this.entries, cookies.entries);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(entries);
+		return Objects.hash(this.entries);
 	}
 
 	@Override
 	public String toString() {
-		return "Cookies{" + "entries=" + entries + '}';
+		return "Cookies{" + "entries=" + this.entries + '}';
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Cookies {
 	 */
 	public Map<String, Object> asStubSideMap() {
 		final Map<String, Object> map = new LinkedHashMap<>();
-		entries.forEach(cookie -> map.put(cookie.getKey(), ContractUtils.convertStubSideRecursively(cookie)));
+		this.entries.forEach((cookie) -> map.put(cookie.getKey(), ContractUtils.convertStubSideRecursively(cookie)));
 		return map;
 	}
 
@@ -97,12 +97,12 @@ public class Cookies {
 	 */
 	public Map<String, Object> asTestSideMap() {
 		final Map<String, Object> map = new HashMap<String, Object>();
-		entries.forEach(cookie -> map.put(cookie.getKey(), ContractUtils.convertTestSideRecursively(cookie)));
+		this.entries.forEach((cookie) -> map.put(cookie.getKey(), ContractUtils.convertTestSideRecursively(cookie)));
 		return map;
 	}
 
 	public Set<Cookie> getEntries() {
-		return entries;
+		return this.entries;
 	}
 
 	public void setEntries(Set<Cookie> entries) {

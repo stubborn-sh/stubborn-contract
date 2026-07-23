@@ -4,9 +4,11 @@ import com.jayway.jsonpath.DocumentContext;
 
 import java.util.LinkedList;
 
+import org.jspecify.annotations.Nullable;
+
 class ArrayAssertion extends JsonAsserter {
 
-	protected ArrayAssertion(DocumentContext parsedJson, LinkedList<String> jsonPathBuffer, Object arrayName,
+	protected ArrayAssertion(DocumentContext parsedJson, LinkedList<String> jsonPathBuffer, @Nullable Object arrayName,
 			JsonAsserterConfiguration jsonAsserterConfiguration) {
 		super(parsedJson, jsonPathBuffer, arrayName, jsonAsserterConfiguration);
 	}

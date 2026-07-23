@@ -103,8 +103,8 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 		try {
 			return java.nio.file.Files.readAllBytes(file.toPath());
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 

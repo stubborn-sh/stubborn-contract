@@ -22,6 +22,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
@@ -73,8 +75,8 @@ public class ContractFileScanner {
 
 	private final String includeMatcher;
 
-	public ContractFileScanner(File baseDir, Set<String> excluded, Set<String> ignored, Set<String> included,
-			String includeMatcher) {
+	public ContractFileScanner(File baseDir, @Nullable Set<String> excluded, @Nullable Set<String> ignored,
+			Set<String> included, String includeMatcher) {
 		this.baseDir = baseDir;
 		this.excludeMatchers = processPatterns(excluded != null ? excluded : Collections.emptySet());
 		this.ignoreMatchers = processPatterns(ignored != null ? ignored : Collections.emptySet());
@@ -183,7 +185,7 @@ public class ContractFileScanner {
 		}
 	}
 
-	private Collection<Contract> tryConvert(ContractConverter converter, File file) {
+	private @Nullable Collection<Contract> tryConvert(ContractConverter converter, File file) {
 		boolean accepted = converter.isAccepted(file);
 		if (!accepted) {
 			return null;
@@ -191,8 +193,8 @@ public class ContractFileScanner {
 		try {
 			return converter.convertFrom(file);
 		}
-		catch (Exception e) {
-			throw new IllegalStateException("Failed to convert file [" + file + "]", e);
+		catch (Exception ex) {
+			throw new IllegalStateException("Failed to convert file [" + file + "]", ex);
 		}
 	}
 
@@ -209,7 +211,7 @@ public class ContractFileScanner {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Creating a contract entry for path [" + path + "] and metadata [" + metadata + "]");
 		}
-		result.computeIfAbsent(parent, k -> new ArrayList<>()).add(metadata);
+		result.computeIfAbsent(parent, (k) -> new ArrayList<>()).add(metadata);
 	}
 
 	private boolean hasScenarioFilenamePattern(Path path) {
@@ -260,11 +262,11 @@ public class ContractFileScanner {
 
 	public static class Builder {
 
-		private File baseDir;
+		private @Nullable File baseDir;
 
-		private Set<String> excluded;
+		private @Nullable Set<String> excluded;
 
-		private Set<String> ignored;
+		private @Nullable Set<String> ignored;
 
 		private Set<String> included = Collections.emptySet();
 
@@ -296,8 +298,8 @@ public class ContractFileScanner {
 		}
 
 		public ContractFileScanner build() {
-			return new ContractFileScanner(this.baseDir, this.excluded, this.ignored, this.included,
-					this.includeMatcher);
+			return new ContractFileScanner(Objects.requireNonNull(this.baseDir, "baseDir is required"), this.excluded,
+					this.ignored, this.included, this.includeMatcher);
 		}
 
 	}

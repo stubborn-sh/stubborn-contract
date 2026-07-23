@@ -37,14 +37,14 @@ class XmlImports implements Imports {
 
 	@Override
 	public Imports call() {
-		Arrays.stream(IMPORTS).forEach(s -> this.blockBuilder.addLineWithEnding("import " + s));
+		Arrays.stream(IMPORTS).forEach((s) -> this.blockBuilder.addLineWithEnding("import " + s));
 		return this;
 	}
 
 	@Override
 	public boolean accept() {
 		return this.generatedClassMetaData.listOfFiles.stream()
-			.anyMatch(metadata -> metadata.getConvertedContractWithMetadata()
+			.anyMatch((metadata) -> metadata.getConvertedContractWithMetadata()
 				.stream()
 				.anyMatch(SingleContractMetadata::isXml));
 	}

@@ -50,7 +50,7 @@ class GeneratedClassMetaData {
 
 	Collection<SingleContractMetadata> toSingleContractMetadata() {
 		return this.listOfFiles.stream()
-			.flatMap(metadata -> metadata.getConvertedContractWithMetadata().stream())
+			.flatMap((metadata) -> metadata.getConvertedContractWithMetadata().stream())
 			.collect(Collectors.toList());
 	}
 

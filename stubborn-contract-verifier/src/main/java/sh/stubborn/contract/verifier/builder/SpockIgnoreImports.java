@@ -39,9 +39,9 @@ class SpockIgnoreImports implements Imports {
 	public boolean accept() {
 		return this.generatedClassMetaData.configProperties.getTestFramework() == TestFramework.SPOCK
 				&& this.generatedClassMetaData.listOfFiles.stream()
-					.anyMatch(metadata -> metadata.isIgnored() || metadata.getConvertedContractWithMetadata()
+					.anyMatch((metadata) -> metadata.isIgnored() || metadata.getConvertedContractWithMetadata()
 						.stream()
-						.anyMatch(m -> m.isIgnored() || m.isInProgress()));
+						.anyMatch((m) -> m.isIgnored() || m.isInProgress()));
 	}
 
 }

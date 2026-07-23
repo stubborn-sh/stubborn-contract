@@ -20,29 +20,32 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Represents an element of a DSL that can contain client or sever side values.
  *
  * @since 1.0.0
  */
-public class DslProperty<T> implements Serializable {
+public class DslProperty<T extends @Nullable Object> implements Serializable {
 
-	private final T clientValue;
+	private final @Nullable T clientValue;
 
-	private final T serverValue;
+	private final @Nullable T serverValue;
 
-	public DslProperty(T clientValue, T serverValue) {
+	public DslProperty(@Nullable T clientValue, @Nullable T serverValue) {
 		this.clientValue = clientValue;
 		this.serverValue = serverValue;
 	}
 
-	public DslProperty(T singleValue) {
+	public DslProperty(@Nullable T singleValue) {
 		this.clientValue = singleValue;
 		this.serverValue = singleValue;
 	}
 
 	public boolean isSingleValue() {
-		return this.clientValue.equals(this.serverValue) || (this.clientValue != null && this.serverValue == null)
+		return Objects.equals(this.clientValue, this.serverValue)
+				|| (this.clientValue != null && this.serverValue == null)
 				|| (this.serverValue != null && this.clientValue == null);
 	}
 
@@ -62,7 +65,7 @@ public class DslProperty<T> implements Serializable {
 		return Objects.equals(thisClientValue, thatClientValue) && Objects.equals(thisServerValue, thatServerValue);
 	}
 
-	private Object stringPatternIfPattern(Object value) {
+	private @Nullable Object stringPatternIfPattern(@Nullable Object value) {
 		return value instanceof Pattern ? ((Pattern) value).pattern() : value;
 	}
 
@@ -77,11 +80,11 @@ public class DslProperty<T> implements Serializable {
 				+ '}';
 	}
 
-	public final T getClientValue() {
+	public final @Nullable T getClientValue() {
 		return clientValue;
 	}
 
-	public final T getServerValue() {
+	public final @Nullable T getServerValue() {
 		return serverValue;
 	}
 

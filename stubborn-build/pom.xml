@@ -99,6 +99,14 @@
 		<revapi-maven-plugin.version>0.15.0</revapi-maven-plugin.version>
 		<revapi-java.version>0.28.1</revapi-java.version>
 
+		<!-- Static analysis + null safety -->
+		<spotbugs-maven-plugin.version>4.10.3.0</spotbugs-maven-plugin.version>
+		<findsecbugs-plugin.version>1.13.0</findsecbugs-plugin.version>
+		<dependency-check-maven.version>12.1.1</dependency-check-maven.version>
+		<error-prone.version>2.36.0</error-prone.version>
+		<nullaway.version>0.12.7</nullaway.version>
+		<jspecify.version>1.0.0</jspecify.version>
+
 		<!--
 		  Core module gate: set to false in Spring-agnostic core modules to ban
 		  direct Spring dependencies (org.springframework.*, *.boot, *.cloud).
@@ -107,6 +115,16 @@
 		<!-- Set to false in public API modules to enable revapi binary-compat check. -->
 		<stubborn.revapi.skip>true</stubborn.revapi.skip>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jspecify</groupId>
+				<artifactId>jspecify</artifactId>
+				<version>${jspecify.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<distributionManagement>
 		<snapshotRepository>
@@ -129,6 +147,24 @@
 					<configuration>
 						<release>${java.version}</release>
 						<parameters>true</parameters>
+						<useIncrementalCompilation>false</useIncrementalCompilation>
+						<compilerArgs>
+							<arg>-XDcompilePolicy=simple</arg>
+							<arg>--should-stop=ifError=FLOW</arg>
+							<arg>-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:JSpecifyMode=true -XepOpt:NullAway:AnnotatedPackages=sh.stubborn,com.toomuchcoding</arg>
+						</compilerArgs>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>com.google.errorprone</groupId>
+								<artifactId>error_prone_core</artifactId>
+								<version>${error-prone.version}</version>
+							</path>
+							<path>
+								<groupId>com.uber.nullaway</groupId>
+								<artifactId>nullaway</artifactId>
+								<version>${nullaway.version}</version>
+							</path>
+						</annotationProcessorPaths>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -316,6 +352,20 @@
 					<version>${build-helper-maven-plugin.version}</version>
 				</plugin>
 				<plugin>
+					<groupId>com.github.spotbugs</groupId>
+					<artifactId>spotbugs-maven-plugin</artifactId>
+					<version>${spotbugs-maven-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.owasp</groupId>
+					<artifactId>dependency-check-maven</artifactId>
+					<version>${dependency-check-maven.version}</version>
+					<configuration>
+						<failBuildOnCVSS>7</failBuildOnCVSS>
+						<nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
+					</configuration>
+				</plugin>
+				<plugin>
 					<groupId>org.jetbrains.kotlin</groupId>
 					<artifactId>kotlin-maven-plugin</artifactId>
 					<version>${kotlin-maven-plugin.version}</version>
@@ -417,6 +467,61 @@
 								</bannedDependencies>
 							</rules>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>io.spring.javaformat</groupId>
+						<artifactId>spring-javaformat-checkstyle</artifactId>
+						<version>${spring-javaformat.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>com.puppycrawl.tools</groupId>
+						<artifactId>checkstyle</artifactId>
+						<version>10.21.4</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<configLocation>io/spring/javaformat/checkstyle/checkstyle.xml</configLocation>
+					<suppressionsLocation>${maven.multiModuleProjectDirectory}/src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+					<excludes>**/generated-sources/**/*,**/contractsToCompile/**/*,**/groovy-stubs/**/*</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>checkstyle-validation</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<configuration>
+					<effort>Max</effort>
+					<threshold>Medium</threshold>
+					<plugins>
+						<plugin>
+							<groupId>com.h3xstream.findsecbugs</groupId>
+							<artifactId>findsecbugs-plugin</artifactId>
+							<version>${findsecbugs-plugin.version}</version>
+						</plugin>
+					</plugins>
+				</configuration>
+				<executions>
+					<execution>
+						<id>spotbugs-check</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

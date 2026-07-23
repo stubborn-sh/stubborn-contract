@@ -18,24 +18,30 @@ package sh.stubborn.contract.spec.internal;
 
 import java.util.function.Function;
 
+import org.jspecify.annotations.Nullable;
+
 final class ContractUtils {
 
-	static final Function CLIENT_VALUE = o -> o instanceof DslProperty ? ((DslProperty) o).getClientValue() : o;
-	static final Function SERVER_VALUE = o -> o instanceof DslProperty ? ((DslProperty) o).getServerValue() : o;
+	static final Function<Object, @Nullable Object> CLIENT_VALUE = o -> o instanceof DslProperty
+			? ((DslProperty) o).getClientValue() : o;
+
+	static final Function<Object, @Nullable Object> SERVER_VALUE = o -> o instanceof DslProperty
+			? ((DslProperty) o).getServerValue() : o;
 
 	private ContractUtils() {
 		throw new IllegalStateException("Can't instantiate an utility class");
 	}
 
-	static Object convertStubSideRecursively(Object object) {
+	static @Nullable Object convertStubSideRecursively(@Nullable Object object) {
 		return convertRecursively(object, CLIENT_VALUE);
 	}
 
-	static Object convertTestSideRecursively(Object object) {
+	static @Nullable Object convertTestSideRecursively(@Nullable Object object) {
 		return convertRecursively(object, SERVER_VALUE);
 	}
 
-	private static Object convertRecursively(Object object, Function function) {
+	private static @Nullable Object convertRecursively(@Nullable Object object,
+			Function<Object, @Nullable Object> function) {
 		if (object instanceof DslProperty) {
 			return convertRecursively(function.apply(object), function);
 		}

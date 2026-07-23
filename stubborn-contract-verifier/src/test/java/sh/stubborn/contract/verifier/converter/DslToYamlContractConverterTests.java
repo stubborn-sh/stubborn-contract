@@ -46,8 +46,8 @@ class DslToYamlContractConverterTests {
 			return new File(
 					DslToYamlContractConverterTests.class.getResource("/contracts/dsl-to-yaml/" + name).toURI());
 		}
-		catch (URISyntaxException e) {
-			throw new RuntimeException(e);
+		catch (URISyntaxException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -194,7 +194,7 @@ class DslToYamlContractConverterTests {
 			.containsEntry("valueWithMinEmpty", List.of())
 			.containsEntry("valueWithMaxEmpty", List.of())
 			.containsKey("nullValue")
-			.satisfies(m -> assertThat(((Map<?, ?>) m).get("nullValue")).isNull());
+			.satisfies((m) -> assertThat(((Map<?, ?>) m).get("nullValue")).isNull());
 		assertThat(yamlContract.response.headers).containsEntry("Content-Type", "application/json")
 			.containsEntry("Some-Header", "someValue");
 		assertThat(yamlContract.response.matchers.headers).containsExactly(
@@ -249,7 +249,7 @@ class DslToYamlContractConverterTests {
 		assertThat(yamlContract.request.matchers.queryParameters).containsExactly(
 				queryParameterMatcher("foo2", YamlContract.MatchingType.equal_to_json, "{\"foo\":\"bar\"}"));
 		assertThat(yamlContract.response.status).isEqualTo(200);
-		assertThat(yamlContract.response.body).asInstanceOf(InstanceOfAssertFactories.MAP).satisfies(m -> {
+		assertThat(yamlContract.response.body).asInstanceOf(InstanceOfAssertFactories.MAP).satisfies((m) -> {
 			assertThat(((Map<?, ?>) m).get("fraudCheckStatus").toString()).isEqualTo("FRAUD");
 			assertThat(((Map<?, ?>) m).get("rejection.reason").toString()).isEqualTo("Amount too high");
 		});

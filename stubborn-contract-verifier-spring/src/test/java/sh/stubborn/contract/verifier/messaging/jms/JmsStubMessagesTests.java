@@ -27,10 +27,10 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class JmsStubMessagesTests {
 
@@ -40,7 +40,7 @@ public class JmsStubMessagesTests {
 		final Session session = mock(Session.class);
 		final TextMessage message = mock(TextMessage.class);
 
-		when(session.createTextMessage(anyString())).thenReturn(message);
+		given(session.createTextMessage(anyString())).willReturn(message);
 
 		final JmsStubMessages springJmsStubMessages = new JmsStubMessages(jmsTemplate);
 
@@ -49,7 +49,7 @@ public class JmsStubMessagesTests {
 		final ArgumentCaptor<MessageCreator> messageCreatorArgumentCaptor = ArgumentCaptor
 			.forClass(MessageCreator.class);
 
-		verify(jmsTemplate, times(1)).send(anyString(), messageCreatorArgumentCaptor.capture());
+		then(jmsTemplate).should(times(1)).send(anyString(), messageCreatorArgumentCaptor.capture());
 
 		final MessageCreator creator = messageCreatorArgumentCaptor.getValue();
 

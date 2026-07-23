@@ -105,29 +105,29 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").field(\"['json']\").isEqualTo(\"with value\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*].['some'].['nested'][?(@.['json'] == 'with value')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").field(\"['anothervalue']\").isEqualTo(4)");
 			assertThat(entry.jsonPath()).isEqualTo("$[*].['some'].['nested'][?(@.['anothervalue'] == 4)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").array(\"['withlist']\").contains(\"['name']\").isEqualTo(\"name1\")");
 			assertThat(entry.jsonPath())
 				.isEqualTo("$[*].['some'].['nested'].['withlist'][*][?(@.['name'] == 'name1')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").array(\"['withlist']\").contains(\"['name']\").isEqualTo(\"name2\")");
 			assertThat(entry.jsonPath())
 				.isEqualTo("$[*].['some'].['nested'].['withlist'][*][?(@.['name'] == 'name2')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").array(\"['withlist']\").field(\"['anothernested']\").field(\"['name']\").isEqualTo(\"name3\")");
 			assertThat(entry.jsonPath())
@@ -157,22 +157,22 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".field(\"['some']\").field(\"['nested']\").field(\"['json']\").isEqualTo(\"with value\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['some'].['nested'][?(@.['json'] == 'with value')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".field(\"['some']\").field(\"['nested']\").field(\"['anothervalue']\").isEqualTo(4)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['some'].['nested'][?(@.['anothervalue'] == 4)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".field(\"['some']\").field(\"['nested']\").array(\"['withlist']\").contains(\"['name']\").isEqualTo(\"name1\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['some'].['nested'].['withlist'][*][?(@.['name'] == 'name1')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".field(\"['some']\").field(\"['nested']\").array(\"['withlist']\").contains(\"['name']\").isEqualTo(\"name2\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['some'].['nested'].['withlist'][*][?(@.['name'] == 'name2')]");
@@ -191,7 +191,7 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").arrayField().isEqualTo(\"HOP\").value()");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][?(@ == 'HOP')]");
 		});
@@ -210,11 +210,11 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isNull()");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property1'] == null)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property2']\").isEqualTo(true)");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property2'] == true)]");
 		});
@@ -230,15 +230,15 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['extensions']\").field(\"['7']\").isEqualTo(28.00)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['extensions'][?(@.['7'] == 28.00)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['extensions']\").field(\"['14']\").isEqualTo(41.00)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['extensions'][?(@.['14'] == 41.00)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['extensions']\").field(\"['30']\").isEqualTo(60.00)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['extensions'][?(@.['30'] == 60.00)]");
 		});
@@ -259,17 +259,17 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['errors']\").contains(\"['property']\").isEqualTo(\"email\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][*][?(@.['property'] == 'email')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['errors']\").contains(\"['message']\").isEqualTo(\"inconsistent value\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][*][?(@.['message'] == 'inconsistent value')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['errors']\").contains(\"['message']\").isEqualTo(\"inconsistent value2\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][*][?(@.['message'] == 'inconsistent value2')]");
@@ -292,29 +292,29 @@ class JsonToJsonPathsConverterTests {
 
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").field(\"['json']\").isEqualTo(\"with value\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*].['some'].['nested'][?(@.['json'] == 'with value')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").field(\"['anothervalue']\").isEqualTo(4)");
 			assertThat(entry.jsonPath()).isEqualTo("$[*].['some'].['nested'][?(@.['anothervalue'] == 4)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").array(\"['withlist']\").contains(\"['name']\").isEqualTo(\"name1\")");
 			assertThat(entry.jsonPath())
 				.isEqualTo("$[*].['some'].['nested'].['withlist'][*][?(@.['name'] == 'name1')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").array(\"['withlist']\").contains(\"['name']\").isEqualTo(\"name2\")");
 			assertThat(entry.jsonPath())
 				.isEqualTo("$[*].['some'].['nested'].['withlist'][*][?(@.['name'] == 'name2')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['some']\").field(\"['nested']\").array(\"['withlist']\").field(\"['anothernested']\").field(\"['name']\").matches(\"[a-zA-Z]+\")");
 			assertThat(entry.jsonPath())
@@ -347,11 +347,11 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property1'] == 'a')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property2']\").isEqualTo(\"b\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property2'] == 'b')]");
 		});
@@ -369,15 +369,15 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isEqualTo(\"true\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property1'] == 'true')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property2']\").isNull()");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property2'] == null)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property3']\").isEqualTo(false)");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property3'] == false)]");
 		});
@@ -390,15 +390,15 @@ class JsonToJsonPathsConverterTests {
 				List.of(Map.of("a", "sth"), Map.of("b", "sthElse")));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property1'] == 'a')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['property2']\").contains(\"['a']\").isEqualTo(\"sth\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property2'][*][?(@.['a'] == 'sth')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['property2']\").contains(\"['b']\").isEqualTo(\"sthElse\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property2'][*][?(@.['b'] == 'sthElse')]");
@@ -413,16 +413,16 @@ class JsonToJsonPathsConverterTests {
 				List.of(Map.of("a", "sth"), Map.of("b", "sthElse")));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property1'] == 'a')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['property2']\").elementWithIndex(0).field(\"['a']\").isEqualTo(\"sth\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property2'][0][?(@.['a'] == 'sth')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['property2']\").elementWithIndex(1).field(\"['b']\").isEqualTo(\"sthElse\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property2'][1][?(@.['b'] == 'sthElse')]");
@@ -435,11 +435,11 @@ class JsonToJsonPathsConverterTests {
 		Map<String, Object> json = Map.of("property", Map.of(14, 0.0, 7, 0.0));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property']\").field(7).isEqualTo(0.0)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property'][?(@.7 == 0.0)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property']\").field(14).isEqualTo(0.0)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property'][?(@.14 == 0.0)]");
 		});
@@ -459,11 +459,11 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array().contains(\"['property1']\").isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][?(@.['property1'] == 'a')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array().contains(\"['property2']\").isEqualTo(\"b\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][?(@.['property2'] == 'b')]");
 		});
@@ -484,12 +484,12 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array().elementWithIndex(0).field(\"['property1']\").isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0][?(@.['property1'] == 'a')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array().elementWithIndex(1).field(\"['property2']\").isEqualTo(\"b\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][1][?(@.['property2'] == 'b')]");
@@ -509,12 +509,12 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['property1']\").contains(\"['property2']\").isEqualTo(\"test1\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property1'][*][?(@.['property2'] == 'test1')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['property1']\").contains(\"['property3']\").isEqualTo(\"test2\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property1'][*][?(@.['property3'] == 'test2')]");
@@ -535,12 +535,12 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['property1']\").elementWithIndex(0).field(\"['property2']\").isEqualTo(\"test1\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property1'][0][?(@.['property2'] == 'test1')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['property1']\").elementWithIndex(1).field(\"['property3']\").isEqualTo(\"test2\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property1'][1][?(@.['property3'] == 'test2')]");
@@ -558,11 +558,11 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property2']\").field(\"['property3']\").isEqualTo(\"b\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['property2'][?(@.['property3'] == 'b')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property1'] == 'a')]");
 		});
@@ -574,11 +574,11 @@ class JsonToJsonPathsConverterTests {
 		Map<String, Object> json = Map.of("property1", "a", "property2", Pattern.compile("[0-9]{3}"));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property2']\").matches(\"[0-9]{3}\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property2'] =~ /[0-9]{3}/)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isEqualTo(\"a\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property1'] == 'a')]");
 		});
@@ -590,7 +590,7 @@ class JsonToJsonPathsConverterTests {
 		Map<String, Object> json = Map.of("property2", Pattern.compile("\\d+"));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property2']\").matches(\"\\\\d+\")");
 			assertThat(entry.jsonPath()).isEqualTo("$[?(@.['property2'] =~ /\\d+/)]");
 		});
@@ -603,12 +603,12 @@ class JsonToJsonPathsConverterTests {
 				List.of(Map.of("property", "bank_account_number", "message", "incorrect_format")));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['errors']\").contains(\"['property']\").isEqualTo(\"bank_account_number\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][*][?(@.['property'] == 'bank_account_number')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['errors']\").contains(\"['message']\").isEqualTo(\"incorrect_format\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][*][?(@.['message'] == 'incorrect_format')]");
@@ -623,12 +623,12 @@ class JsonToJsonPathsConverterTests {
 				List.of(Map.of("property", "bank_account_number", "message", "incorrect_format")));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['errors']\").elementWithIndex(0).field(\"['property']\").isEqualTo(\"bank_account_number\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][0][?(@.['property'] == 'bank_account_number')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array(\"['errors']\").elementWithIndex(0).field(\"['message']\").isEqualTo(\"incorrect_format\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['errors'][0][?(@.['message'] == 'incorrect_format')]");
@@ -660,25 +660,25 @@ class JsonToJsonPathsConverterTests {
 		for (var entry : pathAndValues) {
 			assertThat(context.read(entry.jsonPath(), JSONArray.class)).isNotEmpty();
 		}
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").array().array().arrayField().isEqualTo(38.995548)");
 			assertThat(entry.jsonPath())
 				.isEqualTo("$[*].['place'].['bounding_box'].['coordinates'][*][*][?(@ == 38.995548)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").array().array().arrayField().isEqualTo(-77.119759)");
 			assertThat(entry.jsonPath())
 				.isEqualTo("$[*].['place'].['bounding_box'].['coordinates'][*][*][?(@ == -77.119759)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").array().array().arrayField().isEqualTo(-76.909393)");
 			assertThat(entry.jsonPath())
 				.isEqualTo("$[*].['place'].['bounding_box'].['coordinates'][*][*][?(@ == -76.909393)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").array().array().arrayField().isEqualTo(38.791645)");
 			assertThat(entry.jsonPath())
@@ -717,32 +717,32 @@ class JsonToJsonPathsConverterTests {
 			assertThat((Object) context.read(entry.jsonPath())).isNotNull();
 		}
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().elementWithIndex(0).field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").elementWithIndex(0).elementWithIndex(0).hasSize(2)");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0].['place'].['bounding_box'].['coordinates'][0][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().elementWithIndex(0).field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").elementWithIndex(0).elementWithIndex(0).elementWithIndex(0).isEqualTo(-77.119759)");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0].['place'].['bounding_box'].['coordinates'][0][0][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().elementWithIndex(0).field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").elementWithIndex(0).elementWithIndex(0).elementWithIndex(1).isEqualTo(38.995548)");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0].['place'].['bounding_box'].['coordinates'][0][0][1]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().elementWithIndex(0).field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").elementWithIndex(0).elementWithIndex(1).hasSize(2)");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0].['place'].['bounding_box'].['coordinates'][0][1]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().elementWithIndex(0).field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").elementWithIndex(0).elementWithIndex(1).elementWithIndex(0).isEqualTo(-76.909393)");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0].['place'].['bounding_box'].['coordinates'][0][1][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
 					".array().elementWithIndex(0).field(\"['place']\").field(\"['bounding_box']\").array(\"['coordinates']\").elementWithIndex(0).elementWithIndex(1).elementWithIndex(1).isEqualTo(38.791645)");
 			assertThat(entry.jsonPath()).isEqualTo("$[*][0].['place'].['bounding_box'].['coordinates'][0][1][1]");
@@ -830,11 +830,11 @@ class JsonToJsonPathsConverterTests {
 		Map<String, Object> json = Map.of("aMap", Map.of("foo", "bar"), "anEmptyMap", Map.of());
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['aMap']\").field(\"['foo']\").isEqualTo(\"bar\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['aMap'][?(@.['foo'] == 'bar')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['anEmptyMap']\").isEmpty()");
 			assertThat(entry.jsonPath()).isEqualTo("$.['anEmptyMap']");
 		});
@@ -851,11 +851,11 @@ class JsonToJsonPathsConverterTests {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['aMap']\").field(\"['foo']\").isEqualTo(\"bar\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['aMap'][?(@.['foo'] == 'bar')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['anEmptyMap']\").isEmpty()");
 			assertThat(entry.jsonPath()).isEqualTo("$.['anEmptyMap']");
 		});
@@ -870,19 +870,19 @@ class JsonToJsonPathsConverterTests {
 		Map<String, Object> json = Map.of("items", List.of("first", "second", "third"));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").hasSize(3)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items']");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(0).isEqualTo(\"first\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][0]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(1).isEqualTo(\"second\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][1]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").elementWithIndex(2).isEqualTo(\"third\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['items'][2]");
 		});
@@ -896,22 +896,22 @@ class JsonToJsonPathsConverterTests {
 				List.of(Map.of("name", "Alice", "age", 30), Map.of("name", "Bob", "age", 25)));
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(json);
 
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['users']\").elementWithIndex(0).field(\"['name']\").isEqualTo(\"Alice\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['users'][0][?(@.['name'] == 'Alice')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['users']\").elementWithIndex(0).field(\"['age']\").isEqualTo(30)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['users'][0][?(@.['age'] == 30)]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['users']\").elementWithIndex(1).field(\"['name']\").isEqualTo(\"Bob\")");
 			assertThat(entry.jsonPath()).isEqualTo("$.['users'][1][?(@.['name'] == 'Bob')]");
 		});
-		assertThat(pathAndValues).anySatisfy(entry -> {
+		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
 				.isEqualTo(".array(\"['users']\").elementWithIndex(1).field(\"['age']\").isEqualTo(25)");
 			assertThat(entry.jsonPath()).isEqualTo("$.['users'][1][?(@.['age'] == 25)]");

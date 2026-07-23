@@ -31,6 +31,7 @@ import java.util.Set;
 import groovy.json.JsonOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
@@ -47,6 +48,8 @@ import sh.stubborn.contract.verifier.util.BodyExtractor;
 
 /**
  * Runs stubs for a particular {@link StubServer}.
+ *
+ * @author Marcin Grzejszczak
  */
 class StubRunnerExecutor implements StubFinder {
 
@@ -60,7 +63,7 @@ class StubRunnerExecutor implements StubFinder {
 
 	private final List<HttpServerStub> serverStubs;
 
-	private StubServer stubServer;
+	private @Nullable StubServer stubServer;
 
 	private final YamlContractConverter yamlContractConverter = new YamlContractConverter();
 
@@ -79,7 +82,15 @@ class StubRunnerExecutor implements StubFinder {
 		this(portScanner, new NoOpStubMessages(), new ArrayList<>());
 	}
 
-	public RunningStubs runStubs(StubRunnerOptions stubRunnerOptions, StubRepository repository,
+	private StubServer requireStubServer() {
+		StubServer server = this.stubServer;
+		if (server == null) {
+			throw new IllegalStateException("StubServer not started. Call runStubs() first.");
+		}
+		return server;
+	}
+
+	RunningStubs runStubs(StubRunnerOptions stubRunnerOptions, StubRepository repository,
 			StubConfiguration stubConfiguration) {
 		if (this.stubServer != null) {
 			if (log.isDebugEnabled()) {
@@ -104,28 +115,28 @@ class StubRunnerExecutor implements StubFinder {
 
 	private RunningStubs runningStubs() {
 		return new RunningStubs(
-				Collections.singletonMap(this.stubServer.getStubConfiguration(), this.stubServer.getPort()));
+				Collections.singletonMap(requireStubServer().getStubConfiguration(), requireStubServer().getPort()));
 	}
 
-	public void shutdown() {
+	void shutdown() {
 		if (this.stubServer != null) {
 			this.stubServer.stop();
 		}
 	}
 
 	String registeredMappings() {
-		return this.stubServer.registeredMappings();
+		return requireStubServer().registeredMappings();
 	}
 
 	@Override
-	public URL findStubUrl(String groupId, String artifactId) {
+	public URL findStubUrl(@Nullable String groupId, String artifactId) {
 		URL url = null;
 		if (groupId == null) {
-			url = findStubUrl(this.stubServer.stubConfiguration.artifactId.equals(artifactId));
+			url = returnStubUrlIfMatches(requireStubServer().stubConfiguration.artifactId.equals(artifactId));
 		}
 		if (url == null) {
-			url = findStubUrl(this.stubServer.stubConfiguration.artifactId.equals(artifactId)
-					&& this.stubServer.stubConfiguration.groupId.equals(groupId));
+			url = returnStubUrlIfMatches(requireStubServer().stubConfiguration.artifactId.equals(artifactId)
+					&& requireStubServer().stubConfiguration.groupId.equals(groupId));
 		}
 		if (url == null) {
 			throw new StubNotFoundException(groupId, artifactId);
@@ -147,33 +158,42 @@ class StubRunnerExecutor implements StubFinder {
 			return findStubUrl(splitString[0], splitString[1]);
 		}
 		else if (splitString.length == 3) {
-			return findStubUrl(groupIdArtifactVersionMatches(splitString));
+			URL url = findStubUrl(groupIdArtifactVersionMatches(splitString));
+			if (url != null) {
+				return url;
+			}
+			throw new StubNotFoundException(ivyNotation);
 		}
-		return findStubUrl(groupIdArtifactVersionMatches(splitString) && classifierMatches(splitString));
+		URL url = findStubUrl(groupIdArtifactVersionMatches(splitString) && classifierMatches(splitString));
+		if (url != null) {
+			return url;
+		}
+		throw new StubNotFoundException(ivyNotation);
 	}
 
 	private boolean classifierMatches(String[] splitString) {
-		return this.stubServer.stubConfiguration.classifier.equals(splitString[3]);
+		return requireStubServer().stubConfiguration.classifier.equals(splitString[3]);
 	}
 
 	private boolean groupIdArtifactVersionMatches(String[] splitString) {
-		return this.stubServer.stubConfiguration.groupId.equals(splitString[0])
-				&& this.stubServer.stubConfiguration.artifactId.equals(splitString[1])
-				&& this.stubServer.stubConfiguration.version.equals(splitString[2]);
+		return requireStubServer().stubConfiguration.groupId.equals(splitString[0])
+				&& requireStubServer().stubConfiguration.artifactId.equals(splitString[1])
+				&& requireStubServer().stubConfiguration.version.equals(splitString[2]);
 	}
 
-	private URL findStubUrl(boolean condition) {
+	private @Nullable URL findStubUrl(boolean condition) {
 		return returnStubUrlIfMatches(condition);
 	}
 
 	@Override
 	public RunningStubs findAllRunningStubs() {
-		return new RunningStubs(Collections.singletonMap(this.stubServer.stubConfiguration, this.stubServer.getPort()));
+		return new RunningStubs(
+				Collections.singletonMap(requireStubServer().stubConfiguration, requireStubServer().getPort()));
 	}
 
 	@Override
 	public Map<StubConfiguration, Collection<Contract>> getContracts() {
-		return Collections.singletonMap(this.stubServer.stubConfiguration, this.stubServer.getContracts());
+		return Collections.singletonMap(requireStubServer().stubConfiguration, requireStubServer().getContracts());
 	}
 
 	@Override
@@ -248,15 +268,17 @@ class StubRunnerExecutor implements StubFinder {
 
 	private void sendMessage(Contract groovyDsl) {
 		OutputMessage outputMessage = groovyDsl.getOutputMessage();
-		DslProperty<?> body = outputMessage.getBody();
-		Headers headers = outputMessage.getHeaders();
-		List<YamlContract> yamlContracts = yamlContractConverter.convertTo(Collections.singleton(groovyDsl));
+		if (outputMessage == null) {
+			return;
+		}
+		@Nullable DslProperty<?> body = outputMessage.getBody();
+		@Nullable Headers headers = outputMessage.getHeaders();
+		List<YamlContract> yamlContracts = this.yamlContractConverter.convertTo(Collections.singleton(groovyDsl));
 		YamlContract contract = yamlContracts.get(0);
 		setMessageType(contract, ContractVerifierMessageMetadata.MessageType.OUTPUT);
 
 		Object payload = null;
-		if (isFromFileProperty(body)) {
-			FromFileProperty fromFile = (FromFileProperty) body.getClientValue();
+		if (body != null && body.getClientValue() instanceof FromFileProperty fromFile) {
 			if (fromFile.isByte()) {
 				payload = fromFile.asBytes();
 			}
@@ -266,18 +288,44 @@ class StubRunnerExecutor implements StubFinder {
 		}
 		else if (isAvroContract(contract)) {
 			log.info("Avro contract detected — passing raw body as Map, skipping JSON serialization");
-			payload = BodyExtractor.extractClientValueFromBody(body == null ? null : body.getClientValue());
+			if (body != null) {
+				Object clientValue = body.getClientValue();
+				if (clientValue != null) {
+					payload = BodyExtractor.extractClientValueFromBody(clientValue);
+				}
+			}
 		}
 		else {
-			payload = JsonOutput
-				.toJson(BodyExtractor.extractClientValueFromBody(body == null ? null : body.getClientValue()));
+			Object clientValue = body != null ? body.getClientValue() : null;
+			if (clientValue != null) {
+				payload = JsonOutput.toJson(BodyExtractor.extractClientValueFromBody(clientValue));
+			}
+			else {
+				// No body — serialize as JSON null (matches JsonOutput.toJson(null)
+				// behavior)
+				payload = "null";
+			}
 		}
 
-		this.messageVerifierSender.send(payload, headers == null ? null : headers.asStubSideMap(),
-				outputMessage.getSentTo().getClientValue(), contract);
+		if (payload == null) {
+			// Avro contract with null body — nothing to send
+			return;
+		}
+		Map<String, Object> headersMap = headers != null ? headers.asStubSideMap() : Collections.emptyMap();
+		@Nullable DslProperty<String> sentTo = outputMessage.getSentTo();
+		if (sentTo == null) {
+			throw new IllegalStateException(
+					"Output message sentTo must not be null in contract: " + groovyDsl.getLabel());
+		}
+		String destination = sentTo.getClientValue();
+		if (destination == null) {
+			throw new IllegalStateException(
+					"Output message sentTo client value must not be null in contract: " + groovyDsl.getLabel());
+		}
+		this.messageVerifierSender.send(payload, headersMap, destination, contract);
 	}
 
-	private boolean isFromFileProperty(final DslProperty<?> body) {
+	private boolean isFromFileProperty(@Nullable final DslProperty<?> body) {
 		return body != null && body.getClientValue() instanceof FromFileProperty;
 	}
 
@@ -301,8 +349,8 @@ class StubRunnerExecutor implements StubFinder {
 				new ContractVerifierMessageMetadata(output));
 	}
 
-	private URL returnStubUrlIfMatches(boolean condition) {
-		return condition ? this.stubServer.getStubUrl() : null;
+	private @Nullable URL returnStubUrlIfMatches(boolean condition) {
+		return condition ? requireStubServer().getStubUrl() : null;
 	}
 
 	private StubServer startStubServers(HttpServerStubConfigurer configurer, final StubRunnerOptions stubRunnerOptions,

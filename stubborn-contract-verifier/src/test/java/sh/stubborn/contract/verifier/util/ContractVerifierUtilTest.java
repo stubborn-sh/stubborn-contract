@@ -212,8 +212,8 @@ public class ContractVerifierUtilTest {
 			DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();
 			return documentBuilder.parse(new InputSource(new StringReader(inputXml)));
 		}
-		catch (ParserConfigurationException | IOException | SAXException e) {
-			throw new RuntimeException(e);
+		catch (ParserConfigurationException | IOException | SAXException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 

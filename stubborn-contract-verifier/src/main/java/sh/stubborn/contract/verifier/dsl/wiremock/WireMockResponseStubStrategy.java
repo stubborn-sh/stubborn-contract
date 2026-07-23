@@ -97,7 +97,8 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 			HttpHeaders headers = response.getHeaders()
 				.getEntries()
 				.stream()
-				.map(it -> new HttpHeader(it.getName(), MapConverter.getStubSideValues(it.getClientValue()).toString()))
+				.map((it) -> new HttpHeader(it.getName(),
+						MapConverter.getStubSideValues(it.getClientValue()).toString()))
 				.collect(collectingAndThen(toList(), HttpHeaders::new));
 			builder.withHeaders(headers);
 		}
