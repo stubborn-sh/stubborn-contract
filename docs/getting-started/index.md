@@ -12,6 +12,12 @@ In 2016, the project was donated to the Spring Cloud umbrella and became **Sprin
 
 Stubborn Contract is the continuation of that work — led by the original creator, Marcin Grzejszczak — now independent of the Spring Cloud release train. It targets **Spring Boot 4.x / Spring Framework 7.x** and beyond, while remaining usable without Spring altogether.
 
+The transition was announced on the [Spring blog](https://spring.io/blog/2026/07/06/spring-cloud-contract-transition-to-stubbornsh/) and on [Marcin's blog at toomuchcoding.com](https://toomuchcoding.com/post/2026-07-06-spring-cloud-contract-becomes-stubborn/).
+
+## Stubborn Ecosystem
+
+Stubborn Contract is part of the broader [Stubborn](https://stubborn.sh) platform, which also includes the **Stubborn Broker** — a managed contract and stub registry. The broker provides a central place to publish, discover, and share stubs across teams. See the [Stubborn Broker docs](https://stubborn.sh/docs) for details on integrating your contracts with the hosted service.
+
 If you are migrating from Spring Cloud Contract, see the [migration guide](/migration/from-spring-cloud-contract).
 
 ## Why Do You Need It?

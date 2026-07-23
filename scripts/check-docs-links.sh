@@ -1,37 +1,38 @@
 #!/usr/bin/env bash
 # Serves the built VitePress docs locally and checks every internal link for 404s.
-# Requires: node (for serve), curl
+# Requires: python3, curl
 # Usage: ./scripts/check-docs-links.sh
 
 set -euo pipefail
 
-DIST="docs/.vitepress/dist"
-BASE="/stubborn-contract"
-PORT=4173
+DIST="${DIST:-docs/.vitepress/dist}"
+PORT="${PORT:-4173}"
 
 if [ ! -d "$DIST" ]; then
   echo "Building docs first..."
   npm run docs:build
 fi
 
-# Start a static file server in the background
-npx --yes serve "$DIST" --listen "$PORT" --single &
+# Start Python's built-in HTTP server (fast, no npm required)
+python3 -m http.server "$PORT" --directory "$DIST" 2>/dev/null &
 SERVER_PID=$!
-trap 'kill $SERVER_PID 2>/dev/null' EXIT
+trap 'kill $SERVER_PID 2>/dev/null; wait $SERVER_PID 2>/dev/null || true' EXIT
 
-# Wait for it to be ready
-sleep 2
+# Poll until ready (up to 5s)
+BASE_URL="http://localhost:$PORT"
+for _ in $(seq 1 20); do
+  if curl -s -o /dev/null "$BASE_URL" 2>/dev/null; then break; fi
+  sleep 0.25
+done
 
-BASE_URL="http://localhost:$PORT$BASE"
 FAILED=0
 CHECKED=0
 
 echo "Checking links under $BASE_URL ..."
 
-# Collect all .html files in the dist and derive their URL paths
 while IFS= read -r -d '' html_file; do
-  rel="${html_file#$DIST}"          # e.g. /getting-started/index.html
-  url="http://localhost:$PORT${rel}" # no base prefix needed — serve serves from dist root
+  rel="${html_file#$DIST}"
+  url="http://localhost:$PORT${rel}"
   status=$(curl -s -o /dev/null -w "%{http_code}" "$url")
   CHECKED=$((CHECKED + 1))
   if [ "$status" != "200" ]; then

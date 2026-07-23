@@ -37,6 +37,7 @@ jobs:
 
       - name: Check for 404s
         run: bash scripts/check-docs-links.sh
+        # Uses python3 -m http.server — no extra deps needed
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
