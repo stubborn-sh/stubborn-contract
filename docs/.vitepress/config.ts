@@ -6,6 +6,7 @@ export default defineConfig({
   title: 'Stubborn Contract',
   description: 'Consumer-driven contract testing for any stack — JVM, Node.js, and beyond. Brings TDD to the architectural level.',
   base: '/contract/',
+  appearance: 'dark',
 
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/contract/favicon.svg' }],
