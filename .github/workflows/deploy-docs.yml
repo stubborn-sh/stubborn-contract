@@ -35,6 +35,9 @@ jobs:
       - name: Build docs
         run: npm run docs:build
 
+      - name: Check for 404s
+        run: bash scripts/check-docs-links.sh
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 

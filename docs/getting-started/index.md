@@ -8,6 +8,12 @@ Before Stubborn Contract, this project was called [Accurest](https://github.com/
 
 The `0.1.0` release took place on 26 Jan 2015 and became stable with the `1.0.0` release on 29 Feb 2016.
 
+In 2016, the project was donated to the Spring Cloud umbrella and became **Spring Cloud Contract**, where it was maintained as part of the Spring ecosystem for many years.
+
+Stubborn Contract is the continuation of that work — led by the original creator, Marcin Grzejszczak — now independent of the Spring Cloud release train. It targets **Spring Boot 4.x / Spring Framework 7.x** and beyond, while remaining usable without Spring altogether.
+
+If you are migrating from Spring Cloud Contract, see the [migration guide](/migration/from-spring-cloud-contract).
+
 ## Why Do You Need It?
 
 Assume you have a system composed of multiple microservices:
