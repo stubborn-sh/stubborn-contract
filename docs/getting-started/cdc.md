@@ -32,7 +32,7 @@ For simplicity, we use the following acronyms:
 
 - Loan Issuance (LI): The HTTP client
 - Fraud Detection (FD): The HTTP server
-- SCC: Stubborn Contract
+- SCC: Stubborn Contract (SCC refers to Stubborn Contract throughout this guide.)
 
 ## How CDC Works
 
@@ -184,10 +184,10 @@ In order to profit from the Stubborn Contract Stub Runner functionality of autom
 Now, when you run your tests, you see something like the following output in the logs:
 
 ```bash
-2016-07-19 14:22:25.403  INFO 41050 --- [main] o.s.c.c.stubrunner.AetherStubDownloader  : Desired version is + - will try to resolve the latest version
-2016-07-19 14:22:25.438  INFO 41050 --- [main] o.s.c.c.stubrunner.AetherStubDownloader  : Resolved version is 0.0.1-SNAPSHOT
+2025-01-15 10:22:25.403  INFO 41050 --- [main] s.s.c.stubrunner.AetherStubDownloader   : Desired version is + - will try to resolve the latest version
+2025-01-15 10:22:25.438  INFO 41050 --- [main] s.s.c.stubrunner.AetherStubDownloader   : Resolved version is 0.0.1-SNAPSHOT
 ...
-2016-07-19 14:22:27.737  INFO 41050 --- [main] o.s.c.c.stubrunner.StubRunnerExecutor    : All stubs are now running RunningStubs [namesAndPorts={com.example:http-server:0.0.1-SNAPSHOT:stubs=8080}]
+2025-01-15 10:22:27.737  INFO 41050 --- [main] s.s.c.stubrunner.StubRunnerExecutor     : All stubs are now running RunningStubs [namesAndPorts={com.example:http-server:0.0.1-SNAPSHOT:stubs=8080}]
 ```
 
 This output means that Stub Runner has found your stubs and started a server for your application with a group ID of `com.example` and an artifact ID of `http-server` with version `0.0.1-SNAPSHOT` of the stubs and with the `stubs` classifier on port `8080`.

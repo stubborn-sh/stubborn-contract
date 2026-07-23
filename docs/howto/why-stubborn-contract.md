@@ -1,11 +1,57 @@
 # Why Use Stubborn Contract?
 
-Stubborn Contract works great in a polyglot environment. This project has a lot of really interesting features. Quite a few of these features definitely make Stubborn Contract Verifier stand out on the market of Consumer Driven Contract (CDC) tooling. The most interesting features include the following:
+## The Integration Testing Problem
 
-- **Ability to do CDC with messaging.** Stubborn Contract is not limited to HTTP — it supports messaging protocols such as Kafka, RabbitMQ, and Apache Camel.
-- **Clear and easy to use, statically typed DSL.** The Groovy DSL provides a clean, type-safe way to express contracts.
-- **Ability to copy-paste your current JSON file to the contract and edit only its elements.** The YAML contract format is very close to raw JSON/YAML, making migration easy.
-- **Automatic generation of tests from the defined contract.** On the producer side, Stubborn Contract generates and runs tests automatically.
-- **Stub Runner functionality.** The stubs are automatically downloaded at runtime from Nexus or Artifactory.
-- **Spring Cloud integration.** No discovery service is needed for integration tests.
-- **Ability to add support for any language & framework through Docker.** Polyglot teams can use the Docker image to integrate Stubborn Contract with Node.js, Python, Ruby, and other languages.
+Microservices communicate over HTTP and messaging. The traditional way to test this is:
+
+- **End-to-end tests**: Spin up every service. Slow, fragile, hard to debug.
+- **Mocks**: Fast, but the mock drifts from the real service over time — the test passes but production breaks.
+
+Consumer-driven contract testing solves this with a third option: **verified stubs**.
+
+## How It Works
+
+```mermaid
+sequenceDiagram
+    actor Consumer as Consumer Team
+    actor Producer as Producer Team
+    participant Broker as Stubborn Broker
+
+    Consumer->>Consumer: Write contract (what I expect)
+    Consumer->>Broker: Publish contract
+    Producer->>Broker: Download contract
+    Producer->>Producer: Verifier generates & runs tests
+    Producer->>Broker: Record: tests PASSED
+    Consumer->>Broker: Download stub (WireMock)
+    Consumer->>Consumer: Test against stub
+```
+
+The stub is **generated from the same contract the producer tested against** — so if the producer passes and the consumer passes, they are genuinely compatible.
+
+## Compared to Alternatives
+
+| | E2E Tests | Manual Mocks | Stubborn Contract |
+|---|---|---|---|
+| Speed | Slow (minutes) | Fast | Fast |
+| Reliability | Flaky | Drifts silently | Verified |
+| Who defines the contract | Nobody | Consumer (but not enforced) | Consumer (enforced by producer tests) |
+| Works across teams | Yes | Requires coordination | Yes — broker handles it |
+| Works for messaging | Yes | With effort | Yes |
+
+## Why Stubborn Contract specifically?
+
+- **Direct successor to Spring Cloud Contract 5.x** — if your team already has SCC contracts, they work without changes
+- **No broker required to start** — contracts can live in the producer repo alongside the tests
+- **Polyglot** — Java/Kotlin producer, Node.js consumer, or vice versa via Docker images and npm packages
+- **Multiple formats** — YAML (human-readable), Groovy DSL (powerful), Java DSL (IDE-friendly)
+- **Messaging support** — not limited to HTTP; supports Kafka, RabbitMQ, and Apache Camel out of the box
+- **WireMock stubs** — the most widely-used HTTP stub server, with a rich ecosystem
+- **Stub Runner** — stubs are downloaded automatically at runtime from a Maven repository, no manual wiring needed
+
+## When not to use it
+
+Contract testing works best when:
+- There is a real consumer team that has opinions about the API shape
+- The interaction is request/response (HTTP) or message-based (Kafka, JMS)
+
+It is NOT a replacement for end-to-end smoke tests that verify the whole system is wired together correctly in production.

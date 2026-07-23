@@ -1,7 +1,13 @@
 # Using the Stub Runner Boot Application
 
-::: warning
-Due to limitations in the current artifact repository release tool, we cannot currently release executable jars and as of `4.1.6` we are skipping the release of this artifact. Stub Runner Boot is still available through the [Docker Stub Runner Boot image](./docker), which is the preferred way of using the app. You can also access [the sources in the project repository](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-stub-runner-boot) and build the app yourself. If the required adjustments are made in the artifact repository tooling, we'll resume publishing this jar.
+::: warning Standalone Fat JAR Not Available in Current Release
+As of `4.1.6`, the executable (fat) JAR artifact for Stub Runner Boot is **not published to Maven Central** due to limitations in the current artifact repository release tooling. The sections below that describe the fat JAR, the standalone download, and the Spring Cloud CLI launcher are preserved for reference and will apply again if artifact publishing is restored.
+
+**Current alternatives:**
+
+- **Spring Boot tests (recommended):** annotate your test class with `@AutoConfigureStubRunner` — no separate process required. See [Stub Runner for JUnit 5](./stub-runner-junit5) for details.
+- **Docker image (recommended for smoke/integration environments):** use the [Docker Stub Runner Boot image](./docker), which is the preferred runtime alternative.
+- **Build from source:** clone [the repository](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-stub-runner-boot) and build the fat JAR yourself with `./mvnw package -pl stubborn-stub-runner-boot`.
 :::
 
 Stubborn Contract Stub Runner Boot is a Spring Boot application that exposes REST endpoints to trigger the messaging labels and to access WireMock servers.
@@ -16,15 +22,23 @@ It is expected that **only a trusted client** has access to the Stub Runner Boot
 
 ## Stub Runner Server
 
+::: warning Fat JAR Not Currently Published
+The dependency and `@EnableStubRunnerServer` approach below apply when building your own fat JAR from source. The pre-built artifact is not published in the current release. Use `@AutoConfigureStubRunner` in Spring Boot tests as the in-process alternative.
+:::
+
 To use the Stub Runner Server, add the following dependency:
 
 ```groovy
-compile "sh.stubborn:stubborn-starter-contract-stub-runner"
+testImplementation "sh.stubborn:stubborn-starter-contract-stub-runner"
 ```
 
 Then annotate a class with `@EnableStubRunnerServer`, build a fat jar, and it is ready to work.
 
 ## Stub Runner Server Fat Jar
+
+::: warning Not Available in Current Release
+The pre-built standalone JAR is not published to Maven Central as of `4.1.6`. The command below is preserved for when publishing resumes. In the meantime, build from source or use the Docker image.
+:::
 
 You can download a standalone JAR from Maven by running the following commands:
 
@@ -34,6 +48,10 @@ $ java -jar stub-runner.jar --spring.cloud.contract.stubrunner.ids=... --spring.
 ```
 
 ## Spring Cloud CLI
+
+::: warning Depends on the Fat JAR
+The Spring Cloud CLI launcher requires the published fat JAR artifact. Until publishing resumes, the instructions below are for reference only.
+:::
 
 Starting from the `1.4.0.RELEASE` version of the [Spring Cloud CLI](https://cloud.spring.io/spring-cloud-cli) project, you can start Stub Runner Boot by running `spring cloud stubrunner`.
 

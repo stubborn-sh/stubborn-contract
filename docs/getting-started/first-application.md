@@ -1,5 +1,9 @@
 # Developing Your First Stubborn Contract-based Application
 
+::: info Prerequisites
+Java 17+, Maven 3.9+, Spring Boot 4.1.x. The complete working sample is on [GitHub](https://github.com/stubborn-sh/stubborn-samples).
+:::
+
 This brief tour walks through using Stubborn Contract. It covers:
 
 - [On the Producer Side](#on-the-producer-side)
@@ -144,7 +148,7 @@ The following example from `pom.xml` shows how to specify the base test class:
             <version>${stubborn-contract.version}</version>
             <extensions>true</extensions>
             <configuration>
-                <baseClassForTests>com.example.contractTest.BaseTestClass</baseClassForTests> <!-- (1) -->
+                <baseClassForTests>com.example.BaseTestClass</baseClassForTests> <!-- (1) -->
             </configuration>
         </plugin>
         <plugin>
@@ -160,7 +164,7 @@ The following example from `pom.xml` shows how to specify the base test class:
 The following example shows a minimal (but functional) base test class:
 
 ```java
-package com.example.contractTest;
+package com.example;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
@@ -177,7 +181,7 @@ public class BaseTestClass {
 Now we can move on to the implementation. First, we need a data class:
 
 ```java
-package com.example.Test;
+package com.example;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -200,7 +204,7 @@ public class LoanRequest {
         return loanAmount;
     }
 
-    public void setLoanRequestAmount(Long loanAmount) {
+    public void setLoanAmount(Long loanAmount) {
         this.loanAmount = loanAmount;
     }
 }
@@ -211,7 +215,7 @@ Because the client ID in the contract is called `client.id`, we need to use the 
 Now we can move along to the controller:
 
 ```java
-package com.example.docTest;
+package com.example;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -224,9 +228,9 @@ public class FraudController {
     public String check(@RequestBody LoanRequest loanRequest) { // (1)
 
         if (loanRequest.getLoanAmount() > 10000) { // (2)
-            return "{fraudCheckStatus: FRAUD, rejection.reason: Amount too high}"; // (3)
+            return "{\"fraudCheckStatus\": \"FRAUD\", \"rejection.reason\": \"Amount too high\"}"; // (3)
         } else {
-            return "{fraudCheckStatus: OK, acceptance.reason: Amount OK}"; // (4)
+            return "{\"fraudCheckStatus\": \"OK\", \"acceptance.reason\": \"Amount OK\"}"; // (4)
         }
     }
 }
@@ -290,9 +294,9 @@ Use the `REMOTE` `stubsMode` when downloading stubs from an online repository an
 In your integration test, you can receive stubbed versions of HTTP responses or messages that are expected to be emitted by the collaborator service. You can see entries similar to the following in the build logs:
 
 ```bash
-2016-07-19 14:22:25.403  INFO 41050 --- [main] o.s.c.c.stubrunner.AetherStubDownloader  : Desired version is + - will try to resolve the latest version
-2016-07-19 14:22:25.438  INFO 41050 --- [main] o.s.c.c.stubrunner.AetherStubDownloader  : Resolved version is 0.0.1-SNAPSHOT
-2016-07-19 14:22:25.439  INFO 41050 --- [main] o.s.c.c.stubrunner.AetherStubDownloader  : Resolving artifact com.example:http-server:jar:stubs:0.0.1-SNAPSHOT using remote repositories []
-2016-07-19 14:22:25.451  INFO 41050 --- [main] o.s.c.c.stubrunner.AetherStubDownloader  : Resolved artifact com.example:http-server:jar:stubs:0.0.1-SNAPSHOT to /path/to/.m2/repository/...
-2016-07-19 14:22:27.737  INFO 41050 --- [main] o.s.c.c.stubrunner.StubRunnerExecutor    : All stubs are now running RunningStubs [namesAndPorts={com.example:http-server:0.0.1-SNAPSHOT:stubs=8080}]
+2025-01-19 14:22:25.403  INFO 41050 --- [main] sh.stubborn.contract.stubrunner.AetherStubDownloader  : Desired version is + - will try to resolve the latest version
+2025-01-19 14:22:25.438  INFO 41050 --- [main] sh.stubborn.contract.stubrunner.AetherStubDownloader  : Resolved version is 0.0.1-SNAPSHOT
+2025-01-19 14:22:25.439  INFO 41050 --- [main] sh.stubborn.contract.stubrunner.AetherStubDownloader  : Resolving artifact com.example:http-server:jar:stubs:0.0.1-SNAPSHOT using remote repositories []
+2025-01-19 14:22:25.451  INFO 41050 --- [main] sh.stubborn.contract.stubrunner.AetherStubDownloader  : Resolved artifact com.example:http-server:jar:stubs:0.0.1-SNAPSHOT to /path/to/.m2/repository/...
+2025-01-19 14:22:27.737  INFO 41050 --- [main] sh.stubborn.contract.stubrunner.StubRunnerExecutor    : All stubs are now running RunningStubs [namesAndPorts={com.example:http-server:0.0.1-SNAPSHOT:stubs=8080}]
 ```

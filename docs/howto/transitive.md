@@ -62,10 +62,20 @@ In Maven, add exclusions to the stubs dependency:
 </dependency>
 ```
 
-In Gradle, use the `transitive = false` flag:
+In Gradle, use the `transitive = false` flag.
+
+Groovy DSL:
 
 ```groovy
-testCompile("com.example:producer:${version}:stubs") {
+testImplementation("com.example:producer:${version}:stubs") {
     transitive = false
+}
+```
+
+Kotlin DSL:
+
+```kotlin
+testImplementation("com.example:producer:${version}:stubs") {
+    isTransitive = false
 }
 ```

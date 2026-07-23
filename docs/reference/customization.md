@@ -146,27 +146,6 @@ public class CustomMessageVerifier implements MessageVerifierSender<Message<?>> 
 }
 ```
 
-## Per-package base class mapping
-
-For projects with multiple API areas, map contract directory paths to different base classes using `baseClassMappings` in your plugin configuration. This removes the need for a single shared base class:
-
-```xml
-<configuration>
-  <baseClassMappings>
-    <baseClassMapping>
-      <contractPackageRegex>.*fraud.*</contractPackageRegex>
-      <baseClassFQN>com.example.FraudBase</baseClassFQN>
-    </baseClassMapping>
-    <baseClassMapping>
-      <contractPackageRegex>.*payment.*</contractPackageRegex>
-      <baseClassFQN>com.example.PaymentBase</baseClassFQN>
-    </baseClassMapping>
-  </baseClassMappings>
-</configuration>
-```
-
-Alternatively, use `packageWithBaseClasses` to derive the base class name from the contract's package automatically.
-
 ## See also
 
 - [Maven Plugin](./maven-plugin)

@@ -1,12 +1,17 @@
 # Docker
 
-In this section, we publish a `springcloud/spring-cloud-contract` Docker image that contains a project that generates tests and runs them in `EXPLICIT` mode against a running application.
+In this section, we publish a `mgrzejszczak/stubborn-contract` Docker image that contains a project that generates tests and runs them in `EXPLICIT` mode against a running application.
 
 ::: tip
 The `EXPLICIT` mode means that the tests generated from contracts send real requests and not mocked ones.
 :::
 
-We also publish a `spring-cloud/stubborn-stub-runner` Docker image that starts the standalone version of Stub Runner.
+We also publish a `mgrzejszczak/stubborn-stub-runner` Docker image that starts the standalone version of Stub Runner.
+
+::: tip Prerequisites
+- Docker 20 or later is required.
+- The producer JAR (and any stubs it produces) must be available on the classpath or in a reachable artifact repository before starting contract tests.
+:::
 
 ## A Short Introduction to Maven, JARs, and Binary Storage
 
@@ -57,7 +62,8 @@ The Docker image requires some environment variables to point to your running ap
 You can provide a customized `gradle.build` to be run in the container by mounting your customized build file as a volume when running the container:
 
 ```bash
-$ docker run -v <absolute-path-of-your-custom-file>:/spring-cloud-contract/build.gradle springcloud/spring-cloud-contract:<version>
+# Check https://hub.docker.com/r/mgrzejszczak/stubborn-contract for the latest version tag
+$ docker run -v <absolute-path-of-your-custom-file>:/spring-cloud-contract/build.gradle mgrzejszczak/stubborn-contract:4.1.0-SNAPSHOT
 ```
 
 ### Example of Usage via HTTP
@@ -90,7 +96,8 @@ $ pkill -f "node app"
 $ nohup node app &
 
 # Prepare environment variables
-$ SC_CONTRACT_DOCKER_VERSION="..."
+# Check https://hub.docker.com/r/mgrzejszczak/stubborn-contract for latest
+$ SC_CONTRACT_DOCKER_VERSION="4.1.0"
 $ APP_IP="192.168.0.100"
 $ APP_PORT="3000"
 $ ARTIFACTORY_PORT="8081"
@@ -109,7 +116,7 @@ $ docker run  --rm \
   -e "PROJECT_VERSION=${PROJECT_VERSION}" \
   -v "${CURRENT_DIR}/contracts/:/contracts:ro" \
   -v "${CURRENT_DIR}/node_modules/spring-cloud-contract/output:/spring-cloud-contract-output/" \
-  springcloud/spring-cloud-contract:"${SC_CONTRACT_DOCKER_VERSION}"
+  mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 # Kill app
 $ pkill -f "node app"
@@ -199,7 +206,7 @@ Stubborn Contract would have to generate code in various languages to make it po
 
 The endpoint must have the following configuration:
 
-- URL: `/springcloudcontract/{label}` where `label` can be any text
+- URL: `/stubborn-contract/{label}` where `label` can be any text
 - Method: `POST`
 - Based on the `label`, it generates a message that will be sent to a given destination according to the contract definition
 
@@ -231,8 +238,8 @@ def send_message(cmd):
 
 # This should be ran in tests (shouldn't be publicly available)
 if 'CONTRACT_TEST' in os.environ:
-    @app.route('/springcloudcontract/<label>', methods=['POST'])
-    def springcloudcontract(label):
+    @app.route('/stubborn-contract/<label>', methods=['POST'])
+    def stubborn_contract(label):
         if label == "ping_pong":
             return send_message('{"message":"pong"}')
         else:
@@ -283,7 +290,7 @@ docker run  --rm \
     -e "EXTERNAL_CONTRACTS_GROUP_ID=${PROJECT_GROUP}" \
     -e "EXTERNAL_CONTRACTS_VERSION=${PROJECT_VERSION}" \
     -v "${CURRENT_DIR}/build/spring-cloud-contract/output:/spring-cloud-contract-output/" \
-    springcloud/spring-cloud-contract:"${SC_CONTRACT_DOCKER_VERSION}"
+    mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 kill $APP_PID
 
@@ -292,7 +299,7 @@ yes | docker-compose kill
 
 ## Running Stubs on the Consumer Side
 
-We publish a `spring-cloud/stubborn-stub-runner` Docker image that starts the standalone version of Stub Runner.
+We publish a `mgrzejszczak/stubborn-stub-runner` Docker image that starts the standalone version of Stub Runner.
 
 ### Security
 
@@ -312,15 +319,15 @@ In addition to those variables you can set the following ones:
 We want to use the stubs created in the Docker producer step. Assume that we want to run the stubs on port `9876`:
 
 ```bash
-# Provide the Stubborn Contract Docker version
-$ SC_CONTRACT_DOCKER_VERSION="..."
+# Check https://hub.docker.com/r/mgrzejszczak/stubborn-contract for latest
+$ SC_CONTRACT_DOCKER_VERSION="4.1.0"
 # The IP at which the app is running and Docker container can reach it
 $ APP_IP="192.168.0.100"
-# Stubborn Contract Stub Runner properties
-$ SPRING_CLOUD_CONTRACT_STUBRUNNER_PORT="8083"
+# Stub Runner port and stub coordinates (variable names must match the ${…} references below)
+$ STUBRUNNER_PORT="8083"
 # Stub coordinates 'groupId:artifactId:version:classifier:port'
-$ SPRING_CLOUD_CONTRACT_STUBRUNNER_IDS="com.example:bookstore:0.0.1.RELEASE:stubs:9876"
-$ SPRING_CLOUD_CONTRACT_STUBRUNNER_REPOSITORY_ROOT="http://${APP_IP}:8081/artifactory/libs-release-local"
+$ STUBRUNNER_IDS="com.example:bookstore:0.0.1.RELEASE:stubs:9876"
+$ STUBRUNNER_REPOSITORY_ROOT="http://${APP_IP}:8081/artifactory/libs-release-local"
 # Run the docker with Stub Runner Boot
 $ docker run  --rm \
     -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_IDS=${STUBRUNNER_IDS}" \
@@ -328,7 +335,7 @@ $ docker run  --rm \
     -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_STUBS_MODE=REMOTE" \
     -p "${STUBRUNNER_PORT}:${STUBRUNNER_PORT}" \
     -p "9876:9876" \
-    springcloud/stubborn-stub-runner:"${SC_CONTRACT_DOCKER_VERSION}"
+    mgrzejszczak/stubborn-stub-runner:"${SC_CONTRACT_DOCKER_VERSION}"
 ```
 
 When the preceding commands run:
@@ -426,7 +433,7 @@ docker run  --rm \
     -e "EXTERNAL_CONTRACTS_GROUP_ID=group" \
     -e "EXTERNAL_CONTRACTS_VERSION=0.0.1-SNAPSHOT" \
     -v "${CURRENT_DIR}/build/spring-cloud-contract/output:/spring-cloud-contract-output/" \
-    springcloud/spring-cloud-contract:"${SC_CONTRACT_DOCKER_VERSION}"
+    mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 # Teardown
 kill $APP_PID
@@ -451,7 +458,7 @@ $ docker run \
     -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_STUBS_MODE=REMOTE" \ # (5)
     -v "${HOME}/.m2/:/home/scc/.m2:rw" \ # (6)
     -p 8750:8750 \ # (7)
-    springcloud/stubborn-stub-runner:3.0.4-SNAPSHOT # (8)
+    mgrzejszczak/stubborn-stub-runner:4.1.0-SNAPSHOT # (8)
 ```
 
 // (1) We're injecting the address of RabbitMQ via Apache Camel's Spring Boot Auto-Configuration

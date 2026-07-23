@@ -5,13 +5,17 @@
 To add the Stubborn Contract BOM, include the following section in your `pom.xml` file:
 
 ```xml
-<dependency>
-    <groupId>sh.stubborn</groupId>
-    <artifactId>stubborn-contract-dependencies</artifactId>
-    <version>${stubborn-contract.version}</version>
-    <type>pom</type>
-    <scope>import</scope>
-</dependency>
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>sh.stubborn</groupId>
+            <artifactId>stubborn-contract-dependencies</artifactId>
+            <version>${stubborn-contract.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
 ```
 
 The BOM manages compatible versions of `spring-cloud-stream`, `rest-assured`, and the Spring Boot 4.x split modules (`spring-boot-restclient`, `spring-boot-http-client`) so you do not need to declare those versions separately.
@@ -215,21 +219,21 @@ If necessary, you can also set up the whole context:
 
 ```java
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = SomeConfig.class, properties="some=property")
 public abstract class BaseTestClass {
 
     @Autowired
     WebApplicationContext context;
 
-    @Before
+    @BeforeEach
     public void setup() {
         RestAssuredMockMvc.webAppContextSetup(this.context);
     }
@@ -240,7 +244,7 @@ If you use `EXPLICIT` mode, you can use a base class to initialize the whole tes
 
 ```java
 import io.restassured.RestAssured;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -251,7 +255,7 @@ public abstract class BaseTestClass {
     @LocalServerPort
     int port;
 
-    @Before
+    @BeforeEach
     public void setup() {
         RestAssured.baseURI = "http://localhost:" + this.port;
     }
@@ -319,7 +323,7 @@ For Groovy Spock code, you can use the following:
 </plugin>
 ```
 
-To ensure that the provider side is compliant with defined contracts, you need to invoke `mvn generateTest test`.
+To ensure that the provider side is compliant with defined contracts, you need to invoke `mvn generateTests test`.
 
 ## Pushing Stubs to SCM
 

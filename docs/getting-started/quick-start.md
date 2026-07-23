@@ -13,7 +13,7 @@ The following diagram shows the relationship of the parts within Stubborn Contra
 sequenceDiagram
     actor Producer as API Producer
     participant Build as Build (Maven/Gradle)
-    participant SCPlugin as SC Plugin
+    participant SCPlugin as Stubborn Plugin
     participant Storage as Stub Storage
     actor Consumer as API Consumer
     participant SR as Stub Runner
