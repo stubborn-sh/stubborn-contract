@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 import { asciidocTagsPlugin } from './plugins/asciidoc-tags'
 
-export default defineConfig({
+export default withMermaid({
   lang: 'en-US',
   title: 'Stubborn Contract',
   description: 'Consumer-driven contract testing for any stack — JVM, Node.js, and beyond. Brings TDD to the architectural level.',
