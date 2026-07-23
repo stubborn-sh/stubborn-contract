@@ -36,8 +36,8 @@ export default defineConfig({
       {
         text: 'Stubborn Ecosystem',
         items: [
-          { text: 'Contract (this site)', link: '/contract/' },
-          { text: 'Broker', link: '/stubborn/' },
+          { text: 'Contract (this site)', link: '/' },
+          { text: 'Broker', link: 'https://docs.stubborn.sh/stubborn/' },
         ],
       },
       {
