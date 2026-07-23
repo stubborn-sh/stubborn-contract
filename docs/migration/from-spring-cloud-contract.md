@@ -2,6 +2,21 @@
 
 Stubborn Contract is the official continuation of Spring Cloud Contract. The migration is mostly mechanical — a set of find-and-replace operations across your `pom.xml` / `build.gradle` and Java imports.
 
+```mermaid
+flowchart LR
+    SCC["Spring Cloud Contract 5.x"] -->|"OpenRewrite recipe\nor manual steps"| SC["Stubborn Contract"]
+
+    subgraph "What changes"
+        A["org.springframework.cloud → sh.stubborn\n(groupId)"]
+        B["org.springframework.cloud.contract\n→ sh.stubborn.contract\n(Java imports)"]
+        C["spring-cloud-contract-maven-plugin\n→ stubborn-contract-maven-plugin"]
+        D["@Rule StubRunnerRule\n→ @RegisterExtension StubRunnerExtension"]
+    end
+
+    SCC --> A & B & C & D
+    A & B & C & D --> SC
+```
+
 ---
 
 ## 0. Automated migration with OpenRewrite

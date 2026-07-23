@@ -9,21 +9,27 @@ You can find a more detailed tour in [Developing Your First Application](./first
 
 The following diagram shows the relationship of the parts within Stubborn Contract:
 
-```
-API Producer  --> add Stubborn Contract (SC) plugin
-API Producer  --> add SC Verifier dependency
-API Producer  --> define contracts
-API Producer  --> Build: run build
-Build         --> SC Plugin: generate tests, stubs, and stubs artifact (e.g. stubs-jar)
-Build         --> Stub Storage: upload contracts, stubs, and project artifact
-Build         --> API Producer: Build successful
-API Consumer  --> add SC Stub Runner dependency
-API Consumer  --> write a SC Stub Runner based contract test
-SC Stub Runner --> Stub Storage: test asks for [API Producer] stubs
-Stub Storage  --> SC Stub Runner: fetch [API Producer] stubs
-SC Stub Runner --> SC Stub Runner: run in-memory HTTP server stubs
-API Consumer  --> SC Stub Runner: send a request to the HTTP server stub
-SC Stub Runner --> API Consumer: communication is correct
+```mermaid
+sequenceDiagram
+    actor Producer as API Producer
+    participant Build as Build (Maven/Gradle)
+    participant SCPlugin as SC Plugin
+    participant Storage as Stub Storage
+    actor Consumer as API Consumer
+    participant SR as Stub Runner
+
+    Producer->>Build: mvn clean install
+    Build->>SCPlugin: generate tests & stubs
+    SCPlugin-->>Build: tests + stubs JAR
+    Build->>Storage: upload contracts, stubs, artifact
+    Build-->>Producer: build successful
+
+    Consumer->>SR: @AutoConfigureStubRunner
+    SR->>Storage: fetch [Producer] stubs
+    Storage-->>SR: stubs JAR
+    SR->>SR: start WireMock server
+    Consumer->>SR: send HTTP request
+    SR-->>Consumer: stubbed response ✓
 ```
 
 ## On the Producer Side

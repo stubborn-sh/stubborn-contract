@@ -34,6 +34,37 @@ For simplicity, we use the following acronyms:
 - Fraud Detection (FD): The HTTP server
 - SCC: Stubborn Contract
 
+## How CDC Works
+
+The following diagram shows the full Consumer-Driven Contract flow between the Loan Issuance consumer and the Fraud Detection producer:
+
+```mermaid
+sequenceDiagram
+    actor LI as Loan Issuance (Consumer)
+    actor FD as Fraud Detection (Producer)
+    participant SR as Stub Runner
+    participant Storage as Stub Storage
+
+    Note over LI: 1. Write a failing test
+    LI->>SR: @AutoConfigureStubRunner (stubs not yet available)
+
+    Note over LI,FD: 2. Consumer defines contract in producer repo
+    LI->>FD: propose contract (PUT /fraudcheck)
+
+    Note over FD: 3. Producer implements & verifies
+    FD->>FD: mvn clean install (generates tests from contract)
+    FD->>Storage: publish stubs JAR
+
+    Note over LI: 4. Consumer fetches stubs
+    SR->>Storage: download [fraud-detection] stubs
+    Storage-->>SR: stubs JAR
+    SR->>SR: start WireMock on stub port
+
+    Note over LI: 5. Consumer test goes green
+    LI->>SR: PUT /fraudcheck (loanAmount=99999)
+    SR-->>LI: 200 FRAUD ✓
+```
+
 ## The Consumer Side (Loan Issuance)
 
 As a developer of the Loan Issuance service (a consumer of the Fraud Detection server), you might do the following steps:

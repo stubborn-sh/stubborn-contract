@@ -2,6 +2,25 @@
 
 Stub Runner downloads and starts stubs so your consumer tests can run against realistic WireMock servers without a live producer.
 
+```mermaid
+sequenceDiagram
+    participant Test as @Test method
+    participant SR as StubRunnerExtension
+    participant WM as WireMock server
+    participant Repo as Stub Storage
+
+    Note over SR: @RegisterExtension (beforeAll)
+    SR->>Repo: download stubs JAR
+    Repo-->>SR: stubs JAR
+    SR->>WM: start server, load mappings
+
+    Test->>WM: HTTP request
+    WM-->>Test: stubbed response
+
+    Note over SR: afterAll
+    SR->>WM: stop server
+```
+
 ## Quick start
 
 ### 1. Add the dependency
