@@ -350,12 +350,12 @@ The `stubsOutputDir` option has to be set for stub generation to work.
 When present, you can use JSON stubs in automated tests to consume a service:
 
 ```groovy
-@ContextConfiguration(loader == SpringApplicationContextLoader, classes == Application)
+@ContextConfiguration(loader = SpringApplicationContextLoader, classes = Application)
 class LoanApplicationServiceSpec extends Specification {
 
  @ClassRule
  @Shared
- WireMockClassRule wireMockRule == new WireMockClassRule()
+ WireMockClassRule wireMockRule = new WireMockClassRule()
 
  @Autowired
  LoanApplicationService sut
@@ -365,7 +365,7 @@ class LoanApplicationServiceSpec extends Specification {
     LoanApplication application =
             new LoanApplication(client: new Client(clientPesel: '12345678901'), amount: 123.123)
    when:
-    LoanApplicationResult loanApplication == sut.loanApplication(application)
+    LoanApplicationResult loanApplication = sut.loanApplication(application)
    then:
     loanApplication.loanApplicationStatus == LoanApplicationStatus.LOAN_APPLIED
     loanApplication.rejectionReason == null

@@ -10,20 +10,20 @@ You can find a more detailed tour in [Developing Your First Application](./first
 The following diagram shows the relationship of the parts within Stubborn Contract:
 
 ```
-API Producer  --> add Stubborn Contract (SCC) plugin
-API Producer  --> add SCC Verifier dependency
+API Producer  --> add Stubborn Contract (SC) plugin
+API Producer  --> add SC Verifier dependency
 API Producer  --> define contracts
 API Producer  --> Build: run build
-Build         --> SCC Plugin: generate tests, stubs, and stubs artifact (e.g. stubs-jar)
+Build         --> SC Plugin: generate tests, stubs, and stubs artifact (e.g. stubs-jar)
 Build         --> Stub Storage: upload contracts, stubs, and project artifact
 Build         --> API Producer: Build successful
-API Consumer  --> add SCC Stub Runner dependency
-API Consumer  --> write a SCC Stub Runner based contract test
-SCC Stub Runner --> Stub Storage: test asks for [API Producer] stubs
-Stub Storage  --> SCC Stub Runner: fetch [API Producer] stubs
-SCC Stub Runner --> SCC Stub Runner: run in-memory HTTP server stubs
-API Consumer  --> SCC Stub Runner: send a request to the HTTP server stub
-SCC Stub Runner --> API Consumer: communication is correct
+API Consumer  --> add SC Stub Runner dependency
+API Consumer  --> write a SC Stub Runner based contract test
+SC Stub Runner --> Stub Storage: test asks for [API Producer] stubs
+Stub Storage  --> SC Stub Runner: fetch [API Producer] stubs
+SC Stub Runner --> SC Stub Runner: run in-memory HTTP server stubs
+API Consumer  --> SC Stub Runner: send a request to the HTTP server stub
+SC Stub Runner --> API Consumer: communication is correct
 ```
 
 ## On the Producer Side
@@ -99,11 +99,10 @@ The tests are being skipped because the producer-side contract implementation is
 Now you can annotate your test class with `@AutoConfigureStubRunner`. In the annotation, provide the `group-id` and `artifact-id` values for Stubborn Contract Stub Runner to run the collaborators' stubs for you:
 
 ```java
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids = {"com.example:http-server-dsl:+:stubs:6565"},
-        stubsMode = StubRunnerProperties.StubsMode.LOCAL)
-public class LoanApplicationServiceTests {
+        stubsMode = StubsMode.LOCAL)
+class LoanApplicationServiceTests {
     // ...
 }
 ```

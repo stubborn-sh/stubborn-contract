@@ -10,14 +10,14 @@ Stub Runner downloads and starts stubs so your consumer tests can run against re
 
 ```xml [Maven]
 <dependency>
-  <groupId>sh.stubborn.contract</groupId>
+  <groupId>sh.stubborn</groupId>
   <artifactId>stubborn-starter-contract-stub-runner</artifactId>
   <scope>test</scope>
 </dependency>
 ```
 
 ```groovy [Gradle]
-testImplementation 'sh.stubborn.contract:stubborn-starter-contract-stub-runner'
+testImplementation 'sh.stubborn:stubborn-starter-contract-stub-runner'
 ```
 
 :::
@@ -28,7 +28,7 @@ testImplementation 'sh.stubborn.contract:stubborn-starter-contract-stub-runner'
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(
     ids = "sh.stubborn:order-service:+:stubs",
-    stubsMode = StubRunnerProperties.StubsMode.LOCAL
+    stubsMode = StubsMode.LOCAL
 )
 class OrderConsumerTest {
 
@@ -52,9 +52,8 @@ class OrderConsumerTest {
 | Attribute | Default | Description |
 |---|---|---|
 | `ids` | required | Stub coordinates: `groupId:artifactId[:version[:classifier]][:port]` |
-| `stubsMode` | `DEFAULT` | Where to resolve stubs: `LOCAL`, `REMOTE`, `CLASSPATH` |
+| `stubsMode` | `CLASSPATH` | Where to resolve stubs: `LOCAL`, `REMOTE`, `CLASSPATH` |
 | `repositoryRoot` | — | Maven repo URL for `REMOTE` mode |
-| `workOffline` | `false` | Use local repo only (Maven offline mode) |
 | `minPort` | `10000` | Minimum port for auto-assigned stub ports |
 | `maxPort` | `15000` | Maximum port for auto-assigned stub ports |
 | `generateStubs` | `false` | Generate stubs from contracts on the classpath |
@@ -112,7 +111,7 @@ Package stubs in the producer repo under `src/main/resources/stubborn-stubs/` an
 ```java
 @AutoConfigureStubRunner(
     ids = "sh.stubborn:order-service:+:stubs",
-    stubsMode = StubRunnerProperties.StubsMode.CLASSPATH
+    stubsMode = StubsMode.CLASSPATH
 )
 ```
 
@@ -121,16 +120,18 @@ Package stubs in the producer repo under `src/main/resources/stubborn-stubs/` an
 For non-Spring tests, use the `StubRunnerExtension`:
 
 ```java
-@ExtendWith(StubRunnerExtension.class)
-@StubRunnerProperties(
-    ids = {"sh.stubborn:order-service:+:stubs:8090"},
-    stubsMode = StubRunnerProperties.StubsMode.LOCAL
-)
 class OrderServiceContractTest {
+
+    @RegisterExtension
+    static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension()
+        .repoRoot("classpath:m2repo/repository/")
+        .stubsMode(StubsMode.LOCAL)
+        .downloadStub("com.example", "order-service");
 
     @Test
     void should_return_order() {
-        // WireMock running on port 8090
+        URL stubUrl = stubRunnerExtension.findStubUrl("order-service");
+        // WireMock running at stubUrl
     }
 }
 ```

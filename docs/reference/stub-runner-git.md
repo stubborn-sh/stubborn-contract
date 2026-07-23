@@ -12,8 +12,8 @@ Stub Runner can serve stubs directly from a Git repository, without publishing t
 
 ```xml
 <plugin>
-  <groupId>sh.stubborn.contract</groupId>
-  <artifactId>stubborn-contract-verifier-maven-plugin</artifactId>
+  <groupId>sh.stubborn</groupId>
+  <artifactId>stubborn-contract-maven-plugin</artifactId>
   <configuration>
     <contractsRepositoryUrl>git://https://github.com/myorg/contracts-repo.git</contractsRepositoryUrl>
     <contractsPath>/stubs</contractsPath>
@@ -69,15 +69,7 @@ stubborn:
 
 ### SSH
 
-Configure `~/.ssh/config` or provide a key path:
-
-```yaml
-stubborn:
-  contract:
-    stubrunner:
-      git:
-        ssh-key: /path/to/id_rsa
-```
+SSH authentication uses your system's `~/.ssh/config` automatically via JGit's default `SshSessionFactory`. No additional configuration is required.
 
 ## Repository structure
 
@@ -114,15 +106,7 @@ contracts-repo/
 
 Stub Runner caches the cloned repository in a local temp directory to avoid repeated clones. The cache is invalidated when the branch tip changes.
 
-Set a custom cache directory:
-
-```yaml
-stubborn:
-  contract:
-    stubrunner:
-      git:
-        clone-directory: /tmp/stubborn-stubs
-```
+Stub Runner manages the cache directory automatically; the location is not configurable.
 
 ## See also
 

@@ -33,13 +33,15 @@ Register via `META-INF/services/sh.stubborn.contract.verifier.converter.Contract
 
 ## Custom stub strategy
 
-`StubStrategy` controls how WireMock stubs are generated from contracts. The default generates one stub per contract. Override to add caching layers, dynamic response logic, or custom matchers:
+`WireMockStubStrategy` controls how a WireMock stub is built from a single contract. `BaseWireMockStubStrategy` is a convenience base you can extend. Override `buildClientRequest` or `buildServerResponse` to add custom headers, transform the body, or apply dynamic matchers:
 
 ```java
-public class CachingStubStrategy implements SingleTestGenerator {
-    // implement generateTest() to add cache headers to all stubs
+public class CachingStubStrategy extends BaseWireMockStubStrategy {
+    // Override buildClientRequest() or buildServerResponse() as needed
 }
 ```
+
+Register by providing the class name in the plugin configuration or via `ServiceLoader`.
 
 ## WireMock customizer
 
@@ -106,7 +108,7 @@ Set the base class in `pom.xml`:
 ```xml
 <plugin>
   <groupId>sh.stubborn.contract</groupId>
-  <artifactId>stubborn-contract-verifier-maven-plugin</artifactId>
+  <artifactId>stubborn-contract-maven-plugin</artifactId>
   <configuration>
     <baseClassForTests>com.example.FraudDetectionBase</baseClassForTests>
   </configuration>
@@ -144,24 +146,26 @@ public class CustomMessageVerifier implements MessageVerifierSender<Message<?>> 
 }
 ```
 
-## Contract name strategy
+## Per-package base class mapping
 
-By default, the test method name is derived from the contract file name. Override `ContractNameNamingConventionBased` to use a custom naming scheme:
-
-```java
-public class MyNamingStrategy extends ContractNameNamingConventionBased {
-    @Override
-    public String name(ContractMetadata contractMetadata, String capturingGroup, Contract contract) {
-        return "test_" + super.name(contractMetadata, capturingGroup, contract);
-    }
-}
-```
-
-Register via plugin configuration:
+For projects with multiple API areas, map contract directory paths to different base classes using `baseClassMappings` in your plugin configuration. This removes the need for a single shared base class:
 
 ```xml
-<namingConvention>com.example.MyNamingStrategy</namingConvention>
+<configuration>
+  <baseClassMappings>
+    <baseClassMapping>
+      <contractPackageRegex>.*fraud.*</contractPackageRegex>
+      <baseClassFQN>com.example.FraudBase</baseClassFQN>
+    </baseClassMapping>
+    <baseClassMapping>
+      <contractPackageRegex>.*payment.*</contractPackageRegex>
+      <baseClassFQN>com.example.PaymentBase</baseClassFQN>
+    </baseClassMapping>
+  </baseClassMappings>
+</configuration>
 ```
+
+Alternatively, use `packageWithBaseClasses` to derive the base class name from the contract's package automatically.
 
 ## See also
 

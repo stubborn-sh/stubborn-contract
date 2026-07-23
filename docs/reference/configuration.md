@@ -10,24 +10,24 @@ Property contributions can come from additional jar files on your classpath, so 
 
 ## Stub Runner Properties
 
-These are the key configuration properties for Stubborn Contract Stub Runner. Note: the `spring.cloud.contract.stubrunner.*` property names are preserved for backward compatibility.
+The canonical property prefix is `stubborn.contract.stubrunner.*`. The legacy `spring.cloud.contract.stubrunner.*` prefix is still supported as a deprecated compatibility bridge via `StubRunnerPropertiesMigrator` — it works property-by-property and emits deprecation warnings at startup. It will be removed in the next major release.
 
 | Property | Default | Description |
 |----------|---------|-------------|
-| `spring.cloud.contract.stubrunner.ids` | — | Comma-separated list of stubs to download in `groupId:artifactId:version:classifier:port` format |
-| `spring.cloud.contract.stubrunner.repositoryRoot` | — | URL of the repository with stubs |
-| `spring.cloud.contract.stubrunner.stubsMode` | `CLASSPATH` | Mode for downloading stubs (`CLASSPATH`, `LOCAL`, `REMOTE`) |
-| `spring.cloud.contract.stubrunner.deleteStubsAfterTest` | `true` | If `true`, deletes stubs after the test run |
-| `spring.cloud.contract.stubrunner.generateStubs` | `false` | If `true`, generates stubs from contracts |
-| `spring.cloud.contract.stubrunner.failOnNoStubs` | `true` | If `true`, fails when no stubs are found |
-| `spring.cloud.contract.stubrunner.properties` | — | Map with properties that can be passed to custom Stub Downloaders |
-| `spring.cloud.contract.stubrunner.httpServerStubConfigurer` | — | Fully qualified class name of `HttpServerStubConfigurer` implementation |
-| `spring.cloud.contract.stubrunner.classifier` | `stubs` | Classifier for the stubs artifact |
-| `spring.cloud.contract.stubrunner.stubsPerConsumer` | `false` | If `true`, only registers stubs from the stub directory that is named the same as the consumer application |
-| `spring.cloud.contract.stubrunner.consumerName` | — | The consumer name to be used when the `stubsPerConsumer` feature is used |
-| `spring.cloud.contract.stubrunner.mappingsOutputFolder` | — | Path to a folder where stub mappings are dumped |
-| `spring.cloud.contract.stubrunner.minPort` | `10000` | Minimum port at which the stub should start |
-| `spring.cloud.contract.stubrunner.maxPort` | `15000` | Maximum port at which the stub should start |
+| `stubborn.contract.stubrunner.ids` | — | Comma-separated list of stubs to download in `groupId:artifactId:version:classifier:port` format |
+| `stubborn.contract.stubrunner.repositoryRoot` | — | URL of the repository with stubs |
+| `stubborn.contract.stubrunner.stubsMode` | `CLASSPATH` | Mode for downloading stubs (`CLASSPATH`, `LOCAL`, `REMOTE`) |
+| `stubborn.contract.stubrunner.deleteStubsAfterTest` | `true` | If `true`, deletes stubs after the test run |
+| `stubborn.contract.stubrunner.generateStubs` | `false` | If `true`, generates stubs from contracts |
+| `stubborn.contract.stubrunner.failOnNoStubs` | `true` | If `true`, fails when no stubs are found |
+| `stubborn.contract.stubrunner.properties` | — | Map with properties that can be passed to custom Stub Downloaders |
+| `stubborn.contract.stubrunner.httpServerStubConfigurer` | — | Fully qualified class name of `HttpServerStubConfigurer` implementation |
+| `stubborn.contract.stubrunner.classifier` | `stubs` | Classifier for the stubs artifact |
+| `stubborn.contract.stubrunner.stubsPerConsumer` | `false` | If `true`, only registers stubs from the stub directory that is named the same as the consumer application |
+| `stubborn.contract.stubrunner.consumerName` | — | The consumer name to be used when the `stubsPerConsumer` feature is used |
+| `stubborn.contract.stubrunner.mappingsOutputFolder` | — | Path to a folder where stub mappings are dumped |
+| `stubborn.contract.stubrunner.minPort` | `10000` | Minimum port at which the stub should start |
+| `stubborn.contract.stubrunner.maxPort` | `15000` | Maximum port at which the stub should start |
 
 ## Verifier Properties
 
@@ -77,5 +77,6 @@ For the complete list of auto-configured properties, see the auto-generated conf
 
 Common property prefixes:
 
-- `spring.cloud.contract.stubrunner.*` — Stub Runner configuration
-- `spring.cloud.contract.verifier.*` — Verifier HTTP port configuration
+- `stubborn.contract.stubrunner.*` — Stub Runner configuration (canonical)
+- `stubborn.contract.verifier.*` — Verifier HTTP port configuration
+- `spring.cloud.contract.stubrunner.*` — deprecated alias (bridges to canonical via `StubRunnerPropertiesMigrator`)

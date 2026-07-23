@@ -121,7 +121,7 @@ public void validate_shouldMarkClientAsFraud() throws Exception {
 
     // then:
         assertThat(response.statusCode()).isEqualTo(200);
-        assertThat(response.header("Content-Type")).matches("application/vnd.fraud.v1.json.*");
+        assertThat(response.header("Content-Type")).matches("application/vnd.fraud.v1\\+json.*");
     // and:
         DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
         assertThatJson(parsedJson).field("['fraudCheckStatus']").matches("[A-Z]{5}");
@@ -162,12 +162,12 @@ The following example shows a minimal (but functional) base test class:
 ```java
 package com.example.contractTest;
 
-import org.junit.Before;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.junit.jupiter.api.BeforeEach;
 
 public class BaseTestClass {
 
-    @Before
+    @BeforeEach
     public void setup() {
         RestAssuredMockMvc.standaloneSetup(new FraudController());
     }
@@ -240,7 +240,7 @@ public class FraudController {
 Once the implementation and the test base class are in place, the tests pass, and both the application and the stub artifacts are built and installed in the local Maven repository. Information about installing the stubs jar to the local repository appears in the logs:
 
 ```bash
-[INFO] --- stubborn-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
+[INFO] --- stubborn-contract-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
 [INFO] Building jar: /some/path/http-server/target/http-server-0.0.1-SNAPSHOT-stubs.jar
 [INFO]
 [INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ http-server ---
@@ -275,11 +275,10 @@ The tests are skipped because the producer-side contract implementation is not y
 Now you can annotate your test class with `@AutoConfigureStubRunner`:
 
 ```java
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids = {"com.example:http-server-dsl:+:stubs:6565"},
-        stubsMode = StubRunnerProperties.StubsMode.LOCAL)
-public class LoanApplicationServiceTests {
+        stubsMode = StubsMode.LOCAL)
+class LoanApplicationServiceTests {
     // ...
 }
 ```

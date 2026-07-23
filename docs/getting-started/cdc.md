@@ -127,7 +127,7 @@ $ ./mvnw clean install -DskipTests
 Once you run those commands, you should see something like the following content in the logs:
 
 ```bash
-[INFO] --- stubborn-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
+[INFO] --- stubborn-contract-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
 [INFO] Building jar: /some/path/http-server/target/http-server-0.0.1-SNAPSHOT-stubs.jar
 ...
 [INFO] Installing /some/path/http-server/target/http-server-0.0.1-SNAPSHOT-stubs.jar to /path/to/your/.m2/repository/com/example/http-server/0.0.1-SNAPSHOT/http-server-0.0.1-SNAPSHOT-stubs.jar
@@ -221,7 +221,7 @@ public void validate_shouldMarkClientAsFraud() throws Exception {
 
     // then:
         assertThat(response.statusCode()).isEqualTo(200);
-        assertThat(response.header("Content-Type")).matches("application/vnd.fraud.v1.json.*");
+        assertThat(response.header("Content-Type")).matches("application/vnd.fraud.v1\\+json.*");
     // and:
         DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
         assertThatJson(parsedJson).field("['fraudCheckStatus']").matches("[A-Z]{5}");
