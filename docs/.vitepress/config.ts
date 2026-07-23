@@ -8,7 +8,7 @@ export default defineConfig({
   base: '/contract/',
 
   head: [
-    ['link', { rel: 'icon', href: '/contract/favicon.ico' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/contract/favicon.svg' }],
   ],
 
   ignoreDeadLinks: [
