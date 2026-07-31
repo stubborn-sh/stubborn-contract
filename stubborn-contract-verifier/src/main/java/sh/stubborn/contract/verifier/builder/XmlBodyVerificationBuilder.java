@@ -48,7 +48,7 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 			String responseString, boolean shouldCommentOutBDDBlocks) {
 		addXmlProcessingLines(blockBuilder, responseString);
 		Object processedBody = XmlToXPathsConverter.removeMatchingXPaths(responseBody, bodyMatchers);
-		List<BodyMatcher> matchers = new XmlToXPathsConverter().mapToMatchers(processedBody);
+		List<BodyMatcher> matchers = XmlToXPathsConverter.mapToMatchers(processedBody);
 		if (bodyMatchers != null && bodyMatchers.hasMatchers()) {
 			matchers.addAll(bodyMatchers.matchers());
 		}

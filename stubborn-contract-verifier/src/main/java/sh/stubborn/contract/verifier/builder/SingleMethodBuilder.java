@@ -195,7 +195,9 @@ final class SingleMethodBuilder {
 			this.methodPostProcessors
 				.stream()
 				.filter((m) -> m.accept(metaData))
-				.forEach((m) -> m.apply(metaData));
+				.forEach((m) -> {
+				var unused = m.apply(metaData);
+			});
 			// }
 		});
 		// @formatter:on
@@ -206,7 +208,9 @@ final class SingleMethodBuilder {
 		List<MethodPreProcessor> matchingPreProcessors = this.methodPreProcessors.stream()
 			.filter((m) -> m.accept(metaData))
 			.collect(Collectors.toCollection(LinkedList::new));
-		matchingPreProcessors.forEach((m) -> m.apply(metaData));
+		matchingPreProcessors.forEach((m) -> {
+			var unused = m.apply(metaData);
+		});
 		return matchingPreProcessors.stream().anyMatch((m) -> !m.shouldContinue());
 	}
 
