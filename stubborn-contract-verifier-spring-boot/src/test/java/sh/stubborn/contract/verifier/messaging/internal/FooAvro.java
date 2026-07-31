@@ -9,6 +9,7 @@ import org.apache.avro.message.BinaryMessageDecoder;
 import org.apache.avro.message.BinaryMessageEncoder;
 import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
+import org.jspecify.annotations.Nullable;
 
 /** Dummy Avro object for testing purposes */
 @org.apache.avro.specific.AvroGenerated
@@ -78,7 +79,7 @@ public class FooAvro extends org.apache.avro.specific.SpecificRecordBase
 	}
 
 	/** foo field */
-	private java.lang.String fooAvro;
+	private java.lang.@Nullable String fooAvro;
 
 	/**
 	 * Default constructor. Note that this does not initialize fields to their default
@@ -108,7 +109,7 @@ public class FooAvro extends org.apache.avro.specific.SpecificRecordBase
 
 	// Used by DatumWriter. Applications should not call.
 	@Override
-	public java.lang.Object get(int field$) {
+	public java.lang.@Nullable Object get(int field$) {
 		switch (field$) {
 			case 0:
 				return fooAvro;
@@ -134,7 +135,7 @@ public class FooAvro extends org.apache.avro.specific.SpecificRecordBase
 	 * Gets the value of the 'fooAvro' field.
 	 * @return foo field
 	 */
-	public java.lang.String getFooAvro() {
+	public java.lang.@Nullable String getFooAvro() {
 		return fooAvro;
 	}
 
@@ -192,7 +193,7 @@ public class FooAvro extends org.apache.avro.specific.SpecificRecordBase
 			implements org.apache.avro.data.RecordBuilder<FooAvro> {
 
 		/** foo field */
-		private java.lang.String fooAvro;
+		private java.lang.@Nullable String fooAvro;
 
 		/** Creates a new Builder */
 		private Builder() {
@@ -227,7 +228,7 @@ public class FooAvro extends org.apache.avro.specific.SpecificRecordBase
 		 * Gets the value of the 'fooAvro' field. foo field
 		 * @return The value.
 		 */
-		public java.lang.String getFooAvro() {
+		public java.lang.@Nullable String getFooAvro() {
 			return fooAvro;
 		}
 
