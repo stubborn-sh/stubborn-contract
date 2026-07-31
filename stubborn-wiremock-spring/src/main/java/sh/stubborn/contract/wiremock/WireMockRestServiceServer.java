@@ -17,6 +17,7 @@
 package sh.stubborn.contract.wiremock;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,8 +204,8 @@ public final class WireMockRestServiceServer {
 					mappings.add(mapping);
 				}
 			}
-			catch (IOException e) {
-				throw new IllegalStateException("Cannot load resources for: " + location, e);
+			catch (IOException ex) {
+				throw new IllegalStateException("Cannot load resources for: " + location, ex);
 			}
 		}
 		if (this.ignoreExpectOrder) {
@@ -213,7 +214,6 @@ public final class WireMockRestServiceServer {
 		for (StubMapping mapping : mappings) {
 			ResponseActions expect = responseActions(server, mapping);
 			expect.andExpect(method(HttpMethod.valueOf(mapping.getRequest().getMethod().getName())));
-			mapping.getRequest().getBodyPatterns();
 			bodyPatterns(expect, mapping.getRequest());
 			requestHeaders(expect, mapping.getRequest());
 			expect.andRespond(response(mapping.getResponse()));
@@ -263,13 +263,13 @@ public final class WireMockRestServiceServer {
 		try {
 			return MockRestRequestMatchers.xpath(pattern.getMatchesXPath()).exists();
 		}
-		catch (XPathExpressionException e) {
-			throw new IllegalStateException(e);
+		catch (XPathExpressionException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
 	private String request(RequestPattern request) {
-		return this.baseUrl + (request.getUrlPath() == null ? (request.getUrl() == null ? "/" : request.getUrl())
+		return this.baseUrl + ((request.getUrlPath() == null) ? ((request.getUrl() == null) ? "/" : request.getUrl())
 				: request.getUrlPath());
 	}
 
@@ -346,13 +346,13 @@ public final class WireMockRestServiceServer {
 									return StreamUtils.copyToByteArray(resource.getInputStream());
 								}
 							}
-							catch (IOException e) {
-								throw new IllegalStateException("Cannot locate body file: " + file, e);
+							catch (IOException ex) {
+								throw new IllegalStateException("Cannot locate body file: " + file, ex);
 							}
 						}
 					}
 				}
-				catch (IOException e) {
+				catch (IOException ex) {
 					// Ignore
 				}
 			}
@@ -403,10 +403,12 @@ public final class WireMockRestServiceServer {
 				value = header.firstValue();
 			}
 		}
-		return value == null ? MediaType.TEXT_PLAIN : MediaType.valueOf(value);
+		return (value != null) ? MediaType.valueOf(value) : MediaType.TEXT_PLAIN;
 	}
 
-	private static final class StubMappingComparator implements Comparator<StubMapping> {
+	private static final class StubMappingComparator implements Comparator<StubMapping>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(StubMapping one, StubMapping two) {
@@ -441,7 +443,7 @@ public final class WireMockRestServiceServer {
 				if (value == 0) {
 					// Same number of header matchers
 					if (two.getPriority() != null) {
-						return one.getPriority() != null ? one.getPriority() - two.getPriority() : 1;
+						return (one.getPriority() != null) ? one.getPriority() - two.getPriority() : 1;
 					}
 					value = (int) (one.getInsertionIndex() - two.getInsertionIndex());
 				}
@@ -450,7 +452,7 @@ public final class WireMockRestServiceServer {
 		}
 
 		private String request(RequestPattern request) {
-			return (request.getUrlPath() == null ? (request.getUrl() == null ? "/" : request.getUrl())
+			return ((request.getUrlPath() == null) ? ((request.getUrl() == null) ? "/" : request.getUrl())
 					: request.getUrlPath());
 		}
 

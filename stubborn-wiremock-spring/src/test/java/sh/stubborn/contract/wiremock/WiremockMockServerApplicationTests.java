@@ -60,7 +60,7 @@ public class WiremockMockServerApplicationTests {
 		try {
 			response = this.restTemplate.exchange(postRequest, String.class);
 		}
-		catch (AssertionError e) {
+		catch (AssertionError ex) {
 			response = null;
 		}
 		if (null != response) {
@@ -296,7 +296,7 @@ public class WiremockMockServerApplicationTests {
 			response = this.restTemplate.postForObject("https://example.org/body",
 					new Things(Collections.singletonList(new Thing("AbsentThing"))), String.class);
 		}
-		catch (AssertionError e) {
+		catch (AssertionError ex) {
 			response = null;
 		}
 		if (null != response) {
@@ -331,7 +331,7 @@ public class WiremockMockServerApplicationTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body("<foo/>"), String.class);
 		}
-		catch (AssertionError e) {
+		catch (AssertionError ex) {
 			response = null;
 		}
 		if (null != response) {
@@ -363,7 +363,7 @@ public class WiremockMockServerApplicationTests {
 			response = this.restTemplate.postForObject("https://example.org/body",
 					new Things(Collections.singletonList(new Thing("AbsentThing"))), String.class);
 		}
-		catch (AssertionError e) {
+		catch (AssertionError ex) {
 			response = null;
 		}
 		if (null != response) {
@@ -398,7 +398,7 @@ public class WiremockMockServerApplicationTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body("<things><thing><name>AbsentThing</name></thing></things>"), String.class);
 		}
-		catch (AssertionError e) {
+		catch (AssertionError ex) {
 			response = null;
 		}
 		if (null != response) {
@@ -433,7 +433,7 @@ public class WiremockMockServerApplicationTests {
 				.contentType(MediaType.APPLICATION_XML)
 				.body("<things><thing><name>AbsentThing</name></thing></things>"), String.class);
 		}
-		catch (AssertionError e) {
+		catch (AssertionError ex) {
 			response = null;
 		}
 		if (null != response) {

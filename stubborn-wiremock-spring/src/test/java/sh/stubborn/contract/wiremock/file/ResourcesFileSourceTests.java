@@ -30,10 +30,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-class ResourcesFileSourceTest {
+class ResourcesFileSourceTests {
 
 	@DisplayName("find all files in the multiple files directories.")
 	@Test
@@ -76,10 +76,10 @@ class ResourcesFileSourceTest {
 		String bannerStubPathInJar = "jar:file:" + file.getAbsolutePath() + "!/wiremock/banner/__files";
 		String bannerStubFilename = "response-bannerList-success.json";
 		ClasspathFileSource classpathFileSource1 = mock(ClasspathFileSource.class);
-		when(classpathFileSource1.getUri()).thenReturn(new URI(bannerStubPathInJar));
-		when(classpathFileSource1.exists()).thenReturn(true);
-		when(classpathFileSource1.getBinaryFileNamed(bannerStubFilename))
-			.thenReturn(new BinaryFile(new URI(bannerStubPathInJar + "/response-bannerList-success.json")));
+		given(classpathFileSource1.getUri()).willReturn(new URI(bannerStubPathInJar));
+		given(classpathFileSource1.exists()).willReturn(true);
+		given(classpathFileSource1.getBinaryFileNamed(bannerStubFilename))
+			.willReturn(new BinaryFile(new URI(bannerStubPathInJar + "/response-bannerList-success.json")));
 		ResourcesFileSource resourcesFileSource = new ResourcesFileSource(classpathFileSource1);
 
 		// when & then

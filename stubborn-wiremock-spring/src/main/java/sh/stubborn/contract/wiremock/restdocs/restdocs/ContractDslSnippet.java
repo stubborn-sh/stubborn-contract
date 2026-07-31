@@ -73,7 +73,7 @@ public class ContractDslSnippet extends TemplatedSnippet {
 	/**
 	 * Creates a new {@code ContractDslSnippet} with the given additional
 	 * {@code attributes} that will be included in the model during template rendering.
-	 * @param attributes The additional attributes
+	 * @param attributes the additional attributes
 	 */
 	protected ContractDslSnippet(Map<String, Object> attributes) {
 		super(SNIPPET_NAME, attributes);
@@ -181,7 +181,7 @@ public class ContractDslSnippet extends TemplatedSnippet {
 		RestDocumentationContextPlaceholderResolver resolver = new RestDocumentationContextPlaceholderResolver(context);
 		String resolvedName = replacePlaceholders(resolver, operation.getName());
 		File output = new File(context.getOutputDirectory(), CONTRACTS_FOLDER + "/" + resolvedName + ".groovy");
-		output.getParentFile().mkdirs();
+		Files.createDirectories(output.getParentFile().toPath());
 		try (Writer writer = new OutputStreamWriter(Files.newOutputStream(output.toPath()))) {
 			writer.append(content);
 		}
@@ -189,20 +189,6 @@ public class ContractDslSnippet extends TemplatedSnippet {
 
 	private String replacePlaceholders(PropertyPlaceholderHelper.PlaceholderResolver resolver, String input) {
 		return this.propertyPlaceholderHelper.replacePlaceholders(input, resolver);
-	}
-
-}
-
-class JsonPaths {
-
-	private final String jsonPath;
-
-	JsonPaths(String jsonPath) {
-		this.jsonPath = jsonPath;
-	}
-
-	public String getJsonPath() {
-		return this.jsonPath;
 	}
 
 }

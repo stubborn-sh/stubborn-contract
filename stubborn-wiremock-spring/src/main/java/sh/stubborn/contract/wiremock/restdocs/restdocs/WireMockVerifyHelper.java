@@ -26,13 +26,15 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.jayway.jsonpath.JsonPath;
-
 import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
+ * Base class for WireMock REST Docs verification helpers.
+ *
  * @param <T> result type
  * @param <S> stub type
  * @author Dave Syer
@@ -100,7 +102,7 @@ public abstract class WireMockVerifyHelper<T, S extends WireMockVerifyHelper<T, 
 	}
 
 	private void compile(String expression, Object... args) {
-		org.springframework.util.Assert.hasText((expression == null ? null : expression),
+		org.springframework.util.Assert.hasText((expression != null) ? expression : null,
 				"expression must not be null or empty");
 		expression = String.format(expression, args);
 		this.jsonPaths.put(expression, JsonPath.compile(expression));

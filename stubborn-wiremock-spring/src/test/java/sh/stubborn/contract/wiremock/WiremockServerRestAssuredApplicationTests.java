@@ -19,6 +19,7 @@ package sh.stubborn.contract.wiremock;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;

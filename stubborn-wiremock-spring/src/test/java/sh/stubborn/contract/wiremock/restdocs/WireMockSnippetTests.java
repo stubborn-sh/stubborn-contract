@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 import com.github.tomakehurst.wiremock.matching.EqualToXmlPattern;
 import com.github.tomakehurst.wiremock.matching.MultiValuePattern;
@@ -57,7 +58,6 @@ import org.springframework.restdocs.templates.TemplateEngine;
 import org.springframework.restdocs.templates.TemplateFormats;
 import org.springframework.restdocs.templates.mustache.MustacheTemplateEngine;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -179,7 +179,7 @@ public class WireMockSnippetTests {
 		StubMapping stubMapping = WireMockStubMapping.buildFrom(new String(Files.readAllBytes(stub.toPath())));
 		assertThat(stubMapping.getRequest().getUrlPath()).isEqualTo("/bar");
 		assertThat(stubMapping.getRequest().getQueryParameters())
-			.containsOnly(Assertions.entry("myParam", MultiValuePattern.of(equalTo(("myValue")))));
+			.containsOnly(Assertions.entry("myParam", MultiValuePattern.of(WireMock.equalTo(("myValue")))));
 	}
 
 	@Test
@@ -192,7 +192,8 @@ public class WireMockSnippetTests {
 		File stub = new File(this.outputFolder, "stubs/foo.json");
 		assertThat(stub).exists();
 		StubMapping stubMapping = WireMockStubMapping.buildFrom(new String(Files.readAllBytes(stub.toPath())));
-		assertThat(stubMapping.getRequest().getCookies()).containsOnly(Assertions.entry("test_user", equalTo("free")));
+		assertThat(stubMapping.getRequest().getCookies())
+			.containsOnly(Assertions.entry("test_user", WireMock.equalTo("free")));
 	}
 
 	@Test

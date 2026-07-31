@@ -54,7 +54,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static sh.stubborn.contract.wiremock.restdocs.SpringCloudContractRestDocs.dslContract;
 
 /**
  * @author Marcin Grzejszczak
@@ -179,7 +178,7 @@ public class ContractDslSnippetTests {
 	public void should_create_contract_template_and_doc_without_body_and_headers() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/foo").param("one", "newValueOne").param("two", "newValueTwo"))
 			.andExpect(status().isOk())
-			.andDo(document("empty", dslContract()));
+			.andDo(document("empty", SpringCloudContractRestDocs.dslContract()));
 
 		then(file("/contracts/empty.groovy")).exists();
 		then(file("/empty/dsl-contract.adoc")).exists();
@@ -207,7 +206,7 @@ public class ContractDslSnippetTests {
 
 	private QueryParameter parameter(List<QueryParameter> parameters, String name) {
 		return parameters.stream()
-			.filter(queryParameter -> queryParameter.getName().equals(name))
+			.filter((queryParameter) -> queryParameter.getName().equals(name))
 			.findFirst()
 			.orElseThrow(() -> new AssertionError("Missing entry"));
 	}
