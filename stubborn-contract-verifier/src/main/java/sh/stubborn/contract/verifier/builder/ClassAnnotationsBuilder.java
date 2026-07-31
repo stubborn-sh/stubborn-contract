@@ -31,17 +31,17 @@ class ClassAnnotationsBuilder {
 	}
 
 	ClassAnnotationsBuilder defaultAnnotations() {
-		this.parentBuilder.classAnnotations(new SuppressWarningsClassAnnotation(builder));
+		this.parentBuilder.classAnnotations(new SuppressWarningsClassAnnotation(this.builder));
 		return this;
 	}
 
 	ClassAnnotationsBuilder jUnit5() {
-		this.parentBuilder.classAnnotations(new JUnit5OrderClassAnnotation(builder, metaData));
+		this.parentBuilder.classAnnotations(new JUnit5OrderClassAnnotation(this.builder, this.metaData));
 		return this;
 	}
 
 	ClassAnnotationsBuilder spock() {
-		this.parentBuilder.classAnnotations(new SpockOrderClassAnnotation(builder, metaData));
+		this.parentBuilder.classAnnotations(new SpockOrderClassAnnotation(this.builder, this.metaData));
 		return this;
 	}
 

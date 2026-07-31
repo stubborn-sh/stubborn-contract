@@ -26,6 +26,8 @@ final class ContentHelper {
 	 * Depending on the object type extracts the test side values and combines them into a
 	 * String representation. Will not try to guess the type of the value of the header
 	 * (e.g. if it's a JSON).
+	 * @param object the object to extract the test side value from
+	 * @return the string representation of the test side value
 	 */
 	static String getTestSideForNonBodyValue(Object object) {
 		if (object instanceof ExecutionProperty) {
@@ -37,6 +39,8 @@ final class ContentHelper {
 	/**
 	 * Depending on the object type extracts the test side values and combines them into a
 	 * String representation.
+	 * @param object the object to extract the test side value from
+	 * @return the string representation of the test side value
 	 */
 	private static String getTestSideValue(Object object) {
 		if (object instanceof ExecutionProperty) {

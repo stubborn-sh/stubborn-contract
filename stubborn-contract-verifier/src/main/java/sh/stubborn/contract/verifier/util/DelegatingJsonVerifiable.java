@@ -74,7 +74,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 		if (value == null) {
 			return null;
 		}
-		return value instanceof String ? "\"" + stringWithEscapedQuotes(value) + "\"" : value.toString();
+		return (value instanceof String) ? "\"" + stringWithEscapedQuotes(value) + "\"" : value.toString();
 	}
 
 	private void appendMethodWithValue(String methodName, @Nullable Object value) {
@@ -98,7 +98,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 
 	@Override
 	public MethodBufferingJsonVerifiable field(Object value) {
-		Object valueToPut = value instanceof ShouldTraverse ? ((ShouldTraverse) value).value : value;
+		Object valueToPut = (value instanceof ShouldTraverse) ? ((ShouldTraverse) value).value : value;
 		Object wrappedValue = wrapInBrackets(valueToPut);
 		DelegatingJsonVerifiable verifiable = new DelegatingJsonVerifiable(this.delegate.field(wrappedValue),
 				this.methodsBuffer, value);
@@ -115,7 +115,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 	public MethodBufferingJsonVerifiable field(String... strings) {
 		MethodBufferingJsonVerifiable verifiable = null;
 		for (String string : strings) {
-			verifiable = verifiable == null ? field(string) : verifiable.field(string);
+			verifiable = (verifiable != null) ? verifiable.field(string) : field(string);
 		}
 		return Objects.requireNonNull(verifiable);
 	}
@@ -207,8 +207,8 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 			readyToCheck.methodsBuffer.offer(".value()");
 		}
 		else {
-			readyToCheck.appendMethodWithValue("isEqualTo", value instanceof Long ? String.valueOf(value).concat("L")
-					: (value == null ? null : String.valueOf(value)));
+			readyToCheck.appendMethodWithValue("isEqualTo", (value instanceof Long) ? String.valueOf(value).concat("L")
+					: ((value != null) ? String.valueOf(value) : null));
 		}
 		return readyToCheck;
 	}

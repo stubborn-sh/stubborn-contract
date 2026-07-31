@@ -99,6 +99,7 @@ class JaxRsUrlPathWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 	}
 
 	/**
+	 * @param param the query parameter
 	 * @return {@code true} if the query parameter is allowed
 	 */
 	private boolean allowedQueryParameter(QueryParameter param) {
@@ -106,6 +107,7 @@ class JaxRsUrlPathWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 	}
 
 	/**
+	 * @param matchingStrategy the matching strategy
 	 * @return {@code true} if the query parameter is allowed
 	 */
 	private boolean allowedQueryParameter(MatchingStrategy matchingStrategy) {
@@ -113,6 +115,7 @@ class JaxRsUrlPathWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 	}
 
 	/**
+	 * @param o the object to inspect
 	 * @return {@code true} if the query parameter is allowed
 	 */
 	private boolean allowedQueryParameter(@Nullable Object o) {

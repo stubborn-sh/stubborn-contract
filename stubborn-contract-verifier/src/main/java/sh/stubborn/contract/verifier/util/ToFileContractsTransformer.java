@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 
-import static sh.stubborn.contract.verifier.util.ContractScanner.collectContractDescriptors;
-
 /**
  * Allows conversion of Contract files to files.
  *
@@ -51,6 +49,7 @@ public final class ToFileContractsTransformer {
 	 * [OPTIONAL - defaults to target/converted-contracts] - argument 3 : path - path were
 	 * the contracts should be searched for [OPTIONAL - defaults to
 	 * src/test/resources/contracts]
+	 * @param args the program arguments described above
 	 */
 	public static void main(String[] args) {
 		if (args.length == 0) {
@@ -58,8 +57,8 @@ public final class ToFileContractsTransformer {
 		}
 		log.warn("You're using an incubating feature. Note, that it can be changed / removed in the future");
 		String fqn = args[0];
-		String outputPath = args.length >= 2 ? args[1] : "target/converted-contracts";
-		String path = args.length >= 3 ? args[2] : "src/test/resources/contracts";
+		String outputPath = (args.length >= 2) ? args[1] : "target/converted-contracts";
+		String path = (args.length >= 3) ? args[2] : "src/test/resources/contracts";
 		new ToFileContractsTransformer().storeContractsAsFiles(path, fqn, outputPath);
 	}
 
@@ -68,6 +67,7 @@ public final class ToFileContractsTransformer {
 	}
 
 	/**
+	 * Stores the converted contracts as files.
 	 * @param path - path were the contracts should be searched for
 	 * @param fqn - fully qualified name of the {@link ContractConverter}
 	 * @param outputPath - path where the dumped files should be stored
@@ -78,7 +78,7 @@ public final class ToFileContractsTransformer {
 			log.info("Input path [{}]", path);
 			log.info("FQN of the converter [{}]", fqn);
 			log.info("Output path [{}]", outputPath);
-			Collection<Contract> contracts = collectContractDescriptors(new File(path));
+			Collection<Contract> contracts = ContractScanner.collectContractDescriptors(new File(path));
 			log.info("Found [{}] contract definition", contracts.size());
 			Class<?> name = Class.forName(fqn);
 			ContractConverter<Collection> contractConverter = (ContractConverter) name.getDeclaredConstructors()[0]

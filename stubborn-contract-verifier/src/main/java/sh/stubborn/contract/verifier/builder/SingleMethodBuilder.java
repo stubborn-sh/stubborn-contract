@@ -195,9 +195,7 @@ final class SingleMethodBuilder {
 			this.methodPostProcessors
 				.stream()
 				.filter((m) -> m.accept(metaData))
-				.forEach((m) -> {
-					var unused = m.apply(metaData);
-				});
+				.forEach((m) -> m.apply(metaData));
 			// }
 		});
 		// @formatter:on

@@ -23,6 +23,8 @@ import org.apache.camel.Message;
 import org.apache.camel.support.DefaultMessage;
 
 /**
+ * Builds Camel messages for contract verification.
+ *
  * @author Marcin Grzejszczak
  */
 class ContractVerifierCamelMessageBuilder {
@@ -33,7 +35,7 @@ class ContractVerifierCamelMessageBuilder {
 		this.context = context;
 	}
 
-	public <T> Message create(T payload, Map<String, Object> headers) {
+	<T> Message create(T payload, Map<String, Object> headers) {
 		DefaultMessage message = new DefaultMessage(this.context);
 		message.setBody(payload);
 		if (headers != null) {

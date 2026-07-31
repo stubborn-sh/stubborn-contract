@@ -76,7 +76,7 @@ class ContractVerifierObjectMapperTests {
 			this.foo = foo;
 		}
 
-		public String getFoo() {
+		String getFoo() {
 			return this.foo;
 		}
 

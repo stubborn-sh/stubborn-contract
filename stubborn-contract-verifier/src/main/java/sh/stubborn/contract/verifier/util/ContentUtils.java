@@ -32,6 +32,7 @@ import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
 import groovy.lang.GString;
 import groovy.xml.XmlSlurper;
+import org.apache.commons.text.StringEscapeUtils;
 import org.codehaus.groovy.runtime.GStringImpl;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -48,15 +49,6 @@ import sh.stubborn.contract.spec.internal.NamedProperty;
 import sh.stubborn.contract.spec.internal.OptionalProperty;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
 
-import static org.apache.commons.text.StringEscapeUtils.escapeJava;
-import static org.apache.commons.text.StringEscapeUtils.escapeJson;
-import static org.apache.commons.text.StringEscapeUtils.escapeXml11;
-import static org.apache.commons.text.StringEscapeUtils.unescapeXml;
-import static sh.stubborn.contract.verifier.util.ContentType.DEFINED;
-import static sh.stubborn.contract.verifier.util.ContentType.JSON;
-import static sh.stubborn.contract.verifier.util.ContentType.UNKNOWN;
-import static sh.stubborn.contract.verifier.util.ContentType.XML;
-
 /**
  * A utility class that can operate on a message body basing on the provided Content Type.
  *
@@ -71,13 +63,13 @@ public class ContentUtils {
 
 	public static final Closure GET_STUB_SIDE = new Closure<Object>(null) {
 		public @Nullable Object doCall(Object it) {
-			return it instanceof DslProperty ? ((DslProperty) it).getClientValue() : it;
+			return (it instanceof DslProperty) ? ((DslProperty) it).getClientValue() : it;
 		}
 	};
 
 	public static final Closure GET_TEST_SIDE = new Closure<Object>(null) {
 		public @Nullable Object doCall(Object it) {
-			return it instanceof DslProperty ? ((DslProperty) it).getServerValue() : it;
+			return (it instanceof DslProperty) ? ((DslProperty) it).getServerValue() : it;
 		}
 	};
 
@@ -107,6 +99,9 @@ public class ContentUtils {
 
 	private static final String JSON_VALUE_PATTERN_FOR_EXECUTION = "\"EXECUTION>>%s<<\"";
 
+	private ContentUtils() {
+	}
+
 	/**
 	 * Due to the fact that we allow users to have a body with GString and different
 	 * values inside we need to be prepared that they pass regexps around both on client
@@ -116,8 +111,9 @@ public class ContentUtils {
 	 * Regex patterns to a temporary string, then convert all to a legitimate JSON
 	 * structure and then finally convert it back from string to a pattern.
 	 * @param bodyAsValue - GString with passed values
+	 * @param contentType - the content type of the body
 	 * @param valueProvider - provider of values either for server or client side
-	 * @return JSON structure with replaced client / server side parts
+	 * @return the JSON structure with replaced client / server side parts
 	 */
 	public static Object extractValue(GString bodyAsValue, @Nullable ContentType contentType, Closure valueProvider) {
 		String asString = bodyAsValue.toString();
@@ -127,10 +123,10 @@ public class ContentUtils {
 		if (contentType == ContentType.TEXT || contentType == ContentType.FORM) {
 			return extractValueForText(bodyAsValue, valueProvider);
 		}
-		if (JSON == contentType) {
+		if (ContentType.JSON == contentType) {
 			return extractValueForJSON(bodyAsValue, valueProvider);
 		}
-		if (contentType == XML) {
+		if (contentType == ContentType.XML) {
 			return extractValueForXML(bodyAsValue, valueProvider);
 		}
 		// else Brute force :(
@@ -138,9 +134,9 @@ public class ContentUtils {
 			log.trace("No content type provided so trying to parse as JSON");
 			return extractValueForJSON(bodyAsValue, valueProvider);
 		}
-		catch (JsonException e) {
+		catch (JsonException ex) {
 			// Not a JSON format
-			log.trace("Failed to parse as JSON - trying to parse as XML", e);
+			log.trace("Failed to parse as JSON - trying to parse as XML", ex);
 			try {
 				return extractValueForXML(bodyAsValue, valueProvider);
 			}
@@ -159,17 +155,17 @@ public class ContentUtils {
 	public static ContentType getClientContentType(GString bodyAsValue) {
 		try {
 			extractValueForJSON(bodyAsValue, GET_STUB_SIDE);
-			return JSON;
+			return ContentType.JSON;
 		}
-		catch (JsonException e) {
+		catch (JsonException ex) {
 			try {
 				getXmlSlurperWithDefaultErrorHandler()
 					.parseText(extractValueForXML(bodyAsValue, GET_STUB_SIDE).toString());
-				return XML;
+				return ContentType.XML;
 			}
 			catch (Exception ignored) {
 				extractValueForGString(bodyAsValue, GET_STUB_SIDE);
-				return UNKNOWN;
+				return ContentType.UNKNOWN;
 			}
 		}
 	}
@@ -177,15 +173,15 @@ public class ContentUtils {
 	public static ContentType getClientContentType(String bodyAsValue) {
 		try {
 			new JsonSlurper().parseText(bodyAsValue);
-			return JSON;
+			return ContentType.JSON;
 		}
-		catch (JsonException e) {
+		catch (JsonException ex) {
 			try {
 				getXmlSlurperWithDefaultErrorHandler().parseText(bodyAsValue);
-				return XML;
+				return ContentType.XML;
 			}
 			catch (Exception ignored) {
-				return UNKNOWN;
+				return ContentType.UNKNOWN;
 			}
 		}
 	}
@@ -204,10 +200,10 @@ public class ContentUtils {
 			return getClientContentType((List) bodyAsValue);
 		}
 		else if (bodyAsValue instanceof MatchingStrategy) {
-			return UNKNOWN;
+			return ContentType.UNKNOWN;
 		}
 		else if (bodyAsValue instanceof FromFileProperty) {
-			return UNKNOWN;
+			return ContentType.UNKNOWN;
 		}
 		return tryToGuessContentType(bodyAsValue);
 	}
@@ -224,12 +220,12 @@ public class ContentUtils {
 				log.trace("Failed to assume that body [" + bodyAsValue + "] is json");
 			}
 		}
-		return UNKNOWN;
+		return ContentType.UNKNOWN;
 	}
 
 	public static ContentType getClientContentType(Object bodyAsValue, Headers headers) {
 		ContentType contentType = recognizeContentTypeFromHeader(headers);
-		if (contentType == UNKNOWN) {
+		if (contentType == ContentType.UNKNOWN) {
 			return getClientContentType(bodyAsValue);
 		}
 		return contentType;
@@ -238,20 +234,20 @@ public class ContentUtils {
 	public static ContentType getClientContentType(Map bodyAsValue) {
 		try {
 			JsonOutput.toJson(bodyAsValue);
-			return JSON;
+			return ContentType.JSON;
 		}
 		catch (Exception ignore) {
-			return UNKNOWN;
+			return ContentType.UNKNOWN;
 		}
 	}
 
 	public static ContentType getClientContentType(List bodyAsValue) {
 		try {
 			JsonOutput.toJson(bodyAsValue);
-			return JSON;
+			return ContentType.JSON;
 		}
 		catch (Exception ignore) {
-			return UNKNOWN;
+			return ContentType.UNKNOWN;
 		}
 	}
 
@@ -260,18 +256,18 @@ public class ContentUtils {
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
 			Object it = values[i];
-			Object result = it instanceof DslProperty ? valueProvider.call(it) : it;
-			transformed[i] = result == null ? null : result.toString();
+			Object result = (it instanceof DslProperty) ? valueProvider.call(it) : it;
+			transformed[i] = (result != null) ? result.toString() : null;
 		}
 		return new GStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 	}
 
 	public static Object extractValue(GString bodyAsValue, Function valueProvider) {
-		return extractValue(bodyAsValue, UNKNOWN, toClosure(valueProvider));
+		return extractValue(bodyAsValue, ContentType.UNKNOWN, toClosure(valueProvider));
 	}
 
 	public static Object extractValue(GString bodyAsValue, Closure valueProvider) {
-		return extractValue(bodyAsValue, UNKNOWN, valueProvider);
+		return extractValue(bodyAsValue, ContentType.UNKNOWN, valueProvider);
 	}
 
 	private static String extractValueForText(GString bodyAsValue, Closure valueProvider) {
@@ -279,7 +275,7 @@ public class ContentUtils {
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
 			Object result = valueProvider.call(values[i]);
-			transformed[i] = result == null ? null : result.toString();
+			transformed[i] = (result != null) ? result.toString() : null;
 		}
 		GString transformedString = new GStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 		return transformedString.toString();
@@ -290,7 +286,7 @@ public class ContentUtils {
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
 			Object result = transformJSONStringValue(values[i], valueProvider);
-			transformed[i] = result == null ? null : result.toString();
+			transformed[i] = (result != null) ? result.toString() : null;
 		}
 		GString transformedString = new GStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 		Object parsedJson = new JsonSlurper().parseText(transformedString.toString().replace("\\", "\\\\"));
@@ -349,9 +345,9 @@ public class ContentUtils {
 	private static @Nullable String transformXMLStringValue(Object obj, Closure valueProvider) {
 		if (obj instanceof DslProperty) {
 			Object result = transformJSONStringValue((DslProperty) obj, valueProvider);
-			return result == null ? null : result.toString();
+			return (result != null) ? result.toString() : null;
 		}
-		return escapeXml11(unescapeXml(obj.toString()));
+		return StringEscapeUtils.escapeXml11(StringEscapeUtils.unescapeXml(obj.toString()));
 	}
 
 	private static @Nullable String transformXMLStringValue(DslProperty dslProperty, Closure valueProvider) {
@@ -384,7 +380,7 @@ public class ContentUtils {
 
 	/**
 	 * <p>
-	 * If you wonder why there is val[1] without null-check then take a look at this:
+	 * If you wonder why there is val[1] without null-check then take a look at this.
 	 * </p>
 	 * <p>
 	 * Example:
@@ -439,12 +435,12 @@ public class ContentUtils {
 			.findFirst()
 			.orElse(null) : null;
 		Object closureResult = closure.call(header);
-		String content = closureResult == null ? null : closureResult.toString();
+		String content = (closureResult != null) ? closureResult.toString() : null;
 		if (content != null && content.contains("json")) {
-			return JSON;
+			return ContentType.JSON;
 		}
 		if (content != null && content.contains("xml")) {
-			return XML;
+			return ContentType.XML;
 		}
 		if (content != null && content.contains("text")) {
 			return ContentType.TEXT;
@@ -453,18 +449,18 @@ public class ContentUtils {
 			return ContentType.FORM;
 		}
 		if (content != null && content.contains("octet-stream")) {
-			return UNKNOWN;
+			return ContentType.UNKNOWN;
 		}
 		if (content != null && !content.isEmpty() && isNotTemplate(content)) {
-			return DEFINED;
+			return ContentType.DEFINED;
 		}
-		return UNKNOWN;
+		return ContentType.UNKNOWN;
 	}
 
 	public static ContentType recognizeContentTypeFromHeader(@Nullable Headers headers) {
 		return recognizeContentTypeFromHeader(headers, new Closure<Object>(null) {
 			public @Nullable Object doCall(Object header) {
-				return header == null ? null : ((Header) header).getClientValue();
+				return (header != null) ? ((Header) header).getClientValue() : null;
 			}
 		});
 	}
@@ -472,7 +468,7 @@ public class ContentUtils {
 	public static ContentType recognizeContentTypeFromTestHeader(Headers headers) {
 		return recognizeContentTypeFromHeader(headers, new Closure<Object>(null) {
 			public @Nullable Object doCall(Object header) {
-				return header == null ? null : ((Header) header).getServerValue();
+				return (header != null) ? ((Header) header).getServerValue() : null;
 			}
 		});
 	}
@@ -490,36 +486,36 @@ public class ContentUtils {
 
 	public static ContentType recognizeContentTypeFromContent(GString gstring) {
 		if (isJsonType(gstring)) {
-			return JSON;
+			return ContentType.JSON;
 		}
 		if (isXmlType(gstring)) {
-			return XML;
+			return ContentType.XML;
 		}
-		return UNKNOWN;
+		return ContentType.UNKNOWN;
 	}
 
 	public static ContentType recognizeContentTypeFromContent(Map jsonMap) {
-		return JSON;
+		return ContentType.JSON;
 	}
 
 	public static ContentType recognizeContentTypeFromContent(byte[] bytes) {
-		return UNKNOWN;
+		return ContentType.UNKNOWN;
 	}
 
 	public static ContentType recognizeContentTypeFromContent(List jsonList) {
-		return JSON;
+		return ContentType.JSON;
 	}
 
 	public static ContentType recognizeContentTypeFromContent(String string) {
 		try {
 			new JsonSlurper().parseText(string);
-			return JSON;
+			return ContentType.JSON;
 		}
 		catch (Exception ignored) {
 			if (isXmlType(new GStringImpl(new Object[] { string }, new String[] { "", "" }))) {
-				return XML;
+				return ContentType.XML;
 			}
-			return UNKNOWN;
+			return ContentType.UNKNOWN;
 		}
 	}
 
@@ -531,10 +527,10 @@ public class ContentUtils {
 		if (object instanceof FromFileProperty) {
 			FromFileProperty property = (FromFileProperty) object;
 			if (property.isJson()) {
-				return JSON;
+				return ContentType.JSON;
 			}
 			else if (property.isXml()) {
-				return XML;
+				return ContentType.XML;
 			}
 			object = property.isByte() ? property.asBytes() : property.asString();
 		}
@@ -556,7 +552,7 @@ public class ContentUtils {
 		else if (object instanceof Number) {
 			return recognizeContentTypeFromContent((Number) object);
 		}
-		return UNKNOWN;
+		return ContentType.UNKNOWN;
 	}
 
 	public static boolean isJsonType(GString gstring) {
@@ -568,14 +564,14 @@ public class ContentUtils {
 		for (int i = 0; i < values.length; i++) {
 			Object it = values[i];
 			transformed[i] = (it instanceof String || it instanceof GString) ? it.toString()
-					: escapeJson(it.toString());
+					: StringEscapeUtils.escapeJson(it.toString());
 		}
 		GString stringWithoutValues = new GStringImpl(transformed, (String[]) CloneUtils.clone(gstring.getStrings()));
 		try {
 			new JsonSlurper().parseText(stringWithoutValues.toString());
 			return true;
 		}
-		catch (JsonException e) {
+		catch (JsonException ex) {
 			// Not JSON
 		}
 		return false;
@@ -587,7 +583,7 @@ public class ContentUtils {
 		for (int i = 0; i < values.length; i++) {
 			Object it = values[i];
 			transformed[i] = (it instanceof String || it instanceof GString) ? it.toString()
-					: escapeXml11(it.toString());
+					: StringEscapeUtils.escapeXml11(it.toString());
 		}
 		GString stringWithoutValues = new GStringImpl(transformed, (String[]) CloneUtils.clone(gString.getStrings()));
 		try {
@@ -603,11 +599,11 @@ public class ContentUtils {
 	public static ContentType recognizeContentTypeFromMatchingStrategy(MatchingStrategy.Type type) {
 		switch (type) {
 			case EQUAL_TO_XML:
-				return XML;
+				return ContentType.XML;
 			case EQUAL_TO_JSON:
-				return JSON;
+				return ContentType.JSON;
 			default:
-				return UNKNOWN;
+				return ContentType.UNKNOWN;
 		}
 	}
 
@@ -639,16 +635,16 @@ public class ContentUtils {
 
 	public static String getJavaMultipartFileParameterContent(String propertyName, NamedProperty propertyValue,
 			Closure<String> bytesFromFile) {
-		return "\"" + escapeJava(propertyName) + "\", " + namedPropertyName(propertyValue, "\"") + ", "
-				+ javaNamedPropertyValue(propertyValue, "\"", bytesFromFile)
+		return "\"" + StringEscapeUtils.escapeJava(propertyName) + "\", " + namedPropertyName(propertyValue, "\"")
+				+ ", " + javaNamedPropertyValue(propertyValue, "\"", bytesFromFile)
 				+ namedContentTypeNameIfPresent(propertyValue, "\"");
 	}
 
 	public static String namedPropertyName(NamedProperty property, String quote) {
 		DslProperty name = Objects.requireNonNull(property.getName());
 		Object serverValue = name.getServerValue();
-		return serverValue instanceof ExecutionProperty ? serverValue.toString()
-				: quote + escapeJava(Objects.requireNonNull(serverValue).toString()) + quote;
+		return (serverValue instanceof ExecutionProperty) ? serverValue.toString()
+				: quote + StringEscapeUtils.escapeJava(Objects.requireNonNull(serverValue).toString()) + quote;
 	}
 
 	public static String namedContentTypeNameIfPresent(NamedProperty property, String quote) {
@@ -657,8 +653,8 @@ public class ContentUtils {
 			return "";
 		}
 		Object serverValue = contentTypeProperty.getServerValue();
-		String contentType = serverValue instanceof ExecutionProperty ? serverValue.toString()
-				: quote + escapeJava(Objects.requireNonNull(serverValue).toString()) + quote;
+		String contentType = (serverValue instanceof ExecutionProperty) ? serverValue.toString()
+				: quote + StringEscapeUtils.escapeJava(Objects.requireNonNull(serverValue).toString()) + quote;
 		return ", " + contentType;
 	}
 
@@ -679,7 +675,7 @@ public class ContentUtils {
 			}
 			return "[" + joinBytes(fromFileProperty.asBytes()) + "] as byte[]";
 		}
-		return quote + escapeJava(Objects.requireNonNull(serverValue).toString()) + quote + ".bytes";
+		return quote + StringEscapeUtils.escapeJava(Objects.requireNonNull(serverValue).toString()) + quote + ".bytes";
 	}
 
 	public static String javaNamedPropertyValue(NamedProperty property, String quote, Closure<String> bytesFromFile) {
@@ -699,7 +695,8 @@ public class ContentUtils {
 			}
 			return "new byte[] {" + joinBytes(fromFileProperty.asBytes()) + "}";
 		}
-		return quote + escapeJava(Objects.requireNonNull(serverValue).toString()) + quote + ".getBytes()";
+		return quote + StringEscapeUtils.escapeJava(Objects.requireNonNull(serverValue).toString()) + quote
+				+ ".getBytes()";
 	}
 
 	private static String joinBytes(byte[] bytes) {
@@ -715,7 +712,7 @@ public class ContentUtils {
 
 	public static ContentType evaluateClientSideContentType(@Nullable Headers contractHeaders, @Nullable Object body) {
 		ContentType contentType = recognizeContentTypeFromHeader(contractHeaders);
-		if (UNKNOWN == contentType) {
+		if (ContentType.UNKNOWN == contentType) {
 			contentType = recognizeContentTypeFromContent(body);
 		}
 		return contentType;
@@ -723,7 +720,7 @@ public class ContentUtils {
 
 	public static ContentType evaluateServerSideContentType(Headers contractHeaders, Object body) {
 		ContentType contentType = recognizeContentTypeFromTestHeader(contractHeaders);
-		if (UNKNOWN == contentType) {
+		if (ContentType.UNKNOWN == contentType) {
 			contentType = recognizeContentTypeFromContent(body);
 		}
 		return contentType;
@@ -731,7 +728,7 @@ public class ContentUtils {
 
 	/**
 	 * Creates new {@link XmlSlurper} with default error handler.
-	 * @return XmlSlurper with default error handler
+	 * @return the {@link XmlSlurper} with default error handler
 	 */
 	public static XmlSlurper getXmlSlurperWithDefaultErrorHandler() {
 		try {

@@ -45,11 +45,10 @@ class MessagingHeadersThen implements Then, BodyMethodVisitor {
 		endBodyBlock(this.blockBuilder);
 		startBodyBlock(this.blockBuilder, "and:");
 		OutputMessage outputMessage = Objects.requireNonNull(singleContractMetadata.getContract().getOutputMessage());
-		Objects.requireNonNull(outputMessage.getHeaders()).executeForEachHeader((header) -> {
-			processHeaderElement(header.getName(),
-					header.getServerValue() instanceof NotToEscapePattern ? header.getServerValue()
-							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue())));
-		});
+		Objects.requireNonNull(outputMessage.getHeaders())
+			.executeForEachHeader((header) -> processHeaderElement(header.getName(),
+					(header.getServerValue() instanceof NotToEscapePattern) ? header.getServerValue()
+							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue()))));
 		return this;
 	}
 
@@ -81,19 +80,19 @@ class MessagingHeadersThen implements Then, BodyMethodVisitor {
 
 	private void processHeaderElement(String property, Number value) {
 		appendLineWithHeaderNotNull(property);
-		blockBuilder
+		this.blockBuilder
 			.addLineWithEnding(this.comparisonBuilder.assertThat("response.getHeader(\"" + property + "\")", value));
 	}
 
 	private void processHeaderElement(String property, Pattern pattern) {
 		appendLineWithHeaderNotNull(property);
-		blockBuilder.addLineWithEnding(
+		this.blockBuilder.addLineWithEnding(
 				this.comparisonBuilder.assertThat("response.getHeader(\"" + property + "\").toString()", pattern));
 	}
 
 	private void processHeaderElement(String property, ExecutionProperty exec) {
 		appendLineWithHeaderNotNull(property);
-		blockBuilder.addLineWithEnding(exec.insertValue("response.getHeader(\"" + property + "\").toString()"));
+		this.blockBuilder.addLineWithEnding(exec.insertValue("response.getHeader(\"" + property + "\").toString()"));
 	}
 
 	@Override

@@ -53,8 +53,8 @@ class XmlMethodBodyBuilderTests {
 
 	@BeforeEach
 	void setup() {
-		properties = new ContractVerifierConfigProperties();
-		properties.setAssertJsonSize(true);
+		this.properties = new ContractVerifierConfigProperties();
+		this.properties.setAssertJsonSize(true);
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
@@ -75,7 +75,7 @@ class XmlMethodBodyBuilderTests {
 					}
 				});
 			}
-		}.buildClass(properties, List.of(contractMetadata(contractDsl)), "foo", generatedClassData);
+		}.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {
@@ -227,10 +227,10 @@ class XmlMethodBodyBuilderTests {
 
 	private void applyMethodBuilder(TestFramework framework, TestMode mode) {
 		if (framework != null) {
-			properties.setTestFramework(framework);
+			this.properties.setTestFramework(framework);
 		}
 		if (mode != null) {
-			properties.setTestMode(mode);
+			this.properties.setTestMode(mode);
 		}
 	}
 
@@ -354,7 +354,7 @@ class XmlMethodBodyBuilderTests {
 				response.bodyMatchers((matchers) -> matchers.xPath("/test/duck/text()", matchers.byType()));
 			});
 		});
-		properties.setTestMode(TestMode.MOCKMVC);
+		this.properties.setTestMode(TestMode.MOCKMVC);
 		assertThatThrownBy(() -> singleTestGenerator(contractDsl)).isInstanceOf(UnsupportedOperationException.class);
 	}
 

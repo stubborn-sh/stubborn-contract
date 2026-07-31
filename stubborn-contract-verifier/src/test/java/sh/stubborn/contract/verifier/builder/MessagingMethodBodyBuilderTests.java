@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.builder;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
-
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -49,17 +48,18 @@ class MessagingMethodBodyBuilderTests {
 
 	@BeforeEach
 	void setup() throws URISyntaxException {
-		properties = new ContractVerifierConfigProperties();
-		properties.setAssertJsonSize(true);
+		this.properties = new ContractVerifierConfigProperties();
+		this.properties.setAssertJsonSize(true);
 		File resourceDir = new File(MessagingMethodBodyBuilderTests.class.getResource(".").toURI());
-		properties.setGeneratedTestSourcesDir(resourceDir);
-		properties.setGeneratedTestResourcesDir(resourceDir);
-		generatedClassData = new SingleTestGenerator.GeneratedClassData("foo", "com.example", resourceDir.toPath());
+		this.properties.setGeneratedTestSourcesDir(resourceDir);
+		this.properties.setGeneratedTestResourcesDir(resourceDir);
+		this.generatedClassData = new SingleTestGenerator.GeneratedClassData("foo", "com.example",
+				resourceDir.toPath());
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
-		return new JavaTestGenerator().buildClass(properties, List.of(contractMetadata(contractDsl)), "foo",
-				generatedClassData);
+		return new JavaTestGenerator().buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo",
+				this.generatedClassData);
 	}
 
 	private Contract contractFromGroovy(String groovyDsl) {
@@ -85,7 +85,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\toutputMessage {\n" + "\t\tsentTo('activemq:output')\n" + "\t\tbody('{ \"bookName\" : \"foo\" }')\n"
 				+ "\t\theaders {\n" + "\t\t\theader('BOOK-NAME', 'foo')\n"
 				+ "\t\t\tmessagingContentType(applicationJson())\n" + "\t\t}\n" + "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -125,7 +125,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\toutputMessage {\n" + "\t\tsentTo('activemq:output')\n" + "\t\tbody('{ \"bookName\" : \"foo\" }')\n"
 				+ "\t\theaders {\n" + "\t\t\theader('BOOK-NAME', 'foo')\n"
 				+ "\t\t\tmessagingContentType(applicationJson())\n" + "\t\t}\n" + "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -167,7 +167,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\t\theader('processId', value(producer(regex('[0-9]+')), consumer('123')))\n" + "\t\t}\n"
 				+ "\t\tbody([\n" + "\t\t\teventId: value(producer(regex('[0-9]+')), consumer('1'))\n" + "\t\t])\n"
 				+ "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -207,7 +207,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\t\theader('processId', value(producer(regex('\\\\d+')), consumer('123')))\n" + "\t\t}\n"
 				+ "\t\tbody([\n" + "\t\t\teventId: value(producer(regex('\\\\d+')), consumer('1'))\n" + "\t\t])\n"
 				+ "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -242,7 +242,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\t\tnonBlankString   : $(anyNonBlankString()),\n"
 				+ "\t\t\tnonEmptyString   : $(anyNonEmptyString()),\n"
 				+ "\t\t\tanyOf            : $(anyOf('foo', 'bar'))\n" + "\t\t])\n" + "\t}\n" + "}");
-		methodBuilder.accept(properties);
+		methodBuilder.accept(this.properties);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -289,7 +289,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\t\theader('processId', value(producer(regex(nonEmpty())), consumer('123')))\n" + "\t\t}\n"
 				+ "\t\tbody([\n" + "\t\t\teventId: value(producer(regex(nonEmpty())), consumer('1'))\n" + "\t\t])\n"
 				+ "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -313,7 +313,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\t\theader('processId', value(producer(regex('[0-9]+')), consumer('123')))\n" + "\t\t}\n"
 				+ "\t\tbody([\n" + "\t\t\teventId: value(producer(regex('[0-9]+')), consumer('1'))\n" + "\t\t])\n"
 				+ "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -352,7 +352,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\t\theader('processId', value(producer(regex(nonEmpty())), consumer('123')))\n" + "\t\t}\n"
 				+ "\t\tbody([\n" + "\t\t\teventId: value(producer(regex(nonEmpty())), consumer('1'))\n" + "\t\t])\n"
 				+ "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -392,7 +392,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\theaders {\n" + "\t\t\theader('processId', value(producer(regex('[0-9]+')), consumer('123')))\n"
 				+ "\t\t}\n" + "\t\tbody([\n" + "\t\t\teventId: value(producer(regex('[0-9]+')), consumer('1'))\n"
 				+ "\t\t])\n" + "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -432,7 +432,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\theaders {\n" + "\t\t\theader('processId', value(producer(regex('[0-9]+')), consumer('123')))\n"
 				+ "\t\t}\n" + "\t\tbody([\n" + "\t\t\teventId: value(producer(regex('[0-9]+')), consumer('1'))\n"
 				+ "\t\t])\n" + "\t}\n" + "}");
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 
 		String test = singleTestGenerator(contractDsl);
 
@@ -532,7 +532,7 @@ class MessagingMethodBodyBuilderTests {
 				+ "\t\t\t\"field\": \"value\"\n" + "\t\t])\n" + "\t\theaders {\n"
 				+ "\t\t\theader('Authorization', value(regex('Bearer [A-Za-z0-9\\\\-\\\\._~\\\\+\\\\/]+=*')))\n"
 				+ "\t\t}\n" + "\t}\n" + "}");
-		methodBuilder.accept(properties);
+		methodBuilder.accept(this.properties);
 
 		String test = singleTestGenerator(contractDsl);
 

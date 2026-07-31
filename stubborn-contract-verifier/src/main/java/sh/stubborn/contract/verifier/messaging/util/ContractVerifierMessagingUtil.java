@@ -35,6 +35,7 @@ public final class ContractVerifierMessagingUtil {
 	}
 
 	/**
+	 * Creates a builder for headers.
 	 * @return a builder for headers
 	 */
 	public static ContractVerifierHeaders headers() {

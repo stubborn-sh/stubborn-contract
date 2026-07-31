@@ -48,6 +48,7 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 	private final String hostAndPort;
 
 	/**
+	 * Creates a new verifier for the given host and port.
 	 * @param hostAndPort - don't pass the scheme, it will be resolved from
 	 * {@link Request#scheme()}. E.g. pass {@code localhost:1234}.
 	 */
@@ -123,7 +124,7 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 					res.headers().values("Set-Cookie").stream().flatMap((s) -> Arrays.stream(s.split(";"))).map((s) -> {
 						String[] singleCookie = s.split("=");
 						return new AbstractMap.SimpleEntry<>(singleCookie[0],
-								singleCookie.length > 1 ? singleCookie[1] : "");
+								(singleCookie.length > 1) ? singleCookie[1] : "");
 					})
 						.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue,
 								(a, b) -> a, HashMap::new)))

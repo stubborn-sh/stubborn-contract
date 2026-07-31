@@ -23,7 +23,6 @@ import java.util.Optional;
 import org.apache.commons.text.StringEscapeUtils;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.MatchingType;
-
 import sh.stubborn.contract.verifier.util.CloneUtils;
 
 /**

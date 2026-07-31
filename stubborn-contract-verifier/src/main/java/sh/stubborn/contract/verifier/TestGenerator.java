@@ -19,12 +19,13 @@ package sh.stubborn.contract.verifier;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -38,17 +39,11 @@ import sh.stubborn.contract.verifier.builder.SingleTestGenerator;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.file.ContractFileScanner;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-
-import java.util.ServiceLoader;
-
-import static sh.stubborn.contract.verifier.util.NamesUtil.afterLast;
-import static sh.stubborn.contract.verifier.util.NamesUtil.beforeLast;
-import static sh.stubborn.contract.verifier.util.NamesUtil.convertIllegalPackageChars;
-import static sh.stubborn.contract.verifier.util.NamesUtil.directoryToPackage;
-import static sh.stubborn.contract.verifier.util.NamesUtil.recrusiveDirectoryToPackage;
-import static sh.stubborn.contract.verifier.util.NamesUtil.toLastDot;
+import sh.stubborn.contract.verifier.util.NamesUtil;
 
 /**
+ * Generates contract verifier tests.
+ *
  * @author Jakub Kubrynski, codearte.io
  */
 public class TestGenerator {
@@ -114,30 +109,30 @@ public class TestGenerator {
 
 	public int generate() {
 		generateTestClasses(basePackageName());
-		recrusiveDirectoryToPackage(configProperties.getGeneratedTestSourcesDir());
-		recrusiveDirectoryToPackage(configProperties.getGeneratedTestResourcesDir());
-		return counter.get();
+		NamesUtil.recrusiveDirectoryToPackage(this.configProperties.getGeneratedTestSourcesDir());
+		NamesUtil.recrusiveDirectoryToPackage(this.configProperties.getGeneratedTestResourcesDir());
+		return this.counter.get();
 	}
 
 	private String basePackageName() {
-		if (StringUtils.isNotEmpty(configProperties.getBasePackageForTests())) {
-			return configProperties.getBasePackageForTests();
+		if (StringUtils.isNotEmpty(this.configProperties.getBasePackageForTests())) {
+			return this.configProperties.getBasePackageForTests();
 		}
-		else if (StringUtils.isNotEmpty(configProperties.getBaseClassForTests())) {
-			return toLastDot(configProperties.getBaseClassForTests());
+		else if (StringUtils.isNotEmpty(this.configProperties.getBaseClassForTests())) {
+			return NamesUtil.toLastDot(this.configProperties.getBaseClassForTests());
 		}
-		else if (StringUtils.isNotEmpty(configProperties.getPackageWithBaseClasses())) {
-			return configProperties.getPackageWithBaseClasses();
+		else if (StringUtils.isNotEmpty(this.configProperties.getPackageWithBaseClasses())) {
+			return this.configProperties.getPackageWithBaseClasses();
 		}
 		return DEFAULT_TEST_PACKAGE;
 	}
 
 	void generateTestClasses(final String basePackageName) {
-		Map<Path, List<ContractMetadata>> contracts = contractFileScanner.findContractsRecursively();
+		Map<Path, List<ContractMetadata>> contracts = this.contractFileScanner.findContractsRecursively();
 		log.debug("Found the following contracts {}", contracts.keySet());
 
 		Set<Map.Entry<Path, List<ContractMetadata>>> inProgress = inProgress(contracts);
-		if (!inProgress.isEmpty() && configProperties.isFailOnInProgress()) {
+		if (!inProgress.isEmpty() && this.configProperties.isFailOnInProgress()) {
 			String inProgressContractsPaths = inProgress.stream()
 				.map(Map.Entry::getKey)
 				.map(Path::toString)
@@ -163,7 +158,7 @@ public class TestGenerator {
 	}
 
 	private String relativizeContractPath(Map.Entry<Path, List<ContractMetadata>> entry) {
-		Path relativePath = configProperties.getContractsDslDir().toPath().relativize(entry.getKey());
+		Path relativePath = this.configProperties.getContractsDslDir().toPath().relativize(entry.getKey());
 		return StringUtils.defaultIfEmpty(relativePath.toString(), DEFAULT_CLASS_PREFIX);
 	}
 
@@ -172,18 +167,19 @@ public class TestGenerator {
 		log.debug("Collected contracts with metadata {} relative path is [{}]", contracts,
 				includedDirectoryRelativePath);
 		if (!contracts.isEmpty()) {
-			String className = afterLast(includedDirectoryRelativePath, File.separator) + resolveNameSuffix();
-			String convertedClassName = ensureNameDoesNotStartWithNumber(convertIllegalPackageChars(className));
+			String className = NamesUtil.afterLast(includedDirectoryRelativePath, File.separator) + resolveNameSuffix();
+			String convertedClassName = ensureNameDoesNotStartWithNumber(
+					NamesUtil.convertIllegalPackageChars(className));
 			String packageName = buildPackage(basePackageNameForClass, includedDirectoryRelativePath);
-			Path dir = saver.generateTestBaseDir(basePackageNameForClass,
-					convertIllegalPackageChars(includedDirectoryRelativePath));
-			Path classPath = saver.pathToClass(dir, convertedClassName);
-			byte[] classBytes = generator
-				.buildClass(configProperties, contracts, includedDirectoryRelativePath,
+			Path dir = this.saver.generateTestBaseDir(basePackageNameForClass,
+					NamesUtil.convertIllegalPackageChars(includedDirectoryRelativePath));
+			Path classPath = this.saver.pathToClass(dir, convertedClassName);
+			byte[] classBytes = this.generator
+				.buildClass(this.configProperties, contracts, includedDirectoryRelativePath,
 						new SingleTestGenerator.GeneratedClassData(convertedClassName, packageName, classPath))
 				.getBytes(StandardCharsets.UTF_8);
-			saver.saveClassFile(classPath, classBytes);
-			counter.incrementAndGet();
+			this.saver.saveClassFile(classPath, classBytes);
+			this.counter.incrementAndGet();
 		}
 	}
 
@@ -192,13 +188,14 @@ public class TestGenerator {
 	}
 
 	private String resolveNameSuffix() {
-		return StringUtils.defaultIfEmpty(configProperties.getNameSuffixForTests(),
-				configProperties.getTestFramework().getClassNameSuffix());
+		return StringUtils.defaultIfEmpty(this.configProperties.getNameSuffixForTests(),
+				this.configProperties.getTestFramework().getClassNameSuffix());
 	}
 
 	protected static String buildPackage(final String packageNameForClass, final String includedDirectoryRelativePath) {
-		String directory = beforeLast(includedDirectoryRelativePath, File.separator);
-		String convertedPackage = packageNameForClass + "." + directoryToPackage(convertIllegalPackageChars(directory));
+		String directory = NamesUtil.beforeLast(includedDirectoryRelativePath, File.separator);
+		String convertedPackage = packageNameForClass + "."
+				+ NamesUtil.directoryToPackage(NamesUtil.convertIllegalPackageChars(directory));
 		return !directory.isEmpty() ? convertedPackage : packageNameForClass;
 	}
 

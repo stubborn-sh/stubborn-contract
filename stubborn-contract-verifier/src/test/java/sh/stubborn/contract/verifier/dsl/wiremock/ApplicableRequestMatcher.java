@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-present the original author or authors.
+ * Copyright 2020-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,23 @@
 
 package sh.stubborn.contract.verifier.dsl.wiremock;
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import java.util.List;
 
-/**
- * Builds a WireMock {@link StubMapping} from a mapping definition.
- *
- * @author Marcin Grzejszczak
- */
-public final class WireMockStubMapping {
+import com.github.tomakehurst.wiremock.extension.Parameters;
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.matching.MatchResult;
+import sh.stubborn.contract.verifier.converter.YamlContract;
 
-	private WireMockStubMapping() {
-		throw new IllegalStateException("Can't instantiate a utility class");
+class ApplicableRequestMatcher implements RequestMatcher {
+
+	@Override
+	public MatchResult match(List<YamlContract> contracts, Request request, Parameters parameters) {
+		return MatchResult.of(true);
 	}
 
-	public static StubMapping buildFrom(String mappingDefinition) {
-		return StubMapping.buildFrom(mappingDefinition);
+	@Override
+	public boolean isApplicable(String tool) {
+		return true;
 	}
 
 }

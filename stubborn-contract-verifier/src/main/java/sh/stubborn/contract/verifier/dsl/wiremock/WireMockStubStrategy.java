@@ -29,6 +29,7 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 /**
  * Converts a {@link ContractMetadata} into a WireMock {@link StubMapping}.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class WireMockStubStrategy {
@@ -61,28 +62,29 @@ public class WireMockStubStrategy {
 
 	/**
 	 * Converts {@link ContractMetadata} to {@link StubMapping}.
+	 * @return the built WireMock stub mapping, or {@code null} when it cannot be built
 	 */
 	public @Nullable StubMapping toWireMockClientStub() {
 		StubMapping stubMapping = new StubMapping();
-		RequestPattern request = wireMockRequestStubStrategy.buildClientRequestContent();
-		ResponseDefinition response = wireMockResponseStubStrategy.buildClientResponseContent();
-		if (priority != null) {
-			stubMapping.setPriority(priority);
+		RequestPattern request = this.wireMockRequestStubStrategy.buildClientRequestContent();
+		ResponseDefinition response = this.wireMockResponseStubStrategy.buildClientResponseContent();
+		if (this.priority != null) {
+			stubMapping.setPriority(this.priority);
 		}
 		stubMapping.setRequest(request);
 		stubMapping.setResponse(response);
 		if (request == null || response == null) {
 			return null;
 		}
-		if (groovyDsl.getIgnored() || contract.getIgnored()) {
+		if (this.groovyDsl.getIgnored() || this.contract.getIgnored()) {
 			return null;
 		}
-		if (contract.getOrder() != null) {
-			stubMapping.setScenarioName("Scenario_" + rootName);
-			stubMapping
-				.setRequiredScenarioState(contract.getOrder() == 0 ? STEP_START : STEP_PREFIX + contract.getOrder());
-			if (contract.getOrder() < contract.getGroupSize() - 1) {
-				stubMapping.setNewScenarioState(STEP_PREFIX + (contract.getOrder() + 1));
+		if (this.contract.getOrder() != null) {
+			stubMapping.setScenarioName("Scenario_" + this.rootName);
+			stubMapping.setRequiredScenarioState(
+					(this.contract.getOrder() == 0) ? STEP_START : STEP_PREFIX + this.contract.getOrder());
+			if (this.contract.getOrder() < this.contract.getGroupSize() - 1) {
+				stubMapping.setNewScenarioState(STEP_PREFIX + (this.contract.getOrder() + 1));
 			}
 		}
 		return stubMapping;

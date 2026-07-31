@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.messaging.kafka;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.messaging.avro.AvroMetadata;
 import sh.stubborn.contract.verifier.util.MetadataUtil;

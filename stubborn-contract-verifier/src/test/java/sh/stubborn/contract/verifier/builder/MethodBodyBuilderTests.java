@@ -33,13 +33,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.RegexPatterns;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubVerifier;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.spec.internal.RegexPatterns;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 import sh.stubborn.contract.verifier.util.SyntaxChecker;
 
@@ -54,11 +54,12 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 	@BeforeEach
 	void setup() throws URISyntaxException {
 		File resourceDir = new File(MethodBodyBuilderTests.class.getResource(".").toURI());
-		properties = new ContractVerifierConfigProperties();
-		properties.setAssertJsonSize(true);
-		properties.setGeneratedTestSourcesDir(resourceDir);
-		properties.setGeneratedTestResourcesDir(resourceDir);
-		generatedClassData = new SingleTestGenerator.GeneratedClassData("foo", "com.example", resourceDir.toPath());
+		this.properties = new ContractVerifierConfigProperties();
+		this.properties.setAssertJsonSize(true);
+		this.properties.setGeneratedTestSourcesDir(resourceDir);
+		this.properties.setGeneratedTestResourcesDir(resourceDir);
+		this.generatedClassData = new SingleTestGenerator.GeneratedClassData("foo", "com.example",
+				resourceDir.toPath());
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
@@ -79,7 +80,8 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 					}
 				});
 			}
-		}.buildClass(properties, Collections.singletonList(contractMetadata(contractDsl)), "foo", generatedClassData);
+		}.buildClass(this.properties, Collections.singletonList(contractMetadata(contractDsl)), "foo",
+				this.generatedClassData);
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {
@@ -127,10 +129,10 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 
 	private void applyBuilder(TestFramework framework, TestMode mode) {
 		if (framework != null) {
-			properties.setTestFramework(framework);
+			this.properties.setTestFramework(framework);
 		}
 		if (mode != null) {
-			properties.setTestMode(mode);
+			this.properties.setTestMode(mode);
 		}
 	}
 
@@ -207,9 +209,8 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 			Contract contractDsl = Contract.make((c) -> {
 				c.request((r) -> {
 					r.method("GET");
-					r.urlPath("/v1/users", (up) -> {
-						up.queryParameters((qp) -> qp.parameter("userId", r.value(r.regex(r.nonBlank()))));
-					});
+					r.urlPath("/v1/users",
+							(up) -> up.queryParameters((qp) -> qp.parameter("userId", r.value(r.regex(r.nonBlank())))));
 				});
 				c.response((resp) -> {
 					resp.status(200);
@@ -698,9 +699,8 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 					"Given: A new toy request is submitted\nWhen: I receive the response\nThen: I would receive the toy specs");
 			c.request((r) -> {
 				r.method("GET");
-				r.urlPath("/toys", (up) -> {
-					up.queryParameters((qp) -> qp.parameter("uuid", "d4d724c4-e36e-4fd2-9baa-af7f5df17399"));
-				});
+				r.urlPath("/toys", (up) -> up
+					.queryParameters((qp) -> qp.parameter("uuid", "d4d724c4-e36e-4fd2-9baa-af7f5df17399")));
 			});
 			c.response((resp) -> {
 				resp.status(200);
@@ -981,9 +981,8 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 		Contract contractDsl = Contract.make((c) -> {
 			c.request((r) -> {
 				r.method("POST");
-				r.urlPath("/rest/something", (up) -> {
-					up.queryParameters((qp) -> qp.parameter("quote", r.equalTo("\"")));
-				});
+				r.urlPath("/rest/something",
+						(up) -> up.queryParameters((qp) -> qp.parameter("quote", r.equalTo("\""))));
 			});
 			c.response((resp) -> resp.status(resp.OK()));
 		});
@@ -1002,10 +1001,8 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 		Contract contractDsl = Contract.make((c) -> {
 			c.request((r) -> {
 				r.method("POST");
-				r.urlPath("/rest/something", (up) -> {
-					up.queryParameters((qp) -> qp.parameter("someHashCode",
-							r.$(r.consumer(r.regex(r.anInteger())), r.producer(r.execute("hashCode()")))));
-				});
+				r.urlPath("/rest/something", (up) -> up.queryParameters((qp) -> qp.parameter("someHashCode",
+						r.$(r.consumer(r.regex(r.anInteger())), r.producer(r.execute("hashCode()"))))));
 			});
 			c.response((resp) -> resp.status(resp.OK()));
 		});

@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.builder;
 
 import org.jspecify.annotations.Nullable;
-
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 
 interface DefaultBaseClassProvider {

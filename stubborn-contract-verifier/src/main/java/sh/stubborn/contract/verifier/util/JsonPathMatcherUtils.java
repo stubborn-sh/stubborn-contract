@@ -84,7 +84,7 @@ public final class JsonPathMatcherUtils {
 	 * For the given matcher converts it into a JSON path that checks the regex pattern or
 	 * equality.
 	 * @param bodyMatcher the body matcher
-	 * @return JSON path that checks the regex for its last element
+	 * @return the JSON path that checks the regex for its last element
 	 */
 	public static String convertJsonPathAndRegexToAJsonPath(BodyMatcher bodyMatcher) {
 		return convertJsonPathAndRegexToAJsonPath(bodyMatcher, null);
@@ -95,7 +95,7 @@ public final class JsonPathMatcherUtils {
 	 * equality.
 	 * @param bodyMatcher the body matcher
 	 * @param body the body to read from (required for EQUALITY matching)
-	 * @return JSON path that checks the regex for its last element
+	 * @return the JSON path that checks the regex for its last element
 	 */
 	public static String convertJsonPathAndRegexToAJsonPath(BodyMatcher bodyMatcher, @Nullable Object body) {
 		String path = bodyMatcher.path();
@@ -105,9 +105,9 @@ public final class JsonPathMatcherUtils {
 			return path;
 		}
 		int lastDotIndex = findLastDotIndex(path);
-		String toLastDot = lastDotIndex == -1 ? "$" : path.substring(0, lastDotIndex);
+		String toLastDot = (lastDotIndex == -1) ? "$" : path.substring(0, lastDotIndex);
 		String fromLastDot = path.substring(lastDotIndex + 1);
-		String propertyName = lastDotIndex == -1 ? "@" : "@." + fromLastDot;
+		String propertyName = (lastDotIndex == -1) ? "@" : "@." + fromLastDot;
 		String comparison = createComparison(propertyName, bodyMatcher, value, body);
 		return toLastDot + "[?(" + comparison + ")]";
 	}
@@ -300,7 +300,7 @@ public final class JsonPathMatcherUtils {
 		try {
 			Object convertedBody = MapConverter.transformValues(body, JsonPathMatcherUtils::generatedValueIfNeeded);
 			Object retrievedValue = JsonPath.parse(convertedBody).read(bodyMatcher.path());
-			String wrappedValue = retrievedValue instanceof Number ? retrievedValue.toString()
+			String wrappedValue = (retrievedValue instanceof Number) ? retrievedValue.toString()
 					: "'" + retrievedValue.toString() + "'";
 			return propertyName + " == " + wrappedValue;
 		}

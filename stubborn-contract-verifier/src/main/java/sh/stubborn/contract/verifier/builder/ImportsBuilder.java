@@ -31,70 +31,72 @@ class ImportsBuilder {
 	}
 
 	ImportsBuilder defaultImports() {
-		this.parentBuilder.imports(new DefaultImports(builder, metaData));
-		this.parentBuilder.staticImports(new DefaultStaticImports(builder));
+		this.parentBuilder.imports(new DefaultImports(this.builder, this.metaData));
+		this.parentBuilder.staticImports(new DefaultStaticImports(this.builder));
 		return this;
 	}
 
 	ImportsBuilder userImports() {
-		this.parentBuilder.imports(new UserImports(builder, metaData));
-		this.parentBuilder.staticImports(new UserStaticImports(builder, metaData));
+		this.parentBuilder.imports(new UserImports(this.builder, this.metaData));
+		this.parentBuilder.staticImports(new UserStaticImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder customMode() {
-		this.parentBuilder.imports(new CustomModeImports(builder, metaData));
-		this.parentBuilder.staticImports(new CustomModeStaticImports(builder, metaData));
+		this.parentBuilder.imports(new CustomModeImports(this.builder, this.metaData));
+		this.parentBuilder.staticImports(new CustomModeStaticImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder json() {
-		this.parentBuilder.imports(new JsonPathImports(builder, metaData));
-		this.parentBuilder.staticImports(new DefaultJsonStaticImports(builder, metaData));
+		this.parentBuilder.imports(new JsonPathImports(this.builder, this.metaData));
+		this.parentBuilder.staticImports(new DefaultJsonStaticImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder xml() {
-		this.parentBuilder.imports(new XmlImports(builder, metaData));
+		this.parentBuilder.imports(new XmlImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder jUnit5() {
-		this.parentBuilder.imports(new JUnit5Imports(builder, metaData), new JUnit5IgnoreImports(builder, metaData),
-				new JUnit5OrderImports(builder, metaData));
+		this.parentBuilder.imports(new JUnit5Imports(this.builder, this.metaData),
+				new JUnit5IgnoreImports(this.builder, this.metaData),
+				new JUnit5OrderImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder testNG() {
-		this.parentBuilder.imports(new TestNGImports(builder, metaData));
+		this.parentBuilder.imports(new TestNGImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder spock() {
-		this.parentBuilder.imports(new SpockImports(builder, metaData), new SpockIgnoreImports(builder, metaData),
-				new SpockOrderImports(builder, metaData));
+		this.parentBuilder.imports(new SpockImports(this.builder, this.metaData),
+				new SpockIgnoreImports(this.builder, this.metaData),
+				new SpockOrderImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder messaging() {
-		this.parentBuilder.imports(new MessagingImports(builder, metaData));
-		this.parentBuilder.staticImports(new MessagingStaticImports(builder, metaData));
+		this.parentBuilder.imports(new MessagingImports(this.builder, this.metaData));
+		this.parentBuilder.staticImports(new MessagingStaticImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder restAssured() {
-		this.parentBuilder.imports(new MockMvcRestAssuredImports(builder, metaData),
-				new ExplicitRestAssuredImports(builder, metaData),
-				new WebTestClientRestAssuredImports(builder, metaData));
-		this.parentBuilder.staticImports(new MockMvcRestAssuredStaticImports(builder, metaData),
-				new ExplicitRestAssuredStaticImports(builder, metaData),
-				new WebTestClientRestAssured3StaticImports(builder, metaData));
+		this.parentBuilder.imports(new MockMvcRestAssuredImports(this.builder, this.metaData),
+				new ExplicitRestAssuredImports(this.builder, this.metaData),
+				new WebTestClientRestAssuredImports(this.builder, this.metaData));
+		this.parentBuilder.staticImports(new MockMvcRestAssuredStaticImports(this.builder, this.metaData),
+				new ExplicitRestAssuredStaticImports(this.builder, this.metaData),
+				new WebTestClientRestAssured3StaticImports(this.builder, this.metaData));
 		return this;
 	}
 
 	ImportsBuilder jaxRs() {
-		this.parentBuilder.imports(new JaxRsImports(builder, metaData));
-		this.parentBuilder.staticImports(new JaxRsStaticImports(builder, metaData));
+		this.parentBuilder.imports(new JaxRsImports(this.builder, this.metaData));
+		this.parentBuilder.staticImports(new JaxRsStaticImports(this.builder, this.metaData));
 		return this;
 	}
 

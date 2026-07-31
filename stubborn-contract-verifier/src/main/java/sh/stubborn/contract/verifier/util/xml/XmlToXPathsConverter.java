@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,6 +37,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -54,15 +56,17 @@ import sh.stubborn.contract.spec.internal.MatchingType;
 import sh.stubborn.contract.spec.internal.MatchingTypeValue;
 import sh.stubborn.contract.spec.internal.PathBodyMatcher;
 
-import static java.util.stream.Collectors.toList;
-import static javax.xml.xpath.XPathConstants.NODESET;
-
 /**
+ * Converts XML into a collection of XPath expressions.
+ *
  * @author Olga Maciaszek-Sharma
  * @author Chris Bono
  * @since 2.1.0
  */
 public class XmlToXPathsConverter {
+
+	private XmlToXPathsConverter() {
+	}
 
 	public static Object removeMatchingXPaths(Object body, @Nullable BodyMatchers bodyMatchers) {
 		try {
@@ -77,7 +81,7 @@ public class XmlToXPathsConverter {
 			List<BodyMatcher> matchers = (bodyMatchers != null) ? bodyMatchers.matchers() : null;
 			if (matchers != null) {
 				for (BodyMatcher matcher : matchers) {
-					NodeList nodes = (NodeList) xPath.evaluate(matcher.path(), documentElement, NODESET);
+					NodeList nodes = (NodeList) xPath.evaluate(matcher.path(), documentElement, XPathConstants.NODESET);
 					for (int i = 0; i < nodes.getLength(); i++) {
 						removeNode(nodes.item(i));
 					}
@@ -104,6 +108,8 @@ public class XmlToXPathsConverter {
 	 * Reproduces Groovy truthiness for the values a {@link BodyMatcher} may hold: null,
 	 * an empty {@link CharSequence}/{@link Collection}/{@link Map}, a zero
 	 * {@link Number}, or {@link Boolean#FALSE} are all "falsy".
+	 * @param value value to inspect
+	 * @return {@code true} if the value is "falsy" by Groovy truthiness rules
 	 */
 	private static boolean isFalsy(@Nullable Object value) {
 		if (value == null) {
@@ -221,9 +227,9 @@ public class XmlToXPathsConverter {
 		for (List<Node> nodeList : nodeLists) {
 			List<Node> parentNodesList = nodeList.subList(1, nodeList.size());
 			int elementIndex = pathOccurrenceCounters.stream()
-				.filter(counter -> nodeNames(counter.path).equals(nodeNames(parentNodesList)))
+				.filter((counter) -> nodeNames(counter.path).equals(nodeNames(parentNodesList)))
 				.findFirst()
-				.map(counter -> ++counter.counter)
+				.map((counter) -> ++counter.counter)
 				.orElseGet(() -> {
 					PathOccurrenceCounter pathCounter = new PathOccurrenceCounter(parentNodesList);
 					pathOccurrenceCounters.add(pathCounter);
@@ -235,7 +241,7 @@ public class XmlToXPathsConverter {
 	}
 
 	private static List<String> nodeNames(List<Node> nodes) {
-		return nodes.stream().map(Node::getNodeName).collect(toList());
+		return nodes.stream().map(Node::getNodeName).collect(Collectors.toList());
 	}
 
 	public static String buildXPath(@Nullable List<Node> nodes) {
@@ -321,7 +327,7 @@ public class XmlToXPathsConverter {
 	}
 
 	private static XmlVerifiable processClosingNode(XmlVerifiable xmlVerifiable, Node node, int index) {
-		return index != 1 ? xmlVerifiable.index(index).text() : xmlVerifiable.text();
+		return (index != 1) ? xmlVerifiable.index(index).text() : xmlVerifiable.text();
 	}
 
 	private static XmlVerifiable processClosingNode(XmlVerifiable xmlVerifiable, Attr attribute, int index) {
@@ -365,7 +371,7 @@ public class XmlToXPathsConverter {
 
 	private static List<Node> getAttributesAsList(Node node) {
 		NamedNodeMap nodeMap = node.getAttributes();
-		return nodeMap != null ? getNodeCollectionElements(nodeMap) : new ArrayList<>();
+		return (nodeMap != null) ? getNodeCollectionElements(nodeMap) : new ArrayList<>();
 	}
 
 	private static List<Node> getNodeCollectionElements(NodeList nodeCollection) {
@@ -414,6 +420,10 @@ public class XmlToXPathsConverter {
 	 * Rethrows a checked exception without wrapping or declaring it, preserving the
 	 * original type for callers — matching the Groovy behaviour this class was ported
 	 * from (Groovy propagates checked exceptions unchecked).
+	 * @param <T> the throwable type inferred at the call site
+	 * @param ex the exception to rethrow
+	 * @return never returns normally; declared to allow {@code throw sneakyThrow(ex)}
+	 * @throws T the supplied exception, rethrown unchecked
 	 */
 	@SuppressWarnings("unchecked")
 	private static <T extends Throwable> RuntimeException sneakyThrow(Throwable ex) throws T {

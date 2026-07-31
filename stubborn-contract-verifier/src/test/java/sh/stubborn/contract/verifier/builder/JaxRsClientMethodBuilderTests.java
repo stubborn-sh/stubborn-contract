@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.io.File;
-
 import java.util.List;
 
 import com.jayway.jsonpath.DocumentContext;
@@ -52,21 +51,13 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 		c.request((r) -> {
 			r.method("GET");
 			r.url("/foo");
-			r.headers((h) -> {
-				h.header("Accept", "application/json");
-			});
-			r.cookies((cookies) -> {
-				cookies.cookie("cookie-key", "cookie-value");
-			});
+			r.headers((h) -> h.header("Accept", "application/json"));
+			r.cookies((cookies) -> cookies.cookie("cookie-key", "cookie-value"));
 		});
 		c.response((r) -> {
 			r.status(200);
-			r.headers((h) -> {
-				h.header("Content-Type", "application/json");
-			});
-			r.cookies((cookies) -> {
-				cookies.cookie("cookie-key", "new-cookie-value");
-			});
+			r.headers((h) -> h.header("Content-Type", "application/json"));
+			r.cookies((cookies) -> cookies.cookie("cookie-key", "new-cookie-value"));
 			r.body(java.util.Map.of("status", "OK"));
 		});
 	});
@@ -77,21 +68,13 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 		c.request((r) -> {
 			r.method("GET");
 			r.url("/foo");
-			r.headers((h) -> {
-				h.header("Accept", "application/json");
-			});
-			r.cookies((cookies) -> {
-				cookies.cookie("cookie-key", r.regex("[A-Za-z]+"));
-			});
+			r.headers((h) -> h.header("Accept", "application/json"));
+			r.cookies((cookies) -> cookies.cookie("cookie-key", r.regex("[A-Za-z]+")));
 		});
 		c.response((r) -> {
 			r.status(200);
-			r.headers((h) -> {
-				h.header("Content-Type", "application/json");
-			});
-			r.cookies((cookies) -> {
-				cookies.cookie("cookie-key", r.regex("[A-Za-z]+"));
-			});
+			r.headers((h) -> h.header("Content-Type", "application/json"));
+			r.cookies((cookies) -> cookies.cookie("cookie-key", r.regex("[A-Za-z]+")));
 			r.body(java.util.Map.of("status", "OK"));
 		});
 	});
@@ -100,9 +83,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 		c.request((r) -> {
 			r.method("GET");
 			r.url("/foo");
-			r.cookies((cookies) -> {
-				cookies.cookie("cookie-key", r.absent());
-			});
+			r.cookies((cookies) -> cookies.cookie("cookie-key", r.absent()));
 		});
 		c.response((r) -> {
 			r.status(200);
@@ -112,9 +93,9 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@BeforeEach
 	void setup() {
-		properties = new ContractVerifierConfigProperties();
-		properties.setAssertJsonSize(true);
-		properties.setTestMode(TestMode.JAXRSCLIENT);
+		this.properties = new ContractVerifierConfigProperties();
+		this.properties.setAssertJsonSize(true);
+		this.properties.setTestMode(TestMode.JAXRSCLIENT);
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
@@ -135,7 +116,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 					}
 				});
 			}
-		}.buildClass(properties, List.of(contractMetadata(contractDsl)), "foo", generatedClassData);
+		}.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {
@@ -145,9 +126,6 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	// =========================================================================
 	// Simple response body assertions
 	// =========================================================================
-
-	record MethodBuilderParams(String methodBuilderName, TestFramework framework) {
-	}
 
 	static java.util.stream.Stream<MethodBuilderParams> jaxrsParams() {
 		return java.util.stream.Stream.of(new MethodBuilderParams("jaxrs-spock", TestFramework.SPOCK),
@@ -175,7 +153,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("{\"property1\": \"a\",\"property2\": \"b\"}");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['property1']\").isEqualTo(\"a\")");
@@ -197,7 +175,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("{\"property1\": \"true\",\"property2\": null,\"property3\": false}");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['property3']\").isEqualTo(false)");
@@ -224,7 +202,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 						java.util.List.of(java.util.Map.of("a", "sth"), java.util.Map.of("b", "sthElse"))));
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['property1']\").isEqualTo(\"a\")");
@@ -257,7 +235,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 							java.util.List.of(java.util.Map.of("a", "sth"), java.util.Map.of("b", "sthElse"))));
 				});
 			});
-			properties.setTestFramework(params.framework());
+			this.properties.setTestFramework(params.framework());
 			String test = singleTestGenerator(contractDsl);
 
 			assertThat(test).contains("assertThatJson(parsedJson).field(\"['property1']\").isEqualTo(\"a\")");
@@ -289,11 +267,9 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.url("test");
 				r.body(java.util.Map.of("items", java.util.List.of("HOP")));
 			});
-			c.response((r) -> {
-				r.status(r.OK());
-			});
+			c.response((r) -> r.status(r.OK()));
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("entity(\"{\\\"items\\\":[\\\"HOP\\\"]}\", \"application/json\")");
@@ -310,11 +286,9 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.url("test");
 				r.body("property1=VAL1");
 			});
-			c.response((r) -> {
-				r.status(r.OK());
-			});
+			c.response((r) -> r.status(r.OK()));
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("entity(\"property1=VAL1\", \"application/octet-stream\")");
@@ -335,7 +309,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("[{\"property1\": \"a\"},{\"property2\": \"b\"}]");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains(
@@ -359,7 +333,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("{\"property1\": [{\"property2\": \"test1\"},{\"property3\": \"test2\"}]}");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains(
@@ -383,7 +357,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("{\"property1\": \"a\",\"property2\": {\"property3\": \"b\"}}");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test)
@@ -405,12 +379,10 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.status(r.OK());
 				r.body(java.util.Map.of("property1", "a", "property2",
 						r.$(r.consumer("123"), r.producer(r.regex("[0-9]{3}")))));
-				r.headers((h) -> {
-					h.header("Content-Type", "application/json");
-				});
+				r.headers((h) -> h.header("Content-Type", "application/json"));
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['property2']\").matches(\"[0-9]{3}\")");
@@ -433,12 +405,10 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				// approach
 				r.body(java.util.Map.of("property1", "a", "property2",
 						r.$(r.consumer("123"), r.producer(r.regex("[0-9]{3}")))));
-				r.headers((h) -> {
-					h.header("Content-Type", "application/json");
-				});
+				r.headers((h) -> h.header("Content-Type", "application/json"));
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['property2']\").matches(\"[0-9]{3}\")");
@@ -454,15 +424,11 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 			c.request((r) -> {
 				r.method("GET");
 				r.url("test");
-				r.headers((h) -> {
-					h.header("Accept", "text/plain");
-				});
+				r.headers((h) -> h.header("Accept", "text/plain"));
 			});
-			c.response((r) -> {
-				r.status(r.OK());
-			});
+			c.response((r) -> r.status(r.OK()));
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("request(\"text/plain\")");
@@ -483,11 +449,9 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				});
 				r.body("");
 			});
-			c.response((r) -> {
-				r.status(r.OK());
-			});
+			c.response((r) -> r.status(r.OK()));
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		if (params.framework() == TestFramework.SPOCK) {
@@ -506,7 +470,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@Test
 	void should_generate_a_call_with_url_path_and_query_parameters_with_jaxrs() {
 		Contract contractDsl = buildQueryParamContractWithNameWithDoubleQuote();
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("queryParam(\"limit\", \"10\"");
@@ -528,7 +492,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@Test
 	void should_generate_a_call_with_url_path_and_query_parameters_with_jaxrs_spock() {
 		Contract contractDsl = buildQueryParamContractWithNameWithDoubleQuote();
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("queryParam(\"limit\", '10'");
@@ -602,7 +566,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("{\"property1\": \"a\",\"property2\": \"b\"}");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		String limitParam = "queryParam(\"limit\", '10'";
@@ -646,11 +610,9 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.url("/ws/payments");
 				r.body("");
 			});
-			c.response((r) -> {
-				r.status(406);
-			});
+			c.response((r) -> r.status(406));
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("entity(\"\", \"application/octet-stream\")");
@@ -667,11 +629,9 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.method("HEAD");
 				r.url("head");
 			});
-			c.response((r) -> {
-				r.status(r.OK());
-			});
+			c.response((r) -> r.status(r.OK()));
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		if (params.framework() == TestFramework.SPOCK) {
@@ -697,7 +657,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("test");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		if (params.framework() == TestFramework.SPOCK) {
@@ -722,13 +682,11 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 			});
 			c.response((r) -> {
 				r.status(r.OK());
-				r.headers((h) -> {
-					h.contentType(h.applicationJson());
-				});
+				r.headers((h) -> h.contentType(h.applicationJson()));
 				r.body("{\"id\":\"789fgh\",\"other_data\":1268}");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("build(\"GET\")");
@@ -761,7 +719,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("{\"property1\": \"a\"}");
 			});
 		});
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test.trim()).isEqualTo("""
@@ -828,7 +786,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 					.$(r.consumer((Object) null), r.producer(r.execute("assertThatRejectionReasonIsNull($it)"))))));
 			});
 		});
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatRejectionReasonIsNull(parsedJson.read(\"$.rejectionReason.title\"));");
@@ -841,7 +799,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@Test
 	void should_execute_custom_method_for_more_complex_structures_on_response_side_when_using_spock() {
 		Contract contractDsl = buildContractWithExecuteMethod();
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatUserNameIsNotNull(parsedJson.read(\"$.[0].name\")");
@@ -854,7 +812,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	@Test
 	void should_execute_custom_method_for_more_complex_structures_on_response_side_when_using_junit() {
 		Contract contractDsl = buildContractWithExecuteMethod();
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatUserNameIsNotNull(parsedJson.read(\"$.[0].name\")");
@@ -891,7 +849,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body(r.$(r.stub("HELLO FROM STUB"), r.server(r.regex(".*"))));
 			});
 		});
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThat(responseBody).matches(\".*\");");
@@ -910,7 +868,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body(r.$(r.stub("HELLO FROM STUB"), r.server(r.regex(".*"))));
 			});
 		});
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("responseBody ==~ java.util.regex.Pattern.compile(\".*\")");
@@ -929,7 +887,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body(r.$(r.stub("HELLO FROM STUB"), r.server(r.execute("foo($it)"))));
 			});
 		});
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("foo(responseBody);");
@@ -947,7 +905,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body(r.$(r.stub("HELLO FROM STUB"), r.server(r.execute("foo($it)"))));
 			});
 		});
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("foo(responseBody)");
@@ -967,12 +925,10 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 			c.response((r) -> {
 				r.status(r.OK());
 				r.body(java.util.Map.of("property1", "a", "property2", r.$(r.c("123"), r.p(r.regex("[0-9]{3}")))));
-				r.headers((h) -> {
-					h.header("Content-Type", "application/json");
-				});
+				r.headers((h) -> h.header("Content-Type", "application/json"));
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['property2']\").matches(\"[0-9]{3}\")");
@@ -1004,9 +960,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 						java.util.Map.entry("nonBlankString", r.$(r.anyNonBlankString())),
 						java.util.Map.entry("nonEmptyString", r.$(r.anyNonEmptyString())),
 						java.util.Map.entry("anyOf", r.$(r.anyOf("foo", "bar")))));
-				r.headers((h) -> {
-					h.contentType(h.applicationJson());
-				});
+				r.headers((h) -> h.contentType(h.applicationJson()));
 			});
 			c.response((r) -> {
 				r.status(r.OK());
@@ -1026,15 +980,13 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 						java.util.Map.entry("nonBlankString", r.$(r.anyNonBlankString())),
 						java.util.Map.entry("nonEmptyString", r.$(r.anyNonEmptyString())),
 						java.util.Map.entry("anyOf", r.$(r.anyOf("foo", "bar")))));
-				r.headers((h) -> {
-					h.contentType(h.applicationJson());
-				});
+				r.headers((h) -> h.contentType(h.applicationJson()));
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
-		String endOfLineRegexSymbol = params.framework() == TestFramework.SPOCK ? "\\$" : "$";
+		String endOfLineRegexSymbol = (params.framework() == TestFramework.SPOCK) ? "\\$" : "$";
 
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['aBoolean']\").matches(\"(true|false)\")");
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['alpha']\").matches(\"[\\\\p{L}]*\")");
@@ -1083,15 +1035,11 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 						qp.parameter("offset", r.value(r.consumer(r.optional(r.regex("([0-9]{1,10})")))));
 					});
 				});
-				r.headers((h) -> {
-					h.header("Content-Type", "application/json");
-				});
+				r.headers((h) -> h.header("Content-Type", "application/json"));
 			});
-			c.response((r) -> {
-				r.status(200);
-			});
+			c.response((r) -> r.status(200));
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).doesNotContain("sh.stubborn.contract.spec.internal.OptionalProperty");
@@ -1106,16 +1054,12 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 			c.request((r) -> {
 				r.method("POST");
 				r.url("/ping");
-				r.headers((h) -> {
-					h.header("Content-Type", "application/my-content-type+json");
-				});
+				r.headers((h) -> h.header("Content-Type", "application/my-content-type+json"));
 				r.body(r.$(r.test(r.value("test")), r.stub(r.anyNonEmptyString())));
 			});
-			c.response((r) -> {
-				r.status(200);
-			});
+			c.response((r) -> r.status(200));
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).contains("\"application/my-content-type+json\")");
@@ -1143,7 +1087,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("File name is required");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).doesNotContain("entity(\"\\\"\\n");
@@ -1159,9 +1103,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 			c.request((r) -> {
 				r.method("POST");
 				r.url("/foo");
-				r.headers((h) -> {
-					h.header("Content-Type", "application/json");
-				});
+				r.headers((h) -> h.header("Content-Type", "application/json"));
 				r.body("{ \"foo\": \"bar\"}");
 			});
 			c.response((r) -> {
@@ -1169,7 +1111,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 				r.body("File name is required");
 			});
 		});
-		properties.setTestFramework(params.framework());
+		this.properties.setTestFramework(params.framework());
 		String test = singleTestGenerator(contractDsl);
 
 		assertThat(test).doesNotContain("entity(\"\\\"\\n");
@@ -1183,8 +1125,8 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_generate_test_for_cookies_with_string_value_in_jaxrs_junit_test() {
-		properties.setTestFramework(TestFramework.JUNIT5);
-		String test = singleTestGenerator(contractDslWithCookiesValue);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+		String test = singleTestGenerator(this.contractDslWithCookiesValue);
 
 		assertThat(test).contains(".cookie(\"cookie-key\", \"cookie-value\")");
 		assertThat(test).contains("assertThat(response.getCookies().get(\"cookie-key\")).isNotNull();");
@@ -1195,8 +1137,8 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_generate_test_for_cookies_with_pattern_in_jaxrs_junit_test() {
-		properties.setTestFramework(TestFramework.JUNIT5);
-		String test = singleTestGenerator(contractDslWithCookiesPattern);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+		String test = singleTestGenerator(this.contractDslWithCookiesPattern);
 
 		assertThat(test).doesNotContain(".cookie(\"cookie-key\", \"[A-Za-z]+\")");
 		assertThat(test).contains(".cookie(\"cookie-key\", \"");
@@ -1208,8 +1150,8 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_not_generate_cookie_assertions_with_absent_value_in_jaxrs_junit_test() {
-		properties.setTestFramework(TestFramework.JUNIT5);
-		String test = singleTestGenerator(contractDslWithAbsentCookies);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+		String test = singleTestGenerator(this.contractDslWithAbsentCookies);
 
 		assertThat(test).doesNotContain("cookie");
 		SyntaxChecker.tryToCompile("jaxrs", test);
@@ -1221,8 +1163,8 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_generate_test_for_cookies_with_string_value_in_jaxrs_spock_test() {
-		properties.setTestFramework(TestFramework.SPOCK);
-		String test = singleTestGenerator(contractDslWithCookiesValue);
+		this.properties.setTestFramework(TestFramework.SPOCK);
+		String test = singleTestGenerator(this.contractDslWithCookiesValue);
 
 		assertThat(test).contains(".cookie('cookie-key', 'cookie-value')");
 		assertThat(test).contains("response.getCookies().get(\"cookie-key\") != null");
@@ -1232,8 +1174,8 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_generate_test_for_cookies_with_pattern_in_jaxrs_spock_test() {
-		properties.setTestFramework(TestFramework.SPOCK);
-		String test = singleTestGenerator(contractDslWithCookiesPattern);
+		this.properties.setTestFramework(TestFramework.SPOCK);
+		String test = singleTestGenerator(this.contractDslWithCookiesPattern);
 
 		assertThat(test).doesNotContain(".cookie('cookie-key', '[A-Za-z]+')");
 		assertThat(test).contains(".cookie('cookie-key', '");
@@ -1245,11 +1187,14 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 	@Test
 	void should_not_generate_cookie_assertions_with_absent_value_in_jaxrs_spock_test() {
-		properties.setTestFramework(TestFramework.SPOCK);
-		String test = singleTestGenerator(contractDslWithAbsentCookies);
+		this.properties.setTestFramework(TestFramework.SPOCK);
+		String test = singleTestGenerator(this.contractDslWithAbsentCookies);
 
 		assertThat(test).doesNotContain("cookie");
 		SyntaxChecker.tryToCompile("jaxrs-spock", test);
+	}
+
+	record MethodBuilderParams(String methodBuilderName, TestFramework framework) {
 	}
 
 }

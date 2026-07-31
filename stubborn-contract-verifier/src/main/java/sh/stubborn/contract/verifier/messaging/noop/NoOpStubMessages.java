@@ -23,6 +23,9 @@ import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 
 /**
+ * No-op implementation of the message verifier sender and receiver.
+ *
+ * @param <U> the message type
  * @author Marcin Grzejszczak
  */
 public class NoOpStubMessages<U> implements sh.stubborn.contract.verifier.messaging.MessageVerifierSender<U>,

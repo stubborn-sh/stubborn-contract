@@ -45,16 +45,14 @@ public class TestGeneratorTests {
 		// and:
 		Map<Path, List<ContractMetadata>> multimap = new LinkedHashMap<>();
 		Path path = new File(".").toPath();
-		multimap.computeIfAbsent(path, k -> new ArrayList<>())
-			.add(new ContractMetadata(path, false, 0, null, Contract.make(it -> {
+		multimap.computeIfAbsent(path, (k) -> new ArrayList<>())
+			.add(new ContractMetadata(path, false, 0, null, Contract.make((it) -> {
 				it.inProgress();
-				it.request(r -> {
+				it.request((r) -> {
 					r.method(r.GET());
 					r.url("/foo");
 				});
-				it.response(r -> {
-					r.status(r.OK());
-				});
+				it.response((r) -> r.status(r.OK()));
 			})));
 		ContractFileScanner scanner = new ContractFileScanner(null, null, null, null, null) {
 			@Override
@@ -66,10 +64,10 @@ public class TestGeneratorTests {
 		TestGenerator testGenerator = new TestGenerator(properties, singleTestGenerator, fileSaver, scanner);
 
 		// then:
-		BDDAssertions.thenThrownBy(() -> {
-			// when:
-			testGenerator.generateTestClasses("com.example");
-		}).isInstanceOf(IllegalStateException.class).hasMessageContaining("In progress contracts found in");
+		// when:
+		BDDAssertions.thenThrownBy(() -> testGenerator.generateTestClasses("com.example"))
+			.isInstanceOf(IllegalStateException.class)
+			.hasMessageContaining("In progress contracts found in");
 	}
 
 	@Test
@@ -83,16 +81,14 @@ public class TestGeneratorTests {
 		// and:
 		Map<Path, List<ContractMetadata>> multimap = new LinkedHashMap<>();
 		Path path = new File(".").toPath();
-		multimap.computeIfAbsent(path, k -> new ArrayList<>())
-			.add(new ContractMetadata(path, false, 0, null, Contract.make(it -> {
+		multimap.computeIfAbsent(path, (k) -> new ArrayList<>())
+			.add(new ContractMetadata(path, false, 0, null, Contract.make((it) -> {
 				it.inProgress();
-				it.request(r -> {
+				it.request((r) -> {
 					r.method(r.GET());
 					r.url("/foo");
 				});
-				it.response(r -> {
-					r.status(r.OK());
-				});
+				it.response((r) -> r.status(r.OK()));
 			})));
 		ContractFileScanner scanner = new ContractFileScanner(null, null, null, null, null) {
 			@Override

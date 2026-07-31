@@ -32,20 +32,13 @@ import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.MapConverter;
 
-import static org.apache.commons.text.StringEscapeUtils.escapeJava;
-import static sh.stubborn.contract.verifier.util.ContentType.DEFINED;
-import static sh.stubborn.contract.verifier.util.ContentType.FORM;
-import static sh.stubborn.contract.verifier.util.ContentType.JSON;
-import static sh.stubborn.contract.verifier.util.ContentType.TEXT;
-import static sh.stubborn.contract.verifier.util.ContentUtils.extractValue;
-
 interface BodyParser extends BodyThen {
 
 	String byteArrayString();
 
 	default String convertUnicodeEscapesIfRequired(String json) {
 		String unescapedJson = StringEscapeUtils.unescapeEcmaScript(json);
-		return escapeJava(unescapedJson);
+		return StringEscapeUtils.escapeJava(unescapedJson);
 	}
 
 	default String convertToJsonString(Object bodyValue) {
@@ -73,8 +66,8 @@ interface BodyParser extends BodyThen {
 			responseBody = ((FromFileProperty) responseBody).asString();
 		}
 		else if (responseBody instanceof GString) {
-			responseBody = extractValue((GString) responseBody, contentType,
-					(o) -> o instanceof DslProperty ? Objects.requireNonNull(((DslProperty) o).getServerValue()) : o);
+			responseBody = ContentUtils.extractValue((GString) responseBody, contentType,
+					(o) -> (o instanceof DslProperty) ? Objects.requireNonNull(((DslProperty) o).getServerValue()) : o);
 		}
 		else if (responseBody instanceof DslProperty) {
 			responseBody = MapConverter.getTestSideValues(responseBody);
@@ -117,17 +110,21 @@ interface BodyParser extends BodyThen {
 
 	/**
 	 * Converts the passed body into ints server side representation. All
-	 * {@link DslProperty} will return their server side values
+	 * {@link DslProperty} will return their server side values.
+	 * @param contentType the content type of the body
+	 * @param bodyValue the body value to convert
+	 * @return the server side representation of the body
 	 */
 	default Object extractServerValueFromBody(ContentType contentType, Object bodyValue) {
 		if (bodyValue instanceof GString) {
-			return extractValue((GString) bodyValue, contentType, ContentUtils.GET_TEST_SIDE_FUNCTION);
+			return ContentUtils.extractValue((GString) bodyValue, contentType, ContentUtils.GET_TEST_SIDE_FUNCTION);
 		}
 		else if (bodyValue instanceof FromFileProperty) {
 			return MapConverter.transformValues(bodyValue, ContentUtils.GET_TEST_SIDE_FUNCTION);
 		}
-		else if (TEXT != contentType && FORM != contentType && DEFINED != contentType) {
-			boolean dontParseStrings = contentType == JSON && bodyValue instanceof Map;
+		else if (ContentType.TEXT != contentType && ContentType.FORM != contentType
+				&& ContentType.DEFINED != contentType) {
+			boolean dontParseStrings = contentType == ContentType.JSON && bodyValue instanceof Map;
 			Function<String, Object> parsingClosure = dontParseStrings ? MapConverter.IDENTITY
 					: MapConverter.JSON_PARSING_FUNCTION;
 			return MapConverter.getTestSideValues(bodyValue, parsingClosure);

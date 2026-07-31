@@ -193,71 +193,71 @@ public final class MetadataUtil {
 
 	}
 
-}
+	@JsonFilter("non default properties")
+	static class PropertyFilterMixIn {
 
-@JsonFilter("non default properties")
-class PropertyFilterMixIn {
-
-}
-
-class MyFilter extends SimpleBeanPropertyFilter implements Serializable {
-
-	private static final Map<Class, Object> CACHE = new ConcurrentHashMap<>();
-
-	@Override
-	public void serializeAsProperty(Object pojo, JsonGenerator jgen, SerializationContext provider,
-			PropertyWriter writer) throws Exception {
-		if (pojo instanceof Map || pojo instanceof Collection) {
-			writer.serializeAsProperty(pojo, jgen, provider);
-			return;
-		}
-		Object defaultInstance = defaultInstance(pojo);
-		if (defaultInstance instanceof CantInstantiateThisClass
-				|| !valueSameAsDefault(pojo, defaultInstance, writer.getName())) {
-			writer.serializeAsProperty(pojo, jgen, provider);
-		}
 	}
 
-	Object defaultInstance(Object pojo) {
-		return CACHE.computeIfAbsent(pojo.getClass(), this::defaultInstance);
-	}
+	static class MyFilter extends SimpleBeanPropertyFilter implements Serializable {
 
-	private Object defaultInstance(Class aClass) {
-		try {
-			return aClass.getDeclaredConstructor().newInstance();
-		}
-		catch (Exception ex) {
-			return new CantInstantiateThisClass();
-		}
-	}
+		private static final Map<Class, Object> CACHE = new ConcurrentHashMap<>();
 
-	boolean valueSameAsDefault(Object pojo, Object defaultInstance, String fieldName) {
-		Field field = findField(pojo.getClass(), fieldName);
-		if (field == null) {
-			return false;
+		@Override
+		public void serializeAsProperty(Object pojo, JsonGenerator jgen, SerializationContext provider,
+				PropertyWriter writer) throws Exception {
+			if (pojo instanceof Map || pojo instanceof Collection) {
+				writer.serializeAsProperty(pojo, jgen, provider);
+				return;
+			}
+			Object defaultInstance = defaultInstance(pojo);
+			if (defaultInstance instanceof CantInstantiateThisClass
+					|| !valueSameAsDefault(pojo, defaultInstance, writer.getName())) {
+				writer.serializeAsProperty(pojo, jgen, provider);
+			}
 		}
-		field.setAccessible(true);
-		try {
-			return Objects.equals(field.get(pojo), field.get(defaultInstance));
-		}
-		catch (IllegalAccessException ex) {
-			throw new IllegalStateException(ex);
-		}
-	}
 
-	private static @Nullable Field findField(Class<?> clazz, String fieldName) {
-		for (Class<?> c = clazz; c != null && c != Object.class; c = c.getSuperclass()) {
+		Object defaultInstance(Object pojo) {
+			return CACHE.computeIfAbsent(pojo.getClass(), this::defaultInstance);
+		}
+
+		private Object defaultInstance(Class aClass) {
 			try {
-				return c.getDeclaredField(fieldName);
+				return aClass.getDeclaredConstructor().newInstance();
 			}
-			catch (NoSuchFieldException ignored) {
+			catch (Exception ex) {
+				return new CantInstantiateThisClass();
 			}
 		}
-		return null;
+
+		boolean valueSameAsDefault(Object pojo, Object defaultInstance, String fieldName) {
+			Field field = findField(pojo.getClass(), fieldName);
+			if (field == null) {
+				return false;
+			}
+			field.setAccessible(true);
+			try {
+				return Objects.equals(field.get(pojo), field.get(defaultInstance));
+			}
+			catch (IllegalAccessException ex) {
+				throw new IllegalStateException(ex);
+			}
+		}
+
+		private static @Nullable Field findField(Class<?> clazz, String fieldName) {
+			for (Class<?> c = clazz; c != null && c != Object.class; c = c.getSuperclass()) {
+				try {
+					return c.getDeclaredField(fieldName);
+				}
+				catch (NoSuchFieldException ignored) {
+				}
+			}
+			return null;
+		}
+
 	}
 
-}
+	static class CantInstantiateThisClass {
 
-class CantInstantiateThisClass {
+	}
 
 }

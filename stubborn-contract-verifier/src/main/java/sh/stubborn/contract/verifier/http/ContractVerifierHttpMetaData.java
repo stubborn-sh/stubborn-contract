@@ -65,7 +65,7 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 	}
 
 	public Scheme getScheme() {
-		return scheme;
+		return this.scheme;
 	}
 
 	public void setScheme(Scheme scheme) {
@@ -105,6 +105,8 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 
 		/**
 		 * Builds an enum from string.
+		 * @param scheme the scheme name to parse
+		 * @return the matching scheme, or {@code null} if none matches
 		 */
 		public static @Nullable Scheme fromString(String scheme) {
 			return Arrays.stream(values()).filter((p) -> p.name().equalsIgnoreCase(scheme)).findFirst().orElse(null);
@@ -177,6 +179,8 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 
 		/**
 		 * Builds an enum from string.
+		 * @param protocol the protocol name to parse
+		 * @return the matching protocol, or {@code null} if none matches
 		 */
 		public static @Nullable Protocol fromString(String protocol) {
 			return Arrays.stream(values())

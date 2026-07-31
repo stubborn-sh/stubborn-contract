@@ -58,8 +58,8 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 
 	@BeforeEach
 	void setup() {
-		properties = new ContractVerifierConfigProperties();
-		properties.setAssertJsonSize(true);
+		this.properties = new ContractVerifierConfigProperties();
+		this.properties.setAssertJsonSize(true);
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
@@ -80,7 +80,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 					}
 				});
 			}
-		}.buildClass(properties, List.of(contractMetadata(contractDsl)), "foo", generatedClassData);
+		}.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {
@@ -143,10 +143,10 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 
 	private void applyMethodBuilder(TestFramework framework, TestMode mode) {
 		if (framework != null) {
-			properties.setTestFramework(framework);
+			this.properties.setTestFramework(framework);
 		}
 		if (mode != null) {
-			properties.setTestMode(mode);
+			this.properties.setTestMode(mode);
 		}
 	}
 
@@ -1131,7 +1131,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        regexType: as_string
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains(
 				"assertThat(parsedJson.read(\"\\$.authorities[0]\", String.class)).matches(\"^[a-zA-Z0-9_\\\\- ]+\\$\")");
@@ -1157,7 +1157,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        value: '^[a-zA-Z0-9_\\- ]+$'
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains(
 				"assertThat(parsedJson.read(\"$.authorities[0]\", String.class)).matches(\"^[a-zA-Z0-9_\\\\- ]+$\")");
@@ -1215,7 +1215,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        value: "[0-9]+"
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("assertThat(parsedJson.read(\"\\$[0].id\", String.class)).matches(\"[0-9]+\")")
 			.contains("assertThat(parsedJson.read(\"\\$[1].id\", String.class)).matches(\"[0-9]+\")");
@@ -1414,7 +1414,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        value: '^(?!\\\\s*$).+'
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test)
 			.contains("assertThat(parsedJson.read(\"\\$.message\", String.class)).matches(\"^(?!\\\\\\\\s*\\$).+\")");
@@ -1441,7 +1441,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        value: "assertThatRejectionReasonIsNull($it)"
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("assertThatRejectionReasonIsNull(parsedJson.read(\"\\$.rejectionReason.title\"))");
 		SyntaxChecker.tryToCompileGroovy("spock", test);
@@ -1469,7 +1469,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        value: "assertThatUserNameIsNotNull($it)"
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("assertThatUserNameIsNotNull(parsedJson.read(\"\\$[0].name\"))")
 			.contains("assertThatUserNameIsNotNull(parsedJson.read(\"\\$[1].name\"))");
@@ -1497,7 +1497,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        value: "assertThatUserNameIsNotNull($it)"
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("assertThatUserNameIsNotNull(parsedJson.read(\"$[0].name\")")
 			.contains("assertThatUserNameIsNotNull(parsedJson.read(\"$[1].name\")");
@@ -1520,7 +1520,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				  status: 200
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains(".header(\"authorization\", getOAuthTokenHeader())");
 		SyntaxChecker.tryToCompileGroovy("spock", test);
@@ -1542,7 +1542,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        value: ".*"
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("responseBody ==~ java.util.regex.Pattern.compile('.*')");
 		SyntaxChecker.tryToCompileGroovy("spock", test);
@@ -1564,7 +1564,7 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 				        value: "foo($it)"
 				""";
 		Contract contractDsl = fromYaml(contract);
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("foo(responseBody)");
 		SyntaxChecker.tryToCompileGroovy("spock", test);

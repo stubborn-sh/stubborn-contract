@@ -90,11 +90,13 @@ public class MapConverter {
 	}
 
 	/**
+	 * Transforms the object into its client side values.
+	 * @param value the value to transform
 	 * @return the object with client side values of
 	 * {@link sh.stubborn.contract.spec.internal.DslProperty}
 	 */
 	public static Object transformToClientValues(Object value) {
-		Function<Object, @Nullable Object> function = (v) -> v instanceof DslProperty
+		Function<Object, @Nullable Object> function = (v) -> (v instanceof DslProperty)
 				? ((DslProperty<?>) v).getClientValue() : v;
 		return transformValues(value, function);
 	}
@@ -106,6 +108,9 @@ public class MapConverter {
 	/**
 	 * Iterates over the structure of the object and executes the function on each element
 	 * of that structure.
+	 * @param value the value whose structure is iterated over
+	 * @param function the function executed on each element
+	 * @param parsingFunction the function used to parse string values
 	 * @return the transformed structure
 	 */
 	public static Object transformValues(Object value, Function<Object, ?> function,
@@ -138,6 +143,10 @@ public class MapConverter {
 	/**
 	 * Transforms a value with the given function. Needs to be protected, otherwise method
 	 * access exception will occur at runtime.
+	 * @param function the function executed on the value
+	 * @param value the value to transform
+	 * @param parsingFunction the function used to parse string values
+	 * @return the transformed value
 	 */
 	protected static Object transformValue(Function<Object, ?> function, Object value,
 			Function<String, Object> parsingFunction) {
@@ -175,6 +184,10 @@ public class MapConverter {
 	/**
 	 * If {@code clientSide} is {@code true} returns the client side value for the
 	 * provided object.
+	 * @param json the object to transform
+	 * @param clientSide whether to return client or server side values
+	 * @param parsingFunction the function used to parse string values
+	 * @return the object with client or server side values
 	 */
 	public static Object getClientOrServerSideValues(Object json, boolean clientSide,
 			Function<String, Object> parsingFunction) {
@@ -182,7 +195,7 @@ public class MapConverter {
 			if (val instanceof DslProperty) {
 				DslProperty<?> dslProperty = ((DslProperty<?>) val);
 				Object dslValue = clientSide ? dslProperty.getClientValue() : dslProperty.getServerValue();
-				return dslValue == null ? null : getClientOrServerSideValues(dslValue, clientSide, parsingFunction);
+				return (dslValue != null) ? getClientOrServerSideValues(dslValue, clientSide, parsingFunction) : null;
 			}
 			else if (val instanceof GString) {
 				ContentType type = new MapConverter().templateProcessor.containsJsonPathTemplateEntry(
@@ -192,7 +205,7 @@ public class MapConverter {
 					if (v instanceof DslProperty) {
 						Object dslV = clientSide ? ((DslProperty<?>) v).getClientValue()
 								: ((DslProperty<?>) v).getServerValue();
-						return dslV == null ? null : getClientOrServerSideValues(dslV, clientSide, parsingFunction);
+						return (dslV != null) ? getClientOrServerSideValues(dslV, clientSide, parsingFunction) : null;
 					}
 					return v;
 				};

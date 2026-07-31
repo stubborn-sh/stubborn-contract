@@ -66,7 +66,7 @@ class CustomModeGiven implements Given, BodyMethodVisitor, CustomModeAcceptor {
 
 	@Override
 	public boolean accept(SingleContractMetadata singleContractMetadata) {
-		return acceptType(generatedClassMetaData, singleContractMetadata);
+		return acceptType(this.generatedClassMetaData, singleContractMetadata);
 	}
 
 }

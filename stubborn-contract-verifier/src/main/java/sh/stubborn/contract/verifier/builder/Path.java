@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.verifier.dsl.wiremock;
+package sh.stubborn.contract.verifier.builder;
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Builds a WireMock {@link StubMapping} from a mapping definition.
- *
- * @author Marcin Grzejszczak
- */
-public final class WireMockStubMapping {
+import groovy.transform.CompileStatic;
 
-	private WireMockStubMapping() {
-		throw new IllegalStateException("Can't instantiate a utility class");
+@CompileStatic
+class Path extends ArrayList<String> {
+
+	Path(List<String> list) {
+		this.addAll(list);
 	}
 
-	public static StubMapping buildFrom(String mappingDefinition) {
-		return StubMapping.buildFrom(mappingDefinition);
+	@Override
+	public String toString() {
+		return "/" + String.join("/", this);
 	}
 
 }

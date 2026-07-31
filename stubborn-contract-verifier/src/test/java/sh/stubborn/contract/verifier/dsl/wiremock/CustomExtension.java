@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.verifier.builder;
+package sh.stubborn.contract.verifier.dsl.wiremock;
 
-interface JavaMessagingBodyParser extends MessagingBodyParser {
+import com.github.tomakehurst.wiremock.extension.Extension;
 
-	/**
-	 * Shared Java messaging body parser instance.
-	 */
-	BodyParser INSTANCE = new JavaMessagingBodyParser() {
-	};
+class CustomExtension implements Extension {
+
+	CustomExtension() {
+	}
+
+	@Override
+	public String getName() {
+		return "foo-transformer";
+	}
 
 }

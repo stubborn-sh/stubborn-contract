@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,10 +28,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import groovy.json.JsonOutput;
-import org.jspecify.annotations.Nullable;
 import groovy.lang.GString;
-import groovy.transform.CompileStatic;
 import org.apache.commons.text.StringEscapeUtils;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.QueryParameter;
@@ -116,7 +114,7 @@ public final class TestSideRequestTemplateModel {
 	}
 
 	public static TestSideRequestTemplateModel from(final Request request) {
-		Url urlPath = Objects.requireNonNull(request.getUrl() != null ? request.getUrl() : request.getUrlPath());
+		Url urlPath = Objects.requireNonNull((request.getUrl() != null) ? request.getUrl() : request.getUrlPath());
 		String url = MapConverter.getTestSideValues(urlPath).toString();
 		Path paths = new Path(buildPathsFromUrl(url));
 		QueryParameters queryParameters = urlPath.getQueryParameters();
@@ -197,7 +195,7 @@ public final class TestSideRequestTemplateModel {
 		else if (bodyValue instanceof FromFileProperty) {
 			return null;
 		}
-		return bodyValue != null ? new JsonOutput().toJson(bodyValue) : null;
+		return (bodyValue != null) ? new JsonOutput().toJson(bodyValue) : null;
 	}
 
 	private static Object extractServerValueFromBody(Object bodyValue) {
@@ -208,20 +206,6 @@ public final class TestSideRequestTemplateModel {
 			bodyValue = MapConverter.transformValues(bodyValue, ContentUtils.GET_TEST_SIDE_FUNCTION);
 		}
 		return bodyValue;
-	}
-
-}
-
-@CompileStatic
-class Path extends ArrayList<String> {
-
-	Path(List<String> list) {
-		this.addAll(list);
-	}
-
-	@Override
-	public String toString() {
-		return "/" + String.join("/", this);
 	}
 
 }

@@ -21,6 +21,7 @@ import java.util.LinkedHashSet;
 /**
  * Represents a set of Strings - set of method calls to assert a JSON.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class JsonPaths extends LinkedHashSet<MethodBufferingJsonVerifiable> {

@@ -24,9 +24,8 @@ import sh.stubborn.contract.spec.internal.NamedProperty;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
+import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.MapConverter;
-
-import static sh.stubborn.contract.verifier.util.ContentUtils.getJavaMultipartFileParameterContent;
 
 class JavaMultipartGiven implements Given, RestAssuredAcceptor {
 
@@ -70,7 +69,7 @@ class JavaMultipartGiven implements Given, RestAssuredAcceptor {
 
 	private String getMultipartFileParameterContent(SingleContractMetadata metadata, String propertyName,
 			NamedProperty propertyValue) {
-		return getJavaMultipartFileParameterContent(propertyName, propertyValue,
+		return ContentUtils.getJavaMultipartFileParameterContent(propertyName, propertyValue,
 				(fileProp) -> this.bodyReader.readBytesFromFileString(metadata, fileProp, CommunicationType.REQUEST));
 	}
 

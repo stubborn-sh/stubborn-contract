@@ -282,7 +282,7 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 	void shouldGenerateOrderedAssertionsForRootLevelArrayOfPrimitives() {
 		String json = """
 				["first", "second", "third"]""";
-		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		// size check for root array
 		assertThat(pathAndValues).anySatisfy((entry) -> {
@@ -312,7 +312,7 @@ class JsonToJsonPathsConverterWithArrayCheckTests {
 				{"property1": "a"},
 				{"property2": "b"}
 				]""";
-		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+		JsonPaths pathAndValues = converter().transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())

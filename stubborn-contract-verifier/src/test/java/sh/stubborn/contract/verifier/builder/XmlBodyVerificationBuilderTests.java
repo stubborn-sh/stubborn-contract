@@ -18,13 +18,12 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.Optional;
 
+import com.toomuchcoding.jsonassert.JsonAssertion;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 
-import static com.toomuchcoding.jsonassert.JsonAssertion.assertThat;
-
-public class XmlBodyVerificationBuilderTest {
+public class XmlBodyVerificationBuilderTests {
 
 	private static final String xml = "<customer>\r\n" + "      <email>customer@test.com</email>\r\n"
 			+ "    </customer>";
@@ -39,7 +38,8 @@ public class XmlBodyVerificationBuilderTest {
 		builder.addXmlResponseBodyCheck(blockBuilder, xml, matchers, xml, true);
 		// Then
 		String test = blockBuilder.toString();
-		assertThat(test).contains("DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();")
+		JsonAssertion.assertThat(test)
+			.contains("DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();")
 			.contains("builderFactory.setNamespaceAware(true);")
 			.contains("DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();")
 			.contains("Document parsedXml = documentBuilder.parse(new InputSource(new StringReader(")

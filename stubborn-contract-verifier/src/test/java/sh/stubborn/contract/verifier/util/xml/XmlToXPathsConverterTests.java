@@ -16,9 +16,10 @@
 
 package sh.stubborn.contract.verifier.util.xml;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.util.Collections;
 import java.util.List;
+
+import javax.xml.xpath.XPathExpressionException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

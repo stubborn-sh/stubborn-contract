@@ -56,9 +56,7 @@ class GenericHttpBodyThen implements Then, BodyMethodVisitor {
 		endBodyBlock(this.blockBuilder);
 		this.blockBuilder.addEmptyLine();
 		startBodyBlock(this.blockBuilder, "and:");
-		this.thens.stream().filter((then) -> then.accept(metadata)).forEach((then) -> {
-			var unused = then.apply(metadata);
-		});
+		this.thens.stream().filter((then) -> then.accept(metadata)).forEach((then) -> then.apply(metadata));
 		return this;
 	}
 

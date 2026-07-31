@@ -47,6 +47,7 @@ public class Response {
 	}
 
 	/**
+	 * The numerical status code of the response.
 	 * @return numerical representation of a status code
 	 */
 	public int statusCode() {
@@ -54,6 +55,7 @@ public class Response {
 	}
 
 	/**
+	 * Returns the header value for the given key.
 	 * @param key header key
 	 * @return header value or null if not present
 	 */
@@ -67,6 +69,7 @@ public class Response {
 	}
 
 	/**
+	 * Returns the cookie value for the given key.
 	 * @param key cookie key
 	 * @return header value or null if not present
 	 */
@@ -80,6 +83,7 @@ public class Response {
 	}
 
 	/**
+	 * The response body.
 	 * @return response body
 	 */
 	public Body getBody() {
@@ -87,6 +91,7 @@ public class Response {
 	}
 
 	/**
+	 * Creates a new response builder.
 	 * @return builder
 	 */
 	public static Response.Builder builder() {
@@ -94,6 +99,7 @@ public class Response {
 	}
 
 	/**
+	 * The response headers.
 	 * @return headers
 	 */
 	public Map<String, Object> headers() {
@@ -101,6 +107,7 @@ public class Response {
 	}
 
 	/**
+	 * The response cookies.
 	 * @return cookies
 	 */
 	public Map<String, Object> cookies() {
@@ -108,6 +115,7 @@ public class Response {
 	}
 
 	/**
+	 * Creates a builder pre-filled from an existing response.
 	 * @param response template of a response
 	 * @return builder filled with response data
 	 */
@@ -134,6 +142,7 @@ public class Response {
 		Map<String, Object> cookies = new HashMap<>();
 
 		/**
+		 * Sets the status code.
 		 * @param status as int
 		 * @return builder
 		 */
@@ -143,6 +152,7 @@ public class Response {
 		}
 
 		/**
+		 * Sets the response body.
 		 * @param body - response body
 		 * @return builder
 		 */
@@ -152,6 +162,7 @@ public class Response {
 		}
 
 		/**
+		 * Sets the response headers.
 		 * @param headers - response headers
 		 * @return builder
 		 */
@@ -161,6 +172,7 @@ public class Response {
 		}
 
 		/**
+		 * Adds a single header.
 		 * @param key header key
 		 * @param value header value
 		 * @return builder
@@ -171,6 +183,7 @@ public class Response {
 		}
 
 		/**
+		 * Adds a single cookie.
 		 * @param key cookie key
 		 * @param value cookie value
 		 * @return builder
@@ -181,6 +194,7 @@ public class Response {
 		}
 
 		/**
+		 * Sets the response cookies.
 		 * @param cookies - response cookies
 		 * @return builder
 		 */
@@ -190,6 +204,7 @@ public class Response {
 		}
 
 		/**
+		 * Builds the response.
 		 * @return response
 		 */
 		public Response build() {

@@ -29,7 +29,7 @@ public interface HttpVerifier {
 	/**
 	 * Sends a request and blocks for the response.
 	 * @param request - HTTP request
-	 * @return HTTP response
+	 * @return the HTTP response
 	 */
 	Response exchange(Request request);
 

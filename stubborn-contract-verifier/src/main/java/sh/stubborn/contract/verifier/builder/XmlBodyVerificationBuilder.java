@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
-
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
@@ -66,7 +65,7 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 							+ ")))")
 			.forEach((it) -> {
 				blockBuilder.addLine(it);
-				addColonIfRequired(lineSuffix, blockBuilder);
+				addColonIfRequired(this.lineSuffix, blockBuilder);
 			});
 	}
 
@@ -75,7 +74,7 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 		String quotedAndEscapedPath = quotedAndEscaped(bodyMatcher.path());
 		String method = "assertThat(nodeFromXPath(parsedXml, " + quotedAndEscapedPath + ")).isNull()";
 		bb.addLine(method.replace("$", "\\$"));
-		addColonIfRequired(lineSuffix, bb);
+		addColonIfRequired(this.lineSuffix, bb);
 	}
 
 	@Override
@@ -86,7 +85,7 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 		String method = "assertThat(valueFromXPath(parsedXml, " + quotedAndEscaped(bodyMatcher.path()) + "))."
 				+ comparisonMethod + "(" + retrievedValue + ")";
 		bb.addLine(method.replace("$", "\\$"));
-		addColonIfRequired(lineSuffix, bb);
+		addColonIfRequired(this.lineSuffix, bb);
 	}
 
 	@Override
@@ -94,7 +93,7 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 		Object retrievedValue = quotedAndEscaped(XmlToXPathsConverter.retrieveValueFromBody(bodyMatcher.path(), body));
 		ExecutionProperty property = (ExecutionProperty) Objects.requireNonNull(bodyMatcher.value());
 		bb.addLine(property.insertValue(((String) retrievedValue).replace("$", "\\$")));
-		addColonIfRequired(lineSuffix, bb);
+		addColonIfRequired(this.lineSuffix, bb);
 	}
 
 	@Override

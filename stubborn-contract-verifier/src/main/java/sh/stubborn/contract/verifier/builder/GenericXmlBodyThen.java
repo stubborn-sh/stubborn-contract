@@ -22,8 +22,6 @@ import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
 
-import static sh.stubborn.contract.verifier.util.ContentType.XML;
-
 class GenericXmlBodyThen implements Then {
 
 	private final BlockBuilder blockBuilder;
@@ -49,7 +47,7 @@ class GenericXmlBodyThen implements Then {
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
 		ContentType outputTestContentType = metadata.getOutputTestContentType();
-		return XML == outputTestContentType;
+		return ContentType.XML == outputTestContentType;
 	}
 
 }

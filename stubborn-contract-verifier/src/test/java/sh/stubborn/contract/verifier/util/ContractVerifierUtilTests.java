@@ -30,13 +30,13 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author Chris Bono
  * @since 2.1.0
  */
-public class ContractVerifierUtilTest {
+public class ContractVerifierUtilTests {
 
 	private final String unnamedXml = "<customer>\n" + "<email>customer@test.com</email>\n" + "</customer>";
 
@@ -48,7 +48,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetValueFromXPath() {
 		// Given
-		Document parsedXml = parsedXml(unnamedXml);
+		Document parsedXml = parsedXml(this.unnamedXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml, "/customer/email/text()");
 		// Then
@@ -58,16 +58,16 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldThrowExceptionOnIllegalValueFromXPath() {
 		// Given
-		Document parsedXml = parsedXml(unnamedXml);
+		Document parsedXml = parsedXml(this.unnamedXml);
 		// When / Then
-		assertThrows(IllegalArgumentException.class,
-				() -> ContractVerifierUtil.valueFromXPath(parsedXml, "/ns1:customer/email/text()"));
+		assertThatThrownBy(() -> ContractVerifierUtil.valueFromXPath(parsedXml, "/ns1:customer/email/text()"))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	public void shouldGetEmptyValueFromXPathWithNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml, "/customer/email/text()");
 		// Then
@@ -77,7 +77,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetValueFromXPathWithNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml, "/ns1:customer/email/text()");
 		// Then
@@ -87,7 +87,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetNamespaceValueFromXPathWithNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml, "/ns1:customer/namespace::ns1");
 		// Then
@@ -97,7 +97,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetValueFromXPathWithDefaultNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml,
 				"/ns1:customer/*[local-name()='contact-info' and namespace-uri()='http://demo.com/contact-info']/*[local-name()='name']/text()");
@@ -108,7 +108,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetValueFromXPathWithNestedNamespaces1() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml,
 				"/ns1:customer/*[local-name()='contact-info' and namespace-uri()='http://demo.com/contact-info']/*[local-name()='address']/addr:gps/*[local-name()='lat']/text()");
@@ -119,7 +119,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetValueFromXPathWithNestedNamespaces2() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml,
 				"/ns1:customer/*[local-name()='contact-info' and namespace-uri()='http://demo.com/contact-info']/*[local-name()='address']/addr:gps/addr:lon/text()");
@@ -130,7 +130,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetEmptyValueFromXPathWithDefaultNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml, "/ns1:customer/contact-info/name/text()");
 		// Then
@@ -140,7 +140,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetEmptyValueFromXPathWithNestedDefaultNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		String value = ContractVerifierUtil.valueFromXPath(parsedXml,
 				"/ns1:customer/*[local-name()='contact-info' and namespace-uri()='http://demo.com/contact-info']/name/text()");
@@ -151,7 +151,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetNodeFromXPath() {
 		// Given
-		Document parsedXml = parsedXml(unnamedXml);
+		Document parsedXml = parsedXml(this.unnamedXml);
 		// When
 		Node node = ContractVerifierUtil.nodeFromXPath(parsedXml, "/customer/email/text()");
 		// Then
@@ -161,16 +161,16 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldThrowExceptionOnIllegalNodeFromXPath() {
 		// Given
-		Document parsedXml = parsedXml(unnamedXml);
+		Document parsedXml = parsedXml(this.unnamedXml);
 		// When / Then
-		assertThrows(IllegalArgumentException.class,
-				() -> ContractVerifierUtil.nodeFromXPath(parsedXml, "/ns1:customer/email/text()"));
+		assertThatThrownBy(() -> ContractVerifierUtil.nodeFromXPath(parsedXml, "/ns1:customer/email/text()"))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	public void shouldGetNodeFromXPathWithNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		Node node = ContractVerifierUtil.nodeFromXPath(parsedXml, "/ns1:customer/email/text()");
 		// Then
@@ -180,7 +180,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetNamespaceNodeFromXPathWithNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		Node node = ContractVerifierUtil.nodeFromXPath(parsedXml, "/ns1:customer/namespace::ns1");
 		// Then
@@ -190,7 +190,7 @@ public class ContractVerifierUtilTest {
 	@Test
 	public void shouldGetEmptyNodeFromXPathWithNamespace() {
 		// Given
-		Document parsedXml = parsedXml(namedComplexXml);
+		Document parsedXml = parsedXml(this.namedComplexXml);
 		// When
 		Node node = ContractVerifierUtil.nodeFromXPath(parsedXml, "/customer/email/text()");
 		// Then

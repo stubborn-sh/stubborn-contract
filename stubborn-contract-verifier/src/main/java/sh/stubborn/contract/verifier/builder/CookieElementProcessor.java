@@ -39,7 +39,7 @@ interface CookieElementProcessor {
 		while (iterator.hasNext()) {
 			Cookie cookie = iterator.next();
 			String text = processCookieElement(cookie.getKey(),
-					cookie.getServerValue() instanceof NotToEscapePattern ? cookie.getServerValue()
+					(cookie.getServerValue() instanceof NotToEscapePattern) ? cookie.getServerValue()
 							: MapConverter.getTestSideValues(Objects.requireNonNull(cookie.getServerValue())));
 			if (iterator.hasNext()) {
 				blockBuilder().addLine(text).addEndingIfNotPresent();

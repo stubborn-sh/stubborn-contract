@@ -185,7 +185,7 @@ public class ContractVerifierConfigProperties {
 	private boolean failOnInProgress = true;
 
 	public TestFramework getTestFramework() {
-		return testFramework;
+		return this.testFramework;
 	}
 
 	public void setTestFramework(TestFramework testFramework) {
@@ -193,7 +193,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public TestMode getTestMode() {
-		return testMode;
+		return this.testMode;
 	}
 
 	public void setTestMode(TestMode testMode) {
@@ -201,7 +201,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public @Nullable String getBasePackageForTests() {
-		return basePackageForTests;
+		return this.basePackageForTests;
 	}
 
 	public void setBasePackageForTests(String basePackageForTests) {
@@ -209,7 +209,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public @Nullable String getBaseClassForTests() {
-		return baseClassForTests;
+		return this.baseClassForTests;
 	}
 
 	public void setBaseClassForTests(String baseClassForTests) {
@@ -217,7 +217,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public @Nullable String getNameSuffixForTests() {
-		return nameSuffixForTests;
+		return this.nameSuffixForTests;
 	}
 
 	public void setNameSuffixForTests(String nameSuffixForTests) {
@@ -225,7 +225,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public @Nullable String getRuleClassForTests() {
-		return ruleClassForTests;
+		return this.ruleClassForTests;
 	}
 
 	public void setRuleClassForTests(String ruleClassForTests) {
@@ -233,7 +233,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public List<String> getExcludedFiles() {
-		return excludedFiles;
+		return this.excludedFiles;
 	}
 
 	public void setExcludedFiles(List<String> excludedFiles) {
@@ -241,7 +241,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public List<String> getIncludedFiles() {
-		return includedFiles;
+		return this.includedFiles;
 	}
 
 	public void setIncludedFiles(List<String> includedFiles) {
@@ -249,7 +249,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public List<String> getIgnoredFiles() {
-		return ignoredFiles;
+		return this.ignoredFiles;
 	}
 
 	public void setIgnoredFiles(List<String> ignoredFiles) {
@@ -257,7 +257,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String[] getImports() {
-		return imports;
+		return this.imports;
 	}
 
 	public void setImports(String[] imports) {
@@ -265,7 +265,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String[] getStaticImports() {
-		return staticImports;
+		return this.staticImports;
 	}
 
 	public void setStaticImports(String[] staticImports) {
@@ -273,7 +273,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public File getContractsDslDir() {
-		return contractsDslDir;
+		return this.contractsDslDir;
 	}
 
 	public void setContractsDslDir(File contractsDslDir) {
@@ -281,7 +281,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public File getGeneratedTestSourcesDir() {
-		return generatedTestSourcesDir;
+		return this.generatedTestSourcesDir;
 	}
 
 	public void setGeneratedTestSourcesDir(File generatedTestSourcesDir) {
@@ -289,7 +289,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public File getGeneratedTestResourcesDir() {
-		return generatedTestResourcesDir;
+		return this.generatedTestResourcesDir;
 	}
 
 	public void setGeneratedTestResourcesDir(File generatedTestResourcesDir) {
@@ -297,7 +297,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public File getStubsOutputDir() {
-		return stubsOutputDir;
+		return this.stubsOutputDir;
 	}
 
 	public void setStubsOutputDir(File stubsOutputDir) {
@@ -305,7 +305,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String getStubsSuffix() {
-		return stubsSuffix;
+		return this.stubsSuffix;
 	}
 
 	public void setStubsSuffix(String stubsSuffix) {
@@ -313,7 +313,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public Boolean getAssertJsonSize() {
-		return assertJsonSize;
+		return this.assertJsonSize;
 	}
 
 	public void setAssertJsonSize(Boolean assertJsonSize) {
@@ -321,7 +321,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String getIncludedContracts() {
-		return includedContracts;
+		return this.includedContracts;
 	}
 
 	public void setIncludedContracts(String includedContracts) {
@@ -329,7 +329,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String getIncludedRootFolderAntPattern() {
-		return includedRootFolderAntPattern;
+		return this.includedRootFolderAntPattern;
 	}
 
 	public void setIncludedRootFolderAntPattern(String includedRootFolderAntPattern) {
@@ -337,7 +337,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public @Nullable String getPackageWithBaseClasses() {
-		return packageWithBaseClasses;
+		return this.packageWithBaseClasses;
 	}
 
 	public void setPackageWithBaseClasses(String packageWithBaseClasses) {
@@ -345,7 +345,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public @Nullable Map<String, String> getBaseClassMappings() {
-		return baseClassMappings;
+		return this.baseClassMappings;
 	}
 
 	public void setBaseClassMappings(Map<String, String> baseClassMappings) {
@@ -353,11 +353,11 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public boolean getExcludeBuildFolders() {
-		return excludeBuildFolders;
+		return this.excludeBuildFolders;
 	}
 
 	public boolean isExcludeBuildFolders() {
-		return excludeBuildFolders;
+		return this.excludeBuildFolders;
 	}
 
 	public void setExcludeBuildFolders(boolean excludeBuildFolders) {

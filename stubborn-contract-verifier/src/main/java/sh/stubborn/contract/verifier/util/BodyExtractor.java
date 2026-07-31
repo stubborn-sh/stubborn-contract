@@ -23,13 +23,10 @@ import groovy.json.JsonOutput;
 import groovy.json.StringEscapeUtils;
 import groovy.lang.GString;
 import org.jspecify.annotations.Nullable;
-
 import sh.stubborn.contract.spec.internal.CanBeDynamic;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.RegexProperty;
-
-import static sh.stubborn.contract.verifier.util.ContentUtils.extractValue;
 
 /**
  * Class that constructs a String from a body. The body can be a GString or a map.
@@ -43,6 +40,8 @@ public final class BodyExtractor {
 	}
 
 	/**
+	 * Extracts the server side representation of the body.
+	 * @param body the body to extract the value from
 	 * @return the string representation of the body for the server side. That means that
 	 * all the interpolations etc. will be resolved for the server side.
 	 */
@@ -54,6 +53,8 @@ public final class BodyExtractor {
 	}
 
 	/**
+	 * Extracts the client side representation of the body.
+	 * @param body the body to extract the value from
 	 * @return the string representation of the body for the client side. That means that
 	 * all the interpolations etc. will be resolved for the client side.
 	 */
@@ -65,18 +66,18 @@ public final class BodyExtractor {
 	}
 
 	private static String trimRepeatedQuotes(String toTrim) {
-		return toTrim.startsWith("\"") ? toTrim.replaceAll("\"", "") : toTrim;
+		return (toTrim.startsWith("\"")) ? toTrim.replaceAll("\"", "") : toTrim;
 	}
 
 	public static @Nullable Object extractServerValueFromBody(@Nullable Object bodyValue) {
 		if (bodyValue instanceof GString) {
 			Function<Object, @Nullable Object> serverSide = (v) -> ((DslProperty<?>) v).getServerValue();
-			return extractValue((GString) bodyValue, serverSide);
+			return ContentUtils.extractValue((GString) bodyValue, serverSide);
 		}
 		if (bodyValue == null) {
 			return null;
 		}
-		Function<Object, @Nullable Object> serverSide = (it) -> it instanceof DslProperty
+		Function<Object, @Nullable Object> serverSide = (it) -> (it instanceof DslProperty)
 				? ((DslProperty<?>) it).getServerValue() : it;
 		return MapConverter.transformValues(bodyValue, serverSide);
 	}
@@ -87,7 +88,7 @@ public final class BodyExtractor {
 		}
 		if (bodyValue instanceof GString) {
 			Function<Object, @Nullable Object> clientSide = (v) -> ((DslProperty<?>) v).getClientValue();
-			return extractValue((GString) bodyValue, clientSide);
+			return ContentUtils.extractValue((GString) bodyValue, clientSide);
 		}
 		else if (bodyValue instanceof DslProperty) {
 			return extractClientValueFromBody(((DslProperty<?>) bodyValue).getClientValue());
@@ -97,7 +98,7 @@ public final class BodyExtractor {
 		}
 		else {
 			Function<Object, @Nullable Object> clientSide = (it) -> {
-				Object prop = it instanceof DslProperty ? ((DslProperty<?>) it).getClientValue() : it;
+				Object prop = (it instanceof DslProperty) ? ((DslProperty<?>) it).getClientValue() : it;
 				if (prop instanceof CanBeDynamic || prop instanceof Pattern) {
 					return new RegexProperty(prop).generateConcreteValue();
 				}

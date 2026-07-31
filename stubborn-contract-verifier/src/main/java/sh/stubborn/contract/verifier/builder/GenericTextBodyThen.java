@@ -22,9 +22,6 @@ import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
 
-import static sh.stubborn.contract.verifier.util.ContentType.JSON;
-import static sh.stubborn.contract.verifier.util.ContentType.XML;
-
 class GenericTextBodyThen implements Then {
 
 	private final BlockBuilder blockBuilder;
@@ -68,7 +65,7 @@ class GenericTextBodyThen implements Then {
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
 		ContentType outputTestContentType = metadata.getOutputTestContentType();
-		return outputTestContentType != JSON && outputTestContentType != XML
+		return outputTestContentType != ContentType.JSON && outputTestContentType != ContentType.XML
 				&& this.bodyParser.responseBody(metadata) != null
 				&& !(Objects.requireNonNull(this.bodyParser.responseBody(metadata))
 					.getServerValue() instanceof FromFileProperty);

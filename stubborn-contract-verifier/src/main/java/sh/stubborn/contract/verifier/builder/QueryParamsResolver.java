@@ -26,6 +26,8 @@ interface QueryParamsResolver {
 
 	/**
 	 * Converts the query parameter value into String.
+	 * @param value the query parameter value to resolve
+	 * @return the resolved string representation of the value
 	 */
 	default String resolveParamValue(@Nullable Object value) {
 		if (value instanceof QueryParameter) {
@@ -40,7 +42,7 @@ interface QueryParamsResolver {
 		else if (value instanceof DslProperty) {
 			return resolveParamValue(((DslProperty) value).getServerValue());
 		}
-		return value == null ? "null" : value.toString();
+		return (value != null) ? value.toString() : "null";
 	}
 
 }

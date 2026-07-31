@@ -108,7 +108,7 @@ public final class ContractVerifierUtil {
 	 * Helper method to retrieve XML {@link Node} with provided xPath.
 	 * @param parsedXml - a {@link Document} object with parsed XML content
 	 * @param path - the xPath expression to retrieve the value with
-	 * @return XML {@link Node} object
+	 * @return the XML {@link Node} object
 	 * @since 2.1.0
 	 */
 	public static Node nodeFromXPath(Document parsedXml, String path) {
@@ -153,6 +153,7 @@ public final class ContractVerifierUtil {
 	}
 
 	/**
+	 * Returns a builder for a map.
 	 * @return a builder for map
 	 */
 	public static ContractVerifierMap map() {

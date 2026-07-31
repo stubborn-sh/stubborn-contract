@@ -55,7 +55,7 @@ class JaxRsResponseHeadersThen implements Then {
 		while (iterator.hasNext()) {
 			Header header = iterator.next();
 			String text = processHeaderElement(header.getName(),
-					header.getServerValue() instanceof NotToEscapePattern ? header.getServerValue()
+					(header.getServerValue() instanceof NotToEscapePattern) ? header.getServerValue()
 							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue())));
 			if (iterator.hasNext()) {
 				this.blockBuilder.addLineWithEnding(text);

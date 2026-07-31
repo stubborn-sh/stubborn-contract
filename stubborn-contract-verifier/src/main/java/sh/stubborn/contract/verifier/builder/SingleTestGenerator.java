@@ -25,6 +25,7 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
 /**
  * Builds a single test.
  *
+ * @author Marcin Grzejszczak
  * @since 1.1.0
  */
 public interface SingleTestGenerator {

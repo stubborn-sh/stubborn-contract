@@ -47,8 +47,8 @@ class ContractHttpDocsTests {
 
 	@BeforeEach
 	void setup() {
-		properties = new ContractVerifierConfigProperties();
-		properties.setAssertJsonSize(true);
+		this.properties = new ContractVerifierConfigProperties();
+		this.properties.setAssertJsonSize(true);
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
@@ -69,7 +69,7 @@ class ContractHttpDocsTests {
 					}
 				});
 			}
-		}.buildClass(properties, List.of(contractMetadata(contractDsl)), "foo", generatedClassData);
+		}.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {
@@ -101,7 +101,7 @@ class ContractHttpDocsTests {
 
 	@Test
 	void should_convert_dsl_with_optionals_to_proper_spock_test() {
-		properties.setTestFramework(TestFramework.SPOCK);
+		this.properties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(OPTIONALS);
 
 		String expectedTest = """

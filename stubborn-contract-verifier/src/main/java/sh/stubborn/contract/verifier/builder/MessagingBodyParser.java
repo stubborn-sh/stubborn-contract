@@ -25,6 +25,12 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 interface MessagingBodyParser extends BodyParser {
 
+	/**
+	 * Shared Java messaging body parser instance.
+	 */
+	MessagingBodyParser INSTANCE = new MessagingBodyParser() {
+	};
+
 	default String responseAsString() {
 		return "contractVerifierObjectMapper.writeValueAsString(response.getPayload())";
 	}
