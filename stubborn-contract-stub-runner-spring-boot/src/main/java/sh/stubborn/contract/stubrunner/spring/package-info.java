@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.stubrunner.server;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 /**
- * Standalone Spring Boot application that starts the stub runner server.
- *
- * @author Marcin Grzejszczak
+ * Spring Boot auto-configuration and support classes for the Stubborn Contract Stub
+ * Runner.
  */
-@SpringBootApplication
-@EnableStubRunnerServer
-public class StubRunnerBoot {
-
-	public static void main(String[] args) {
-		SpringApplication.run(StubRunnerBoot.class, args);
-	}
-
-}
+package sh.stubborn.contract.stubrunner.spring;

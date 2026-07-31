@@ -44,7 +44,7 @@ public final class StubRunnerWireMockTestExecutionListener extends AbstractTestE
 			return;
 		}
 		if (!WireMockHttpServerStub.SERVERS.isEmpty()
-				&& WireMockHttpServerStub.SERVERS.values().stream().noneMatch(p -> p.random)) {
+				&& WireMockHttpServerStub.SERVERS.values().stream().noneMatch((p) -> p.random)) {
 			if (log.isWarnEnabled()) {
 				log.warn("You've used fixed ports for WireMock setup - "
 						+ "will mark context as dirty. Please use random ports, as much "

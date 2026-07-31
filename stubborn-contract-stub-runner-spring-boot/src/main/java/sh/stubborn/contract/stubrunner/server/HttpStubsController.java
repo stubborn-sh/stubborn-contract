@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * Controller that exposes the running HTTP stubs and their mappings.
+ *
  * @author Marcin Grzejszczak
  */
 @RestController

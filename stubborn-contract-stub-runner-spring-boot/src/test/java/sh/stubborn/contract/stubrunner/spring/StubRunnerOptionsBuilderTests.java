@@ -17,6 +17,7 @@
 package sh.stubborn.contract.stubrunner.spring;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;

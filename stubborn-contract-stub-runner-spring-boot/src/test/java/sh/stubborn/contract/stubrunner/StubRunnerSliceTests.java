@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.stubrunner;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
@@ -50,10 +51,10 @@ public class StubRunnerSliceTests {
 	private StubRunnerProperties properties;
 
 	@Value("${stubborn.contract.stubrunner.runningstubs.fraudDetectionServer.port}")
-	private Integer fraudDetectionServerPort;
+	private @Nullable Integer fraudDetectionServerPort;
 
 	@Value("${stubborn.contract.stubrunner.runningstubs.loanIssuance.port}")
-	private Integer loanIssuancePort;
+	private @Nullable Integer loanIssuancePort;
 
 	@Test
 	public void testThatListedStubsAreRunning() {

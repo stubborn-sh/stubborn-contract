@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.stubrunner.server;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 /**
- * Standalone Spring Boot application that starts the stub runner server.
- *
- * @author Marcin Grzejszczak
+ * WireMock provider support for the Stubborn Contract Stub Runner Spring Boot
+ * integration.
  */
-@SpringBootApplication
-@EnableStubRunnerServer
-public class StubRunnerBoot {
-
-	public static void main(String[] args) {
-		SpringApplication.run(StubRunnerBoot.class, args);
-	}
-
-}
+package sh.stubborn.contract.stubrunner.provider.wiremock;

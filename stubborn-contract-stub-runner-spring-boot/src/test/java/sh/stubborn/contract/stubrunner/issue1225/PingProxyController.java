@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.stubrunner.server;
+package sh.stubborn.contract.stubrunner.issue1225;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Standalone Spring Boot application that starts the stub runner server.
- *
- * @author Marcin Grzejszczak
- */
-@SpringBootApplication
-@EnableStubRunnerServer
-public class StubRunnerBoot {
+@RestController
+class PingProxyController {
 
-	public static void main(String[] args) {
-		SpringApplication.run(StubRunnerBoot.class, args);
+	String pingUrl;
+
+	PingProxyController(@Value("${ping.url}") String pingUrl) {
+		this.pingUrl = pingUrl;
 	}
 
 }

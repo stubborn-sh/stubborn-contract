@@ -25,11 +25,10 @@ import java.util.List;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
-import org.springframework.kafka.core.KafkaTemplate;
-
 import org.mockito.ArgumentMatcher;
-
 import sh.stubborn.contract.verifier.messaging.avro.KafkaAvroMessageVerifierSender;
+
+import org.springframework.kafka.core.KafkaTemplate;
 
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
