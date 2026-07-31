@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.stubrunner.messaging.amqp;
 
+import org.jspecify.annotations.Nullable;
+
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -28,7 +30,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
  */
 public class MessageSubscriberRabbitListener {
 
-	private Person person;
+	private @Nullable Person person;
 
 	// tag::amqp_annotated_listener[]
 	@RabbitListener(bindings = @QueueBinding(value = @Queue("test.queue"),
@@ -38,7 +40,7 @@ public class MessageSubscriberRabbitListener {
 	}
 
 	// end::amqp_annotated_listener[]
-	public Person getPerson() {
+	public @Nullable Person getPerson() {
 		return this.person;
 	}
 

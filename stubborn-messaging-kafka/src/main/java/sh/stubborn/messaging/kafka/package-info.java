@@ -14,35 +14,7 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.stubrunner.messaging.amqp;
-
-import org.jspecify.annotations.Nullable;
-
 /**
- * Person pojo.
- *
- * @author Mathias Düsterhöft
+ * Kafka messaging support for Stubborn Contract.
  */
-public class Person {
-
-	private @Nullable Integer id;
-
-	private @Nullable String name;
-
-	public @Nullable Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public @Nullable String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-}
+package sh.stubborn.messaging.kafka;

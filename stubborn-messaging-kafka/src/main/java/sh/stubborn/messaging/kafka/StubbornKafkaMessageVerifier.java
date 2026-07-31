@@ -27,6 +27,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
@@ -54,20 +55,22 @@ class StubbornKafkaMessageVerifier implements MessageVerifierSender<Message<?>>,
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void send(Message<?> message, String destination, YamlContract contract) {
+	public void send(Message<?> message, String destination, @Nullable YamlContract contract) {
 		log.info("Sending message to Kafka topic '{}': {}", destination, message.getPayload());
-		kafkaTemplate.send(destination, message.getPayload());
+		this.kafkaTemplate.send(destination, message.getPayload());
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
 		log.info("Sending message to Kafka topic '{}': {}", destination, payload);
-		kafkaTemplate.send(destination, payload);
+		this.kafkaTemplate.send(destination, payload);
 	}
 
 	@Override
-	public Message<?> receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+	public @Nullable Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
+			@Nullable YamlContract contract) {
 		long timeoutMs = timeUnit.toMillis(timeout);
 		log.info("Receiving message from Kafka topic '{}' with timeout {}ms", destination, timeoutMs);
 		Properties consumerProps = buildConsumerProperties();
@@ -80,7 +83,7 @@ class StubbornKafkaMessageVerifier implements MessageVerifierSender<Message<?>>,
 				for (ConsumerRecord<String, Object> record : records) {
 					log.info("Received message from '{}': {}", destination, record.value());
 					MessageBuilder<Object> builder = MessageBuilder.withPayload(record.value());
-					record.headers().forEach(header -> builder.setHeader(header.key(), new String(header.value())));
+					record.headers().forEach((header) -> builder.setHeader(header.key(), new String(header.value())));
 					builder.setHeaderIfAbsent("contentType", "application/json");
 					return builder.build();
 				}
@@ -91,13 +94,13 @@ class StubbornKafkaMessageVerifier implements MessageVerifierSender<Message<?>>,
 	}
 
 	@Override
-	public Message<?> receive(String destination, YamlContract contract) {
-		return receive(destination, properties.getReceiveTimeout().toSeconds(), TimeUnit.SECONDS, contract);
+	public @Nullable Message<?> receive(String destination, @Nullable YamlContract contract) {
+		return receive(destination, this.properties.getReceiveTimeout().toSeconds(), TimeUnit.SECONDS, contract);
 	}
 
 	@SuppressWarnings("unchecked")
 	private Properties buildConsumerProperties() {
-		Object bootstrapServersRaw = kafkaTemplate.getProducerFactory()
+		Object bootstrapServersRaw = this.kafkaTemplate.getProducerFactory()
 			.getConfigurationProperties()
 			.getOrDefault("bootstrap.servers", "localhost:9092");
 		String bootstrapServers;
