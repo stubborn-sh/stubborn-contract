@@ -101,7 +101,7 @@ class GenericJsonBodyThen implements Then {
 	private void processBodyElement(String oldProp, String property, Object value) {
 		String propDiff = subtract(property, oldProp);
 		String prop = wrappedWithBracketsForDottedProp(propDiff);
-		String mergedProp = (property != null && !property.isBlank()) ? oldProp + "." + prop : "";
+		String mergedProp = !property.isBlank() ? oldProp + "." + prop : "";
 		if (value instanceof ExecutionProperty) {
 			processBodyElement(mergedProp, (ExecutionProperty) value);
 		}

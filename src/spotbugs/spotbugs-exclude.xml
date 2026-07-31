@@ -47,6 +47,33 @@
 		<Bug pattern="REDOS"/>
 	</Match>
 
+	<!-- Stubborn Contract is a build-time / test-time tool: it reads the
+	     developer's own contract files, evaluates the XPath / Groovy DSL those
+	     contracts declare, writes generated test sources, and deep-clones the
+	     in-memory contract model. None of these inputs are untrusted runtime
+	     data, so FindSecBugs' injection/traversal patterns are false positives
+	     here. (XML external-entity parsing is separately hardened in code.) -->
+	<Match>
+		<Bug pattern="PATH_TRAVERSAL_IN,PATH_TRAVERSAL_OUT,XPATH_INJECTION,GROOVY_SHELL,OBJECT_DESERIALIZATION"/>
+	</Match>
+
+	<!-- The migrated DSL utilities interoperate with Groovy by creating
+	     anonymous groovy.lang.Closure subclasses. Groovy invokes their doCall
+	     methods reflectively via Closure.call(), which SpotBugs cannot see, so
+	     it wrongly reports the methods as uncallable. -->
+	<Match>
+		<Class name="~.*\.(ContentUtils|MapConverter)\$.*"/>
+		<Bug pattern="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"/>
+	</Match>
+
+	<!-- YamlContract is a plain data-transfer object whose public fields are
+	     populated by the YAML deserializer through reflection; SpotBugs cannot
+	     see those writes and reports the fields as never written. -->
+	<Match>
+		<Class name="~.*\.YamlContract(\$.*)?"/>
+		<Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD,UWF_UNWRITTEN_FIELD"/>
+	</Match>
+
 	<!-- Remaining low-severity structural findings in the migrated code base that
 	     do not indicate defects: mutable static holders, missing equals overrides
 	     on value wrappers, non-static inner helpers, serialization metadata, and

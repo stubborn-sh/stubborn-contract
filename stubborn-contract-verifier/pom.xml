@@ -93,6 +93,11 @@
 			<artifactId>jspecify</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.google.errorprone</groupId>
+			<artifactId>error_prone_annotations</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.rackspace.eclipse.webtools.sourceediting</groupId>
 			<artifactId>org.eclipse.wst.xml.xpath2.processor</artifactId>
 		</dependency>

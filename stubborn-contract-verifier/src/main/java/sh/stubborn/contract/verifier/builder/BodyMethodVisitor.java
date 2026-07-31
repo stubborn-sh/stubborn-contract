@@ -100,7 +100,7 @@ interface BodyMethodVisitor {
 		Iterator<MethodVisitor> iterator = visitors.iterator();
 		while (iterator.hasNext()) {
 			MethodVisitor visitor = iterator.next();
-			var unused = visitor.apply(singleContractMetadata);
+			visitor.apply(singleContractMetadata);
 			if (iterator.hasNext()) {
 				blockBuilder.addEmptyLine();
 			}
@@ -119,7 +119,7 @@ interface BodyMethodVisitor {
 		Iterator<MethodVisitor> iterator = visitors.iterator();
 		while (iterator.hasNext()) {
 			MethodVisitor visitor = iterator.next();
-			var unused = visitor.apply(singleContractMetadata);
+			visitor.apply(singleContractMetadata);
 			blockBuilder.addEndingIfNotPresent();
 			if (iterator.hasNext()) {
 				blockBuilder.addEmptyLine();

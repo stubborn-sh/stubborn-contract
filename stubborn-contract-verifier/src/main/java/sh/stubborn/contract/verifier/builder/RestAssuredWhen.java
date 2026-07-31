@@ -54,7 +54,7 @@ class RestAssuredWhen implements When, BodyMethodVisitor, RestAssuredAcceptor {
 	}
 
 	private void addResponseWhenLine(SingleContractMetadata singleContractMetadata) {
-		var unused = this.responseWhens.stream()
+		this.responseWhens.stream()
 			.filter((when) -> when.accept(singleContractMetadata))
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException(

@@ -50,6 +50,8 @@
 	<suppress files=".*gradle.*" checks=".*"/>
 	<!-- Generated Avro file — no copyright header, no Javadoc, generated class structure -->
 	<suppress files=".*FooAvro.*" checks=".*"/>
+	<!-- gmavenplus-generated Groovy Java stubs — never lint machine-generated sources -->
+	<suppress files=".*[/\\](generated-sources|generated-test-sources)[/\\].*" checks=".*"/>
 	<!-- Pre-existing violations in verifier module — tab indented, builder-pattern classes -->
 	<suppress files=".*verifier/builder/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|NoWhitespaceAfter|DesignForExtension|FinalClass|JavadocStyle|HideUtilityClassConstructor)"/>
 	<suppress files=".*verifier/assertion/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>

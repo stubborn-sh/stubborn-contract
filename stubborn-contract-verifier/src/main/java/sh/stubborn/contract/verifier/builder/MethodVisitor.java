@@ -18,8 +18,20 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.function.Function;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 interface MethodVisitor<T> extends MethodAcceptor, Function<SingleContractMetadata, MethodVisitor<T>> {
+
+	/**
+	 * Visits the given metadata, mutating the shared block builder. Implementations
+	 * return themselves to allow fluent chaining, but callers frequently invoke this
+	 * purely for the side effect, so the returned value may be ignored.
+	 * @param singleContractMetadata metadata of the contract being visited
+	 * @return this visitor
+	 */
+	@CanIgnoreReturnValue
+	@Override
+	MethodVisitor<T> apply(SingleContractMetadata singleContractMetadata);
 
 }

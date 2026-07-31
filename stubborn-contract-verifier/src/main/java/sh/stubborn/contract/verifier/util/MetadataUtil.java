@@ -78,9 +78,8 @@ public final class MetadataUtil {
 		if (patch == null) {
 			return objectToMerge;
 		}
-		byte[] bytes = new byte[0];
 		try {
-			bytes = MAPPER.writer().writeValueAsBytes(patch);
+			byte[] bytes = MAPPER.writer().writeValueAsBytes(patch);
 			return MAPPER.readerForUpdating(objectToMerge).readValue(bytes);
 		}
 		catch (Exception ex) {

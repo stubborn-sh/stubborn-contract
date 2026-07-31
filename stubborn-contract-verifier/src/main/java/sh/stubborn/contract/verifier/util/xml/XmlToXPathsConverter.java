@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -68,10 +69,20 @@ public class XmlToXPathsConverter {
 	private XmlToXPathsConverter() {
 	}
 
+	private static TransformerFactory hardenedTransformerFactory() {
+		TransformerFactory factory = TransformerFactory.newInstance();
+		factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+		factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+		return factory;
+	}
+
 	public static Object removeMatchingXPaths(Object body, @Nullable BodyMatchers bodyMatchers) {
 		try {
 			XPath xPath = XPathFactory.newInstance().newXPath();
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			// Reject DOCTYPE declarations outright, which prevents XML external entity
+			// (XXE) attacks since external entities require a DTD.
+			builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 			builderFactory.setNamespaceAware(true);
 			DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();
 			Document parsedXml = documentBuilder.parse(new InputSource(new StringReader(body.toString())));
@@ -141,6 +152,9 @@ public class XmlToXPathsConverter {
 		try {
 			XPath xPath = XPathFactory.newInstance().newXPath();
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			// Reject DOCTYPE declarations outright, which prevents XML external entity
+			// (XXE) attacks since external entities require a DTD.
+			builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 			builderFactory.setNamespaceAware(true);
 			DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();
 			Document parsedXml = documentBuilder.parse(new InputSource(new StringReader(body.toString())));
@@ -180,7 +194,7 @@ public class XmlToXPathsConverter {
 
 	private static String xmlToString(Node parsedXml) {
 		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			Transformer transformer = hardenedTransformerFactory().newTransformer();
 			StringWriter writer = new StringWriter();
 			StreamResult result = new StreamResult(writer);
 			transformer.transform(new DOMSource(parsedXml), result);
@@ -194,6 +208,9 @@ public class XmlToXPathsConverter {
 	public static List<BodyMatcher> mapToMatchers(Object xml) {
 		try {
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			// Reject DOCTYPE declarations outright, which prevents XML external entity
+			// (XXE) attacks since external entities require a DTD.
+			builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 			builderFactory.setNamespaceAware(true);
 			DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();
 			Document parsedXml = documentBuilder.parse(new InputSource(new StringReader(xml.toString())));

@@ -192,12 +192,9 @@ final class SingleMethodBuilder {
 				visit(this.thens, metaData);
 			});
 			this.blockBuilder.addEmptyLine();
-			this.methodPostProcessors
-				.stream()
+			this.methodPostProcessors.stream()
 				.filter((m) -> m.accept(metaData))
-				.forEach((m) -> {
-				var unused = m.apply(metaData);
-			});
+				.forEach((m) -> m.apply(metaData));
 			// }
 		});
 		// @formatter:on
@@ -208,9 +205,7 @@ final class SingleMethodBuilder {
 		List<MethodPreProcessor> matchingPreProcessors = this.methodPreProcessors.stream()
 			.filter((m) -> m.accept(metaData))
 			.collect(Collectors.toCollection(LinkedList::new));
-		matchingPreProcessors.forEach((m) -> {
-			var unused = m.apply(metaData);
-		});
+		matchingPreProcessors.forEach((m) -> m.apply(metaData));
 		return matchingPreProcessors.stream().anyMatch((m) -> !m.shouldContinue());
 	}
 
@@ -232,7 +227,7 @@ final class SingleMethodBuilder {
 		Iterator<? extends MethodVisitor> iterator = visitors.iterator();
 		while (iterator.hasNext()) {
 			MethodVisitor visitor = iterator.next();
-			var unused = visitor.apply(metaData);
+			visitor.apply(metaData);
 			if (addLineEnding) {
 				this.blockBuilder.addEndingIfNotPresent();
 			}

@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,7 +88,9 @@ public final class ToFileContractsTransformer {
 			log.info("Successfully converted contracts definitions");
 			Map<String, byte[]> stored = contractConverter.store(converted);
 			File outputFolder = new File(outputPath);
-			outputFolder.mkdirs();
+			if (!outputFolder.mkdirs() && !outputFolder.isDirectory()) {
+				throw new IllegalStateException("Failed to create output directory [" + outputFolder + "]");
+			}
 			int i = 1;
 			Set<Map.Entry<String, byte[]>> entries = stored.entrySet();
 			log.info("Will convert [{}] contracts", entries.size());
@@ -100,7 +103,7 @@ public final class ToFileContractsTransformer {
 			}
 			return files;
 		}
-		catch (Exception ex) {
+		catch (ReflectiveOperationException | IOException | RuntimeException ex) {
 			throw new IllegalStateException(ex);
 		}
 	}

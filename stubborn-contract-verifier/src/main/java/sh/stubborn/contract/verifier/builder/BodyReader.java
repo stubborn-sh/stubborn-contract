@@ -115,7 +115,10 @@ class BodyReader {
 		Path relativePath = path.relativize(newFile.toPath());
 		File newFileInGeneratedTestSources = new File(
 				this.generatedClassMetaData.configProperties.getGeneratedTestResourcesDir(), relativePath.toString());
-		newFileInGeneratedTestSources.getParentFile().mkdirs();
+		File generatedTestSourcesParent = newFileInGeneratedTestSources.getParentFile();
+		if (!generatedTestSourcesParent.mkdirs() && !generatedTestSourcesParent.isDirectory()) {
+			throw new IllegalStateException("Failed to create directory [" + generatedTestSourcesParent + "]");
+		}
 		Path generatedTestSourceFilePath = newFileInGeneratedTestSources.toPath();
 		if (log.isDebugEnabled()) {
 			log.debug("Writing file for [" + generatedTestSourceFilePath

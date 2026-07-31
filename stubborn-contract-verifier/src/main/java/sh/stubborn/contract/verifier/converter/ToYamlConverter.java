@@ -65,7 +65,9 @@ public final class ToYamlConverter {
 			log.debug("Converted collection of [{}] contracts to [{}] YAML contracts", collection.size(), yamls.size());
 		}
 		// rm target/copied_contracts/contracts/foo/baz/bar.groovy
-		file.delete();
+		if (!file.delete() && file.exists() && log.isWarnEnabled()) {
+			log.warn("Failed to delete original contract file [{}]", file.getAbsolutePath());
+		}
 		// [contracts/foo/baz/bar.groovy] -> [contracts/foo/baz/bar.yml]
 		Map<String, byte[]> stored = yamlContractConverter.store(yamls);
 		if (log.isDebugEnabled()) {

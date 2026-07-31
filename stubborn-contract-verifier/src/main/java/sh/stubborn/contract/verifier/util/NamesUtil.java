@@ -28,6 +28,9 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A utility class that helps to convert names.
  *
@@ -35,6 +38,8 @@ import java.util.Locale;
  * @since 1.0.0
  */
 public final class NamesUtil {
+
+	private static final Logger log = LoggerFactory.getLogger(NamesUtil.class);
 
 	private NamesUtil() {
 		throw new IllegalStateException("Can't instantiate a utility class");
@@ -226,8 +231,12 @@ public final class NamesUtil {
 		}
 
 		void rename() {
-			this.filesToRename.forEach((fileAndNewName) -> fileAndNewName.file
-				.renameTo(new File(fileAndNewName.file.getParentFile(), fileAndNewName.newName)));
+			this.filesToRename.forEach((fileAndNewName) -> {
+				File target = new File(fileAndNewName.file.getParentFile(), fileAndNewName.newName);
+				if (!fileAndNewName.file.renameTo(target) && log.isWarnEnabled()) {
+					log.warn("Failed to rename [{}] to [{}]", fileAndNewName.file, target);
+				}
+			});
 		}
 
 	}

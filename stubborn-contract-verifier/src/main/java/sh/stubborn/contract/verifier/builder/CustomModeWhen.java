@@ -45,7 +45,7 @@ class CustomModeWhen implements When, BodyMethodVisitor, CustomModeAcceptor {
 	}
 
 	private void addResponseWhenLine(SingleContractMetadata singleContractMetadata) {
-		var unused = this.responseWhens.stream()
+		this.responseWhens.stream()
 			.filter((when) -> when.accept(singleContractMetadata))
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException(

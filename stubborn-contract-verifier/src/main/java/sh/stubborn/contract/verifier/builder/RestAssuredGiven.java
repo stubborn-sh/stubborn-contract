@@ -58,7 +58,7 @@ class RestAssuredGiven implements Given, BodyMethodVisitor, RestAssuredAcceptor 
 	}
 
 	private void addRequestGivenLine(SingleContractMetadata singleContractMetadata) {
-		var unused = this.requestGivens.stream()
+		this.requestGivens.stream()
 			.filter((given) -> given.accept(singleContractMetadata))
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException(

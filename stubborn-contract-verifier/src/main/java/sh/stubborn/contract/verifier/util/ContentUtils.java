@@ -350,10 +350,6 @@ public class ContentUtils {
 		return StringEscapeUtils.escapeXml11(StringEscapeUtils.unescapeXml(obj.toString()));
 	}
 
-	private static @Nullable String transformXMLStringValue(DslProperty dslProperty, Closure valueProvider) {
-		return transformXMLStringValue(valueProvider.call(dslProperty), valueProvider);
-	}
-
 	protected static Object convertDslPropsToTemporaryRegexPatterns(Object parsedJson) {
 		return convertDslPropsToTemporaryRegexPatterns(parsedJson, MapConverter.JSON_PARSING_CLOSURE);
 	}
