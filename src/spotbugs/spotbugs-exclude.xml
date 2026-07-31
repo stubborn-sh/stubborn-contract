@@ -54,7 +54,7 @@
 	     data, so FindSecBugs' injection/traversal patterns are false positives
 	     here. (XML external-entity parsing is separately hardened in code.) -->
 	<Match>
-		<Bug pattern="PATH_TRAVERSAL_IN,PATH_TRAVERSAL_OUT,XPATH_INJECTION,GROOVY_SHELL,OBJECT_DESERIALIZATION"/>
+		<Bug pattern="PATH_TRAVERSAL_IN,PATH_TRAVERSAL_OUT,XPATH_INJECTION,GROOVY_SHELL,OBJECT_DESERIALIZATION,POTENTIAL_XML_INJECTION"/>
 	</Match>
 
 	<!-- The migrated DSL utilities interoperate with Groovy by creating
