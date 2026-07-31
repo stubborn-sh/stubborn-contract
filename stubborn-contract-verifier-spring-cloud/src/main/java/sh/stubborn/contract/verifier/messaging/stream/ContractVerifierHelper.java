@@ -16,31 +16,31 @@
 
 package sh.stubborn.contract.verifier.messaging.stream;
 
-import org.junit.jupiter.api.Test;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 
 import org.springframework.messaging.Message;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-
 /**
- * Tests for {@link ContractVerifierHelper} stream conversion.
+ * Spring Cloud Stream specific {@link ContractVerifierMessaging} implementation.
  *
  * @author Marcin Grzejszczak
  */
-class ContractVerifierHelperForStreamTests {
+class ContractVerifierHelper extends ContractVerifierMessaging<Message<?>> {
 
-	@Test
-	void should_throw_exception_when_a_null_payload_was_sent() {
-		@SuppressWarnings("unchecked")
-		MessageVerifierSender<Message<?>> sender = mock(MessageVerifierSender.class);
-		@SuppressWarnings("unchecked")
-		MessageVerifierReceiver<Message<?>> receiver = mock(MessageVerifierReceiver.class);
-		ContractVerifierHelper helper = new ContractVerifierHelper(sender, receiver);
-		assertThatThrownBy(() -> helper.convert(null)).isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("Message must not be null");
+	ContractVerifierHelper(MessageVerifierSender<Message<?>> sender, MessageVerifierReceiver<Message<?>> receiver) {
+		super(sender, receiver);
+	}
+
+	@Override
+	protected ContractVerifierMessage convert(@Nullable Message<?> receive) {
+		if (receive == null) {
+			throw new IllegalArgumentException("Message must not be null!");
+		}
+		return new ContractVerifierMessage(receive.getPayload(), receive.getHeaders());
 	}
 
 }

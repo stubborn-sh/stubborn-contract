@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 
@@ -38,20 +39,21 @@ class StreamOutputDestinationMessageReceiver implements MessageVerifierReceiver<
 	}
 
 	@Override
-	public Message<?> receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+	public @Nullable Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
+			@Nullable YamlContract contract) {
 		try {
 			OutputDestination outputDestination = this.context.getBean(OutputDestination.class);
 			return outputDestination.receive(timeUnit.toMillis(timeout), destination);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.error("Exception occurred while trying to read a message from " + " a channel with name [" + destination
-					+ "]", e);
-			throw new IllegalStateException(e);
+					+ "]", ex);
+			throw new IllegalStateException(ex);
 		}
 	}
 
 	@Override
-	public Message<?> receive(String destination, YamlContract contract) {
+	public @Nullable Message<?> receive(String destination, @Nullable YamlContract contract) {
 		return receive(destination, 5, TimeUnit.SECONDS, contract);
 	}
 
