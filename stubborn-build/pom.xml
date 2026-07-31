@@ -507,6 +507,7 @@
 				<configuration>
 					<effort>Max</effort>
 					<threshold>Medium</threshold>
+					<excludeFilterFile>${maven.multiModuleProjectDirectory}/src/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
 					<plugins>
 						<plugin>
 							<groupId>com.h3xstream.findsecbugs</groupId>
