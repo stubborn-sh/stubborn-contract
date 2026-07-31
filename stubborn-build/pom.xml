@@ -114,6 +114,11 @@
 		<stubborn.no-spring.skip>true</stubborn.no-spring.skip>
 		<!-- Set to false in public API modules to enable revapi binary-compat check. -->
 		<stubborn.revapi.skip>true</stubborn.revapi.skip>
+		<!--
+		  Groovy-free production gate: fails the build if any .groovy source is found under
+		  src/main. Set to true only in modules that legitimately ship a Groovy DSL.
+		-->
+		<stubborn.no-groovy.skip>false</stubborn.no-groovy.skip>
 	</properties>
 
 	<dependencyManagement>
@@ -466,6 +471,42 @@
 									</includes>
 								</bannedDependencies>
 							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!--
+			  Bans Groovy production source (src/main/**/*.groovy) so production code
+			  stays Java-only. Contract fixtures under src/main/resources are ignored
+			  (only source roots src/main/java and src/main/groovy are scanned).
+			  Modules that legitimately ship a Groovy DSL opt out with:
+			    <stubborn.no-groovy.skip>true</stubborn.no-groovy.skip>
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>ban-groovy-in-production</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<skip>${stubborn.no-groovy.skip}</skip>
+							<target>
+								<pathconvert property="stubborn.groovy.production.sources" setonempty="false">
+									<fileset dir="${project.basedir}" erroronmissingdir="false">
+										<include name="src/main/java/**/*.groovy"/>
+										<include name="src/main/groovy/**/*.groovy"/>
+									</fileset>
+								</pathconvert>
+								<fail if="stubborn.groovy.production.sources">
+Groovy source is not allowed in production code (src/main). Convert it to Java, or set stubborn.no-groovy.skip=true in a module that ships a Groovy DSL.
+Offending files:
+${stubborn.groovy.production.sources}
+								</fail>
+							</target>
 						</configuration>
 					</execution>
 				</executions>

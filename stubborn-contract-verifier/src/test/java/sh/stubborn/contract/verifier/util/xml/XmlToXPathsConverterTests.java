@@ -17,14 +17,19 @@
 package sh.stubborn.contract.verifier.util.xml;
 
 import javax.xml.xpath.XPathExpressionException;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.w3c.dom.Node;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
+import sh.stubborn.contract.spec.internal.MatchingType;
+import sh.stubborn.contract.spec.internal.MatchingTypeValue;
+import sh.stubborn.contract.spec.internal.PathBodyMatcher;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -130,6 +135,41 @@ class XmlToXPathsConverterTests {
 		BodyMatchers m = new BodyMatchers();
 		m.xPath(xpath, m.byEquality());
 		assertThat(XmlToXPathsConverter.removeMatchingXPaths(xml, m)).isEqualTo(result);
+	}
+
+	@Test
+	void should_return_matcher_value_verbatim_for_non_equality_matcher() {
+		// A non-EQUALITY matcher with a non-blank value returns that value, without
+		// reading the body.
+		BodyMatcher matcher = new PathBodyMatcher("/customer/email/text()",
+				new MatchingTypeValue(MatchingType.REGEX, "[a-z]+"));
+		assertThat(XmlToXPathsConverter.retrieveValue(matcher, UNNAMED_XML)).isEqualTo("[a-z]+");
+	}
+
+	@Test
+	void should_read_value_from_body_for_equality_matcher() {
+		// An EQUALITY matcher ignores its own value and reads the body at the path.
+		BodyMatcher matcher = new PathBodyMatcher("/customer/email/text()",
+				new MatchingTypeValue(MatchingType.EQUALITY, "ignored"));
+		assertThat(XmlToXPathsConverter.retrieveValue(matcher, UNNAMED_XML)).isEqualTo("customer@test.com");
+	}
+
+	@Test
+	void should_read_value_from_body_when_matcher_value_is_falsy() {
+		// A blank (Groovy-falsy) value falls back to reading the body, matching the
+		// original DSL.
+		BodyMatcher matcher = new PathBodyMatcher("/customer/email/text()",
+				new MatchingTypeValue(MatchingType.REGEX, ""));
+		assertThat(XmlToXPathsConverter.retrieveValue(matcher, UNNAMED_XML)).isEqualTo("customer@test.com");
+	}
+
+	@Test
+	void should_return_empty_xpath_for_null_or_empty_nodes() {
+		// Groovy `if (!nodes)` treated both null and empty as empty; the Java port must
+		// too.
+		String emptyResult = XmlToXPathsConverter.buildXPath(Collections.<Node>emptyList());
+		assertThat(XmlToXPathsConverter.buildXPath(null)).isEqualTo(emptyResult);
+		assertThat(XmlToXPathsConverter.buildXPath(null, 1)).isEqualTo(emptyResult);
 	}
 
 	@Test
