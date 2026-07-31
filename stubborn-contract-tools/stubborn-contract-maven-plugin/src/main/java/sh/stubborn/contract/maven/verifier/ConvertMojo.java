@@ -39,8 +39,6 @@ import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.converter.RecursiveFilesConverter;
 import sh.stubborn.contract.verifier.converter.ToYamlConverter;
 
-import static sh.stubborn.contract.maven.verifier.ChangeDetector.inputFilesChangeDetected;
-
 /**
  * Convert Spring Cloud Contract Verifier contracts into stubs mappings.
  * <p>
@@ -50,6 +48,7 @@ import static sh.stubborn.contract.maven.verifier.ChangeDetector.inputFilesChang
  * @author Mariusz Smykula
  */
 @Mojo(name = "convert", requiresProject = false, defaultPhase = LifecyclePhase.PROCESS_TEST_RESOURCES)
+@SuppressWarnings("NullAway.Init")
 public class ConvertMojo extends AbstractMojo {
 
 	static final String DEFAULT_STUBS_DIR = "${project.build.directory}/stubs/";
@@ -214,17 +213,18 @@ public class ConvertMojo extends AbstractMojo {
 		ContractVerifierConfigProperties config = new ContractVerifierConfigProperties();
 		config.setExcludeBuildFolders(this.excludeBuildFolders);
 		// download contracts, unzip them and pass as output directory
-		AetherStubDownloader.setRepositorySystemFromMaven(repositorySystem);
-		File contractsDirectory = locationOfContracts(config);
-		contractsDirectory = contractSubfolderIfPresent(contractsDirectory);
+		AetherStubDownloader.setRepositorySystemFromMaven(this.repositorySystem);
+		File contractsDirectory = contractSubfolderIfPresent(locationOfContracts(config));
 
-		if (this.incrementalContractStubs && !inputFilesChangeDetected(contractsDirectory, mojoExecution, session)) {
+		if (this.incrementalContractStubs
+				&& !ChangeDetector.inputFilesChangeDetected(contractsDirectory, this.mojoExecution, this.session)) {
 			getLog().info("Nothing to generate - all stubs are up to date");
 			return;
 		}
 
 		File contractsDslDir = contractsDslDir(contractsDirectory);
-		LeftOverPrevention leftOverPrevention = new LeftOverPrevention(this.stubsDirectory, mojoExecution, session);
+		LeftOverPrevention leftOverPrevention = new LeftOverPrevention(this.stubsDirectory, this.mojoExecution,
+				this.session);
 
 		File copiedContracts = copyContracts(rootPath, config, contractsDirectory);
 		if (this.convertToYaml) {
@@ -275,15 +275,15 @@ public class ConvertMojo extends AbstractMojo {
 		getLog().info(String.format("Stub Server stubs mappings directory: %s", config.getStubsOutputDir()));
 	}
 
-	private File contractSubfolderIfPresent(File contractsDirectory) {
-		File contractsSubFolder = new File(contractsDirectory, "contracts");
+	private File contractSubfolderIfPresent(File directory) {
+		File contractsSubFolder = new File(directory, "contracts");
 		if (contractsSubFolder.exists()) {
 			if (getLog().isDebugEnabled()) {
 				getLog().debug("The subfolder [contracts] exists, will pick it as a source of contracts");
 			}
-			contractsDirectory = contractsSubFolder;
+			return contractsSubFolder;
 		}
-		return contractsDirectory;
+		return directory;
 	}
 
 	private File locationOfContracts(ContractVerifierConfigProperties config) {
