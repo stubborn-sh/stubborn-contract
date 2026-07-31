@@ -2,6 +2,7 @@ package com.toomuchcoding.xmlassert;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
@@ -9,6 +10,7 @@ import org.eclipse.wst.xml.xpath2.api.XPath2Expression;
 import org.eclipse.wst.xml.xpath2.processor.Engine;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.ElementType;
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,12 +27,12 @@ class XmlAsserter implements XmlVerifiable {
 	// for things like count(...)
 	protected final LinkedList<String> specialCaseXPathBuffer;
 
-	protected final Object fieldName;
+	protected final @Nullable Object fieldName;
 
 	protected final XmlAsserterConfiguration xmlAsserterConfiguration;
 
 	protected XmlAsserter(XmlCachedObjects cachedObjects, LinkedList<String> xPathBuffer,
-			LinkedList<String> specialCaseXPathBuffer, Object fieldName,
+			LinkedList<String> specialCaseXPathBuffer, @Nullable Object fieldName,
 			XmlAsserterConfiguration xmlAsserterConfiguration) {
 		this.cachedObjects = cachedObjects;
 		this.xPathBuffer = new LinkedList<String>(xPathBuffer);
@@ -78,7 +80,7 @@ class XmlAsserter implements XmlVerifiable {
 		for (String field : nodeNames) {
 			assertion = assertion == null ? node(field) : assertion.node(field);
 		}
-		return assertion;
+		return Objects.requireNonNull(assertion);
 	}
 
 	@Override

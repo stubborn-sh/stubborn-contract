@@ -17,13 +17,13 @@
 package sh.stubborn.contract.migration;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.maven.Assertions;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openrewrite.maven.Assertions.pomXml;
 
-class MigrateDependenciesTest implements RewriteTest {
+class MigrateDependenciesTests implements RewriteTest {
 
 	@Override
 	public void defaults(RecipeSpec spec) {
@@ -32,7 +32,7 @@ class MigrateDependenciesTest implements RewriteTest {
 
 	@Test
 	void migratesVerifierDependency() {
-		rewriteRun(pomXml("""
+		rewriteRun(Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>my-app</artifactId>
@@ -46,7 +46,7 @@ class MigrateDependenciesTest implements RewriteTest {
 						</dependency>
 					</dependencies>
 				</project>
-				""", spec -> spec.after(actual -> {
+				""", (spec) -> spec.after((actual) -> {
 			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
 				.contains("<artifactId>stubborn-contract-verifier</artifactId>")
 				.doesNotContain("spring-cloud-contract-verifier");
@@ -56,7 +56,7 @@ class MigrateDependenciesTest implements RewriteTest {
 
 	@Test
 	void migratesStubRunnerDependency() {
-		rewriteRun(pomXml("""
+		rewriteRun(Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>my-app</artifactId>
@@ -70,7 +70,7 @@ class MigrateDependenciesTest implements RewriteTest {
 						</dependency>
 					</dependencies>
 				</project>
-				""", spec -> spec.after(actual -> {
+				""", (spec) -> spec.after((actual) -> {
 			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
 				.contains("<artifactId>stubborn-contract-stub-runner</artifactId>")
 				.doesNotContain("spring-cloud-contract-stub-runner");
@@ -80,7 +80,7 @@ class MigrateDependenciesTest implements RewriteTest {
 
 	@Test
 	void migratesMavenPlugin() {
-		rewriteRun(pomXml("""
+		rewriteRun(Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>my-app</artifactId>
@@ -95,7 +95,7 @@ class MigrateDependenciesTest implements RewriteTest {
 						</plugins>
 					</build>
 				</project>
-				""", spec -> spec.after(actual -> {
+				""", (spec) -> spec.after((actual) -> {
 			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
 				.contains("<artifactId>stubborn-contract-maven-plugin</artifactId>")
 				.doesNotContain("spring-cloud-contract-maven-plugin");
@@ -105,7 +105,7 @@ class MigrateDependenciesTest implements RewriteTest {
 
 	@Test
 	void migratesBomInDependencyManagement() {
-		rewriteRun(pomXml("""
+		rewriteRun(Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>my-app</artifactId>
@@ -122,7 +122,7 @@ class MigrateDependenciesTest implements RewriteTest {
 						</dependencies>
 					</dependencyManagement>
 				</project>
-				""", spec -> spec.after(actual -> {
+				""", (spec) -> spec.after((actual) -> {
 			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
 				.contains("<artifactId>stubborn-contract-dependencies</artifactId>")
 				.doesNotContain("spring-cloud-contract-dependencies");

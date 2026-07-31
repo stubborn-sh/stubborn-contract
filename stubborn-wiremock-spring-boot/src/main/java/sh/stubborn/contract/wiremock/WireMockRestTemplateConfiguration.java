@@ -22,6 +22,7 @@ import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
@@ -37,9 +38,10 @@ import org.springframework.http.client.InterceptingClientHttpRequestFactory;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import static org.apache.hc.client5.http.ssl.NoopHostnameVerifier.INSTANCE;
-
 /**
+ * Configuration that customizes {@link RestTemplate} instances to trust self-signed
+ * certificates when talking to WireMock over HTTPS.
+ *
  * @author Dave Syer
  * @author Nikola Kološnjaji
  *
@@ -78,7 +80,7 @@ public class WireMockRestTemplateConfiguration {
 					sslConnectionSocketFactoryBuilder
 						.setSslContext(new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE)
 							.build())
-						.setHostnameVerifier(INSTANCE);
+						.setHostnameVerifier(NoopHostnameVerifier.INSTANCE);
 					PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder
 						.create()
 						.setSSLSocketFactory(sslConnectionSocketFactoryBuilder.build())

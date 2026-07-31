@@ -34,6 +34,9 @@ public class XmlAssertion {
 		this.cachedObjects = new XmlCachedObjects(parsedXml);
 	}
 
+	// cachedObjects is intentionally left null when the XML is empty/blank: in the
+	// XPath-builder mode (see XPathBuilder) the document is never dereferenced.
+	@SuppressWarnings("NullAway")
 	private XmlAssertion(String xml) {
 		XmlCachedObjects cachedObjects = CACHE.get(xml);
 		if (cachedObjects == null && !empty(xml)) {

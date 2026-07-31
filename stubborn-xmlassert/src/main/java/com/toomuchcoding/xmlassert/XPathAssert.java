@@ -1,5 +1,7 @@
 package com.toomuchcoding.xmlassert;
 
+import java.util.Objects;
+
 import org.assertj.core.api.AbstractAssert;
 import org.w3c.dom.Document;
 
@@ -89,7 +91,7 @@ public class XPathAssert extends AbstractAssert<XPathAssert, XmlVerifiable> {
 		catch (IllegalStateException e) {
 			failWithXPathMessage();
 		}
-		return new XPathAssert(xmlVerifiable);
+		return new XPathAssert(Objects.requireNonNull(xmlVerifiable));
 	}
 
 	private void failWithXPathMessage() {
@@ -108,7 +110,7 @@ public class XPathAssert extends AbstractAssert<XPathAssert, XmlVerifiable> {
 		catch (IllegalStateException e) {
 			failWithXPathMessage();
 		}
-		return new XPathAssert(xmlVerifiable);
+		return new XPathAssert(Objects.requireNonNull(xmlVerifiable));
 	}
 
 	/**
@@ -123,7 +125,7 @@ public class XPathAssert extends AbstractAssert<XPathAssert, XmlVerifiable> {
 		catch (IllegalStateException e) {
 			failWithXPathMessage();
 		}
-		return new XPathAssert(xmlVerifiable);
+		return new XPathAssert(Objects.requireNonNull(xmlVerifiable));
 	}
 
 	/**
@@ -138,7 +140,7 @@ public class XPathAssert extends AbstractAssert<XPathAssert, XmlVerifiable> {
 		catch (IllegalStateException e) {
 			failWithXPathMessage();
 		}
-		return new XPathAssert(xmlVerifiable);
+		return new XPathAssert(Objects.requireNonNull(xmlVerifiable));
 	}
 
 	/**

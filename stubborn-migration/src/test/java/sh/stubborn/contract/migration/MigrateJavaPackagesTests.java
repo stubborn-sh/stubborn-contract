@@ -17,13 +17,12 @@
 package sh.stubborn.contract.migration;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.java.Assertions;
 import org.openrewrite.java.JavaParser;
-import org.openrewrite.test.RewriteTest;
 import org.openrewrite.test.RecipeSpec;
+import org.openrewrite.test.RewriteTest;
 
-import static org.openrewrite.java.Assertions.java;
-
-class MigrateJavaPackagesTest implements RewriteTest {
+class MigrateJavaPackagesTests implements RewriteTest {
 
 	@Override
 	public void defaults(RecipeSpec spec) {
@@ -47,7 +46,7 @@ class MigrateJavaPackagesTest implements RewriteTest {
 
 	@Test
 	void renamesStubRunnerImport() {
-		rewriteRun(java("""
+		rewriteRun(Assertions.java("""
 				import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
 				import org.springframework.cloud.contract.stubrunner.StubsMode;
 
@@ -66,7 +65,7 @@ class MigrateJavaPackagesTest implements RewriteTest {
 
 	@Test
 	void renamesVerifierImport() {
-		rewriteRun(java("""
+		rewriteRun(Assertions.java("""
 				import org.springframework.cloud.contract.verifier.config.TestFramework;
 
 				class MyTest {

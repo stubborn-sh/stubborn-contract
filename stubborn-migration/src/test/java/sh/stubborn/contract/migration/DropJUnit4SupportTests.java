@@ -17,13 +17,12 @@
 package sh.stubborn.contract.migration;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.java.Assertions;
 import org.openrewrite.java.JavaParser;
-import org.openrewrite.test.RewriteTest;
 import org.openrewrite.test.RecipeSpec;
+import org.openrewrite.test.RewriteTest;
 
-import static org.openrewrite.java.Assertions.java;
-
-class DropJUnit4SupportTest implements RewriteTest {
+class DropJUnit4SupportTests implements RewriteTest {
 
 	@Override
 	public void defaults(RecipeSpec spec) {
@@ -39,7 +38,7 @@ class DropJUnit4SupportTest implements RewriteTest {
 
 	@Test
 	void migratesStubRunnerRuleToExtension() {
-		rewriteRun(java("""
+		rewriteRun(Assertions.java("""
 				import sh.stubborn.contract.stubrunner.junit.StubRunnerRule;
 
 				class MyTest {

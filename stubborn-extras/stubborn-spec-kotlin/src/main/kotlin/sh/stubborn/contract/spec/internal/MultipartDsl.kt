@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UNCHECKED_CAST")
+
 package sh.stubborn.contract.spec.internal
 
 import sh.stubborn.contract.spec.toDslProperty
@@ -33,7 +35,7 @@ class MultipartDsl {
     }
 
     internal fun get(): Multipart {
-        return Multipart(fields)
+        return Multipart(fields as Map<String, DslProperty<Any>>)
     }
 
 }

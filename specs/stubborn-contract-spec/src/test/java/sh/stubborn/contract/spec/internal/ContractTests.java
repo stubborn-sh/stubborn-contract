@@ -17,6 +17,7 @@
 package sh.stubborn.contract.spec.internal;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
@@ -155,14 +156,16 @@ class ContractTests {
 			});
 			c.response(resp -> resp.status(resp.OK()));
 		});
-		assertThat(a.getRequest().getMethod()).isEqualTo(b.getRequest().getMethod());
+		assertThat(Objects.requireNonNull(a.getRequest()).getMethod())
+			.isEqualTo(Objects.requireNonNull(b.getRequest()).getMethod());
 		assertThat(a.getRequest().getUrl()).isEqualTo(b.getRequest().getUrl());
-		assertThat(a.getRequest().getHeaders().getEntries().iterator().next())
-			.isEqualTo(b.getRequest().getHeaders().getEntries().iterator().next());
+		assertThat(Objects.requireNonNull(a.getRequest().getHeaders()).getEntries().iterator().next())
+			.isEqualTo(Objects.requireNonNull(b.getRequest().getHeaders()).getEntries().iterator().next());
 		assertThat(a.getRequest().getHeaders().getEntries()).isEqualTo(b.getRequest().getHeaders().getEntries());
 		assertThat(a.getRequest().getHeaders()).isEqualTo(b.getRequest().getHeaders());
 		assertThat(a.getRequest()).isEqualTo(b.getRequest());
-		assertThat(a.getResponse().getStatus()).isEqualTo(b.getResponse().getStatus());
+		assertThat(Objects.requireNonNull(a.getResponse()).getStatus())
+			.isEqualTo(Objects.requireNonNull(b.getResponse()).getStatus());
 		assertThat(a.getResponse()).isEqualTo(b.getResponse());
 		assertThat(a).isEqualTo(b);
 	}
@@ -224,25 +227,30 @@ class ContractTests {
 				resp.headers(h -> h.header("Content-Type", "text/plain"));
 			});
 		});
-		assertThat(a.getRequest().getMethod()).isEqualTo(b.getRequest().getMethod());
+		assertThat(Objects.requireNonNull(a.getRequest()).getMethod())
+			.isEqualTo(Objects.requireNonNull(b.getRequest()).getMethod());
 		assertThat(a.getRequest().getUrl()).isEqualTo(b.getRequest().getUrl());
-		assertThat(a.getRequest().getHeaders().getEntries().iterator().next())
-			.isEqualTo(b.getRequest().getHeaders().getEntries().iterator().next());
+		assertThat(Objects.requireNonNull(a.getRequest().getHeaders()).getEntries().iterator().next())
+			.isEqualTo(Objects.requireNonNull(b.getRequest().getHeaders()).getEntries().iterator().next());
 		assertThat(a.getRequest().getHeaders().getEntries().stream().reduce((x, y) -> y).orElseThrow())
 			.isEqualTo(b.getRequest().getHeaders().getEntries().stream().reduce((x, y) -> y).orElseThrow());
 		assertThat(a.getRequest().getHeaders().getEntries()).isEqualTo(b.getRequest().getHeaders().getEntries());
 		assertThat(a.getRequest().getHeaders()).isEqualTo(b.getRequest().getHeaders());
 		assertThat(a.getRequest().getBody()).isEqualTo(b.getRequest().getBody());
 		assertThat(a.getRequest()).isEqualTo(b.getRequest());
-		assertThat(a.getResponse().getStatus()).isEqualTo(b.getResponse().getStatus());
-		assertThat(a.getResponse().getHeaders().getEntries().iterator().next())
-			.isEqualTo(b.getResponse().getHeaders().getEntries().iterator().next());
+		assertThat(Objects.requireNonNull(a.getResponse()).getStatus())
+			.isEqualTo(Objects.requireNonNull(b.getResponse()).getStatus());
+		assertThat(Objects.requireNonNull(a.getResponse().getHeaders()).getEntries().iterator().next())
+			.isEqualTo(Objects.requireNonNull(b.getResponse().getHeaders()).getEntries().iterator().next());
 		assertThat(a.getResponse().getBody()).isEqualTo(b.getResponse().getBody());
 		assertThat(a.getResponse()).isEqualTo(b.getResponse());
 		assertThat(a).isEqualTo(b);
 	}
 
 	@Test
+	// producer(null) intentionally exercises a null server-side value; the DSL stores
+	// it as-is, so requireNonNull would change behavior. Suppress the null-arg warning.
+	@SuppressWarnings("NullAway")
 	void shouldWorkWithOptionalAndNullValueOfAField() {
 		Contract contract = Contract.make(c -> {
 			c.description("Creating user");
