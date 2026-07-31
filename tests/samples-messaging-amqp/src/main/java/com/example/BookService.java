@@ -16,22 +16,18 @@
 
 package com.example;
 
-import java.io.Serializable;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+interface BookService {
 
-@SuppressWarnings("serial")
-public class BookReturned implements Serializable {
+	void sendBook(Book book, String replyTo);
 
-	/**
-	 * Name of the returned book.
-	 */
-	public final String bookName;
+	void newBook(Book book);
 
-	@JsonCreator
-	BookReturned(@JsonProperty("bookName") String bookName) {
-		this.bookName = bookName;
-	}
+	Book getBook(int index);
+
+	int noOfBooks();
+
+	List<Book> getBooks();
 
 }

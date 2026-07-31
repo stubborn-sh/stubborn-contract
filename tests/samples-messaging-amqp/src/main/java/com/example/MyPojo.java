@@ -16,22 +16,26 @@
 
 package com.example;
 
-import java.io.Serializable;
+public class MyPojo {
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+	private String ratedItemId;
 
-@SuppressWarnings("serial")
-public class BookReturned implements Serializable {
+	private String eventType;
 
-	/**
-	 * Name of the returned book.
-	 */
-	public final String bookName;
+	public MyPojo(String ratedItemId, String eventType) {
+		this.ratedItemId = ratedItemId;
+		this.eventType = eventType;
+	}
 
-	@JsonCreator
-	BookReturned(@JsonProperty("bookName") String bookName) {
-		this.bookName = bookName;
+	public MyPojo() {
+	}
+
+	public String getRatedItemId() {
+		return this.ratedItemId;
+	}
+
+	public String getEventType() {
+		return this.eventType;
 	}
 
 }

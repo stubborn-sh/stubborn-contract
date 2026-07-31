@@ -21,7 +21,10 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class BookReturned implements Serializable {
 
-	public String bookName;
+	/**
+	 * Name of the returned book.
+	 */
+	private String bookName;
 
 	public BookReturned(String bookName) {
 		this.bookName = bookName;
@@ -34,7 +37,7 @@ public class BookReturned implements Serializable {
 		return this.bookName;
 	}
 
-	void setBookName(String bookName) {
+	public void setBookName(String bookName) {
 		this.bookName = bookName;
 	}
 

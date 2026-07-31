@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package com.example;
+package com.example.loan;
 
-import java.io.Serializable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+@RestController
+class CustomController {
 
-@SuppressWarnings("serial")
-public class BookReturned implements Serializable {
-
-	/**
-	 * Name of the returned book.
-	 */
-	public final String bookName;
-
-	@JsonCreator
-	BookReturned(@JsonProperty("bookName") String bookName) {
-		this.bookName = bookName;
+	@GetMapping("/foo")
+	String foo() {
+		return "bar";
 	}
 
 }

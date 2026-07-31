@@ -18,6 +18,14 @@ package com.example.loan.model;
 
 public enum FraudCheckStatus {
 
-	OK, FRAUD
+	/**
+	 * The check passed without detecting fraud.
+	 */
+	OK,
+
+	/**
+	 * The check detected fraud.
+	 */
+	FRAUD
 
 }

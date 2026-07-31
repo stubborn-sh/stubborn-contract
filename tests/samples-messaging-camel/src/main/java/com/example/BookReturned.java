@@ -24,6 +24,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @SuppressWarnings("serial")
 public class BookReturned implements Serializable {
 
+	/**
+	 * Name of the returned book.
+	 */
 	public final String bookName;
 
 	@JsonCreator
@@ -33,7 +36,7 @@ public class BookReturned implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BookReturned{" + "bookName='" + bookName + '\'' + '}';
+		return "BookReturned{" + "bookName='" + this.bookName + '\'' + '}';
 	}
 
 }

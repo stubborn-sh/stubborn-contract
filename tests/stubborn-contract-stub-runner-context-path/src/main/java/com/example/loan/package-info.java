@@ -14,24 +14,7 @@
  * limitations under the License.
  */
 
-package com.example;
-
-import java.io.Serializable;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@SuppressWarnings("serial")
-public class BookReturned implements Serializable {
-
-	/**
-	 * Name of the returned book.
-	 */
-	public final String bookName;
-
-	@JsonCreator
-	BookReturned(@JsonProperty("bookName") String bookName) {
-		this.bookName = bookName;
-	}
-
-}
+/**
+ * Loan application sample for the context path stub runner test.
+ */
+package com.example.loan;
