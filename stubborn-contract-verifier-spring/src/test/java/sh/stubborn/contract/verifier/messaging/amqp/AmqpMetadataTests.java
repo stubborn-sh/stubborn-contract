@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.messaging.amqp;
 
+import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
 import tools.jackson.dataformat.yaml.YAMLMapper;
 
@@ -48,10 +50,10 @@ class AmqpMetadataTests {
 
 		then(metadata.getInput().getConnectToBroker().getAdditionalOptions()).isEqualTo("foo1");
 		then(metadata.getInput().getConnectToBroker().getDeclareQueueWithName()).isEqualTo("foo2");
-		then(metadata.getInput().getMessageProperties().getReplyTo()).isEqualTo("foo3");
+		then(Objects.requireNonNull(metadata.getInput().getMessageProperties()).getReplyTo()).isEqualTo("foo3");
 		then(metadata.getOutputMessage().getConnectToBroker().getAdditionalOptions()).isEqualTo("bar1");
 		then(metadata.getOutputMessage().getConnectToBroker().getDeclareQueueWithName()).isEqualTo("bar2");
-		then(metadata.getOutputMessage().getMessageProperties().getReplyTo()).isEqualTo("bar3");
+		then(Objects.requireNonNull(metadata.getOutputMessage().getMessageProperties()).getReplyTo()).isEqualTo("bar3");
 
 	}
 

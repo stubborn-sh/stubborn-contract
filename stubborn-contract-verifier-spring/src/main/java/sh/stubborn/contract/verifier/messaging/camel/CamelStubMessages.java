@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.messaging.camel;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.CamelContext;
@@ -83,13 +84,13 @@ public class CamelStubMessages implements MessageVerifierSender<Message>, Messag
 		}
 	}
 
-	private String additionalOptions(ContractVerifierMessageMetadata verifierMessageMetadata,
+	private @Nullable String additionalOptions(ContractVerifierMessageMetadata verifierMessageMetadata,
 			StandaloneMetadata metadata) {
 		return verifierMessageMetadata.getMessageType() == ContractVerifierMessageMetadata.MessageType.INPUT
 				? metadata.getInput().getAdditionalOptions() : metadata.getOutputMessage().getAdditionalOptions();
 	}
 
-	public String finalDestination(String destination, String additionalOpts,
+	public String finalDestination(String destination, @Nullable String additionalOpts,
 			ContractVerifierMessageMetadata verifierMessageMetadata) {
 		String finalDestination = destination;
 		if (verifierMessageMetadata.getMessageType() == ContractVerifierMessageMetadata.MessageType.SETUP) {
@@ -102,8 +103,9 @@ public class CamelStubMessages implements MessageVerifierSender<Message>, Messag
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, @Nullable YamlContract contract) {
-		send(this.builder.create(payload, headers), destination, contract);
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
+		send(this.builder.create(payload, Objects.requireNonNull(headers)), destination, contract);
 	}
 
 	@Override
