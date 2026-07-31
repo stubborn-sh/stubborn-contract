@@ -54,7 +54,7 @@ class ArrayValueAssertion extends FieldAssertion implements XmlArrayVerifiable {
 			throw new IllegalStateException(
 					"Parsed XML [" + cachedObjects.xmlAsString + "] doesn't match the XPath <" + xPathString + ">");
 		}
-		int retrievedSize = Integer.valueOf(iterator.next().getStringValue());
+		int retrievedSize = Integer.parseInt(iterator.next().getStringValue());
 		if (retrievedSize != size) {
 			throw new IllegalStateException("Parsed XML [" + cachedObjects.xmlAsString + "] has size [" + retrievedSize
 					+ "] and not [" + size + "] for XPath <" + xPathString + "> ");

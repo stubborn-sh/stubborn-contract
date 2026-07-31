@@ -69,28 +69,28 @@ class ContractTests {
 			Contract.assertContract(contract)
 		}.also {
 			val request = contract.request
-			assertThat(request.url.clientValue).isEqualTo("/foo")
-			assertThat(request.url.serverValue).isEqualTo("/foo")
-			assertThat(request.method.clientValue).isEqualTo("PUT")
-			assertThat(request.method.serverValue).isEqualTo("PUT")
-			val headers = request.headers.entries
+			assertThat(request!!.url!!.clientValue).isEqualTo("/foo")
+			assertThat(request!!.url!!.serverValue).isEqualTo("/foo")
+			assertThat(request!!.method!!.clientValue).isEqualTo("PUT")
+			assertThat(request!!.method!!.serverValue).isEqualTo("PUT")
+			val headers = request!!.headers!!.entries
 			assertThat(headers).hasSize(1)
 			assertThat(headers.elementAt(0).name).isEqualTo("foo")
 			assertThat(headers.elementAt(0).clientValue).isEqualTo("bar")
 			assertThat(headers.elementAt(0).serverValue).isEqualTo("bar")
-			assertThat(request.body.clientValue).isEqualTo(mapOf("foo" to "bar"))
-			assertThat(request.body.serverValue).isEqualTo(mapOf("foo" to "bar"))
+			assertThat(request!!.body!!.clientValue).isEqualTo(mapOf("foo" to "bar"))
+			assertThat(request!!.body!!.serverValue).isEqualTo(mapOf("foo" to "bar"))
 		}.also {
 			val response = contract.response
-			assertThat(response.status.clientValue).isEqualTo(200)
-			assertThat(response.status.serverValue).isEqualTo(200)
-			val headers = response.headers.entries
+			assertThat(response!!.status!!.clientValue).isEqualTo(200)
+			assertThat(response!!.status!!.serverValue).isEqualTo(200)
+			val headers = response!!.headers!!.entries
 			assertThat(headers).hasSize(1)
 			assertThat(headers.elementAt(0).name).isEqualTo("foo2")
 			assertThat(headers.elementAt(0).clientValue).isEqualTo("bar")
 			assertThat(headers.elementAt(0).serverValue).isEqualTo("bar")
-			assertThat(response.body.clientValue).isEqualTo(mapOf("foo2" to "bar"))
-			assertThat(response.body.serverValue).isEqualTo(mapOf("foo2" to "bar"))
+			assertThat(response!!.body!!.clientValue).isEqualTo(mapOf("foo2" to "bar"))
+			assertThat(response!!.body!!.serverValue).isEqualTo(mapOf("foo2" to "bar"))
 		}
 	}
 
@@ -450,11 +450,11 @@ then:
 			assertThat(a).isEqualTo(b)
 		}. also {
 			val request = a.request
-			assertThat(request.url.clientValue).isEqualTo("/path")
-			assertThat(request.url.serverValue).isEqualTo("/path")
-			assertThat(request.method.clientValue).isEqualTo("GET")
-			assertThat(request.method.serverValue).isEqualTo("GET")
-			val headers = request.headers.entries
+			assertThat(request!!.url!!.clientValue).isEqualTo("/path")
+			assertThat(request!!.url!!.serverValue).isEqualTo("/path")
+			assertThat(request!!.method!!.clientValue).isEqualTo("GET")
+			assertThat(request!!.method!!.serverValue).isEqualTo("GET")
+			val headers = request!!.headers!!.entries
 			assertThat(headers).hasSize(2)
 			assertThat(headers.elementAt(0).name).isEqualTo("Accept")
 			assertThat(headers.elementAt(0).clientValue).isInstanceOf(RegexProperty::class.java)
@@ -466,9 +466,9 @@ then:
 			assertThat(headers.elementAt(1).serverValue).isEqualTo("121345")
 		}.also {
 			val response = a.response
-			assertThat(response.status.clientValue).isEqualTo(200)
-			assertThat(response.status.serverValue).isEqualTo(200)
-			val headers = response.headers.entries
+			assertThat(response!!.status!!.clientValue).isEqualTo(200)
+			assertThat(response!!.status!!.serverValue).isEqualTo(200)
+			val headers = response!!.headers!!.entries
 			assertThat(headers).hasSize(2)
 			assertThat(headers.elementAt(0).name).isEqualTo("Content-Type")
 			assertThat(headers.elementAt(0).clientValue).isEqualTo("text/plain")
@@ -477,12 +477,12 @@ then:
 			assertThat(headers.elementAt(1).clientValue).isEqualTo("121345")
 			assertThat(headers.elementAt(1).serverValue).isInstanceOf(RegexProperty::class.java)
 			assertThat((headers.elementAt(1).serverValue as RegexProperty).pattern()).isEqualTo("^.*2134.*\$")
-			assertThat(response.body.clientValue).isEqualTo(mapOf("id" to mapOf("value" to "132"),
+			assertThat(response!!.body!!.clientValue).isEqualTo(mapOf("id" to mapOf("value" to "132"),
 					"surname" to "Kowalsky",
 					"name" to "Jan",
 					"created" to "2014-02-02 12:23:43"
 			))
-			assertThat(response.body.serverValue).isEqualTo(mapOf("id" to mapOf("value" to "132"),
+			assertThat(response!!.body!!.serverValue).isEqualTo(mapOf("id" to mapOf("value" to "132"),
 					"surname" to "Kowalsky",
 					"name" to "Jan",
 					"created" to "2014-02-02 12:23:43"
@@ -521,20 +521,20 @@ then:
 			Contract.assertContract(contract)
 		}.also {
 			val request = contract.request
-			assertThat(request.url.clientValue).isEqualTo("/path")
-			assertThat(request.url.serverValue).isEqualTo("/path")
-			assertThat(request.method.clientValue).isEqualTo("GET")
-			assertThat(request.method.serverValue).isEqualTo("GET")
-			assertThat(request.bodyMatchers.hasMatchers()).isTrue()
-			val matchers = request.bodyMatchers.matchers()
+			assertThat(request!!.url!!.clientValue).isEqualTo("/path")
+			assertThat(request!!.url!!.serverValue).isEqualTo("/path")
+			assertThat(request!!.method!!.clientValue).isEqualTo("GET")
+			assertThat(request!!.method!!.serverValue).isEqualTo("GET")
+			assertThat(request!!.bodyMatchers!!.hasMatchers()).isTrue()
+			val matchers = request!!.bodyMatchers!!.matchers()
 			assertThat(matchers[0].path()).isEqualTo("$.id.value")
 			assertThat(matchers[0].matchingType()).isEqualTo(MatchingType.REGEX)
 		}.also {
 			val response = contract.response
-			assertThat(response.status.clientValue).isEqualTo(200)
-			assertThat(response.status.serverValue).isEqualTo(200)
-			assertThat(response.bodyMatchers.hasMatchers()).isTrue()
-			val matchers = response.bodyMatchers.matchers()
+			assertThat(response!!.status!!.clientValue).isEqualTo(200)
+			assertThat(response!!.status!!.serverValue).isEqualTo(200)
+			assertThat(response!!.bodyMatchers!!.hasMatchers()).isTrue()
+			val matchers = response!!.bodyMatchers!!.matchers()
 			assertThat(matchers[0].path()).isEqualTo("$.id.value")
 			assertThat(matchers[0].matchingType()).isEqualTo(MatchingType.TIMESTAMP)
 		}
@@ -558,18 +558,18 @@ then:
 			Contract.assertContract(contract)
 		}.also {
 			val request = contract.request
-			assertThat(request.url.clientValue).isEqualTo("/path")
-			val queryParameters = request.url.queryParameters.parameters
+			assertThat(request!!.url!!.clientValue).isEqualTo("/path")
+			val queryParameters = request!!.url!!.queryParameters!!.parameters
 			assertThat(queryParameters[0].name).isEqualTo("foo")
 			assertThat(queryParameters[0].clientValue).isEqualTo("bar")
 			assertThat(queryParameters[0].serverValue).isEqualTo("bar")
-			assertThat(request.url.serverValue).isEqualTo("/path")
-			assertThat(request.method.clientValue).isEqualTo("GET")
-			assertThat(request.method.serverValue).isEqualTo("GET")
+			assertThat(request!!.url!!.serverValue).isEqualTo("/path")
+			assertThat(request!!.method!!.clientValue).isEqualTo("GET")
+			assertThat(request!!.method!!.serverValue).isEqualTo("GET")
 		}.also {
 			val response = contract.response
-			assertThat(response.status.clientValue).isEqualTo(200)
-			assertThat(response.status.serverValue).isEqualTo(200)
+			assertThat(response!!.status!!.clientValue).isEqualTo(200)
+			assertThat(response!!.status!!.serverValue).isEqualTo(200)
 		}
 	}
 
@@ -591,18 +591,18 @@ then:
 			Contract.assertContract(contract)
 		}.also {
 			val request = contract.request
-			assertThat(request.urlPath.clientValue).isEqualTo("/path")
-			assertThat(request.urlPath.serverValue).isEqualTo("/path")
-			val queryParameters = request.urlPath.queryParameters.parameters
+			assertThat(request!!.urlPath!!.clientValue).isEqualTo("/path")
+			assertThat(request!!.urlPath!!.serverValue).isEqualTo("/path")
+			val queryParameters = request!!.urlPath!!.queryParameters!!.parameters
 			assertThat(queryParameters[0].name).isEqualTo("foo")
 			assertThat(queryParameters[0].clientValue).isEqualTo("bar")
 			assertThat(queryParameters[0].serverValue).isEqualTo("bar")
-			assertThat(request.method.clientValue).isEqualTo("GET")
-			assertThat(request.method.serverValue).isEqualTo("GET")
+			assertThat(request!!.method!!.clientValue).isEqualTo("GET")
+			assertThat(request!!.method!!.serverValue).isEqualTo("GET")
 		}.also {
 			val response = contract.response
-			assertThat(response.status.clientValue).isEqualTo(200)
-			assertThat(response.status.serverValue).isEqualTo(200)
+			assertThat(response!!.status!!.clientValue).isEqualTo(200)
+			assertThat(response!!.status!!.serverValue).isEqualTo(200)
 		}
 	}
 
@@ -624,12 +624,12 @@ then:
 			Contract.assertContract(contract)
 		}.also {
 			val request = contract.request
-			assertThat(request.body.clientValue).isEqualTo(listOf("foo", "bar"))
-			assertThat(request.body.serverValue).isEqualTo(listOf("foo", "bar"))
+			assertThat(request!!.body!!.clientValue).isEqualTo(listOf("foo", "bar"))
+			assertThat(request!!.body!!.serverValue).isEqualTo(listOf("foo", "bar"))
 		}.also {
 			val response = contract.response
-			assertThat(response.body.clientValue).isEqualTo(listOf("foo2", "bar2"))
-			assertThat(response.body.serverValue).isEqualTo(listOf("foo2", "bar2"))
+			assertThat(response!!.body!!.clientValue).isEqualTo(listOf("foo2", "bar2"))
+			assertThat(response!!.body!!.serverValue).isEqualTo(listOf("foo2", "bar2"))
 		}
 	}
 
@@ -657,12 +657,12 @@ then:
 			Contract.assertContract(contract)
 		}.also {
 			val request = contract.request
-			val cookies = request.cookies.entries
+			val cookies = request!!.cookies!!.entries
 			assertThat(cookies).hasSize(2)
 			assertThat(cookies).containsExactlyInAnyOrder(Cookie.build("name", "foo"), Cookie.build("name2", "bar"))
 		}.also {
 			val response = contract.response
-			val cookies = response.cookies.entries
+			val cookies = response!!.cookies!!.entries
 			assertThat(cookies).hasSize(2)
 			assertThat(cookies).containsExactlyInAnyOrder(Cookie.build("name", "foo"), Cookie.build("name2", "bar"))
 		}
@@ -692,8 +692,8 @@ then:
 			Contract.assertContract(contract)
 		}.also {
 			val response = contract.response
-			assertThat(response.body.clientValue).isEqualTo("value is {{{jsonPath request.body '$.value'}}}")
-			val headers = response.headers.entries
+			assertThat(response!!.body!!.clientValue).isEqualTo("value is {{{jsonPath request.body '$.value'}}}")
+			val headers = response!!.headers!!.entries
 			assertThat(headers).hasSize(1)
 			assertThat(headers.elementAt(0).name).isEqualTo("Content-Type")
 			assertThat(headers.elementAt(0).clientValue).isEqualTo("{{{request.headers.Accept.[0]}}}")
@@ -713,10 +713,10 @@ then:
 			Contract.assertContract(contract)
 		}.also {
 			val request = contract.request
-			assertThat(request.multipart).isNotNull()
-			assertThat(request.multipart.clientValue).isNotNull()
-			assertThat(request.multipart.clientValue).isInstanceOf(LinkedHashMap::class.java)
-			val multipartData = request.multipart.clientValue as LinkedHashMap<String, Any>
+			assertThat(request!!.multipart).isNotNull()
+			assertThat(request!!.multipart!!.clientValue).isNotNull()
+			assertThat(request!!.multipart!!.clientValue).isInstanceOf(LinkedHashMap::class.java)
+			val multipartData = request!!.multipart!!.clientValue as LinkedHashMap<String, Any>
 			assertThat(multipartData).hasSize(3)
 			assertThat(multipartData.keys).containsExactly("file1", "file2", "test")
 			var namedProperty: NamedProperty
@@ -806,10 +806,10 @@ then:
 			Contract.assertContract(contract)
 		}.also {
 			val response = contract.response
-			assertThat(response.delay.clientValue).isInstanceOf(java.lang.Integer::class.java)
-			assertThat(response.delay.clientValue).isEqualTo(1000)
-			assertThat(response.delay.serverValue).isInstanceOf(java.lang.Integer::class.java)
-			assertThat(response.delay.serverValue).isEqualTo(1000)
+			assertThat(response!!.delay!!.clientValue).isInstanceOf(java.lang.Integer::class.java)
+			assertThat(response!!.delay!!.clientValue).isEqualTo(1000)
+			assertThat(response!!.delay!!.serverValue).isInstanceOf(java.lang.Integer::class.java)
+			assertThat(response!!.delay!!.serverValue).isEqualTo(1000)
 		}
 	}
 

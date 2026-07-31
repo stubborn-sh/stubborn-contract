@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -40,6 +41,10 @@ class XmlCachedObjects {
 	private String xmlAsString() {
 		try {
 			TransformerFactory tf = TransformerFactory.newInstance();
+			// Harden against XXE: disallow external DTDs and stylesheets (not needed to
+			// serialize an already-parsed DOM document to a String).
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			Transformer transformer = tf.newTransformer();
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			StringWriter writer = new StringWriter();

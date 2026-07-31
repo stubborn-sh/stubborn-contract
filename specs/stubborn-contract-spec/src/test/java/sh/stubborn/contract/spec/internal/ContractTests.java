@@ -33,16 +33,16 @@ class ContractTests {
 
 	@Test
 	void shouldWorkForHttp() {
-		assertThatCode(() -> Contract.make(c -> {
-			c.request(r -> {
+		assertThatCode(() -> Contract.make((c) -> {
+			c.request((r) -> {
 				r.url("/foo");
 				r.method("PUT");
-				r.headers(h -> h.header("foo", "bar"));
+				r.headers((h) -> h.header("foo", "bar"));
 				r.body(Map.of("foo", "bar"));
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(200);
-				resp.headers(h -> h.header("foo2", "bar"));
+				resp.headers((h) -> h.header("foo2", "bar"));
 				resp.body(Map.of("foo2", "bar"));
 			});
 		})).doesNotThrowAnyException();
@@ -50,28 +50,28 @@ class ContractTests {
 
 	@Test
 	void shouldFailWhenNoMethodIsPresent() {
-		assertThatThrownBy(() -> Contract.make(c -> {
-			c.request(r -> r.url("/foo"));
-			c.response(resp -> resp.status(200));
+		assertThatThrownBy(() -> Contract.make((c) -> {
+			c.request((r) -> r.url("/foo"));
+			c.response((resp) -> resp.status(200));
 		})).isInstanceOf(IllegalStateException.class).hasMessageContaining("Method is missing for HTTP contract");
 	}
 
 	@Test
 	void shouldFailWhenNoUrlIsPresent() {
-		assertThatThrownBy(() -> Contract.make(c -> {
-			c.request(r -> r.method("GET"));
-			c.response(resp -> resp.status(200));
+		assertThatThrownBy(() -> Contract.make((c) -> {
+			c.request((r) -> r.method("GET"));
+			c.response((resp) -> resp.status(200));
 		})).isInstanceOf(IllegalStateException.class).hasMessageContaining("URL is missing for HTTP contract");
 	}
 
 	@Test
 	void shouldFailWhenNoStatusIsPresent() {
-		assertThatThrownBy(() -> Contract.make(c -> {
-			c.request(r -> {
+		assertThatThrownBy(() -> Contract.make((c) -> {
+			c.request((r) -> {
 				r.url("/foo");
 				r.method("GET");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 			});
 		})).isInstanceOf(IllegalStateException.class).hasMessageContaining("Status is missing for HTTP contract");
 	}
@@ -79,7 +79,7 @@ class ContractTests {
 	@Test
 	void shouldSetADescription() {
 		// tag::description[]
-		sh.stubborn.contract.spec.Contract.make(c -> c.description("""
+		sh.stubborn.contract.spec.Contract.make((c) -> c.description("""
 				given:
 					An input
 				when:
@@ -93,31 +93,31 @@ class ContractTests {
 	@Test
 	void shouldSetAName() {
 		// tag::name[]
-		sh.stubborn.contract.spec.Contract.make(c -> c.name("some_special_name"));
+		sh.stubborn.contract.spec.Contract.make((c) -> c.name("some_special_name"));
 		// end::name[]
 	}
 
 	@Test
 	void shouldMarkAContractIgnored() {
 		// tag::ignored[]
-		sh.stubborn.contract.spec.Contract.make(c -> c.ignored());
+		sh.stubborn.contract.spec.Contract.make((c) -> c.ignored());
 		// end::ignored[]
 	}
 
 	@Test
 	void shouldMarkAContractInProgress() {
 		// tag::in_progress[]
-		sh.stubborn.contract.spec.Contract.make(c -> c.inProgress());
+		sh.stubborn.contract.spec.Contract.make((c) -> c.inProgress());
 		// end::in_progress[]
 	}
 
 	@Test
 	void shouldMakeEqualsAndHashcodeWorkProperlyForUrl() {
-		Contract a = Contract.make(c -> c.request(r -> {
+		Contract a = Contract.make((c) -> c.request((r) -> {
 			r.method("GET");
 			r.url("/1");
 		}));
-		Contract b = Contract.make(c -> c.request(r -> {
+		Contract b = Contract.make((c) -> c.request((r) -> {
 			r.method("GET");
 			r.url("/1");
 		}));
@@ -126,11 +126,11 @@ class ContractTests {
 
 	@Test
 	void shouldMakeEqualsAndHashcodeWorkProperlyForUrlWithConsumerProducer() {
-		Contract a = Contract.make(c -> c.request(r -> {
+		Contract a = Contract.make((c) -> c.request((r) -> {
 			r.method("GET");
 			r.url(r.$(r.c("/1"), r.p("/1")));
 		}));
-		Contract b = Contract.make(c -> c.request(r -> {
+		Contract b = Contract.make((c) -> c.request((r) -> {
 			r.method("GET");
 			r.url(r.$(r.c("/1"), r.p("/1")));
 		}));
@@ -140,21 +140,21 @@ class ContractTests {
 	@Test
 	void shouldReturnTrueWhenComparingTwoEqualContractsWithGstring() {
 		int index = 1;
-		Contract a = Contract.make(c -> {
-			c.request(r -> {
+		Contract a = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method(r.PUT());
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 				r.url("/" + index);
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
-		Contract b = Contract.make(c -> {
-			c.request(r -> {
+		Contract b = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method(r.PUT());
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 				r.url("/" + index);
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 		assertThat(Objects.requireNonNull(a.getRequest()).getMethod())
 			.isEqualTo(Objects.requireNonNull(b.getRequest()).getMethod());
@@ -173,58 +173,58 @@ class ContractTests {
 	@Test
 	void shouldReturnFalseWhenComparingTwoUnequalContractsWithGstring() {
 		int index = 1;
-		Contract a = Contract.make(c -> {
-			c.request(r -> {
+		Contract a = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method(r.PUT());
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 				r.url("/" + index);
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 		int index2 = 2;
-		Contract b = Contract.make(c -> {
-			c.request(r -> {
+		Contract b = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method(r.PUT());
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 				r.url("/" + index2);
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		});
 		assertThat(a).isNotEqualTo(b);
 	}
 
 	@Test
 	void shouldReturnTrueWhenComparingTwoEqualComplexContracts() {
-		Contract a = Contract.make(c -> {
-			c.request(r -> {
+		Contract a = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/path");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Accept", r.$(r.consumer(r.regex("text/.*")), r.producer("text/plain")));
 					h.header("X-Custom-Header", r.$(r.consumer(r.regex("^.*2134.*$")), r.producer("121345")));
 				});
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Map.of("id", Map.of("value", "132"), "surname", "Kowalsky", "name", "Jan", "created",
 						"2014-02-02 12:23:43"));
-				resp.headers(h -> h.header("Content-Type", "text/plain"));
+				resp.headers((h) -> h.header("Content-Type", "text/plain"));
 			});
 		});
-		Contract b = Contract.make(c -> {
-			c.request(r -> {
+		Contract b = Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/path");
-				r.headers(h -> {
+				r.headers((h) -> {
 					h.header("Accept", r.$(r.consumer(r.regex("text/.*")), r.producer("text/plain")));
 					h.header("X-Custom-Header", r.$(r.consumer(r.regex("^.*2134.*$")), r.producer("121345")));
 				});
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(Map.of("id", Map.of("value", "132"), "surname", "Kowalsky", "name", "Jan", "created",
 						"2014-02-02 12:23:43"));
-				resp.headers(h -> h.header("Content-Type", "text/plain"));
+				resp.headers((h) -> h.header("Content-Type", "text/plain"));
 			});
 		});
 		assertThat(Objects.requireNonNull(a.getRequest()).getMethod())
@@ -252,30 +252,30 @@ class ContractTests {
 	// it as-is, so requireNonNull would change behavior. Suppress the null-arg warning.
 	@SuppressWarnings("NullAway")
 	void shouldWorkWithOptionalAndNullValueOfAField() {
-		Contract contract = Contract.make(c -> {
+		Contract contract = Contract.make((c) -> {
 			c.description("Creating user");
 			c.name("Create user");
-			c.request(r -> {
+			c.request((r) -> {
 				r.method("POST");
 				r.url("/api/user");
 				r.body(Map.of("address",
 						r.$(r.consumer(r.optional(r.regex(r.alphaNumeric()))), r.producer((Object) null)), "name",
 						r.$(r.consumer(r.optional(r.regex(r.alphaNumeric()))), r.producer(""))));
-				r.headers(h -> h.contentType(h.applicationJson()));
+				r.headers((h) -> h.contentType(h.applicationJson()));
 			});
-			c.response(resp -> resp.status(201));
+			c.response((resp) -> resp.status(201));
 		});
 		assertThat(contract).isNotNull();
 	}
 
 	@Test
 	void shouldFailWhenRegexDoNotMatchTheConcreteValue() {
-		assertThatThrownBy(() -> Contract.make(c -> {
-			c.request(r -> {
+		assertThatThrownBy(() -> Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/any");
 			});
-			c.response(resp -> {
+			c.response((resp) -> {
 				resp.status(resp.OK());
 				resp.body(
 						Map.of("time", resp.$(resp.p(resp.regex(resp.iso8601WithOffset())), resp.c("thisIsNotADate"))));
@@ -285,14 +285,14 @@ class ContractTests {
 
 	@Test
 	void shouldWorkFineWhenDealingWithAnyOf() {
-		assertThatCode(() -> Contract.make(c -> {
-			c.request(r -> {
+		assertThatCode(() -> Contract.make((c) -> {
+			c.request((r) -> {
 				r.method("GET");
 				r.url("/any");
 				r.body(Map.of("foo",
 						r.$(r.consumer(r.optional(r.anyOf("WORKS", "MIGHTY", "DESPAIR"))), r.producer("DESPAIR"))));
 			});
-			c.response(resp -> resp.status(resp.OK()));
+			c.response((resp) -> resp.status(resp.OK()));
 		})).doesNotThrowAnyException();
 	}
 
