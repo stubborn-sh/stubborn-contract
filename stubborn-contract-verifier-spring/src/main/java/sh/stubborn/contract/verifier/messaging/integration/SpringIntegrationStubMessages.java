@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.messaging.integration;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
@@ -54,7 +53,7 @@ public class SpringIntegrationStubMessages
 	@Override
 	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 			@Nullable YamlContract contract) {
-		send(this.builder.create(payload, Objects.requireNonNull(headers)), destination, contract);
+		send(this.builder.create(payload, (headers != null) ? headers : Map.of()), destination, contract);
 	}
 
 	@Override
@@ -91,7 +90,7 @@ public class SpringIntegrationStubMessages
 			sendMethod.invoke(inputDestination, message, destination);
 			return true;
 		}
-		catch (Exception ignored) {
+		catch (ReflectiveOperationException | RuntimeException ignored) {
 			return false;
 		}
 	}
@@ -133,7 +132,7 @@ public class SpringIntegrationStubMessages
 					String.class);
 			return (Message<?>) receiveMethod.invoke(outputDestination, timeoutMillis, destination);
 		}
-		catch (Exception ignored) {
+		catch (ReflectiveOperationException | RuntimeException ignored) {
 			return null;
 		}
 	}

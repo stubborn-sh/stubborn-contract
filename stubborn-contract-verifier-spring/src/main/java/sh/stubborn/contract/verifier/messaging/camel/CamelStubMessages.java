@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.messaging.camel;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.CamelContext;
@@ -86,7 +85,7 @@ public class CamelStubMessages implements MessageVerifierSender<Message>, Messag
 
 	private @Nullable String additionalOptions(ContractVerifierMessageMetadata verifierMessageMetadata,
 			StandaloneMetadata metadata) {
-		return verifierMessageMetadata.getMessageType() == ContractVerifierMessageMetadata.MessageType.INPUT
+		return (verifierMessageMetadata.getMessageType() == ContractVerifierMessageMetadata.MessageType.INPUT)
 				? metadata.getInput().getAdditionalOptions() : metadata.getOutputMessage().getAdditionalOptions();
 	}
 
@@ -105,7 +104,7 @@ public class CamelStubMessages implements MessageVerifierSender<Message>, Messag
 	@Override
 	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 			@Nullable YamlContract contract) {
-		send(this.builder.create(payload, Objects.requireNonNull(headers)), destination, contract);
+		send(this.builder.create(payload, (headers != null) ? headers : Collections.emptyMap()), destination, contract);
 	}
 
 	@Override
