@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
 import groovy.lang.GString;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
@@ -93,7 +94,9 @@ public class MapConverter {
 	 * {@link sh.stubborn.contract.spec.internal.DslProperty}
 	 */
 	public static Object transformToClientValues(Object value) {
-		return transformValues(value, (v) -> v instanceof DslProperty ? ((DslProperty<?>) v).getClientValue() : v);
+		Function<Object, @Nullable Object> function = (v) -> v instanceof DslProperty
+				? ((DslProperty<?>) v).getClientValue() : v;
+		return transformValues(value, function);
 	}
 
 	public static Object transformValues(Object value, Function<Object, ?> function) {
@@ -175,34 +178,33 @@ public class MapConverter {
 	 */
 	public static Object getClientOrServerSideValues(Object json, boolean clientSide,
 			Function<String, Object> parsingFunction) {
-		return transformValues(json, (val) -> {
+		Function<Object, @Nullable Object> function = (val) -> {
 			if (val instanceof DslProperty) {
 				DslProperty<?> dslProperty = ((DslProperty<?>) val);
-				return clientSide
-						? getClientOrServerSideValues(dslProperty.getClientValue(), clientSide, parsingFunction)
-						: getClientOrServerSideValues(dslProperty.getServerValue(), clientSide, parsingFunction);
+				Object dslValue = clientSide ? dslProperty.getClientValue() : dslProperty.getServerValue();
+				return dslValue == null ? null : getClientOrServerSideValues(dslValue, clientSide, parsingFunction);
 			}
 			else if (val instanceof GString) {
 				ContentType type = new MapConverter().templateProcessor.containsJsonPathTemplateEntry(
 						ContentUtils.extractValueForGString((GString) val, ContentUtils.GET_TEST_SIDE).toString())
 								? ContentType.TEXT : null;
-				return ContentUtils.extractValue((GString) val, type, (v) -> {
+				Function<Object, @Nullable Object> innerFunction = (v) -> {
 					if (v instanceof DslProperty) {
-						return clientSide
-								? getClientOrServerSideValues(((DslProperty<?>) v).getClientValue(), clientSide,
-										parsingFunction)
-								: getClientOrServerSideValues(((DslProperty<?>) v).getServerValue(), clientSide,
-										parsingFunction);
+						Object dslV = clientSide ? ((DslProperty<?>) v).getClientValue()
+								: ((DslProperty<?>) v).getServerValue();
+						return dslV == null ? null : getClientOrServerSideValues(dslV, clientSide, parsingFunction);
 					}
 					return v;
-				});
+				};
+				return ContentUtils.extractValue((GString) val, type, innerFunction);
 			}
 			else if (val instanceof FromFileProperty) {
 				return ((FromFileProperty) val).isByte() ? ((FromFileProperty) val).asBytes()
 						: ((FromFileProperty) val).asString();
 			}
 			return val;
-		}, parsingFunction);
+		};
+		return transformValues(json, function, parsingFunction);
 	}
 
 	public static Object getStubSideValues(Object json) {

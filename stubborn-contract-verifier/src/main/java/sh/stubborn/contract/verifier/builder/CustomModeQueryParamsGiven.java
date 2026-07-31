@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
@@ -40,7 +41,7 @@ class CustomModeQueryParamsGiven implements Given, CustomModeAcceptor, QueryPara
 
 	@Override
 	public MethodVisitor<Given> apply(SingleContractMetadata metadata) {
-		Request request = metadata.getContract().getRequest();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
 		Url url = getUrl(request);
 		addQueryParameters(url);
 		return this;
@@ -57,7 +58,7 @@ class CustomModeQueryParamsGiven implements Given, CustomModeAcceptor, QueryPara
 	}
 
 	private void addQueryParameters(Url buildUrl) {
-		List<QueryParameter> queryParameters = buildUrl.getQueryParameters()
+		List<QueryParameter> queryParameters = Objects.requireNonNull(buildUrl.getQueryParameters())
 			.getParameters()
 			.stream()
 			.filter(this::allowedQueryParameter)
@@ -77,7 +78,7 @@ class CustomModeQueryParamsGiven implements Given, CustomModeAcceptor, QueryPara
 
 	private boolean allowedQueryParameter(Object o) {
 		if (o instanceof QueryParameter) {
-			return allowedQueryParameter(((QueryParameter) o).getServerValue());
+			return allowedQueryParameter(Objects.requireNonNull(((QueryParameter) o).getServerValue()));
 		}
 		else if (o instanceof MatchingStrategy) {
 			return !MatchingStrategy.Type.ABSENT.equals(((MatchingStrategy) o).getType());

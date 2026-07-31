@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.util.xml;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -187,7 +188,7 @@ class XmlAsserter implements XmlVerifiable {
 		for (String field : nodeNames) {
 			assertion = assertion == null ? node(field) : assertion.node(field);
 		}
-		return assertion;
+		return Objects.requireNonNull(assertion);
 	}
 
 	@Override

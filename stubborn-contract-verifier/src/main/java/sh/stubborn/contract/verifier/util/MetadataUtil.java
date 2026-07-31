@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.SerializationContext;
@@ -141,7 +142,7 @@ public final class MetadataUtil {
 		}
 
 		@Override
-		public Object get(Object key) {
+		public @Nullable Object get(Object key) {
 			return this.delegate.get(key);
 		}
 
@@ -244,7 +245,7 @@ class MyFilter extends SimpleBeanPropertyFilter implements Serializable {
 		}
 	}
 
-	private static Field findField(Class<?> clazz, String fieldName) {
+	private static @Nullable Field findField(Class<?> clazz, String fieldName) {
 		for (Class<?> c = clazz; c != null && c != Object.class; c = c.getSuperclass()) {
 			try {
 				return c.getDeclaredField(fieldName);

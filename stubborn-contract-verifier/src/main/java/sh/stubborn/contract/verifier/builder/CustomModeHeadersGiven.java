@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.Headers;
@@ -35,7 +36,8 @@ class CustomModeHeadersGiven implements Given {
 
 	@Override
 	public MethodVisitor<Given> apply(SingleContractMetadata metadata) {
-		processInput(this.blockBuilder, metadata.getContract().getRequest().getHeaders());
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		processInput(this.blockBuilder, Objects.requireNonNull(request.getHeaders()));
 		return this;
 	}
 
@@ -56,9 +58,9 @@ class CustomModeHeadersGiven implements Given {
 	}
 
 	private String string(Header header) {
-		return ".header("
-				+ ContentHelper.getTestSideForNonBodyValue(header.getName()) + ", " + ContentHelper
-					.getTestSideForNonBodyValue(MapConverter.getTestSideValuesForNonBody(header.getServerValue()))
+		return ".header(" + ContentHelper.getTestSideForNonBodyValue(header.getName()) + ", "
+				+ ContentHelper.getTestSideForNonBodyValue(
+						MapConverter.getTestSideValuesForNonBody(Objects.requireNonNull(header.getServerValue())))
 				+ ")";
 	}
 

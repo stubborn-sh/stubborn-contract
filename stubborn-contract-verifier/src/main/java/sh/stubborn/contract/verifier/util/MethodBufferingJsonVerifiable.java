@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.util;
 
 import com.toomuchcoding.jsonassert.JsonVerifiable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A wrapper over {@link JsonVerifiable} that allows to store the method name in order to
@@ -78,7 +79,7 @@ public interface MethodBufferingJsonVerifiable extends JsonVerifiable, MethodBuf
 
 	String keyBeforeChecking();
 
-	Object valueBeforeChecking();
+	@Nullable Object valueBeforeChecking();
 
 	boolean assertsSize();
 

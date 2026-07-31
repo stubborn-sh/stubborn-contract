@@ -39,6 +39,8 @@ final class GeneratedTestClassBuilder {
 
 	private List<ClassAnnotation> annotations = new LinkedList<>();
 
+	// Set via classBodyBuilder(...) as part of the builder flow before build() is called.
+	@SuppressWarnings("NullAway.Init")
 	private ClassBodyBuilder classBodyBuilder;
 
 	final BlockBuilder blockBuilder;

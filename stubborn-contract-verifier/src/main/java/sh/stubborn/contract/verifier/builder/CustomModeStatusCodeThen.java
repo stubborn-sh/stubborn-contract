@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
@@ -32,10 +34,10 @@ class CustomModeStatusCodeThen implements Then {
 
 	@Override
 	public MethodVisitor<Then> apply(SingleContractMetadata metadata) {
-		Response response = metadata.getContract().getResponse();
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
 		this.blockBuilder
-			.addIndented(
-					this.comparisonBuilder.assertThat("response.statusCode()", response.getStatus().getServerValue()))
+			.addIndented(this.comparisonBuilder.assertThat("response.statusCode()",
+					Objects.requireNonNull(Objects.requireNonNull(response.getStatus()).getServerValue())))
 			.addEndingIfNotPresent();
 		return this;
 	}

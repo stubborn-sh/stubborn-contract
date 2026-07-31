@@ -22,7 +22,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.HttpMethods;
 
 /**
@@ -67,7 +69,7 @@ public class Request {
 	/**
 	 * @return content type from headers
 	 */
-	public String contentType() {
+	public @Nullable String contentType() {
 		Object value = this.headers.entrySet()
 			.stream()
 			.filter((e) -> e.getKey().toLowerCase(Locale.ROOT).equals("content-type"))
@@ -262,6 +264,8 @@ public class Request {
 
 		ContractVerifierHttpMetaData.Scheme scheme = ContractVerifierHttpMetaData.Scheme.HTTP;
 
+		// Set only when body(...) is invoked; may remain null, matching prior behavior.
+		@SuppressWarnings("NullAway.Init")
 		Body body;
 
 		Map<String, Object> headers = new HashMap<>();
@@ -296,7 +300,7 @@ public class Request {
 		 * @return builder
 		 */
 		public Request.Builder scheme(String scheme) {
-			this.scheme = ContractVerifierHttpMetaData.Scheme.fromString(scheme);
+			this.scheme = Objects.requireNonNull(ContractVerifierHttpMetaData.Scheme.fromString(scheme));
 			return this;
 		}
 
@@ -305,7 +309,7 @@ public class Request {
 		 * @return builder
 		 */
 		public Request.Builder protocol(String protocol) {
-			this.protocol = ContractVerifierHttpMetaData.Protocol.fromString(protocol);
+			this.protocol = Objects.requireNonNull(ContractVerifierHttpMetaData.Protocol.fromString(protocol));
 			return this;
 		}
 

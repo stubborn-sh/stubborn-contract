@@ -18,6 +18,9 @@ package sh.stubborn.contract.verifier.messaging.internal;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Yet another message abstraction. Provides generated tests with a layer that is
@@ -28,21 +31,21 @@ import java.util.Map;
  */
 public class ContractVerifierMessage {
 
-	private Object payload;
+	private @Nullable Object payload;
 
 	private Map<String, Object> headers = new LinkedHashMap<>();
 
 	public ContractVerifierMessage() {
 	}
 
-	public ContractVerifierMessage(Object payload, Map<String, Object> headers) {
+	public ContractVerifierMessage(@Nullable Object payload, @Nullable Map<String, Object> headers) {
 		this.payload = payload;
 		if (headers != null) {
 			this.headers.putAll(headers);
 		}
 	}
 
-	public Object getPayload() {
+	public @Nullable Object getPayload() {
 		return this.payload;
 	}
 
@@ -54,7 +57,8 @@ public class ContractVerifierMessage {
 		if (this.payload instanceof byte[]) {
 			return (byte[]) this.payload;
 		}
-		throw new IllegalStateException("Payload [" + this.payload.getClass() + "]" + "is not instance of byte[]");
+		throw new IllegalStateException(
+				"Payload [" + Objects.requireNonNull(this.payload).getClass() + "]" + "is not instance of byte[]");
 	}
 
 	public Map<String, Object> getHeaders() {
@@ -65,7 +69,7 @@ public class ContractVerifierMessage {
 		this.headers = headers;
 	}
 
-	public Object getHeader(String name) {
+	public @Nullable Object getHeader(String name) {
 		return this.headers.get(name);
 	}
 

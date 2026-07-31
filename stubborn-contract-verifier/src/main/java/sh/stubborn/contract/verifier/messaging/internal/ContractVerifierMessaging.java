@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.messaging.internal;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +57,7 @@ public class ContractVerifierMessaging<M> {
 		if (contract != null) {
 			setMessageType(contract, ContractVerifierMessageMetadata.MessageType.INPUT);
 		}
-		this.sender.send(message.getPayload(), message.getHeaders(), destination, contract);
+		this.sender.send(Objects.requireNonNull(message.getPayload()), message.getHeaders(), destination, contract);
 	}
 
 	public void send(ContractVerifierMessage message, String destination) {
@@ -83,7 +84,7 @@ public class ContractVerifierMessaging<M> {
 		return new ContractVerifierMessage(payload, headers);
 	}
 
-	protected ContractVerifierMessage convert(M receive) {
+	protected ContractVerifierMessage convert(@Nullable M receive) {
 		return new ContractVerifierMessage(receive, null);
 	}
 

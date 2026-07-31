@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -43,10 +44,11 @@ class MessagingHeadersThen implements Then, BodyMethodVisitor {
 	public MethodVisitor<Then> apply(SingleContractMetadata singleContractMetadata) {
 		endBodyBlock(this.blockBuilder);
 		startBodyBlock(this.blockBuilder, "and:");
-		OutputMessage outputMessage = singleContractMetadata.getContract().getOutputMessage();
-		outputMessage.getHeaders().executeForEachHeader((header) -> {
-			processHeaderElement(header.getName(), header.getServerValue() instanceof NotToEscapePattern
-					? header.getServerValue() : MapConverter.getTestSideValues(header.getServerValue()));
+		OutputMessage outputMessage = Objects.requireNonNull(singleContractMetadata.getContract().getOutputMessage());
+		Objects.requireNonNull(outputMessage.getHeaders()).executeForEachHeader((header) -> {
+			processHeaderElement(header.getName(),
+					header.getServerValue() instanceof NotToEscapePattern ? header.getServerValue()
+							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue())));
 		});
 		return this;
 	}
@@ -97,7 +99,7 @@ class MessagingHeadersThen implements Then, BodyMethodVisitor {
 	@Override
 	public boolean accept(SingleContractMetadata singleContractMetadata) {
 		return singleContractMetadata.isMessaging()
-				&& singleContractMetadata.getContract().getOutputMessage().getHeaders() != null;
+				&& Objects.requireNonNull(singleContractMetadata.getContract().getOutputMessage()).getHeaders() != null;
 	}
 
 }

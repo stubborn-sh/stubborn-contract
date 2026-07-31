@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 class MessagingTriggeredByWhen implements When {
@@ -28,14 +30,17 @@ class MessagingTriggeredByWhen implements When {
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		this.blockBuilder.addIndented(metadata.getContract().getInput().getTriggeredBy().getExecutionCommand())
+		this.blockBuilder
+			.addIndented(
+					Objects.requireNonNull(Objects.requireNonNull(metadata.getContract().getInput()).getTriggeredBy())
+						.getExecutionCommand())
 			.addEndingIfNotPresent();
 		return this;
 	}
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		return metadata.getContract().getInput().getTriggeredBy() != null;
+		return Objects.requireNonNull(metadata.getContract().getInput()).getTriggeredBy() != null;
 	}
 
 }

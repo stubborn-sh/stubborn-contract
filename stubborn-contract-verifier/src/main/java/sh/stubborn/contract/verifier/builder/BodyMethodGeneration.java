@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -49,7 +50,8 @@ interface BodyMethodGeneration {
 			if (it.matchingType() == MatchingType.NULL) {
 				methodForNullCheck(it, blockBuilder);
 			}
-			else if (MatchingType.regexRelated(it.matchingType()) || it.matchingType() == MatchingType.EQUALITY) {
+			else if (MatchingType.regexRelated(Objects.requireNonNull(it.matchingType()))
+					|| it.matchingType() == MatchingType.EQUALITY) {
 				methodForEqualityCheck(it, blockBuilder, responseBody);
 			}
 			else if (it.matchingType() == MatchingType.COMMAND) {

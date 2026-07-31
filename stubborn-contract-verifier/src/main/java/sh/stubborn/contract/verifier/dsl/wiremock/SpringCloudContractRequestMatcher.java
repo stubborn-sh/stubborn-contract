@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.dsl.wiremock;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
@@ -150,9 +151,9 @@ class GraphQlMatcher implements RequestMatcher {
 	public MatchResult match(List<YamlContract> contracts, Request request, Parameters parameters) {
 		YamlContract contract = contracts.get(0);
 		// TODO: What if the body is in files?
-		Map body = (Map) contract.request.body;
+		Map body = (Map) Objects.requireNonNull(contract.request).body;
 		try {
-			Map jsonBodyFromContract = body;
+			Map jsonBodyFromContract = Objects.requireNonNull(body);
 			Map jsonBodyFromRequest = this.objectMapper.readerForMapOf(Object.class).readValue(request.getBody());
 			String query = (String) jsonBodyFromContract.get("query");
 			String queryFromRequest = (String) jsonBodyFromRequest.get("query");

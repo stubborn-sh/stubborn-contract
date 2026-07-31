@@ -19,10 +19,13 @@ package sh.stubborn.contract.verifier.builder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.jspecify.annotations.Nullable;
+
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -85,7 +88,7 @@ class GenericJsonBodyThen implements Then {
 	}
 
 	private void addJsonBodyVerification(SingleContractMetadata contractMetadata, Object responseBody,
-			BodyMatchers bodyMatchers) {
+			@Nullable BodyMatchers bodyMatchers) {
 		JsonBodyVerificationBuilder jsonBodyVerificationBuilder = new JsonBodyVerificationBuilder(
 				this.generatedClassMetaData.configProperties.getAssertJsonSize(), this.templateProcessor,
 				this.contractTemplate, contractMetadata.getContract(), Optional.of(this.blockBuilder.getLineEnding()),
@@ -194,7 +197,7 @@ class GenericJsonBodyThen implements Then {
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		Object responseBody = this.bodyParser.responseBody(metadata).getServerValue();
+		Object responseBody = Objects.requireNonNull(this.bodyParser.responseBody(metadata)).getServerValue();
 		if (responseBody instanceof FromFileProperty) {
 			return !((FromFileProperty) responseBody).isByte();
 		}

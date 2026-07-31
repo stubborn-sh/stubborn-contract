@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.Header;
@@ -48,13 +49,14 @@ class JaxRsResponseHeadersThen implements Then {
 	}
 
 	private void validateResponseHeadersBlock(SingleContractMetadata metadata) {
-		Response response = metadata.getContract().getResponse();
-		Headers headers = response.getHeaders();
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
+		Headers headers = Objects.requireNonNull(response.getHeaders());
 		Iterator<Header> iterator = headers.getEntries().iterator();
 		while (iterator.hasNext()) {
 			Header header = iterator.next();
-			String text = processHeaderElement(header.getName(), header.getServerValue() instanceof NotToEscapePattern
-					? header.getServerValue() : MapConverter.getTestSideValues(header.getServerValue()));
+			String text = processHeaderElement(header.getName(),
+					header.getServerValue() instanceof NotToEscapePattern ? header.getServerValue()
+							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue())));
 			if (iterator.hasNext()) {
 				this.blockBuilder.addLineWithEnding(text);
 			}
@@ -67,7 +69,8 @@ class JaxRsResponseHeadersThen implements Then {
 	private String processHeaderElement(String property, Object value) {
 		if (value instanceof NotToEscapePattern) {
 			return this.comparisonBuilder.assertThat("response.getHeaderString(\"" + property + "\")")
-					+ this.comparisonBuilder.createComparison(((NotToEscapePattern) value).getServerValue());
+					+ this.comparisonBuilder
+						.createComparison(Objects.requireNonNull(((NotToEscapePattern) value).getServerValue()));
 		}
 		else if (value instanceof Number) {
 			return this.comparisonBuilder.assertThat("response.getHeaderString(\"" + property + "\")", value);
@@ -83,7 +86,7 @@ class JaxRsResponseHeadersThen implements Then {
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		return metadata.getContract().getResponse().getHeaders() != null;
+		return Objects.requireNonNull(metadata.getContract().getResponse()).getHeaders() != null;
 	}
 
 }

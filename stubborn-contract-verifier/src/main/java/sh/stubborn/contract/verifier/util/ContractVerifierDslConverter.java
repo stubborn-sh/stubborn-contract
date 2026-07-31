@@ -48,6 +48,7 @@ import javax.tools.ToolProvider;
 
 import groovy.lang.GroovyShell;
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
@@ -137,7 +138,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		Thread.currentThread().setContextClassLoader(urlCl);
 	}
 
-	private static Object toObject(ClassLoader cl, File rootFolder, File dsl) throws IOException {
+	private static @Nullable Object toObject(ClassLoader cl, File rootFolder, File dsl) throws IOException {
 		if (isJava(dsl)) {
 			try {
 				return parseJavaFile(rootFolder, dsl);
@@ -153,7 +154,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		return groovyShell(cl, rootFolder).evaluate(dsl);
 	}
 
-	private static Object parseJavaFile(File rootFolder, File dsl) throws IllegalAccessException,
+	private static @Nullable Object parseJavaFile(File rootFolder, File dsl) throws IllegalAccessException,
 			InvocationTargetException, InstantiationException, IOException, NoSuchMethodException {
 		Constructor<?> constructor = classConstructor(rootFolder, dsl);
 		Object newInstance = constructor.newInstance();
@@ -268,7 +269,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		return Collections.singletonList((Contract) object);
 	}
 
-	private static Collection<Contract> listOfContracts(File file, Object object) {
+	private static Collection<Contract> listOfContracts(File file, @Nullable Object object) {
 		if (object == null) {
 			return Collections.emptyList();
 		}

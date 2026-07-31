@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
@@ -53,7 +55,7 @@ class RestAssuredCookiesThen implements Then, RestAssuredAcceptor, CookieElement
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		Response response = metadata.getContract().getResponse();
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
 		return response.getCookies() != null;
 	}
 

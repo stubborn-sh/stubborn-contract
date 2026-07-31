@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import sh.stubborn.contract.spec.internal.Cookie;
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
@@ -33,12 +34,12 @@ class CustomModeCookiesGiven implements Given {
 
 	@Override
 	public MethodVisitor<Given> apply(SingleContractMetadata metadata) {
-		processInput(metadata.getContract().getRequest());
+		processInput(Objects.requireNonNull(metadata.getContract().getRequest()));
 		return this;
 	}
 
 	private void processInput(Request request) {
-		Iterator<Cookie> iterator = request.getCookies().getEntries().iterator();
+		Iterator<Cookie> iterator = Objects.requireNonNull(request.getCookies()).getEntries().iterator();
 		while (iterator.hasNext()) {
 			Cookie cookie = iterator.next();
 			if (ofAbsentType(cookie)) {
@@ -55,7 +56,7 @@ class CustomModeCookiesGiven implements Given {
 
 	private String string(Cookie cookie) {
 		return ".cookie(" + ContentHelper.getTestSideForNonBodyValue(cookie.getKey()) + ", "
-				+ ContentHelper.getTestSideForNonBodyValue(cookie.getServerValue()) + ")";
+				+ ContentHelper.getTestSideForNonBodyValue(Objects.requireNonNull(cookie.getServerValue())) + ")";
 	}
 
 	private boolean ofAbsentType(Cookie cookie) {

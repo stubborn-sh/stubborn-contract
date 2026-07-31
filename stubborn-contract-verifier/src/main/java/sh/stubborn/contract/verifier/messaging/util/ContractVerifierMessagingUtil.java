@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Helper class that allows to build headers in a nice way.
  *
@@ -72,7 +74,7 @@ public final class ContractVerifierMessagingUtil {
 		}
 
 		@Override
-		public Object get(Object key) {
+		public @Nullable Object get(Object key) {
 			return this.delegate.get(key);
 		}
 

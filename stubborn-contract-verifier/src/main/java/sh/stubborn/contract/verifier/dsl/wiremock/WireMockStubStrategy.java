@@ -16,9 +16,12 @@
 
 package sh.stubborn.contract.verifier.dsl.wiremock;
 
+import java.util.Objects;
+
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
@@ -38,7 +41,7 @@ public class WireMockStubStrategy {
 
 	private final WireMockResponseStubStrategy wireMockResponseStubStrategy;
 
-	private final Integer priority;
+	private final @Nullable Integer priority;
 
 	private final ContractMetadata contract;
 
@@ -49,7 +52,7 @@ public class WireMockStubStrategy {
 	public WireMockStubStrategy(String rootName, ContractMetadata contract, Contract groovyDsl) {
 		this.rootName = rootName;
 		this.contract = contract;
-		SingleContractMetadata singleContractMetadata = contract.forContract(groovyDsl);
+		SingleContractMetadata singleContractMetadata = Objects.requireNonNull(contract.forContract(groovyDsl));
 		this.wireMockRequestStubStrategy = new WireMockRequestStubStrategy(groovyDsl, singleContractMetadata);
 		this.wireMockResponseStubStrategy = new WireMockResponseStubStrategy(groovyDsl, singleContractMetadata);
 		this.priority = groovyDsl.getPriority();
@@ -59,7 +62,7 @@ public class WireMockStubStrategy {
 	/**
 	 * Converts {@link ContractMetadata} to {@link StubMapping}.
 	 */
-	public StubMapping toWireMockClientStub() {
+	public @Nullable StubMapping toWireMockClientStub() {
 		StubMapping stubMapping = new StubMapping();
 		RequestPattern request = wireMockRequestStubStrategy.buildClientRequestContent();
 		ResponseDefinition response = wireMockResponseStubStrategy.buildClientResponseContent();

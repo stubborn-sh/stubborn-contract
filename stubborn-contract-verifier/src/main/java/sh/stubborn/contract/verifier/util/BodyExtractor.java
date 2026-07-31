@@ -70,15 +70,24 @@ public final class BodyExtractor {
 
 	public static @Nullable Object extractServerValueFromBody(@Nullable Object bodyValue) {
 		if (bodyValue instanceof GString) {
-			return extractValue((GString) bodyValue, (v) -> ((DslProperty<?>) v).getServerValue());
+			Function<Object, @Nullable Object> serverSide = (v) -> ((DslProperty<?>) v).getServerValue();
+			return extractValue((GString) bodyValue, serverSide);
 		}
-		return MapConverter.transformValues(bodyValue,
-				(it) -> it instanceof DslProperty ? ((DslProperty<?>) it).getServerValue() : it);
+		if (bodyValue == null) {
+			return null;
+		}
+		Function<Object, @Nullable Object> serverSide = (it) -> it instanceof DslProperty
+				? ((DslProperty<?>) it).getServerValue() : it;
+		return MapConverter.transformValues(bodyValue, serverSide);
 	}
 
 	public static @Nullable Object extractClientValueFromBody(@Nullable Object bodyValue) {
+		if (bodyValue == null) {
+			return null;
+		}
 		if (bodyValue instanceof GString) {
-			return extractValue((GString) bodyValue, (v) -> ((DslProperty<?>) v).getClientValue());
+			Function<Object, @Nullable Object> clientSide = (v) -> ((DslProperty<?>) v).getClientValue();
+			return extractValue((GString) bodyValue, clientSide);
 		}
 		else if (bodyValue instanceof DslProperty) {
 			return extractClientValueFromBody(((DslProperty<?>) bodyValue).getClientValue());
@@ -87,13 +96,14 @@ public final class BodyExtractor {
 			return MapConverter.transformValues(((FromFileProperty) bodyValue).asString(), Function.identity());
 		}
 		else {
-			return MapConverter.transformValues(bodyValue, (it) -> {
+			Function<Object, @Nullable Object> clientSide = (it) -> {
 				Object prop = it instanceof DslProperty ? ((DslProperty<?>) it).getClientValue() : it;
 				if (prop instanceof CanBeDynamic || prop instanceof Pattern) {
 					return new RegexProperty(prop).generateConcreteValue();
 				}
 				return prop;
-			});
+			};
+			return MapConverter.transformValues(bodyValue, clientSide);
 		}
 	}
 

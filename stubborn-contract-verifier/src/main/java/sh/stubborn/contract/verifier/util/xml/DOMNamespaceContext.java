@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
 
+import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -35,11 +36,11 @@ public class DOMNamespaceContext implements NamespaceContext {
 		addNamespaces(contextNode);
 	}
 
-	public String getNamespaceURI(String arg0) {
+	public @Nullable String getNamespaceURI(String arg0) {
 		return namespaceMap.get(arg0);
 	}
 
-	public String getPrefix(String arg0) {
+	public @Nullable String getPrefix(String arg0) {
 		for (Map.Entry<String, String> entry : namespaceMap.entrySet()) {
 			if (entry.getValue().equals(arg0)) {
 				return entry.getKey();

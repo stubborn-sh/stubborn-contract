@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.function.Function;
 
@@ -29,6 +30,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import groovy.lang.GString;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Request;
@@ -57,7 +59,7 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 
 	WireMockResponseStubStrategy(Contract groovyDsl, SingleContractMetadata singleContractMetadata) {
 		super(groovyDsl);
-		this.response = groovyDsl.getResponse();
+		this.response = Objects.requireNonNull(groovyDsl.getResponse());
 		this.contentType = contentType(singleContractMetadata);
 		this.contractMetadata = singleContractMetadata;
 	}
@@ -66,12 +68,12 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 		return singleContractMetadata.getEvaluatedOutputStubContentType();
 	}
 
-	ResponseDefinition buildClientResponseContent() {
+	@Nullable ResponseDefinition buildClientResponseContent() {
 		if (response == null) {
 			return null;
 		}
 		ResponseDefinitionBuilder builder = new ResponseDefinitionBuilder()
-			.withStatus((Integer) MapConverter.getStubSideValues(response.getStatus()));
+			.withStatus((Integer) MapConverter.getStubSideValues(Objects.requireNonNull(response.getStatus())));
 		appendHeaders(builder);
 		appendBody(builder);
 		appendResponseDelayTime(builder);
@@ -98,7 +100,7 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 				.getEntries()
 				.stream()
 				.map((it) -> new HttpHeader(it.getName(),
-						MapConverter.getStubSideValues(it.getClientValue()).toString()))
+						MapConverter.getStubSideValues(Objects.requireNonNull(it.getClientValue())).toString()))
 				.collect(collectingAndThen(toList(), HttpHeaders::new));
 			builder.withHeaders(headers);
 		}

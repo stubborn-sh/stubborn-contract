@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
@@ -40,8 +42,8 @@ class GenericBinaryBodyThen implements Then {
 
 	@Override
 	public MethodVisitor<Then> apply(SingleContractMetadata metadata) {
-		Object responseBody = this.bodyParser.responseBody(metadata).getServerValue();
-		byteResponseBodyCheck(metadata, (FromFileProperty) responseBody);
+		Object responseBody = Objects.requireNonNull(this.bodyParser.responseBody(metadata)).getServerValue();
+		byteResponseBodyCheck(metadata, (FromFileProperty) Objects.requireNonNull(responseBody));
 		return this;
 	}
 
@@ -52,7 +54,7 @@ class GenericBinaryBodyThen implements Then {
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		Object responseBody = this.bodyParser.responseBody(metadata).getServerValue();
+		Object responseBody = Objects.requireNonNull(this.bodyParser.responseBody(metadata)).getServerValue();
 		if (!(responseBody instanceof FromFileProperty)) {
 			return false;
 		}

@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.OutputMessage;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
@@ -40,11 +42,16 @@ class MessagingReceiveMessageThen implements Then, BodyMethodVisitor {
 
 	@Override
 	public MethodVisitor<Then> apply(SingleContractMetadata singleContractMetadata) {
-		OutputMessage outputMessage = singleContractMetadata.getContract().getOutputMessage();
+		OutputMessage outputMessage = Objects.requireNonNull(singleContractMetadata.getContract().getOutputMessage());
 		this.bodyReader.storeContractAsYaml(singleContractMetadata);
+		// Keep the server value typed as Object: getServerValue() is declared String on
+		// DslProperty<String> but can hold a dynamic value (e.g. ExecutionProperty) at
+		// runtime, so a String checkcast (which requireNonNull on the narrowed type would
+		// force) must be avoided.
+		Object sentToServerValue = Objects.requireNonNull(outputMessage.getSentTo()).getServerValue();
 		this.blockBuilder
 			.addIndented("ContractVerifierMessage response = contractVerifierMessaging.receive("
-					+ sentToValue(outputMessage.getSentTo().getServerValue()) + ",")
+					+ sentToValue(Objects.requireNonNull(sentToServerValue)) + ",")
 			.addEmptyLine()
 			.indent()
 			.addIndented("contract(this, \"" + singleContractMetadata.methodName() + ".yml\"))")
@@ -65,7 +72,7 @@ class MessagingReceiveMessageThen implements Then, BodyMethodVisitor {
 	@Override
 	public boolean accept(SingleContractMetadata singleContractMetadata) {
 		return singleContractMetadata.isMessaging()
-				&& singleContractMetadata.getContract().getOutputMessage().getSentTo() != null;
+				&& Objects.requireNonNull(singleContractMetadata.getContract().getOutputMessage()).getSentTo() != null;
 	}
 
 }

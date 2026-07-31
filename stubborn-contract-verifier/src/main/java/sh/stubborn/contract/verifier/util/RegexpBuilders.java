@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.util;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ import java.util.stream.Stream;
 
 import groovy.lang.GString;
 import org.codehaus.groovy.runtime.GStringImpl;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.util.RegexpUtils;
 
@@ -41,7 +43,7 @@ public final class RegexpBuilders {
 
 	private final static String WS = "/\\s*/";
 
-	private static final Function<DslProperty<?>, Object> CLIENT_VALUE_EXTRACTOR = DslProperty::getClientValue;
+	private static final Function<DslProperty<?>, @Nullable Object> CLIENT_VALUE_EXTRACTOR = DslProperty::getClientValue;
 
 	private RegexpBuilders() {
 	}
@@ -90,7 +92,7 @@ public final class RegexpBuilders {
 	 * into their stub side String representations.
 	 */
 	static String buildGStringRegexpForStubSide(DslProperty<?> dslProperty) {
-		return buildGStringRegexpForStubSide(dslProperty.getClientValue());
+		return buildGStringRegexpForStubSide(Objects.requireNonNull(dslProperty.getClientValue()));
 	}
 
 	/**

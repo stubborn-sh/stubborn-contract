@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.http;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -72,7 +73,7 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 	}
 
 	public void setScheme(String scheme) {
-		this.scheme = Scheme.fromString(scheme);
+		this.scheme = Objects.requireNonNull(Scheme.fromString(scheme));
 	}
 
 	public Protocol getProtocol() {
@@ -84,7 +85,7 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 	}
 
 	public void setProtocol(String protocol) {
-		this.protocol = Protocol.fromString(protocol);
+		this.protocol = Objects.requireNonNull(Protocol.fromString(protocol));
 	}
 
 	/**

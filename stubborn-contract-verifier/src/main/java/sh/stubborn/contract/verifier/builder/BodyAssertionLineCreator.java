@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import sh.stubborn.contract.spec.internal.DslProperty;
@@ -68,7 +69,7 @@ class BodyAssertionLineCreator {
 		}
 		else if (value instanceof DslProperty) {
 			return getResponseBodyPropertyComparisonString(singleContractMetadata, property,
-					((DslProperty) value).getServerValue());
+					Objects.requireNonNull(((DslProperty) value).getServerValue()));
 		}
 		else if (value instanceof EscapedString) {
 			return getResponseBodyPropertyComparisonString(property, (EscapedString) value);

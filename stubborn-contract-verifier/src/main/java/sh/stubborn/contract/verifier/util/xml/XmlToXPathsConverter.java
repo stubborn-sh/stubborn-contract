@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.IntFunction;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -96,7 +97,7 @@ public class XmlToXPathsConverter {
 		if (matcher.matchingType() == MatchingType.EQUALITY || isFalsy(value)) {
 			return retrieveValueFromBody(matcher.path(), body);
 		}
-		return value.toString();
+		return Objects.requireNonNull(value).toString();
 	}
 
 	/**
