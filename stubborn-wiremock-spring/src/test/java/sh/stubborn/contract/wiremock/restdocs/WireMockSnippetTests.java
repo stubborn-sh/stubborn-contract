@@ -268,7 +268,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public String getContentAsString() {
-				return null;
+				return "";
 			}
 
 			@Override
@@ -289,7 +289,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public String getContentAsString() {
-				return null;
+				return "";
 			}
 
 			@Override
@@ -304,7 +304,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public Collection<OperationRequestPart> getParts() {
-				return null;
+				return Collections.emptyList();
 			}
 
 			@Override
@@ -347,7 +347,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public Collection<OperationRequestPart> getParts() {
-				return null;
+				return Collections.emptyList();
 			}
 
 			@Override
@@ -390,7 +390,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public Collection<OperationRequestPart> getParts() {
-				return null;
+				return Collections.emptyList();
 			}
 
 			@Override
@@ -431,7 +431,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public Collection<OperationRequestPart> getParts() {
-				return null;
+				return Collections.emptyList();
 			}
 
 			@Override
@@ -472,7 +472,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public Collection<OperationRequestPart> getParts() {
-				return null;
+				return Collections.emptyList();
 			}
 
 			@Override
@@ -513,7 +513,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public Collection<OperationRequestPart> getParts() {
-				return null;
+				return Collections.emptyList();
 			}
 
 			@Override
@@ -552,7 +552,7 @@ public class WireMockSnippetTests {
 
 			@Override
 			public Collection<OperationRequestPart> getParts() {
-				return null;
+				return Collections.emptyList();
 			}
 
 			@Override

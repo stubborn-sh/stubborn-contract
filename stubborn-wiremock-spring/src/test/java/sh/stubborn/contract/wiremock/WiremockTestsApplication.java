@@ -17,10 +17,12 @@
 package sh.stubborn.contract.wiremock;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,7 +80,7 @@ class Service {
 	private static final Log log = LogFactory.getLog(Service.class);
 
 	@Value("${app.baseUrl:https://example.org}")
-	String base;
+	@Nullable String base;
 
 	private RestTemplate restTemplate;
 
@@ -96,33 +98,34 @@ class Service {
 	public String go() {
 		String requestUrl = this.base + "/test";
 		log.info("Will send a request to [" + requestUrl + "]");
-		return this.restTemplate.getForEntity(requestUrl, String.class).getBody();
+		return Objects.requireNonNull(this.restTemplate.getForEntity(requestUrl, String.class).getBody());
 	}
 
 	public String goWithApacheClient() {
 		String requestUrl = this.base + "/test";
 		log.info("Will send a request to [" + requestUrl + "]");
-		return this.apacheHttpClient.getForEntity(requestUrl, String.class).getBody();
+		return Objects.requireNonNull(this.apacheHttpClient.getForEntity(requestUrl, String.class).getBody());
 	}
 
 	public String goWithApacheClientAndAdditonalInterceptor() {
 		String requestUrl = this.base + "/test";
 		log.info("Will send a request to [" + requestUrl + "]");
-		return this.apacheHttpClientWithInterceptor.getForEntity(requestUrl, String.class).getBody();
+		return Objects
+			.requireNonNull(this.apacheHttpClientWithInterceptor.getForEntity(requestUrl, String.class).getBody());
 	}
 
 	public String link() {
 		String requestUrl = this.base + "/link";
 		log.info("Will send a request to [" + requestUrl + "]");
-		return this.restTemplate.getForEntity(requestUrl, String.class).getBody();
+		return Objects.requireNonNull(this.restTemplate.getForEntity(requestUrl, String.class).getBody());
 	}
 
 	public String pom() {
 		String requestUrl = this.base + "/pom.xml";
 		log.info("Will send a request to [" + requestUrl + "]");
-		return this.restTemplate
+		return Objects.requireNonNull(this.restTemplate
 			.exchange(RequestEntity.get(URI.create(requestUrl)).accept(mediaTypes()).build(), String.class)
-			.getBody();
+			.getBody());
 	}
 
 	private MediaType[] mediaTypes() {
@@ -136,7 +139,7 @@ class Service {
 	public String go2() {
 		String requestUrl = this.base + "/test2";
 		log.info("Will send a request to [" + requestUrl + "]");
-		return this.restTemplate.getForEntity(requestUrl, String.class).getBody();
+		return Objects.requireNonNull(this.restTemplate.getForEntity(requestUrl, String.class).getBody());
 	}
 
 	public void setBase(String base) {
