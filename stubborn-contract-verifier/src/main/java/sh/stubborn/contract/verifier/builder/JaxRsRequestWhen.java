@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
@@ -34,7 +36,7 @@ class JaxRsRequestWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		appendRequestWithRequiredResponseContentType(metadata.getContract().getRequest());
+		appendRequestWithRequiredResponseContentType(Objects.requireNonNull(metadata.getContract().getRequest()));
 		return this;
 	}
 
@@ -61,7 +63,8 @@ class JaxRsRequestWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 		if (foundHeader == null) {
 			return "";
 		}
-		return MapConverter.getTestSideValuesForNonBody(foundHeader.getServerValue()).toString();
+		return MapConverter.getTestSideValuesForNonBody(Objects.requireNonNull(foundHeader.getServerValue()))
+			.toString();
 	}
 
 	@Override

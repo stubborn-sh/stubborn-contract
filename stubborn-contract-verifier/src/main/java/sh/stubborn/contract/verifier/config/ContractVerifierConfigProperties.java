@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents Contract Verifier configuration properties.
@@ -47,22 +48,22 @@ public class ContractVerifierConfigProperties {
 	/**
 	 * Base package for generated tests.
 	 */
-	private String basePackageForTests;
+	private @Nullable String basePackageForTests;
 
 	/**
 	 * Class which all generated tests should extend.
 	 */
-	private String baseClassForTests;
+	private @Nullable String baseClassForTests;
 
 	/**
 	 * Suffix for generated test classes, like Spec or Test.
 	 */
-	private String nameSuffixForTests;
+	private @Nullable String nameSuffixForTests;
 
 	/**
 	 * Rule class that should be added to generated tests.
 	 */
-	private String ruleClassForTests;
+	private @Nullable String ruleClassForTests;
 
 	/**
 	 * Patterns that should not be taken into account for processing.
@@ -92,22 +93,30 @@ public class ContractVerifierConfigProperties {
 	/**
 	 * Directory containing contracts.
 	 */
+	// Always set by the Maven/Gradle plugin before contract processing begins.
+	@SuppressWarnings("NullAway.Init")
 	private File contractsDslDir;
 
 	/**
 	 * Test source directory where tests generated.
 	 */
+	// Always set by the Maven/Gradle plugin before contract processing begins.
+	@SuppressWarnings("NullAway.Init")
 	private File generatedTestSourcesDir;
 
 	/**
 	 * Test resource directory where additional resources for tests will be set.
 	 */
+	// Always set by the Maven/Gradle plugin before contract processing begins.
+	@SuppressWarnings("NullAway.Init")
 	private File generatedTestResourcesDir;
 
 	/**
 	 * Dir where the generated stubs from the contracts should be placed. You can then
 	 * mention them in your packaging task to create jar with stubs.
 	 */
+	// Always set by the Maven/Gradle plugin before contract processing begins.
+	@SuppressWarnings("NullAway.Init")
 	private File stubsOutputDir;
 
 	/**
@@ -143,7 +152,7 @@ public class ContractVerifierConfigProperties {
 	 * {@code ExampleV1Base}. As you can see it will take the two last folders to and
 	 * attach {@code Base} to its name.
 	 */
-	private String packageWithBaseClasses;
+	private @Nullable String packageWithBaseClasses;
 
 	/**
 	 * A way to override any base class mappings. The keys are regular expressions on the
@@ -158,7 +167,7 @@ public class ContractVerifierConfigProperties {
 	 * class will be the one provided in the map - in this case
 	 * {@code com.example.SomeBaseClass}
 	 */
-	private Map<String, String> baseClassMappings;
+	private @Nullable Map<String, String> baseClassMappings;
 
 	/**
 	 * If set to true then the {@code target} or {@code build} folders are getting
@@ -191,7 +200,7 @@ public class ContractVerifierConfigProperties {
 		this.testMode = testMode;
 	}
 
-	public String getBasePackageForTests() {
+	public @Nullable String getBasePackageForTests() {
 		return basePackageForTests;
 	}
 
@@ -199,7 +208,7 @@ public class ContractVerifierConfigProperties {
 		this.basePackageForTests = basePackageForTests;
 	}
 
-	public String getBaseClassForTests() {
+	public @Nullable String getBaseClassForTests() {
 		return baseClassForTests;
 	}
 
@@ -207,7 +216,7 @@ public class ContractVerifierConfigProperties {
 		this.baseClassForTests = baseClassForTests;
 	}
 
-	public String getNameSuffixForTests() {
+	public @Nullable String getNameSuffixForTests() {
 		return nameSuffixForTests;
 	}
 
@@ -215,7 +224,7 @@ public class ContractVerifierConfigProperties {
 		this.nameSuffixForTests = nameSuffixForTests;
 	}
 
-	public String getRuleClassForTests() {
+	public @Nullable String getRuleClassForTests() {
 		return ruleClassForTests;
 	}
 
@@ -327,7 +336,7 @@ public class ContractVerifierConfigProperties {
 		this.includedRootFolderAntPattern = includedRootFolderAntPattern;
 	}
 
-	public String getPackageWithBaseClasses() {
+	public @Nullable String getPackageWithBaseClasses() {
 		return packageWithBaseClasses;
 	}
 
@@ -335,7 +344,7 @@ public class ContractVerifierConfigProperties {
 		this.packageWithBaseClasses = packageWithBaseClasses;
 	}
 
-	public Map<String, String> getBaseClassMappings() {
+	public @Nullable Map<String, String> getBaseClassMappings() {
 		return baseClassMappings;
 	}
 

@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import org.jspecify.annotations.Nullable;
+
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 
 interface DefaultBaseClassProvider {
@@ -24,7 +26,7 @@ interface DefaultBaseClassProvider {
 
 	BaseClassProvider baseClassProvider();
 
-	default String fqnBaseClass() {
+	default @Nullable String fqnBaseClass() {
 		ContractVerifierConfigProperties properties = generatedClassMetaData().configProperties;
 		String includedDirectoryRelativePath = generatedClassMetaData().includedDirectoryRelativePath;
 		return baseClassProvider().retrieveBaseClass(properties.getBaseClassMappings(),

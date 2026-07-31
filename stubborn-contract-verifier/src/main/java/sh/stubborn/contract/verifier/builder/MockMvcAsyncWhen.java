@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
@@ -32,7 +34,7 @@ class MockMvcAsyncWhen implements When, MockMvcAcceptor {
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		Response response = metadata.getContract().getResponse();
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
 		addAsync();
 		if (response.getDelay() != null) {
 			String delay = ".timeout(" + response.getDelay().getServerValue() + ")";
@@ -51,7 +53,7 @@ class MockMvcAsyncWhen implements When, MockMvcAcceptor {
 		if (!accept) {
 			return false;
 		}
-		Response response = metadata.getContract().getResponse();
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
 		return response.getAsync() || response.getDelay() != null;
 	}
 

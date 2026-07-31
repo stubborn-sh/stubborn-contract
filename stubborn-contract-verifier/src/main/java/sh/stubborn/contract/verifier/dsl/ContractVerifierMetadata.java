@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.dsl;
 import java.util.Map;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 
@@ -42,9 +43,9 @@ public class ContractVerifierMetadata implements SpringCloudContractMetadata {
 	public ContractVerifierMetadata() {
 	}
 
-	private String tool;
+	private @Nullable String tool;
 
-	public String getTool() {
+	public @Nullable String getTool() {
 		return this.tool;
 	}
 

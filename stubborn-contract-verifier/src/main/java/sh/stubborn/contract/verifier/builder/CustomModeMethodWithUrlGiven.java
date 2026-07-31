@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.Request;
@@ -37,7 +38,8 @@ class CustomModeMethodWithUrlGiven implements Given {
 
 	@Override
 	public MethodVisitor<Given> apply(SingleContractMetadata metadata) {
-		addUrl(getUrl(metadata.getContract().getRequest()), metadata.getContract().getRequest());
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		addUrl(getUrl(request), request);
 		return this;
 	}
 
@@ -53,7 +55,9 @@ class CustomModeMethodWithUrlGiven implements Given {
 
 	private void addUrl(Url buildUrl, Request request) {
 		Object testSideUrl = MapConverter.getTestSideValues(buildUrl);
-		String method = request.getMethod().getServerValue().toString().toLowerCase(Locale.ROOT);
+		String method = Objects.requireNonNull(Objects.requireNonNull(request.getMethod()).getServerValue())
+			.toString()
+			.toLowerCase(Locale.ROOT);
 		String url = testSideUrl.toString();
 		if (!(testSideUrl instanceof ExecutionProperty)) {
 			url = this.bodyParser.quotedShortText(testSideUrl.toString());

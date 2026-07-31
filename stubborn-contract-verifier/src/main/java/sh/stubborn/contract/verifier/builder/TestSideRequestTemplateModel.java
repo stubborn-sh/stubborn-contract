@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -73,7 +74,7 @@ public final class TestSideRequestTemplateModel {
 	/**
 	 * Request body as it would be sent to the controller.
 	 */
-	private final String body;
+	private final @Nullable String body;
 
 	/**
 	 * Escaped request body that can be put into test.
@@ -81,7 +82,7 @@ public final class TestSideRequestTemplateModel {
 	private final String escapedBody;
 
 	private TestSideRequestTemplateModel(String url, Map<String, List<Object>> query, Path path,
-			Map<String, List<String>> headers, String body, String escapedBody) {
+			Map<String, List<String>> headers, @Nullable String body, String escapedBody) {
 		this.url = url;
 		this.query = query;
 		this.path = path;
@@ -106,7 +107,7 @@ public final class TestSideRequestTemplateModel {
 		return this.headers;
 	}
 
-	public String getBody() {
+	public @Nullable String getBody() {
 		return this.body;
 	}
 
@@ -115,7 +116,7 @@ public final class TestSideRequestTemplateModel {
 	}
 
 	public static TestSideRequestTemplateModel from(final Request request) {
-		Url urlPath = request.getUrl() != null ? request.getUrl() : request.getUrlPath();
+		Url urlPath = Objects.requireNonNull(request.getUrl() != null ? request.getUrl() : request.getUrlPath());
 		String url = MapConverter.getTestSideValues(urlPath).toString();
 		Path paths = new Path(buildPathsFromUrl(url));
 		QueryParameters queryParameters = urlPath.getQueryParameters();
@@ -133,7 +134,7 @@ public final class TestSideRequestTemplateModel {
 		if (!headersEntriesPresent) {
 			return new HashMap<>();
 		}
-		return new HashMap<>(request.getHeaders()
+		return new HashMap<>(Objects.requireNonNull(request.getHeaders())
 			.getEntries()
 			.stream()
 			.collect(Collectors.groupingBy(Header::getName,
@@ -155,7 +156,7 @@ public final class TestSideRequestTemplateModel {
 		return url + "?" + joinedParams;
 	}
 
-	private static Map<String, List<Object>> query(QueryParameters queryParameters) {
+	private static Map<String, List<Object>> query(@Nullable QueryParameters queryParameters) {
 		if (queryParameters == null) {
 			return new HashMap<>();
 		}
@@ -180,12 +181,15 @@ public final class TestSideRequestTemplateModel {
 		return paths;
 	}
 
-	private static String trimmedAndEscapedBody(Object body) {
+	private static String trimmedAndEscapedBody(@Nullable Object body) {
 		String rawBody = getBodyAsRawJson(body);
 		return StringEscapeUtils.escapeJava(rawBody);
 	}
 
-	private static @Nullable String getBodyAsRawJson(Object body) {
+	private static @Nullable String getBodyAsRawJson(@Nullable Object body) {
+		if (body == null) {
+			return null;
+		}
 		Object bodyValue = extractServerValueFromBody(body);
 		if (bodyValue instanceof GString || bodyValue instanceof String) {
 			return bodyValue.toString();

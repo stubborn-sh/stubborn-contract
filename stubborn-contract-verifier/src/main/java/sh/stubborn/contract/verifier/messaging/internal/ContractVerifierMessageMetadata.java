@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.messaging.internal;
 
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 
@@ -34,7 +35,7 @@ public class ContractVerifierMessageMetadata implements SpringCloudContractMetad
 	 */
 	public static final String METADATA_KEY = "verifierMessage";
 
-	private MessageType messageType;
+	private @Nullable MessageType messageType;
 
 	public ContractVerifierMessageMetadata(MessageType messageType) {
 		this.messageType = messageType;
@@ -43,7 +44,7 @@ public class ContractVerifierMessageMetadata implements SpringCloudContractMetad
 	public ContractVerifierMessageMetadata() {
 	}
 
-	public MessageType getMessageType() {
+	public @Nullable MessageType getMessageType() {
 		return this.messageType;
 	}
 

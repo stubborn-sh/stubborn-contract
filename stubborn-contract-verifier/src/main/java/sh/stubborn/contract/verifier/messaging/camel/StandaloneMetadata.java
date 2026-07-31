@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.messaging.camel;
 
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 
@@ -96,9 +97,9 @@ public class StandaloneMetadata implements SpringCloudContractMetadata {
 		 * If set, will append any options to the existing ones that define connection to
 		 * the broker.
 		 */
-		private String additionalOptions;
+		private @Nullable String additionalOptions;
 
-		public String getAdditionalOptions() {
+		public @Nullable String getAdditionalOptions() {
 			return this.additionalOptions;
 		}
 
@@ -116,9 +117,9 @@ public class StandaloneMetadata implements SpringCloudContractMetadata {
 		/**
 		 * If set, will be set as the full URI.
 		 */
-		private String options;
+		private @Nullable String options;
 
-		public String getOptions() {
+		public @Nullable String getOptions() {
 			return this.options;
 		}
 

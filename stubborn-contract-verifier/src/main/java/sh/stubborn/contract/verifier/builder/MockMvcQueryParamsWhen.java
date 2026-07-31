@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -43,7 +44,7 @@ class MockMvcQueryParamsWhen implements When, MockMvcAcceptor, QueryParamsResolv
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		Request request = metadata.getContract().getRequest();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
 		Url url = getUrl(request);
 		addQueryParameters(url);
 		return this;
@@ -60,7 +61,7 @@ class MockMvcQueryParamsWhen implements When, MockMvcAcceptor, QueryParamsResolv
 	}
 
 	private void addQueryParameters(Url buildUrl) {
-		List<QueryParameter> queryParameters = buildUrl.getQueryParameters()
+		List<QueryParameter> queryParameters = Objects.requireNonNull(buildUrl.getQueryParameters())
 			.getParameters()
 			.stream()
 			.filter(this::allowedQueryParameter)
@@ -80,7 +81,7 @@ class MockMvcQueryParamsWhen implements When, MockMvcAcceptor, QueryParamsResolv
 
 	private boolean allowedQueryParameter(Object o) {
 		if (o instanceof QueryParameter) {
-			return allowedQueryParameter(((QueryParameter) o).getServerValue());
+			return allowedQueryParameter(Objects.requireNonNull(((QueryParameter) o).getServerValue()));
 		}
 		else if (o instanceof MatchingStrategy) {
 			return !MatchingStrategy.Type.ABSENT.equals(((MatchingStrategy) o).getType());
@@ -104,7 +105,7 @@ class MockMvcQueryParamsWhen implements When, MockMvcAcceptor, QueryParamsResolv
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		Request request = metadata.getContract().getRequest();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
 		Url url = getUrl(request);
 		return url.getQueryParameters() != null;
 	}

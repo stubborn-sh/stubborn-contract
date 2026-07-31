@@ -31,7 +31,7 @@ public class PathBodyMatcher implements BodyMatcher {
 
 	private MatchingTypeValue matchingTypeValue;
 
-	PathBodyMatcher(String path, MatchingTypeValue matchingTypeValue) {
+	public PathBodyMatcher(String path, MatchingTypeValue matchingTypeValue) {
 		this.path = path;
 		this.matchingTypeValue = matchingTypeValue;
 	}

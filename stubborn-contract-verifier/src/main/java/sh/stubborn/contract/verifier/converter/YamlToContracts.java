@@ -246,8 +246,8 @@ class YamlToContracts {
 					.collect(Collectors.toList());
 				matchers.forEach((matcher) -> {
 					if (value instanceof List) {
-						((List<?>) value)
-							.forEach((v) -> headers.header(key, clientValue(v, matcher, key).getClientValue()));
+						((List<?>) value).forEach((v) -> headers.header(key,
+								Objects.requireNonNull(clientValue(v, matcher, key).getClientValue())));
 					}
 					else {
 						headers.header(key, new DslProperty<>(clientValue(value, matcher, key).getClientValue(),
@@ -448,7 +448,7 @@ class YamlToContracts {
 	}
 
 	private void mapResponseStatus(YamlContract.Response yamlContractResponse, Response dslContractResponse) {
-		dslContractResponse.status(yamlContractResponse.status);
+		dslContractResponse.status(Objects.requireNonNull(yamlContractResponse.status));
 	}
 
 	private void mapResponseHeaders(YamlContract.Response yamlContractResponse, Response dslContractResponse) {
@@ -473,8 +473,9 @@ class YamlToContracts {
 	}
 
 	private void mapResponseCookies(YamlContract.Response yamlContractResponse, Response dslContractResponse) {
-		if (yamlContractResponse.cookies != null) {
-			dslContractResponse.cookies((cookies) -> yamlContractResponse.cookies.forEach((key, value) -> {
+		Map<String, Object> yamlContractResponseCookies = yamlContractResponse.cookies;
+		if (yamlContractResponseCookies != null) {
+			dslContractResponse.cookies((cookies) -> yamlContractResponseCookies.forEach((key, value) -> {
 				YamlContract.TestCookieMatcher matcher = yamlContractResponse.matchers.cookies.stream()
 					.filter((testCookieMatcher) -> key.equals(testCookieMatcher.key))
 					.findFirst()
@@ -764,7 +765,7 @@ class YamlToContracts {
 		}
 	}
 
-	private Headers yamlHeadersToContractHeaders(Map<String, Object> headers) {
+	private Headers yamlHeadersToContractHeaders(@Nullable Map<String, Object> headers) {
 		Set<Header> convertedHeaders = headers != null ? headers.entrySet()
 			.stream()
 			.filter((entry) -> entry.getValue() != null)
@@ -906,7 +907,7 @@ class YamlToContracts {
 		}
 	}
 
-	protected Object serverValue(Object value, YamlContract.@Nullable KeyValueMatcher matcher) {
+	protected @Nullable Object serverValue(Object value, YamlContract.@Nullable KeyValueMatcher matcher) {
 		if (matcher != null && matcher.command != null) {
 			return new ExecutionProperty(matcher.command);
 		}
@@ -928,35 +929,35 @@ class YamlToContracts {
 		}
 		switch (predefinedRegex) {
 			case only_alpha_unicode:
-				return RegexPatterns.onlyAlphaUnicode().getPattern();
+				return Objects.requireNonNull(RegexPatterns.onlyAlphaUnicode().getPattern());
 			case number:
-				return RegexPatterns.number().getPattern();
+				return Objects.requireNonNull(RegexPatterns.number().getPattern());
 			case any_double:
-				return RegexPatterns.aDouble().getPattern();
+				return Objects.requireNonNull(RegexPatterns.aDouble().getPattern());
 			case any_boolean:
-				return RegexPatterns.anyBoolean().getPattern();
+				return Objects.requireNonNull(RegexPatterns.anyBoolean().getPattern());
 			case ip_address:
-				return RegexPatterns.ipAddress().getPattern();
+				return Objects.requireNonNull(RegexPatterns.ipAddress().getPattern());
 			case hostname:
-				return RegexPatterns.hostname().getPattern();
+				return Objects.requireNonNull(RegexPatterns.hostname().getPattern());
 			case email:
-				return RegexPatterns.email().getPattern();
+				return Objects.requireNonNull(RegexPatterns.email().getPattern());
 			case url:
-				return RegexPatterns.url().getPattern();
+				return Objects.requireNonNull(RegexPatterns.url().getPattern());
 			case uuid:
-				return RegexPatterns.uuid().getPattern();
+				return Objects.requireNonNull(RegexPatterns.uuid().getPattern());
 			case iso_date:
-				return RegexPatterns.isoDate().getPattern();
+				return Objects.requireNonNull(RegexPatterns.isoDate().getPattern());
 			case iso_date_time:
-				return RegexPatterns.isoDateTime().getPattern();
+				return Objects.requireNonNull(RegexPatterns.isoDateTime().getPattern());
 			case iso_time:
-				return RegexPatterns.isoTime().getPattern();
+				return Objects.requireNonNull(RegexPatterns.isoTime().getPattern());
 			case iso_8601_with_offset:
-				return RegexPatterns.iso8601WithOffset().getPattern();
+				return Objects.requireNonNull(RegexPatterns.iso8601WithOffset().getPattern());
 			case non_empty:
-				return RegexPatterns.nonEmpty().getPattern();
+				return Objects.requireNonNull(RegexPatterns.nonEmpty().getPattern());
 			case non_blank:
-				return RegexPatterns.nonBlank().getPattern();
+				return Objects.requireNonNull(RegexPatterns.nonBlank().getPattern());
 			default:
 				throw new UnsupportedOperationException("The predefined regex [" + predefinedRegex
 						+ "] is unsupported. Use one of " + Arrays.toString(YamlContract.PredefinedRegex.values()));

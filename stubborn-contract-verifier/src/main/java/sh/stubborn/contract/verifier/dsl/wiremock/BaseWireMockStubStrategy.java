@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.dsl.wiremock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -120,7 +121,7 @@ abstract class BaseWireMockStubStrategy {
 	}
 
 	private Object transformMapIfRequestPresent(Object transformedMap) {
-		Object requestBody = contract.getRequest().getBody();
+		Object requestBody = Objects.requireNonNull(contract.getRequest()).getBody();
 		if (requestBody == null) {
 			return transformedMap;
 		}
@@ -183,7 +184,7 @@ abstract class BaseWireMockStubStrategy {
 	 */
 	String parseBody(GString value, ContentType contentType) {
 		Object processedValue = extractValue(value, contentType,
-				(o) -> o instanceof DslProperty ? ((DslProperty<?>) o).getClientValue() : o);
+				(o) -> Objects.requireNonNull(o instanceof DslProperty ? ((DslProperty<?>) o).getClientValue() : o));
 		if (processedValue instanceof GString) {
 			return parseBody(processedValue.toString(), contentType);
 		}

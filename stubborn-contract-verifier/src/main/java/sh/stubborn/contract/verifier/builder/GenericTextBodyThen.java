@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
@@ -68,7 +70,8 @@ class GenericTextBodyThen implements Then {
 		ContentType outputTestContentType = metadata.getOutputTestContentType();
 		return outputTestContentType != JSON && outputTestContentType != XML
 				&& this.bodyParser.responseBody(metadata) != null
-				&& !(this.bodyParser.responseBody(metadata).getServerValue() instanceof FromFileProperty);
+				&& !(Objects.requireNonNull(this.bodyParser.responseBody(metadata))
+					.getServerValue() instanceof FromFileProperty);
 	}
 
 }

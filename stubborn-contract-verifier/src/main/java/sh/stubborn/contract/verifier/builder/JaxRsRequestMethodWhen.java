@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
@@ -42,9 +43,11 @@ class JaxRsRequestMethodWhen implements When, JaxRsBodyParser {
 	}
 
 	void appendMethodAndBody(SingleContractMetadata metadata) {
-		Request request = metadata.getContract().getRequest();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
 		ContentType type = metadata.getInputTestContentType();
-		String method = request.getMethod().getServerValue().toString().toLowerCase(Locale.ROOT);
+		String method = Objects.requireNonNull(Objects.requireNonNull(request.getMethod()).getServerValue())
+			.toString()
+			.toLowerCase(Locale.ROOT);
 		if (request.getBody() != null) {
 			String definedContentType = metadata.getDefinedInputTestContentType();
 			String contentType = (definedContentType != null && !definedContentType.isBlank()) ? definedContentType

@@ -16,22 +16,30 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.DslProperty;
+import sh.stubborn.contract.spec.internal.Request;
+import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 interface BodyThen {
 
 	default DslProperty requestBody(SingleContractMetadata metadata) {
-		return metadata.getContract().getRequest().getBody();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		return Objects.requireNonNull(request.getBody());
 	}
 
-	default DslProperty responseBody(SingleContractMetadata metadata) {
-		return metadata.getContract().getResponse().getBody();
+	default @Nullable DslProperty responseBody(SingleContractMetadata metadata) {
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
+		return response.getBody();
 	}
 
-	default BodyMatchers responseBodyMatchers(SingleContractMetadata metadata) {
-		return metadata.getContract().getResponse().getBodyMatchers();
+	default @Nullable BodyMatchers responseBodyMatchers(SingleContractMetadata metadata) {
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
+		return response.getBodyMatchers();
 	}
 
 }

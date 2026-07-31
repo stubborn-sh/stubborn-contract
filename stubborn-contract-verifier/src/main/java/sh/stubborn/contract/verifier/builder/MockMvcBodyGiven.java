@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Request;
@@ -44,10 +46,10 @@ class MockMvcBodyGiven implements Given {
 
 	private void processInput(BlockBuilder bb, SingleContractMetadata metadata) {
 		Object body;
-		Request request = metadata.getContract().getRequest();
-		Object serverValue = request.getBody().getServerValue();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		Object serverValue = Objects.requireNonNull(request.getBody()).getServerValue();
 		if (serverValue instanceof ExecutionProperty || serverValue instanceof FromFileProperty) {
-			body = request.getBody().getServerValue();
+			body = serverValue;
 		}
 		else {
 			body = this.bodyParser.requestBodyAsString(metadata);

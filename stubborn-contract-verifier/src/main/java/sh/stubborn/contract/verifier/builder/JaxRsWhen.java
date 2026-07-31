@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.builder;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
@@ -60,7 +61,7 @@ class JaxRsWhen implements When, BodyMethodVisitor, JaxRsAcceptor {
 	}
 
 	private boolean expectsResponseBody(SingleContractMetadata metadata) {
-		return metadata.getContract().getResponse().getBody() != null;
+		return Objects.requireNonNull(metadata.getContract().getResponse()).getBody() != null;
 	}
 
 	@Override

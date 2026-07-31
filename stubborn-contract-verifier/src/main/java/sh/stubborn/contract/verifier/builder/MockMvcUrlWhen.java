@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.Request;
@@ -37,7 +38,7 @@ class MockMvcUrlWhen implements When, MockMvcAcceptor, QueryParamsResolver {
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		Request request = metadata.getContract().getRequest();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
 		Url url = getUrl(request);
 		addUrl(url, request);
 		return this;
@@ -55,7 +56,9 @@ class MockMvcUrlWhen implements When, MockMvcAcceptor, QueryParamsResolver {
 
 	private void addUrl(Url buildUrl, Request request) {
 		Object testSideUrl = MapConverter.getTestSideValues(buildUrl);
-		String method = request.getMethod().getServerValue().toString().toLowerCase(Locale.ROOT);
+		String method = Objects.requireNonNull(Objects.requireNonNull(request.getMethod()).getServerValue())
+			.toString()
+			.toLowerCase(Locale.ROOT);
 		String url = testSideUrl.toString();
 		if (!(testSideUrl instanceof ExecutionProperty)) {
 			url = this.bodyParser.quotedShortText(testSideUrl.toString());

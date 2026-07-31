@@ -19,6 +19,8 @@ package sh.stubborn.contract.verifier.http;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Abstraction over a HTTP response.
  *
@@ -55,7 +57,7 @@ public class Response {
 	 * @param key header key
 	 * @return header value or null if not present
 	 */
-	public String header(String key) {
+	public @Nullable String header(String key) {
 		return this.headers.entrySet()
 			.stream()
 			.filter((e) -> e.getKey().equalsIgnoreCase(key))
@@ -68,7 +70,7 @@ public class Response {
 	 * @param key cookie key
 	 * @return header value or null if not present
 	 */
-	public String cookie(String key) {
+	public @Nullable String cookie(String key) {
 		return this.cookies.entrySet()
 			.stream()
 			.filter((e) -> e.getKey().equalsIgnoreCase(key))
@@ -123,6 +125,8 @@ public class Response {
 
 		int statusCode;
 
+		// Set only when body(...) is invoked; may remain null, matching prior behavior.
+		@SuppressWarnings("NullAway.Init")
 		Body body;
 
 		Map<String, Object> headers = new HashMap<>();

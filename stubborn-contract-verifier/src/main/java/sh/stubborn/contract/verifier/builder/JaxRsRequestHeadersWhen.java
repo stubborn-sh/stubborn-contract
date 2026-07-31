@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -39,12 +40,12 @@ class JaxRsRequestHeadersWhen implements When {
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		appendHeaders(metadata.getContract().getRequest());
+		appendHeaders(Objects.requireNonNull(metadata.getContract().getRequest()));
 		return this;
 	}
 
 	private void appendHeaders(Request request) {
-		Iterator<Header> iterator = request.getHeaders()
+		Iterator<Header> iterator = Objects.requireNonNull(request.getHeaders())
 			.getEntries()
 			.stream()
 			.filter((header) -> !headerToIgnore(header))
@@ -66,7 +67,8 @@ class JaxRsRequestHeadersWhen implements When {
 		if (headerServerValue instanceof ExecutionProperty) {
 			return ((ExecutionProperty) headerServerValue).getExecutionCommand();
 		}
-		return this.bodyParser.quotedLongText(MapConverter.getTestSideValuesForNonBody(header.getServerValue()));
+		return this.bodyParser
+			.quotedLongText(MapConverter.getTestSideValuesForNonBody(Objects.requireNonNull(header.getServerValue())));
 	}
 
 	private boolean headerToIgnore(Header header) {
@@ -84,13 +86,14 @@ class JaxRsRequestHeadersWhen implements When {
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		return metadata.getContract().getRequest().getHeaders() != null
-				&& !metadata.getContract().getRequest().getHeaders().getEntries().isEmpty()
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		return request.getHeaders() != null && !request.getHeaders().getEntries().isEmpty()
 				&& !hasHeaderOnlyContentTypeOrAccept(metadata);
 	}
 
 	private boolean hasHeaderOnlyContentTypeOrAccept(SingleContractMetadata metadata) {
-		Set<Header> entries = metadata.getContract().getRequest().getHeaders().getEntries();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		Set<Header> entries = Objects.requireNonNull(request.getHeaders()).getEntries();
 		long filteredOut = entries.stream().filter(this::headerToIgnore).count();
 		return filteredOut == entries.size();
 	}

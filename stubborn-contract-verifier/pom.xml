@@ -313,6 +313,26 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<!--
+					  Error Prone / NullAway (configured in the parent) gates PRODUCTION
+					  code only. This module's test sources are Spock/Groovy fixtures and
+					  their Java helpers, joint-compiled via gmavenplus; they are not part
+					  of the JSpecify-annotated surface, so NullAway must not run over them.
+					  Override the inherited Error Prone compiler arguments and processor
+					  paths for the test compilation only.
+					-->
+					<execution>
+						<id>default-testCompile</id>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<compilerArgs combine.self="override" />
+							<annotationProcessorPaths combine.self="override" />
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

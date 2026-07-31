@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -66,14 +67,14 @@ interface BodyParser extends BodyThen {
 
 	default Object convertResponseBody(SingleContractMetadata metadata) {
 		ContentType contentType = metadata.getOutputTestContentType();
-		DslProperty body = responseBody(metadata);
-		Object responseBody = extractServerValueFromBody(contentType, body.getServerValue());
+		DslProperty body = Objects.requireNonNull(responseBody(metadata));
+		Object responseBody = extractServerValueFromBody(contentType, Objects.requireNonNull(body.getServerValue()));
 		if (responseBody instanceof FromFileProperty) {
 			responseBody = ((FromFileProperty) responseBody).asString();
 		}
 		else if (responseBody instanceof GString) {
 			responseBody = extractValue((GString) responseBody, contentType,
-					(o) -> o instanceof DslProperty ? ((DslProperty) o).getServerValue() : o);
+					(o) -> o instanceof DslProperty ? Objects.requireNonNull(((DslProperty) o).getServerValue()) : o);
 		}
 		else if (responseBody instanceof DslProperty) {
 			responseBody = MapConverter.getTestSideValues(responseBody);
@@ -87,7 +88,7 @@ interface BodyParser extends BodyThen {
 	default String requestBodyAsString(SingleContractMetadata metadata) {
 		ContentType contentType = metadata.getInputTestContentType();
 		DslProperty body = requestBody(metadata);
-		Object bodyValue = extractServerValueFromBody(contentType, body.getServerValue());
+		Object bodyValue = extractServerValueFromBody(contentType, Objects.requireNonNull(body.getServerValue()));
 		if (contentType == ContentType.FORM) {
 			if (bodyValue instanceof Map) {
 				// [a:3, b:4] == "a=3&b=4"

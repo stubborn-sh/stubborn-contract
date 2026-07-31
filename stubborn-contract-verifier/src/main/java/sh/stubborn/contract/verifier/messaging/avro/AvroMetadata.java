@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.messaging.avro;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Avro serialization metadata for a Kafka contract message.
  *
@@ -40,13 +42,13 @@ public final class AvroMetadata {
 	 * Classpath or filesystem path to the Avro schema file ({@code .avsc}), e.g.
 	 * {@code classpath:avro/Book.avsc}. May also be an inline JSON schema string.
 	 */
-	private String schema;
+	private @Nullable String schema;
 
 	/**
 	 * Returns the Avro schema path or inline schema JSON.
 	 * @return the schema
 	 */
-	public String getSchema() {
+	public @Nullable String getSchema() {
 		return this.schema;
 	}
 
