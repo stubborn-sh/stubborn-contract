@@ -19,6 +19,7 @@ package sh.stubborn.contract.stubrunner.spring.cloud;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -57,7 +58,7 @@ public class StubMapperProperties {
 		this.idsToServiceIds = idsToServiceIds;
 	}
 
-	public String fromIvyNotationToId(String ivyNotation) {
+	public @Nullable String fromIvyNotationToId(String ivyNotation) {
 		StubConfiguration stubConfiguration = new StubConfiguration(ivyNotation);
 		String id = this.idsToServiceIds.get(ivyNotation);
 		if (StringUtils.hasText(id)) {
@@ -71,7 +72,7 @@ public class StubMapperProperties {
 		return this.idsToServiceIds.get(stubConfiguration.getArtifactId());
 	}
 
-	public String fromServiceIdToIvyNotation(String serviceId) {
+	public @Nullable String fromServiceIdToIvyNotation(String serviceId) {
 		for (Map.Entry<String, String> entry : this.idsToServiceIds.entrySet()) {
 			if (entry.getValue().equals(serviceId)) {
 				return entry.getKey();
