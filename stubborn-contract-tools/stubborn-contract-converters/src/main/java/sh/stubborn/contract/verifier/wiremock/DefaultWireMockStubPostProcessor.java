@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.wiremock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.github.tomakehurst.wiremock.common.Metadata;
 import com.github.tomakehurst.wiremock.extension.Parameters;
@@ -28,6 +29,7 @@ import com.github.tomakehurst.wiremock.http.DelayDistribution;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
@@ -37,7 +39,8 @@ class DefaultWireMockStubPostProcessor implements WireMockStubPostProcessor {
 	private final JsonMapper objectMapper = new JsonMapper();
 
 	@Override
-	public StubMapping postProcess(StubMapping stubMapping, Contract contract) {
+	public StubMapping postProcess(@Nullable StubMapping stubMapping, Contract contract) {
+		Objects.requireNonNull(stubMapping);
 		WireMockMetaData wireMockMetaData = WireMockMetaData.fromMetadata(contract.getMetadata());
 		StubMapping stubMappingFromMetadata = stubMappingFromMetadata(wireMockMetaData.getStubMapping());
 		stubMapping.setResponse(mergedResponse(stubMapping, stubMappingFromMetadata));
@@ -131,7 +134,7 @@ class DefaultWireMockStubPostProcessor implements WireMockStubPostProcessor {
 				: stubMapping.getResponse().getFixedDelayMilliseconds();
 	}
 
-	private StubMapping stubMappingFromMetadata(Object wiremock) {
+	private StubMapping stubMappingFromMetadata(@Nullable Object wiremock) {
 		if (wiremock instanceof String) {
 			return StubMapping.buildFrom((String) wiremock);
 		}
@@ -155,7 +158,8 @@ class DefaultWireMockStubPostProcessor implements WireMockStubPostProcessor {
 		if (!contains) {
 			return false;
 		}
-		Object stubMapping = WireMockMetaData.fromMetadata(contract.getMetadata()).getStubMapping();
+		Object stubMapping = Objects
+			.requireNonNull(WireMockMetaData.fromMetadata(contract.getMetadata()).getStubMapping());
 		return WireMockMetaData.APPLICABLE_CLASSES.stream()
 			.anyMatch(aClass -> aClass.isAssignableFrom(stubMapping.getClass()));
 	}

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 
 /**
@@ -45,7 +46,7 @@ public interface StubPostProcessor<T> {
 	 * @param contract - contract for which the mapping was generated
 	 * @return modified stub mapping
 	 */
-	default T postProcess(T stubMapping, Contract contract) {
+	default @Nullable T postProcess(@Nullable T stubMapping, Contract contract) {
 		return stubMapping;
 	}
 

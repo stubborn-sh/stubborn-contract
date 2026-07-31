@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 
@@ -42,13 +43,13 @@ public class WireMockMetaData implements SpringCloudContractMetadata {
 	 * {@link StubMapping} represented by one of the classes in
 	 * {@link #APPLICABLE_CLASSES}.
 	 */
-	private Object stubMapping;
+	private @Nullable Object stubMapping;
 
-	public Object getStubMapping() {
+	public @Nullable Object getStubMapping() {
 		return stubMapping;
 	}
 
-	public void setStubMapping(Object stubMapping) {
+	public void setStubMapping(@Nullable Object stubMapping) {
 		this.stubMapping = stubMapping;
 	}
 

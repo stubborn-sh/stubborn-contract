@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubStrategy;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
@@ -47,13 +48,14 @@ public class DslToWireMockClientConverter extends DslToWireMockConverter {
 	}
 
 	@Override
-	public StubMapping postProcessStubMapping(StubMapping stubMapping, Contract contract) {
+	public @Nullable StubMapping postProcessStubMapping(@Nullable StubMapping stubMapping, Contract contract) {
 		// apply the default WireMock processor as the last one
 		return super.postProcessStubMapping(stubMapping, contract);
 	}
 
 	@Override
-	public StubMapping defaultStubMappingPostProcessing(StubMapping stubMapping, Contract contract) {
+	public @Nullable StubMapping defaultStubMappingPostProcessing(@Nullable StubMapping stubMapping,
+			Contract contract) {
 		DefaultWireMockStubPostProcessor processor = new DefaultWireMockStubPostProcessor();
 		if (processor.isApplicable(contract)) {
 			return processor.postProcess(stubMapping, contract);

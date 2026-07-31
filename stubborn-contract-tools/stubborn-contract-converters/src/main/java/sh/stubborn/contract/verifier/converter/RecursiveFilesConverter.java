@@ -29,10 +29,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.file.ContractFileScanner;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
@@ -61,7 +63,7 @@ public class RecursiveFilesConverter {
 	private final boolean excludeBuildFolders;
 
 	public RecursiveFilesConverter(File stubsOutputDir, File contractsDslDir, List<String> excludedFiles,
-			String includedContracts, boolean excludeBuildFolders, StubGeneratorProvider holder) {
+			String includedContracts, boolean excludeBuildFolders, @Nullable StubGeneratorProvider holder) {
 		this.outMappingsDir = stubsOutputDir;
 		this.contractsDslDir = contractsDslDir;
 		this.excludedFiles = excludedFiles;
@@ -160,7 +162,7 @@ public class RecursiveFilesConverter {
 		while (iterator.hasNext()) {
 			result = iterator.next();
 		}
-		return result;
+		return Objects.requireNonNull(result);
 	}
 
 	private boolean nullOrEmpty(ContractMetadata contract) {

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 
@@ -54,7 +55,7 @@ public interface StubGenerator<T> {
 	 * @param contract - contract for which stub was generated
 	 * @return the converted stub mapping
 	 */
-	default T postProcessStubMapping(T stubMapping, Contract contract) {
+	default @Nullable T postProcessStubMapping(@Nullable T stubMapping, Contract contract) {
 		List<StubPostProcessor> processors = StubPostProcessor.PROCESSORS()
 			.stream()
 			.filter(p -> p.isApplicable(contract))
@@ -62,7 +63,7 @@ public interface StubGenerator<T> {
 		if (processors.isEmpty()) {
 			return defaultStubMappingPostProcessing(stubMapping, contract);
 		}
-		T stub = stubMapping;
+		@Nullable T stub = stubMapping;
 		for (StubPostProcessor processor : processors) {
 			stub = (T) processor.postProcess(stub, contract);
 		}
@@ -75,7 +76,7 @@ public interface StubGenerator<T> {
 	 * @param contract - contract for which stub was generated
 	 * @return the converted stub mapping
 	 */
-	default T defaultStubMappingPostProcessing(T stubMapping, Contract contract) {
+	default @Nullable T defaultStubMappingPostProcessing(@Nullable T stubMapping, Contract contract) {
 		return stubMapping;
 	}
 
