@@ -23,9 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -36,6 +33,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 
 class ResourceResolvingStubDownloader implements StubDownloader {
 
@@ -58,9 +56,9 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 	}
 
 	@Override
-	public Map.Entry<StubConfiguration, File> downloadAndUnpackStubJar(StubConfiguration config) {
+	public Map.@Nullable Entry<StubConfiguration, File> downloadAndUnpackStubJar(StubConfiguration config) {
 		registerShutdownHook();
-		List<RepoRoot> repoRoots = repoRootFunction.apply(stubRunnerOptions, config);
+		List<RepoRoot> repoRoots = this.repoRootFunction.apply(this.stubRunnerOptions, config);
 		List<String> paths = toPaths(repoRoots);
 		List<StubResource> resources = resolveResources(paths);
 		if (log.isDebugEnabled()) {
@@ -71,7 +69,7 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 					+ config.getArtifactId() + "]");
 		}
 		final File tmp = TemporaryFileStorage.createTempDir("classpath-stubs");
-		if (stubRunnerOptions.isDeleteStubsAfterTest()) {
+		if (this.stubRunnerOptions.isDeleteStubsAfterTest()) {
 			tmp.deleteOnExit();
 		}
 		boolean atLeastOneFound = false;
@@ -88,9 +86,9 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 				atLeastOneFound = true;
 				copyTheFoundFiles(tmp, resource, relativePath);
 			}
-			catch (IOException e) {
-				log.error("Exception occurred while trying to create dirs", e);
-				throw new IllegalStateException(e);
+			catch (IOException ex) {
+				log.error("Exception occurred while trying to create dirs", ex);
+				throw new IllegalStateException(ex);
 			}
 		}
 		if (!atLeastOneFound) {
@@ -106,13 +104,13 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 	private void registerShutdownHook() {
 		Runtime.getRuntime()
 			.addShutdownHook(
-					new Thread(() -> TemporaryFileStorage.cleanup(stubRunnerOptions.isDeleteStubsAfterTest())));
+					new Thread(() -> TemporaryFileStorage.cleanup(this.stubRunnerOptions.isDeleteStubsAfterTest())));
 	}
 
 	private void copyTheFoundFiles(File tmp, StubResource resource, String relativePath) throws IOException {
 		// the relative path is OS agnostic and contains / only
 		int lastIndexOf = relativePath.lastIndexOf("/");
-		String relativePathWithoutFile = lastIndexOf > -1 ? relativePath.substring(0, lastIndexOf) : relativePath;
+		String relativePathWithoutFile = (lastIndexOf > -1) ? relativePath.substring(0, lastIndexOf) : relativePath;
 		if (log.isDebugEnabled()) {
 			log.debug("Relative path without file name is [" + relativePathWithoutFile + "]");
 		}
@@ -133,15 +131,16 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 		try {
 			return resource.getFile().isDirectory();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			if (log.isTraceEnabled()) {
-				log.trace("Exception occurred while trying to convert path to file for resource [" + resource + "]", e);
+				log.trace("Exception occurred while trying to convert path to file for resource [" + resource + "]",
+						ex);
 			}
 			return false;
 		}
 	}
 
-	String relativePathPicker(StubResource resource, Pattern groupAndArtifactPattern) throws IOException {
+	@Nullable String relativePathPicker(StubResource resource, Pattern groupAndArtifactPattern) throws IOException {
 		Matcher groupAndArtifactMatcher = matcher(resource, groupAndArtifactPattern);
 		if (groupAndArtifactMatcher.matches() && groupAndArtifactMatcher.groupCount() > 2) {
 			MatchResult groupAndArtifactResult = groupAndArtifactMatcher.toMatchResult();
@@ -181,46 +180,13 @@ class ResourceResolvingStubDownloader implements StubDownloader {
 				List<StubResource> list = this.resolver.getResources(path);
 				resources.addAll(list);
 			}
-			catch (IOException e) {
+			catch (IOException ex) {
 				log.error("Exception occurred while trying to fetch resources from [" + path + "]");
-				throw new IllegalStateException(e);
+				throw new IllegalStateException(ex);
 			}
 		}
-		resolver.clearCache();
+		this.resolver.clearCache();
 		return resources;
-	}
-
-}
-
-class RepoRoot {
-
-	final String repoRoot;
-
-	final String fullPath;
-
-	RepoRoot(String repoRoot) {
-		this.repoRoot = repoRoot;
-		this.fullPath = repoRoot;
-	}
-
-	RepoRoot(String repoRoot, String suffix) {
-		this.repoRoot = repoRoot;
-		this.fullPath = repoRoot + suffix;
-	}
-
-}
-
-class RepoRoots extends LinkedList<RepoRoot> {
-
-	RepoRoots() {
-	}
-
-	RepoRoots(Collection<? extends RepoRoot> c) {
-		super(c);
-	}
-
-	static RepoRoots asList(RepoRoot... repoRoots) {
-		return new RepoRoots(Arrays.asList(repoRoots));
 	}
 
 }

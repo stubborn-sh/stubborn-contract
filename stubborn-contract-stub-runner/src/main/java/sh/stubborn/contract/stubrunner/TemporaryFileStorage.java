@@ -54,7 +54,9 @@ final class TemporaryFileStorage {
 	}
 
 	static void add(File file) {
-		TEMP_FILES_LOG.offer(file);
+		if (!TEMP_FILES_LOG.offer(file) && log.isTraceEnabled()) {
+			log.trace("Temporary file log is full; not tracking [" + file + "]");
+		}
 	}
 
 	static Queue<File> files() {

@@ -32,7 +32,7 @@
 	     constructors intentionally share references with the caller. Defensive
 	     copying would change the DSL's documented behaviour. -->
 	<Match>
-		<Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,MS_EXPOSE_REP"/>
+		<Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,MS_EXPOSE_REP,EI_EXPOSE_STATIC_REP2"/>
 	</Match>
 
 	<!-- Random is used to generate example/stub values for contracts, never for
@@ -54,7 +54,15 @@
 	     data, so FindSecBugs' injection/traversal patterns are false positives
 	     here. (XML external-entity parsing is separately hardened in code.) -->
 	<Match>
-		<Bug pattern="PATH_TRAVERSAL_IN,PATH_TRAVERSAL_OUT,XPATH_INJECTION,GROOVY_SHELL,OBJECT_DESERIALIZATION,POTENTIAL_XML_INJECTION"/>
+		<Bug pattern="PATH_TRAVERSAL_IN,PATH_TRAVERSAL_OUT,XPATH_INJECTION,GROOVY_SHELL,OBJECT_DESERIALIZATION,POTENTIAL_XML_INJECTION,URLCONNECTION_SSRF_FD"/>
+	</Match>
+
+	<!-- The stub runner probes for a free port by briefly opening and closing a
+	     ServerSocket; it is never used to serve traffic, so transport encryption
+	     is not applicable. -->
+	<Match>
+		<Class name="~.*\.AvailablePortScanner"/>
+		<Bug pattern="UNENCRYPTED_SERVER_SOCKET"/>
 	</Match>
 
 	<!-- The migrated DSL utilities interoperate with Groovy by creating

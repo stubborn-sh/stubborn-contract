@@ -29,15 +29,16 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.URIish;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
  * @author Marcin Grzejszczak
  */
-public abstract class AbstractGitTest {
+public abstract class AbstractGitTests {
 
 	@TempDir
-	File tmpFolder;
+	@Nullable File tmpFolder;
 
 	File createNewFile(File project) throws Exception {
 		File newFile = new File(project, "newFile");

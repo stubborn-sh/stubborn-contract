@@ -17,14 +17,13 @@
 package sh.stubborn.contract.stubrunner;
 
 import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
 /**
  * @author Marcin Grzejszczak
  */
-public class ClasspathStubProviderTest {
+public class ClasspathStubProviderTests {
 
 	@Test
 	public void should_return_null_if_stub_mode_is_not_classpath() {

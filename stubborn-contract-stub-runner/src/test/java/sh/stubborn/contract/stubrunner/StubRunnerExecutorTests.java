@@ -20,8 +20,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.verifier.converter.YamlContract;
@@ -231,51 +233,56 @@ class StubRunnerExecutorTests {
 		boolean called;
 
 		@Override
-		public void send(Object message, String destination, YamlContract contract) {
+		public void send(Object message, String destination, @Nullable YamlContract contract) {
 		}
 
 		@Override
-		public Object receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+		public @Nullable Object receive(String destination, long timeout, TimeUnit timeUnit,
+				@Nullable YamlContract contract) {
 			return null;
 		}
 
 		@Override
-		public Object receive(String destination, YamlContract contract) {
+		public @Nullable Object receive(String destination, @Nullable YamlContract contract) {
 			return null;
 		}
 
 		@Override
-		public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
+		public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+				@Nullable YamlContract contract) {
 			this.called = true;
 			assertThat(payload.toString()).doesNotContain("cursor");
-			assertThat(headers.values()).allMatch(v -> !v.toString().contains("cursor"));
+			assertThat(Objects.requireNonNull(headers).values()).allMatch((v) -> !v.toString().contains("cursor"));
 		}
 
 	}
 
-	private static class AssertingStubMessages
+	private static final class AssertingStubMessages
 			implements MessageVerifierSender<Object>, MessageVerifierReceiver<Object> {
 
 		@Override
-		public void send(Object message, String destination, YamlContract contract) {
+		public void send(Object message, String destination, @Nullable YamlContract contract) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
+		public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+				@Nullable YamlContract contract) {
 			if (payload instanceof String) {
 				assertThat((String) payload).doesNotContain("serverValue");
 			}
-			assertThat(headers.entrySet()).allMatch(e -> !e.getValue().toString().contains("serverValue"));
+			assertThat(Objects.requireNonNull(headers).entrySet())
+				.allMatch((e) -> !e.getValue().toString().contains("serverValue"));
 		}
 
 		@Override
-		public Object receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+		public @Nullable Object receive(String destination, long timeout, TimeUnit timeUnit,
+				@Nullable YamlContract contract) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Object receive(String destination, YamlContract contract) {
+		public @Nullable Object receive(String destination, @Nullable YamlContract contract) {
 			throw new UnsupportedOperationException();
 		}
 

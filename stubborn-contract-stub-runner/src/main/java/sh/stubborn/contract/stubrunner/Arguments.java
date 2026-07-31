@@ -16,38 +16,41 @@
 
 package sh.stubborn.contract.stubrunner;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Arguments passed to the {@link StubRunner} application.
  *
+ * @author Marcin Grzejszczak
  * @see StubRunner
  */
 class Arguments {
 
-	final private StubRunnerOptions stubRunnerOptions;
+	private final StubRunnerOptions stubRunnerOptions;
 
-	final private String repositoryPath;
+	private final String repositoryPath;
 
-	final private StubConfiguration stub;
+	private final @Nullable StubConfiguration stub;
 
 	Arguments(StubRunnerOptions stubRunnerOptions) {
 		this(stubRunnerOptions, "", null);
 	}
 
-	Arguments(StubRunnerOptions stubRunnerOptions, String repositoryPath, StubConfiguration stub) {
+	Arguments(StubRunnerOptions stubRunnerOptions, @Nullable String repositoryPath, @Nullable StubConfiguration stub) {
 		this.stubRunnerOptions = stubRunnerOptions;
-		this.repositoryPath = repositoryPath == null ? "" : repositoryPath;
+		this.repositoryPath = (repositoryPath != null) ? repositoryPath : "";
 		this.stub = stub;
 	}
 
-	public StubRunnerOptions getStubRunnerOptions() {
+	StubRunnerOptions getStubRunnerOptions() {
 		return this.stubRunnerOptions;
 	}
 
-	public String getRepositoryPath() {
+	String getRepositoryPath() {
 		return this.repositoryPath;
 	}
 
-	public StubConfiguration getStub() {
+	@Nullable StubConfiguration getStub() {
 		return this.stub;
 	}
 

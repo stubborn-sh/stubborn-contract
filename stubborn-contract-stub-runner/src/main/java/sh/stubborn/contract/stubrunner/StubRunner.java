@@ -30,7 +30,6 @@ import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -85,18 +84,23 @@ public class StubRunner implements StubRunning {
 						this.stubsConfiguration.artifactId + "_"
 								+ stubs.getPort(this.stubsConfiguration.toColonSeparatedDependencyNotation()));
 				try {
-					outputMappings.getParentFile().mkdirs();
+					if (!outputMappings.getParentFile().mkdirs() && log.isTraceEnabled()) {
+						log.trace(
+								"Parent directory already exists or could not be created for [" + outputMappings + "]");
+					}
 					clearOldFiles(outputMappings.getParentFile(), this.stubsConfiguration.artifactId);
-					outputMappings.createNewFile();
+					if (!outputMappings.createNewFile() && log.isTraceEnabled()) {
+						log.trace("Mappings file already exists [" + outputMappings + "]");
+					}
 					Files.write(Paths.get(outputMappings.toURI()), registeredMappings.getBytes());
 					if (log.isDebugEnabled()) {
 						log.debug("Stored the mappings for artifactid [" + this.stubsConfiguration.artifactId + "] at ["
 								+ outputMappings + "] location");
 					}
 				}
-				catch (IOException e) {
-					log.error("Exception occurred while trying to store the mappings", e);
-					throw new IllegalStateException(e);
+				catch (IOException ex) {
+					log.error("Exception occurred while trying to store the mappings", ex);
+					throw new IllegalStateException(ex);
 				}
 			}
 		}
@@ -172,7 +176,7 @@ public class StubRunner implements StubRunning {
 				try {
 					close();
 				}
-				catch (IOException e) {
+				catch (IOException ex) {
 				}
 			}
 		};

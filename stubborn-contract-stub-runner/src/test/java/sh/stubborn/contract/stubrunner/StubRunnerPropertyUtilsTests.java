@@ -65,7 +65,7 @@ class StubRunnerPropertyUtilsTests {
 
 			@Override
 			public String envVar(String prop) {
-				assertThat(prop).matches(p -> p.equals(expectedEnvVar)
+				assertThat(prop).matches((p) -> p.equals(expectedEnvVar)
 						|| p.equals("STUBBORN_CONTRACT_STUBRUNNER_PROPERTIES_" + expectedEnvVar));
 				return envVariable;
 			}
@@ -99,14 +99,14 @@ class StubRunnerPropertyUtilsTests {
 		StubRunnerPropertyUtils.FETCHER = new PropertyFetcher() {
 			@Override
 			public String systemProp(String prop) {
-				assertThat(prop).matches(p -> p.equals(assertedSystemProp)
+				assertThat(prop).matches((p) -> p.equals(assertedSystemProp)
 						|| p.equals(assertedSystemProp.replace("stubborn.contract.stubrunner.properties.", "")));
 				return systemProperty;
 			}
 
 			@Override
 			public String envVar(String prop) {
-				assertThat(prop).matches(p -> p.equals(assertedEnvVar)
+				assertThat(prop).matches((p) -> p.equals(assertedEnvVar)
 						|| p.equals(assertedEnvVar.replace("STUBBORN_CONTRACT_STUBRUNNER_PROPERTIES_", "")));
 				return envVariable;
 			}

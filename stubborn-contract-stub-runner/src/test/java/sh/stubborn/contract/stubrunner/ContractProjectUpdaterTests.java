@@ -18,7 +18,8 @@ package sh.stubborn.contract.stubrunner;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import org.assertj.core.api.BDDAssertions;
 import org.eclipse.jgit.api.Git;
@@ -27,7 +28,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import sh.stubborn.contract.stubrunner.StubsMode;
 
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
@@ -38,7 +38,7 @@ import static org.assertj.core.api.BDDAssertions.then;
  * @author Marcin Grzejszczak
  */
 @ExtendWith(OutputCaptureExtension.class)
-public class ContractProjectUpdaterTest extends AbstractGitTest {
+public class ContractProjectUpdaterTests extends AbstractGitTests {
 
 	File originalProject;
 
@@ -55,10 +55,12 @@ public class ContractProjectUpdaterTest extends AbstractGitTest {
 		GitContractsRepo.CACHED_LOCATIONS.clear();
 		this.originalProject = new File(GitRepoTests.class.getResource("/git_samples/contract-git").toURI());
 		TestUtils.prepareLocalRepo();
-		this.gitRepo = new GitRepo(this.tmpFolder);
-		this.origin = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "origin").toFile(),
+		this.gitRepo = new GitRepo(Objects.requireNonNull(this.tmpFolder));
+		this.origin = clonedProject(
+				Files.createTempDirectory(Objects.requireNonNull(this.tmpFolder).toPath(), "origin").toFile(),
 				this.originalProject);
-		this.project = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "project").toFile(),
+		this.project = clonedProject(
+				Files.createTempDirectory(Objects.requireNonNull(this.tmpFolder).toPath(), "project").toFile(),
 				this.originalProject);
 		this.gitRepo.checkout(this.project, "master");
 		setOriginOnProjectToTmp(this.origin, this.project);
@@ -93,12 +95,7 @@ public class ContractProjectUpdaterTest extends AbstractGitTest {
 		StubRunnerOptions options = new StubRunnerOptionsBuilder()
 			.withStubRepositoryRoot("file://" + this.project.getAbsolutePath() + "/")
 			.withStubsMode(StubsMode.REMOTE)
-			.withProperties(new HashMap<String, String>() {
-				{
-					put("git.username", "foo");
-					put("git.password", "bar");
-				}
-			})
+			.withProperties(Map.of("git.username", "foo", "git.password", "bar"))
 			.build();
 		ContractProjectUpdater updater = new ContractProjectUpdater(options);
 		File stubs = new File(GitRepoTests.class.getResource("/git_samples/sample_stubs").toURI());

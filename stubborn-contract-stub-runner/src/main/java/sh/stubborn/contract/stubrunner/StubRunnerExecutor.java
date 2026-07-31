@@ -296,7 +296,7 @@ class StubRunnerExecutor implements StubFinder {
 			}
 		}
 		else {
-			Object clientValue = body != null ? body.getClientValue() : null;
+			Object clientValue = (body != null) ? body.getClientValue() : null;
 			if (clientValue != null) {
 				payload = JsonOutput.toJson(BodyExtractor.extractClientValueFromBody(clientValue));
 			}
@@ -311,7 +311,7 @@ class StubRunnerExecutor implements StubFinder {
 			// Avro contract with null body — nothing to send
 			return;
 		}
-		Map<String, Object> headersMap = headers != null ? headers.asStubSideMap() : Collections.emptyMap();
+		Map<String, Object> headersMap = (headers != null) ? headers.asStubSideMap() : Collections.emptyMap();
 		@Nullable DslProperty<String> sentTo = outputMessage.getSentTo();
 		if (sentTo == null) {
 			throw new IllegalStateException(
@@ -387,8 +387,8 @@ class StubRunnerExecutor implements StubFinder {
 		return this.stubServer;
 	}
 
-	private boolean randomPort(Integer port) {
-		return port == null || port == 0;
+	private boolean randomPort(@Nullable Integer port) {
+		return (port == null) || (port == 0);
 	}
 
 	private boolean hasRequest(Collection<Contract> contracts) {

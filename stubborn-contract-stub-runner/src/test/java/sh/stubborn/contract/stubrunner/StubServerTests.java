@@ -38,8 +38,8 @@ class StubServerTests {
 		try {
 			EXPECTED_URL = new URL("http://localhost:" + STUB_SERVER_PORT);
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 

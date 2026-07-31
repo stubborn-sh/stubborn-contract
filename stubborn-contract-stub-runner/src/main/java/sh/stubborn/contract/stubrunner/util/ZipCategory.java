@@ -74,8 +74,9 @@ public final class ZipCategory {
 							throw new ZipException("The file " + zipEntryName
 									+ " is trying to leave the target output directory of " + destination);
 						}
-						if (destinationFile.getParentFile() != null) {
-							destinationFile.getParentFile().mkdirs();
+						File parentFile = destinationFile.getParentFile();
+						if (parentFile != null && !parentFile.mkdirs() && !parentFile.isDirectory()) {
+							throw new IOException("Cannot create directory " + parentFile);
 						}
 						try (OutputStream output = Files.newOutputStream(destinationFile.toPath())) {
 							zipInput.transferTo(output);
@@ -84,14 +85,16 @@ public final class ZipCategory {
 					}
 					else {
 						final File dir = new File(destination, entry.getName());
-						dir.mkdirs();
+						if (!dir.mkdirs() && !dir.isDirectory()) {
+							throw new IOException("Cannot create directory " + dir);
+						}
 						unzippedFiles.add(dir);
 					}
 				}
 			}
 		}
-		catch (IOException e) {
-			throw new IllegalStateException("Cannot unzip archive", e);
+		catch (IOException ex) {
+			throw new IllegalStateException("Cannot unzip archive", ex);
 		}
 		return unzippedFiles;
 	}

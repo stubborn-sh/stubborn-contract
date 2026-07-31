@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 /**
  * Tests for {@link ClassPathStubResource}.
  */
-class ClassPathStubResourceTest {
+class ClassPathStubResourceTests {
 
 	@Test
 	void stripsLeadingSlash() {

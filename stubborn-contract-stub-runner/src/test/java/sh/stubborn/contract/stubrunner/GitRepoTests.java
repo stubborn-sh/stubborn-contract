@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.Objects;
 
-import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.BDDAssertions.thenThrownBy;
  * @author Marcin Grzejszczak taken from:
  * https://github.com/spring-cloud/spring-cloud-release-tools
  */
-public class GitRepoTests extends AbstractGitTest {
+public class GitRepoTests extends AbstractGitTests {
 
 	File project;
 
@@ -47,14 +47,14 @@ public class GitRepoTests extends AbstractGitTest {
 	public void setup() throws IOException, URISyntaxException {
 		this.project = new File(GitRepoTests.class.getResource("/git_samples/contract-git").toURI());
 		TestUtils.prepareLocalRepo();
-		this.gitRepo = new GitRepo(this.tmpFolder);
+		this.gitRepo = new GitRepo(Objects.requireNonNull(this.tmpFolder));
 	}
 
 	@Test
 	public void should_clone_the_project_from_a_given_location() throws IOException {
 		this.gitRepo.cloneProject(this.project.toURI());
 
-		then(new File(this.tmpFolder, ".git")).exists();
+		then(new File(Objects.requireNonNull(this.tmpFolder), ".git")).exists();
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class GitRepoTests extends AbstractGitTest {
 
 	@Test
 	public void should_throw_an_exception_when_failed_to_initialize_the_repo() throws IOException {
-		thenThrownBy(() -> new GitRepo(this.tmpFolder, new ExceptionThrowingJGitFactory())
+		thenThrownBy(() -> new GitRepo(Objects.requireNonNull(this.tmpFolder), new ExceptionThrowingJGitFactory())
 			.cloneProject(this.project.toURI())).isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining("Exception occurred while cloning repo")
 			.hasCauseInstanceOf(CustomException.class);
@@ -77,7 +77,7 @@ public class GitRepoTests extends AbstractGitTest {
 		File project = this.gitRepo.cloneProject(this.project.toURI());
 		this.gitRepo.checkout(project, "master");
 
-		File pom = new File(this.tmpFolder, "README.adoc");
+		File pom = new File(Objects.requireNonNull(this.tmpFolder), "README.adoc");
 		then(pom).exists();
 	}
 
@@ -88,8 +88,8 @@ public class GitRepoTests extends AbstractGitTest {
 			this.gitRepo.checkout(project, "nonExistingBranch");
 			fail("should throw an exception");
 		}
-		catch (IllegalStateException e) {
-			then(e).hasMessageContaining("Ref nonExistingBranch cannot be resolved");
+		catch (IllegalStateException ex) {
+			then(ex).hasMessageContaining("Ref nonExistingBranch cannot be resolved");
 		}
 	}
 
@@ -132,9 +132,11 @@ public class GitRepoTests extends AbstractGitTest {
 
 	@Test
 	public void should_push_changes_to_current_branch() throws Exception {
-		File origin = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "origin").toFile(),
+		File origin = clonedProject(
+				Files.createTempDirectory(Objects.requireNonNull(this.tmpFolder).toPath(), "origin").toFile(),
 				this.project);
-		File project = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "project").toFile(),
+		File project = clonedProject(
+				Files.createTempDirectory(Objects.requireNonNull(this.tmpFolder).toPath(), "project").toFile(),
 				this.project);
 		setOriginOnProjectToTmp(origin, project);
 		createNewFile(project);
@@ -150,9 +152,11 @@ public class GitRepoTests extends AbstractGitTest {
 
 	@Test
 	public void should_pull_changes_to_current_branch() throws Exception {
-		File origin = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "origin").toFile(),
+		File origin = clonedProject(
+				Files.createTempDirectory(Objects.requireNonNull(this.tmpFolder).toPath(), "origin").toFile(),
 				this.project);
-		File project = clonedProject(Files.createTempDirectory(this.tmpFolder.toPath(), "project").toFile(),
+		File project = clonedProject(
+				Files.createTempDirectory(Objects.requireNonNull(this.tmpFolder).toPath(), "project").toFile(),
 				this.project);
 		setOriginOnProjectToTmp(origin, project);
 		createNewFile(origin);
@@ -168,47 +172,30 @@ public class GitRepoTests extends AbstractGitTest {
 
 	@Test
 	public void should_add_git_suffix_to_url_if_not_present() throws Exception {
-		this.gitRepo = new GitRepo(this.tmpFolder, true);
+		this.gitRepo = new GitRepo(Objects.requireNonNull(this.tmpFolder), true);
 		String url = this.gitRepo.sanitizeGitUrl(new URI("git://example.com/repo"));
 		assertThat(url).isEqualTo("git://example.com/repo.git");
 	}
 
 	@Test
 	public void should_not_add_git_suffix_to_url_if_already_present() throws Exception {
-		this.gitRepo = new GitRepo(this.tmpFolder, true);
+		this.gitRepo = new GitRepo(Objects.requireNonNull(this.tmpFolder), true);
 		String url = this.gitRepo.sanitizeGitUrl(new URI("git://example.com/repo.git"));
 		assertThat(url).isEqualTo("git://example.com/repo.git");
 	}
 
 	@Test
 	public void should_not_add_git_suffix_to_url_if_disabled() throws Exception {
-		this.gitRepo = new GitRepo(this.tmpFolder, false);
+		this.gitRepo = new GitRepo(Objects.requireNonNull(this.tmpFolder), false);
 		String url = this.gitRepo.sanitizeGitUrl(new URI("git://example.com/repo"));
 		assertThat(url).isEqualTo("git://example.com/repo");
 	}
 
 	@Test
 	public void should_not_remove_git_suffix_from_url_if_disabled() throws Exception {
-		this.gitRepo = new GitRepo(this.tmpFolder, false);
+		this.gitRepo = new GitRepo(Objects.requireNonNull(this.tmpFolder), false);
 		String url = this.gitRepo.sanitizeGitUrl(new URI("git://example.com/repo.git"));
 		assertThat(url).isEqualTo("git://example.com/repo.git");
-	}
-
-}
-
-class ExceptionThrowingJGitFactory extends GitRepo.JGitFactory {
-
-	@Override
-	CloneCommand getCloneCommandByCloneRepository() {
-		throw new CustomException("foo");
-	}
-
-}
-
-class CustomException extends RuntimeException {
-
-	CustomException(String message) {
-		super(message);
 	}
 
 }
