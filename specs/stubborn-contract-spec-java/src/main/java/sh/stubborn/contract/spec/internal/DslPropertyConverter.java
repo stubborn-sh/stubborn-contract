@@ -41,6 +41,7 @@ public interface DslPropertyConverter {
 	DslPropertyConverter INSTANCE = instance();
 
 	/**
+	 * Builds the composite converter instance.
 	 * @return a composite {@link DslPropertyConverter} around a list of
 	 * {@link DslPropertyConverter} or a default no op instance
 	 */

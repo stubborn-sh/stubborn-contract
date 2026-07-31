@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Represents a body of a request / response or a message.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class Body extends DslProperty {

@@ -23,6 +23,7 @@ import sh.stubborn.contract.spec.util.ValidateUtils;
 /**
  * Represents a single HTTP query parameter.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class QueryParameter extends DslProperty {
@@ -58,7 +59,7 @@ public class QueryParameter extends DslProperty {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -77,17 +78,17 @@ public class QueryParameter extends DslProperty {
 			return false;
 		}
 		QueryParameter that = (QueryParameter) o;
-		return Objects.equals(name, that.name);
+		return Objects.equals(this.name, that.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), name);
+		return Objects.hash(super.hashCode(), this.name);
 	}
 
 	@Override
 	public String toString() {
-		return "QueryParameter{" + "name='" + name + '\'' + ", value=" + super.toString() + '}';
+		return "QueryParameter{" + "name='" + this.name + '\'' + ", value=" + super.toString() + '}';
 	}
 
 }

@@ -20,6 +20,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Matching type with corresponding values.
+ *
+ * @author Marcin Grzejszczak
  */
 public class RegexMatchingTypeValue extends MatchingTypeValue {
 

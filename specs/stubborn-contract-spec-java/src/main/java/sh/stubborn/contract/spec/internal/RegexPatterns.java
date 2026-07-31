@@ -89,7 +89,7 @@ public final class RegexPatterns {
 
 	protected static Pattern anyOf(String... values) {
 		return Pattern.compile(Arrays.stream(values)
-			.map(it -> '^' + RegexpUtils.escapeSpecialRegexWithSingleEscape(it) + '$')
+			.map((it) -> '^' + RegexpUtils.escapeSpecialRegexWithSingleEscape(it) + '$')
 			.collect(Collectors.joining("|")));
 	}
 

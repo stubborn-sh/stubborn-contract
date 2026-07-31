@@ -22,10 +22,10 @@ import org.jspecify.annotations.Nullable;
 
 final class ContractUtils {
 
-	static final Function<Object, @Nullable Object> CLIENT_VALUE = o -> o instanceof DslProperty
+	static final Function<Object, @Nullable Object> CLIENT_VALUE = (o) -> (o instanceof DslProperty)
 			? ((DslProperty) o).getClientValue() : o;
 
-	static final Function<Object, @Nullable Object> SERVER_VALUE = o -> o instanceof DslProperty
+	static final Function<Object, @Nullable Object> SERVER_VALUE = (o) -> (o instanceof DslProperty)
 			? ((DslProperty) o).getServerValue() : o;
 
 	private ContractUtils() {
