@@ -46,7 +46,7 @@ public class WireMockMetaData implements SpringCloudContractMetadata {
 	private @Nullable Object stubMapping;
 
 	public @Nullable Object getStubMapping() {
-		return stubMapping;
+		return this.stubMapping;
 	}
 
 	public void setStubMapping(@Nullable Object stubMapping) {
@@ -66,7 +66,7 @@ public class WireMockMetaData implements SpringCloudContractMetadata {
 	public String description() {
 		return "Metadata for extending WireMock stubs.\n\nStubMapping can be " + "one of the following classes "
 				+ APPLICABLE_CLASSES.stream()
-					.map(aClass -> "`" + aClass.getSimpleName() + "`")
+					.map((aClass) -> "`" + aClass.getSimpleName() + "`")
 					.collect(Collectors.toList())
 				+ ". Please check "
 				+ "the http://wiremock.org/docs/stubbing/ for more information about the StubMapping class properties.";

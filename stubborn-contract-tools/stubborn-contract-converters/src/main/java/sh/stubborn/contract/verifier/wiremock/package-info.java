@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.verifier.converter;
-
-import sh.stubborn.contract.spec.ContractVerifierException;
-
 /**
- * Thrown when a DSL can't be properly converted.
- *
- * @author Marcin Grzejszczak
- * @since 1.0.0
+ * WireMock stub conversion support for Stubborn Contract.
  */
-public class ConversionContractVerifierException extends ContractVerifierException {
-
-	public ConversionContractVerifierException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-}
+package sh.stubborn.contract.verifier.wiremock;

@@ -34,6 +34,7 @@ import sh.stubborn.contract.verifier.util.NamesUtil;
 /**
  * Converts DSLs to WireMock stubs.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class DslToWireMockClientConverter extends DslToWireMockConverter {
@@ -80,7 +81,7 @@ public class DslToWireMockClientConverter extends DslToWireMockConverter {
 	private List<Contract> httpContracts(ContractMetadata contract) {
 		return contract.getConvertedContract()
 			.stream()
-			.filter(c -> c.getRequest() != null)
+			.filter((c) -> c.getRequest() != null)
 			.collect(Collectors.toList());
 	}
 
