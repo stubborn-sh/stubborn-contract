@@ -125,9 +125,17 @@
 			<groupId>com.github.jknack</groupId>
 			<artifactId>handlebars</artifactId>
 		</dependency>
+		<!--
+			Generation-time only: JavaPoet emits test *source* and is never needed on a
+			consumer's runtime classpath. Optional so it does not leak transitively (e.g.
+			via stub-runner, which depends on this module at compile scope). The
+			generation classpath (the Maven/Gradle plugin) provides it explicitly once the
+			model-based generator becomes the default at cutover.
+		-->
 		<dependency>
 			<groupId>com.palantir.javapoet</groupId>
 			<artifactId>javapoet</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<!-- Leaving for backward-compatibility. We no longer rely on this library
 		and neither should you. For more information check
