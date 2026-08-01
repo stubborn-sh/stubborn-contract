@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.ContractVerifierException;
 import sh.stubborn.contract.verifier.builder.JavaTestGenerator;
+import sh.stubborn.contract.verifier.builder.ModelBasedTestGenerator;
 import sh.stubborn.contract.verifier.builder.SingleTestGenerator;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.file.ContractFileScanner;
@@ -69,7 +70,18 @@ public class TestGenerator {
 				configProperties.getTestFramework().getClassExtension()));
 	}
 
+	/**
+	 * System property that opts into the model + typed-renderer test generator
+	 * ({@link ModelBasedTestGenerator}) introduced by the test-generation migration. Off
+	 * by default, so the legacy generator remains in charge until the phased cutover.
+	 */
+	private static final String MODEL_BASED_GENERATOR_PROPERTY = "stubborn.contract.verifier.model-based-generator";
+
 	private static SingleTestGenerator singleTestGenerator() {
+		if (Boolean.getBoolean(MODEL_BASED_GENERATOR_PROPERTY)) {
+			log.info("Using the model-based (JavaPoet) test generator [{}=true]", MODEL_BASED_GENERATOR_PROPERTY);
+			return new ModelBasedTestGenerator();
+		}
 		List<SingleTestGenerator> factories = new ArrayList<>();
 		ServiceLoader.load(SingleTestGenerator.class).forEach(factories::add);
 		if (factories.isEmpty()) {

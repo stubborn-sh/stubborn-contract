@@ -125,6 +125,10 @@
 			<groupId>com.github.jknack</groupId>
 			<artifactId>handlebars</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.palantir.javapoet</groupId>
+			<artifactId>javapoet</artifactId>
+		</dependency>
 		<!-- Leaving for backward-compatibility. We no longer rely on this library
 		and neither should you. For more information check
 		https://github.com/spring-cloud/stubborn-contract/issues/2129  -->
