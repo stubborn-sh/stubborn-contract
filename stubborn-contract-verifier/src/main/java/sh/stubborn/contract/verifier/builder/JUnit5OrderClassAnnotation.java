@@ -35,7 +35,7 @@ class JUnit5OrderClassAnnotation implements ClassAnnotation {
 
 	@Override
 	public ClassAnnotation call() {
-		Arrays.stream(ANNOTATIONS).forEach(this.blockBuilder::addIndented);
+		Arrays.stream(ANNOTATIONS).forEach(this.blockBuilder::addLine);
 		return this;
 	}
 

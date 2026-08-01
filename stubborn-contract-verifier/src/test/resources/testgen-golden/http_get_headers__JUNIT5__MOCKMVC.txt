@@ -16,7 +16,8 @@ import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
 
 @SuppressWarnings("rawtypes")
-@TestMethodOrder(MethodOrderer.MethodName.class)public class ContractTest {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
 
 	@Test
 	@Disabled
