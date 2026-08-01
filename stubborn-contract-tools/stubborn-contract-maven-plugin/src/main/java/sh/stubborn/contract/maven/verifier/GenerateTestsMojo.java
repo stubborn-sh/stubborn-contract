@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Resource;
@@ -28,7 +30,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -57,7 +58,7 @@ import org.springframework.util.StringUtils;
 @SuppressWarnings("NullAway.Init")
 public class GenerateTestsMojo extends AbstractMojo {
 
-	@Component
+	@Inject
 	private RepositorySystem repositorySystem;
 
 	// Required for the case where there is no configuration (check the basic project for
