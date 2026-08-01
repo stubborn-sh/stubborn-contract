@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.verifier.builder;
+package sh.stubborn.contract.verifier.template;
 
 import java.net.MalformedURLException;
 import java.net.URL;

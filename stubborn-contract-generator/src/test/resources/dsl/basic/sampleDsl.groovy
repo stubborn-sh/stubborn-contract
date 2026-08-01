@@ -14,23 +14,36 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.verifier.builder;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import groovy.transform.CompileStatic;
-
-@CompileStatic
-class Path extends ArrayList<String> {
-
-	Path(List<String> list) {
-		this.addAll(list);
+import sh.stubborn.contract.spec.Contract
+Contract.make {
+	request {
+		method('PUT')
+		headers {
+			contentType(applicationJson())
+		}
+		body("""\
+		  {
+			"name": "Jan",
+			"id": "${value(consumer('abc'), producer('def'))}",
+		  }
+		  """
+		)
+		url $(consumer('/[0-9]{2}'), producer('/12'))
 	}
-
-	@Override
-	public String toString() {
-		return "/" + String.join("/", this);
+	response {
+		status OK()
+		body("""\
+		  {
+			"name": "Jan",
+			"id": "${value(consumer('123'), producer('321'))}",
+						"surname": "${
+			value(consumer('Kowalsky'), producer('$checkIfSurnameValid($value)'))
+		}"
+		  }
+		  """
+		)
+		headers {
+			contentType(textPlain())
+		}
 	}
-
 }
