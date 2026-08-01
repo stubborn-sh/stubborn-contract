@@ -74,7 +74,9 @@ jobs:
       - name: Run OWASP dependency-check (-Psecurity)
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: ./mvnw verify -Psecurity -DskipTests --no-transfer-progress
+        # -fae (fail-at-end): scan every module and report all CVEs in one run, rather
+        # than stopping at the first module that fails the CVSS gate.
+        run: ./mvnw verify -Psecurity -DskipTests -fae --no-transfer-progress
 
       - name: Upload dependency-check reports
         if: always()
