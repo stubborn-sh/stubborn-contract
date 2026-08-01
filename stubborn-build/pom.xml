@@ -108,6 +108,15 @@
 		<jspecify.version>1.0.0</jspecify.version>
 
 		<!--
+		  Security-pinned third-party library versions. Defined here (the common build
+		  parent) so the reactor pom, the consumer BOM, and every module share one source of
+		  truth. Jetty is held on the 12.0.x line that WireMock 3.13.2 requires (12.1.x
+		  removed APIs wiremock-jetty12 calls); httpcore5 is pinned above its vulnerable 5.4.2.
+		-->
+		<jetty.version>12.0.37</jetty.version>
+		<httpcore5.version>5.4.3</httpcore5.version>
+
+		<!--
 		  Core module gate: set to false in Spring-agnostic core modules to ban
 		  direct Spring dependencies (org.springframework.*, *.boot, *.cloud).
 		-->
