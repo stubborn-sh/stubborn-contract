@@ -19,7 +19,7 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
-import com.toomuchcoding.jsonassert.JsonAssertion
+import sh.stubborn.jsonassert.JsonAssertion
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import sh.stubborn.contract.spec.Contract

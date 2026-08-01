@@ -16,7 +16,7 @@
 
 package sh.stubborn.contract.verifier.util;
 
-import com.toomuchcoding.jsonassert.JsonVerifiable;
+import sh.stubborn.jsonassert.JsonVerifiable;
 import org.jspecify.annotations.Nullable;
 
 /**

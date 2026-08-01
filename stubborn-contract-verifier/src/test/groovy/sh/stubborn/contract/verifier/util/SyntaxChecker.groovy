@@ -36,7 +36,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
-import com.toomuchcoding.jsonassert.JsonAssertion
+import sh.stubborn.jsonassert.JsonAssertion
 import groovy.transform.CompileStatic
 import groovy.util.logging.Commons
 import org.codehaus.groovy.control.CompilerConfiguration

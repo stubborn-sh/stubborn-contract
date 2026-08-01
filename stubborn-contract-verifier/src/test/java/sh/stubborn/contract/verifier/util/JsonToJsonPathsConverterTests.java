@@ -24,7 +24,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
-import com.toomuchcoding.jsonassert.JsonAssertion;
+import sh.stubborn.jsonassert.JsonAssertion;
 import groovy.json.JsonOutput;
 import groovy.json.JsonSlurper;
 import net.minidev.json.JSONArray;

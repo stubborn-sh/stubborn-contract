@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import com.toomuchcoding.jsonassert.JsonAssertion;
+import sh.stubborn.jsonassert.JsonAssertion;
 import groovy.json.JsonOutput;
 import groovy.json.JsonSlurper;
 import org.junit.jupiter.api.Test;

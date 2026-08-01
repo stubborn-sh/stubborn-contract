@@ -21,7 +21,7 @@ import jakarta.jms.Message
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
-import com.toomuchcoding.jsonassert.JsonAssertion
+import sh.stubborn.jsonassert.JsonAssertion
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledForJreRange

@@ -19,7 +19,7 @@ package com.example
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
-import com.toomuchcoding.jsonassert.JsonAssertion
+import sh.stubborn.jsonassert.JsonAssertion
 import org.apache.camel.model.ModelCamelContext
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.RabbitMQContainer

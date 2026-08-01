@@ -26,7 +26,7 @@ class DefaultJsonStaticImports implements Imports {
 
 	private final GeneratedClassMetaData generatedClassMetaData;
 
-	private static final String[] IMPORTS = { "com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson" };
+	private static final String[] IMPORTS = { "sh.stubborn.jsonassert.JsonAssertion.assertThatJson" };
 
 	DefaultJsonStaticImports(BlockBuilder blockBuilder, GeneratedClassMetaData generatedClassMetaData) {
 		this.blockBuilder = blockBuilder;

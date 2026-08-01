@@ -18,7 +18,7 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.Optional;
 
-import com.toomuchcoding.jsonassert.JsonAssertion;
+import sh.stubborn.jsonassert.JsonAssertion;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.BodyMatchers;

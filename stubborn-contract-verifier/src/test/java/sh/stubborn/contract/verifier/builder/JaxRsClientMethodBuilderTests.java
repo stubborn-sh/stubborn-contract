@@ -734,7 +734,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 
 				import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
 				import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
-				import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;
+				import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;
 				import static javax.ws.rs.client.Entity.*;
 
 				@SuppressWarnings("rawtypes")

@@ -18,7 +18,7 @@ package sh.stubborn.contract.verifier.builder;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import com.toomuchcoding.jsonassert.JsonAssertion;
+import sh.stubborn.jsonassert.JsonAssertion;
 import org.junit.Test;
 
 /**

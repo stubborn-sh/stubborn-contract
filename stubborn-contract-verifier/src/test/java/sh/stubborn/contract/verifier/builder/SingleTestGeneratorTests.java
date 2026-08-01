@@ -57,7 +57,7 @@ class SingleTestGeneratorTests {
 	private static final List<String> MOCK_MVC_JUNIT5_REST_ASSURED3_CLASS_STRINGS = Arrays.asList(
 			"import com.jayway.jsonpath.DocumentContext;", "import com.jayway.jsonpath.JsonPath;",
 			"import org.junit.jupiter.api.Disabled;", "import org.junit.jupiter.api.Test;",
-			"import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;",
+			"import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;",
 			"import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;", "@Test", "@Disabled",
 			"import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;",
 			"import io.restassured.response.ResponseOptions;",
@@ -68,7 +68,7 @@ class SingleTestGeneratorTests {
 	private static final List<String> EXPLICIT_JUNIT5_REST_ASSURED3_CLASS_STRINGS = Arrays.asList(
 			"import com.jayway.jsonpath.DocumentContext;", "import com.jayway.jsonpath.JsonPath;",
 			"import org.junit.jupiter.api.Disabled;", "import org.junit.jupiter.api.Test;",
-			"import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;",
+			"import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;",
 			"import static io.restassured.RestAssured.*;", "@Test", "@Disabled",
 			"import io.restassured.specification.RequestSpecification;", "import io.restassured.response.Response;",
 			"import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat",
@@ -77,8 +77,7 @@ class SingleTestGeneratorTests {
 
 	private static final List<String> MOCK_MVC_TESTNG_REST_ASSURED3_CLASS_STRINGS = Arrays.asList(
 			"import com.jayway.jsonpath.DocumentContext;", "import com.jayway.jsonpath.JsonPath;",
-			"import org.testng.annotations.Test;",
-			"import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;",
+			"import org.testng.annotations.Test;", "import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;",
 			"import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;", "@Test",
 			"import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;",
 			"import io.restassured.response.ResponseOptions;",
@@ -86,8 +85,7 @@ class SingleTestGeneratorTests {
 
 	private static final List<String> EXPLICIT_TESTNG_REST_ASSURED3_CLASS_STRINGS = Arrays.asList(
 			"import com.jayway.jsonpath.DocumentContext;", "import com.jayway.jsonpath.JsonPath;",
-			"import org.testng.annotations.Test;",
-			"import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;",
+			"import org.testng.annotations.Test;", "import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;",
 			"import static io.restassured.RestAssured.*;", "@Test",
 			"import io.restassured.specification.RequestSpecification;", "import io.restassured.response.Response;",
 			"import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat");
@@ -95,21 +93,21 @@ class SingleTestGeneratorTests {
 	private static final List<String> SPOCK_CLASS_REST_ASSURED3_STRINGS = Arrays.asList(
 			"import com.jayway.jsonpath.DocumentContext", "import com.jayway.jsonpath.JsonPath",
 			"import spock.lang.Ignore", "import spock.lang.Specification", "import spock.lang.Stepwise",
-			"import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson",
+			"import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson",
 			"import static io.restassured.module.mockmvc.RestAssuredMockMvc.*", "@Stepwise", "@Ignore",
 			"sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat");
 
 	private static final List<String> EXPLICIT_SPOCK_REST_ASSURED2_CLASS_STRINGS = Arrays.asList(
 			"import com.jayway.jsonpath.DocumentContext", "import com.jayway.jsonpath.JsonPath",
 			"import spock.lang.Ignore", "import spock.lang.Specification", "import spock.lang.Stepwise",
-			"import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson",
+			"import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson",
 			"import static com.jayway.restassured.RestAssured.*", "@Stepwise", "@Ignore",
 			"sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat");
 
 	private static final List<String> EXPLICIT_SPOCK_REST_ASSURED3_CLASS_STRINGS = Arrays.asList(
 			"import com.jayway.jsonpath.DocumentContext", "import com.jayway.jsonpath.JsonPath",
 			"import spock.lang.Ignore", "import spock.lang.Specification", "import spock.lang.Stepwise",
-			"import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson",
+			"import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson",
 			"import static io.restassured.RestAssured.*", "@Stepwise", "@Ignore",
 			"sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat");
 
