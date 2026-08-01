@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner.messaging.amqp;
 
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import sh.stubborn.contract.stubrunner.StubTrigger;
@@ -44,7 +43,6 @@ class AmqpStubRunnerSpec {
 	ArgumentCaptor<Person> personArgumentCaptor = ArgumentCaptor.forClass(Person.class);
 
 	@Test
-	@DisplayName("should trigger stub amqp message")
 	void shouldTriggerStubAmqpMessage() {
 		// tag::client_trigger[]
 		this.stubTrigger.trigger("contract-test.person.created.event");

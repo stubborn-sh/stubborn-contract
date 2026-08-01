@@ -23,7 +23,6 @@ import com.jayway.jsonpath.JsonPath;
 import com.toomuchcoding.jsonassert.JsonAssertion;
 import jakarta.jms.Message;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
@@ -63,7 +62,6 @@ class JmsMessagingApplicationSpec {
 	}
 
 	@Test
-	@DisplayName("should work for triggered based messaging")
 	void shouldWorkForTriggeredBasedMessaging() {
 		// generated test should look like this:
 		bookReturnedTriggered();

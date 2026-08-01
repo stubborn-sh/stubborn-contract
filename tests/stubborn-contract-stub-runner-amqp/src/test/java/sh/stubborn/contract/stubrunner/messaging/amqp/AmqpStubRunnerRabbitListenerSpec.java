@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner.messaging.amqp;
 
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.StubTrigger;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
@@ -41,7 +40,6 @@ class AmqpStubRunnerRabbitListenerSpec {
 	MessageSubscriberRabbitListener messageSubscriber;
 
 	@Test
-	@DisplayName("should trigger stub amqp message consumed by annotated listener")
 	void shouldTriggerStubAmqpMessageConsumedByAnnotatedListener() {
 		this.stubTrigger.trigger("contract-test.person.created.event");
 

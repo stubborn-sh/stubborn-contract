@@ -24,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import org.apache.curator.test.TestingServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.StubsMode;
@@ -77,7 +76,6 @@ class StubRunnerSpringCloudZookeeperAutoConfigurationSpec {
 	}
 
 	@Test
-	@DisplayName("should make service discovery work")
 	void shouldMakeServiceDiscoveryWork() throws IOException {
 		// WireMocks are running
 		then(read(this.stubFinder.findStubUrl("loanIssuance").toString() + "/name")).isEqualTo("loanIssuance");
@@ -90,7 +88,6 @@ class StubRunnerSpringCloudZookeeperAutoConfigurationSpec {
 	}
 
 	@Test
-	@DisplayName("should have all apps registered in Service Discovery")
 	void shouldHaveAllAppsRegisteredInServiceDiscovery() {
 		then(this.zookeeperServiceDiscovery.getInstances("loanIssuance")).isNotEmpty();
 		then(this.zookeeperServiceDiscovery.getInstances("someNameThatShouldMapFraudDetectionServer")).isNotEmpty();

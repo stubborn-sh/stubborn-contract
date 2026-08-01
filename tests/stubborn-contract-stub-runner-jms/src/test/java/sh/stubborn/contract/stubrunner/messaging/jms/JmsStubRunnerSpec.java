@@ -24,7 +24,6 @@ import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.TextMessage;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledForJreRange;
@@ -70,7 +69,6 @@ class JmsStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a message by label")
 	void shouldTriggerAMessageByLabel() throws Exception {
 		// tag::client_trigger[]
 		this.stubFinder.trigger("return_book_1");
@@ -89,7 +87,6 @@ class JmsStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a label for the existing groupId and artifactId")
 	void shouldTriggerALabelForTheExistingGroupIdAndArtifactId() throws Exception {
 		// tag::trigger_group_artifact[]
 		this.stubFinder.trigger("my:stubs", "return_book_1");
@@ -104,7 +101,6 @@ class JmsStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a label for the existing artifactId")
 	void shouldTriggerALabelForTheExistingArtifactId() throws Exception {
 		// tag::trigger_artifact[]
 		this.stubFinder.trigger("stubs", "return_book_1");
@@ -119,20 +115,17 @@ class JmsStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should throw an exception when missing label is passed")
 	void shouldThrowAnExceptionWhenMissingLabelIsPassed() {
 		thenThrownBy(() -> this.stubFinder.trigger("missing label")).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	@DisplayName("should throw an exception when missing label and artifactid is passed")
 	void shouldThrowAnExceptionWhenMissingLabelAndArtifactidIsPassed() {
 		thenThrownBy(() -> this.stubFinder.trigger("some:service", "return_book_1"))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	@DisplayName("should trigger messages by running all triggers")
 	void shouldTriggerMessagesByRunningAllTriggers() throws Exception {
 		// tag::trigger_all[]
 		this.stubFinder.trigger();
@@ -147,7 +140,6 @@ class JmsStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a label with no output message")
 	void shouldTriggerALabelWithNoOutputMessage() {
 		// tag::trigger_no_output[]
 		this.jmsTemplate.convertAndSend("delete", new BookReturned("foo"), new MessagePostProcessor() {
@@ -161,7 +153,6 @@ class JmsStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should not trigger a message that does not match input")
 	void shouldNotTriggerAMessageThatDoesNotMatchInput() {
 		this.jmsTemplate.convertAndSend("input", new BookReturned("notmatching"), new MessagePostProcessor() {
 			@Override

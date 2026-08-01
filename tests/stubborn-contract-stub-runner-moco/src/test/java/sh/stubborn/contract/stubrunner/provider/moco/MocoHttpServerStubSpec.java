@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.StubsMode;
@@ -47,7 +46,6 @@ class MocoHttpServerStubSpec {
 	StubFinder stubFinder;
 
 	@Test
-	@DisplayName("should successfully receive a response from a stub")
 	void shouldSuccessfullyReceiveAResponseFromAStub() throws IOException {
 		String url = this.stubFinder.findStubUrl("fraudDetectionServerMoco").toString();
 

@@ -29,7 +29,6 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -105,7 +104,6 @@ class KafkaStubRunnerSpec {
 
 	// Skipping the test on Jenkins cause it's for some reason flakey only there
 	@Test
-	@DisplayName("should download the stub and register a route for it")
 	void shouldDownloadTheStubAndRegisterARouteForIt() {
 		log.info("Sending the message");
 		// tag::client_send[]
@@ -130,7 +128,6 @@ class KafkaStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should propagate the Kafka record key via message headers")
 	void shouldPropagateTheKafkaRecordKeyViaMessageHeaders() {
 		log.info("Sending the message");
 		// tag::client_send[]
@@ -156,7 +153,6 @@ class KafkaStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a message by label")
 	void shouldTriggerAMessageByLabel() {
 		// tag::client_trigger[]
 		this.stubFinder.trigger("return_book_1");
@@ -174,7 +170,6 @@ class KafkaStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a label for the existing groupId and artifactId")
 	void shouldTriggerALabelForTheExistingGroupIdAndArtifactId() {
 		// tag::trigger_group_artifact[]
 		this.stubFinder.trigger("my:stubs", "return_book_1");
@@ -188,7 +183,6 @@ class KafkaStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a label for the existing artifactId")
 	void shouldTriggerALabelForTheExistingArtifactId() {
 		// tag::trigger_artifact[]
 		this.stubFinder.trigger("stubs", "return_book_1");
@@ -202,20 +196,17 @@ class KafkaStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should throw an exception when missing label is passed")
 	void shouldThrowAnExceptionWhenMissingLabelIsPassed() {
 		thenThrownBy(() -> this.stubFinder.trigger("missing label")).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	@DisplayName("should throw an exception when missing label and artifactid is passed")
 	void shouldThrowAnExceptionWhenMissingLabelAndArtifactidIsPassed() {
 		thenThrownBy(() -> this.stubFinder.trigger("some:service", "return_book_1"))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	@DisplayName("should trigger messages by running all triggers")
 	void shouldTriggerMessagesByRunningAllTriggers() {
 		// tag::trigger_all[]
 		this.stubFinder.trigger();
@@ -229,7 +220,6 @@ class KafkaStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a label with no output message")
 	void shouldTriggerALabelWithNoOutputMessage() {
 		// tag::trigger_no_output[]
 		Message<?> message = MessageBuilder.createMessage(new BookReturned("foo"),
@@ -240,7 +230,6 @@ class KafkaStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should not trigger a message that does not match input")
 	void shouldNotTriggerAMessageThatDoesNotMatchInput() {
 		Message<?> message = MessageBuilder.createMessage(new BookReturned("notmatching"),
 				new MessageHeaders(Map.of("wrong", "header")));

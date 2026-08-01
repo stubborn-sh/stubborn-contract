@@ -165,6 +165,7 @@
 				</property>
 			</activation>
 			<modules>
+				<module>stubborn-contract-tests-support</module>
 				<module>samples-messaging-camel</module>
 				<module>samples-messaging-integration</module>
 				<module>samples-messaging-amqp</module>
@@ -187,6 +188,7 @@
 				</property>
 			</activation>
 			<modules>
+				<module>stubborn-contract-tests-support</module>
 				<module>samples-messaging-camel</module>
 				<module>samples-messaging-integration</module>
 				<module>samples-messaging-amqp</module>

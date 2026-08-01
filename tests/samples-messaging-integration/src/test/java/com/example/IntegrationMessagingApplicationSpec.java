@@ -21,7 +21,6 @@ import java.util.Objects;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.toomuchcoding.jsonassert.JsonAssertion;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
@@ -46,7 +45,6 @@ class IntegrationMessagingApplicationSpec {
 	ContractVerifierObjectMapper contractVerifierObjectMapper = new ContractVerifierObjectMapper();
 
 	@Test
-	@DisplayName("should work for triggered based messaging")
 	void shouldWorkForTriggeredBasedMessaging() {
 		// generated test should look like this:
 		bookReturnedTriggered();

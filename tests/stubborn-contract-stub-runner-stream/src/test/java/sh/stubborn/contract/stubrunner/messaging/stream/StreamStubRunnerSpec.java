@@ -23,7 +23,6 @@ import java.util.function.Function;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
@@ -60,7 +59,6 @@ class StreamStubRunnerSpec {
 	MessageVerifierReceiver<Message<?>> messaging;
 
 	@Test
-	@DisplayName("should trigger a message by label")
 	void shouldTriggerAMessageByLabel() {
 		// tag::client_trigger[]
 		this.stubFinder.trigger("return_book_1");
@@ -79,7 +77,6 @@ class StreamStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a label for the existing groupId and artifactId")
 	void shouldTriggerALabelForTheExistingGroupIdAndArtifactId() throws Exception {
 		// tag::trigger_group_artifact[]
 		this.stubFinder.trigger("sh.stubborn.contract.verifier.stubs:streamService", "return_book_1");
@@ -92,7 +89,6 @@ class StreamStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should trigger a label for the existing artifactId")
 	void shouldTriggerALabelForTheExistingArtifactId() throws Exception {
 		// tag::trigger_artifact[]
 		this.stubFinder.trigger("streamService", "return_book_1");
@@ -105,20 +101,17 @@ class StreamStubRunnerSpec {
 	}
 
 	@Test
-	@DisplayName("should throw exception when missing label is passed")
 	void shouldThrowExceptionWhenMissingLabelIsPassed() {
 		thenThrownBy(() -> this.stubFinder.trigger("missing label")).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	@DisplayName("should throw exception when missing label and artifactid is passed")
 	void shouldThrowExceptionWhenMissingLabelAndArtifactidIsPassed() {
 		thenThrownBy(() -> this.stubFinder.trigger("some:service", "return_book_1"))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	@DisplayName("should trigger messages by running all triggers")
 	void shouldTriggerMessagesByRunningAllTriggers() throws Exception {
 		// tag::trigger_all[]
 		this.stubFinder.trigger();

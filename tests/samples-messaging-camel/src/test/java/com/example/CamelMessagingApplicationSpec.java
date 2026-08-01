@@ -22,7 +22,6 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.toomuchcoding.jsonassert.JsonAssertion;
 import org.apache.camel.model.ModelCamelContext;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -67,7 +66,6 @@ class CamelMessagingApplicationSpec {
 	}
 
 	@Test
-	@DisplayName("should work for triggered based messaging")
 	void shouldWorkForTriggeredBasedMessaging() {
 		// generated test should look like this:
 		bookReturnedTriggered();

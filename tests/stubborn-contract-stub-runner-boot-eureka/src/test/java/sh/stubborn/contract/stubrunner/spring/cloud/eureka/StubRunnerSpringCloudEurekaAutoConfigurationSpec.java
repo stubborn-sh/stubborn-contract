@@ -32,7 +32,6 @@ import org.awaitility.Awaitility;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +103,6 @@ class StubRunnerSpringCloudEurekaAutoConfigurationSpec {
 	}
 
 	@Test
-	@DisplayName("should make service discovery work")
 	void shouldMakeServiceDiscoveryWork() throws IOException {
 		// WireMocks are running
 		then(read(this.stubFinder.findStubUrl("loanIssuance").toString() + "/name")).isEqualTo("loanIssuance");
