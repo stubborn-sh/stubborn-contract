@@ -69,7 +69,10 @@ import static org.assertj.core.api.BDDAssertions.then;
 		properties = { "spring.cloud.contract.stubrunner.cloud.eureka.enabled=true",
 				"stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=false", "eureka.client.enabled=true",
 				"eureka.client.restclient.enabled=false", "eureka.client.webclient.enabled=false",
-				"eureka.client.jersey.enabled=false", "debug=true", "eureka.instance.leaseRenewalIntervalInSeconds=1" })
+				"eureka.client.jersey.enabled=false", "debug=true", "eureka.instance.leaseRenewalIntervalInSeconds=1",
+				"eureka.instance.leaseExpirationDurationInSeconds=2", "eureka.client.registryFetchIntervalSeconds=1",
+				"eureka.client.instanceInfoReplicationIntervalSeconds=1",
+				"eureka.client.initialInstanceInfoReplicationIntervalSeconds=0" })
 @AutoConfigureStubRunner(ids = { "sh.stubborn.contract.verifier.stubs:loanIssuance",
 		"sh.stubborn.contract.verifier.stubs:fraudDetectionServer", "sh.stubborn.contract.verifier.stubs:bootService" },
 		repositoryRoot = "classpath:m2repo/repository/", stubsMode = StubsMode.REMOTE)
@@ -93,7 +96,12 @@ class StubRunnerSpringCloudEurekaAutoConfigurationSpec {
 		eurekaServer = SpringApplication.run(EurekaServer.class,
 				"--spring.cloud.contract.stubrunner.cloud.eureka.enabled=true",
 				"--stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=false", "--eureka.client.enabled=true",
-				"--server.port=8761", "--spring.profiles.active=eureka");
+				"--server.port=8761", "--spring.profiles.active=eureka",
+				// Aggressive Eureka timings: a registered instance is discoverable within
+				// ~1-2s instead of the 30s+ defaults (response cache + registry fetch),
+				// keeping this test fast and non-flaky.
+				"--eureka.server.responseCacheUpdateIntervalMs=500", "--eureka.server.useReadOnlyResponseCache=false",
+				"--eureka.server.evictionIntervalTimerInMs=2000");
 	}
 
 	@AfterAll
@@ -108,16 +116,22 @@ class StubRunnerSpringCloudEurekaAutoConfigurationSpec {
 		then(read(this.stubFinder.findStubUrl("loanIssuance").toString() + "/name")).isEqualTo("loanIssuance");
 		then(read(this.stubFinder.findStubUrl("fraudDetectionServer").toString() + "/name"))
 			.isEqualTo("fraudDetectionServer");
-		// Stubs can be reached via load service discovery
+		// Stubs can be reached via load-balanced service discovery. Poll until both
+		// instances have registered and the client has fetched them (fast with the
+		// timings above); asserting both inside the same block avoids a race where one
+		// name resolves before the other.
 		log.info("Waiting for stubs to register in Eureka...");
 		Awaitility.await()
-			.pollInterval(1, TimeUnit.SECONDS)
-			.pollDelay(10, TimeUnit.SECONDS)
-			.atMost(2, TimeUnit.MINUTES)
-			.untilAsserted(() -> then(this.restTemplate.getForObject("http://loanIssuance/name", String.class))
-				.isEqualTo("loanIssuance"));
-		then(this.restTemplate.getForObject("http://someNameThatShouldMapFraudDetectionServer/name", String.class))
-			.isEqualTo("fraudDetectionServer");
+			.pollDelay(0, TimeUnit.SECONDS)
+			.pollInterval(500, TimeUnit.MILLISECONDS)
+			.atMost(90, TimeUnit.SECONDS)
+			.untilAsserted(() -> {
+				then(this.restTemplate.getForObject("http://loanIssuance/name", String.class))
+					.isEqualTo("loanIssuance");
+				then(this.restTemplate.getForObject("http://someNameThatShouldMapFraudDetectionServer/name",
+						String.class))
+					.isEqualTo("fraudDetectionServer");
+			});
 	}
 
 	private static String read(String url) throws IOException {
