@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.stubrunner.messaging.integration;
+package sh.stubborn.contract.stubrunner.messaging.stream;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.jspecify.annotations.Nullable;
 
 class BookReturned implements Serializable {
 
-	final String bookName;
+	private final String bookName;
 
 	@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
 	BookReturned(String bookName) {
 		this.bookName = bookName;
 	}
 
+	String getBookName() {
+		return this.bookName;
+	}
+
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -43,7 +48,7 @@ class BookReturned implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(this.bookName);
+		return Objects.hash(this.bookName);
 	}
 
 }

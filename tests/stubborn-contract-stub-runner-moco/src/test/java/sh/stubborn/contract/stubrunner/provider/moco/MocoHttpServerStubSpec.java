@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;

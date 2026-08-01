@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.stubrunner.messaging.integration;
+package sh.stubborn.contract.stubrunner.messaging.jms;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -23,11 +23,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 class BookReturned implements Serializable {
 
-	final String bookName;
+	private final String bookName;
 
 	@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
 	BookReturned(String bookName) {
 		this.bookName = bookName;
+	}
+
+	String getBookName() {
+		return this.bookName;
 	}
 
 	@Override
