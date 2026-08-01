@@ -92,8 +92,7 @@ public class YamlContractConverter implements ContractConverter<List<YamlContrac
 	}
 
 	protected String name(YamlContract contract) {
-		return StringUtils.defaultIfEmpty(contract.name, String.valueOf(contract.hashCode() & Integer.MAX_VALUE))
-				+ ".yml";
+		return StringUtils.defaultIfEmpty(contract.name, String.valueOf(Math.abs((long) contract.hashCode()))) + ".yml";
 	}
 
 	protected byte[] getBytes(YamlContract yamlContract) {

@@ -64,7 +64,7 @@ public class ContractVerifierMessaging<M> {
 		send(message, destination, null);
 	}
 
-	public ContractVerifierMessage receive(String destination, @Nullable YamlContract contract) {
+	public @Nullable ContractVerifierMessage receive(String destination, @Nullable YamlContract contract) {
 		if (contract != null) {
 			setMessageType(contract, ContractVerifierMessageMetadata.MessageType.OUTPUT);
 		}
@@ -76,7 +76,7 @@ public class ContractVerifierMessaging<M> {
 				new ContractVerifierMessageMetadata(output));
 	}
 
-	public ContractVerifierMessage receive(String destination) {
+	public @Nullable ContractVerifierMessage receive(String destination) {
 		return receive(destination, null);
 	}
 
@@ -84,7 +84,7 @@ public class ContractVerifierMessaging<M> {
 		return new ContractVerifierMessage(payload, headers);
 	}
 
-	protected ContractVerifierMessage convert(@Nullable M receive) {
+	protected @Nullable ContractVerifierMessage convert(@Nullable M receive) {
 		return new ContractVerifierMessage(receive, null);
 	}
 

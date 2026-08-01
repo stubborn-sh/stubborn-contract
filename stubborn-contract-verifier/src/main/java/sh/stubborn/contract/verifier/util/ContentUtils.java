@@ -344,8 +344,10 @@ public class ContentUtils {
 
 	private static @Nullable String transformXMLStringValue(Object obj, Closure valueProvider) {
 		if (obj instanceof DslProperty) {
-			Object result = transformJSONStringValue((DslProperty) obj, valueProvider);
-			return (result != null) ? result.toString() : null;
+			// Mirror the original Groovy runtime-dispatch behaviour: resolve the
+			// dynamic value through the provider and XML-escape the result, rather
+			// than applying the JSON placeholder transformation.
+			return transformXMLStringValue(valueProvider.call(obj), valueProvider);
 		}
 		return StringEscapeUtils.escapeXml11(StringEscapeUtils.unescapeXml(obj.toString()));
 	}

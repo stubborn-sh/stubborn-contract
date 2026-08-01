@@ -36,9 +36,9 @@ class ContractVerifierHelper extends ContractVerifierMessaging<Message<?>> {
 	}
 
 	@Override
-	protected ContractVerifierMessage convert(@Nullable Message<?> receive) {
+	protected @Nullable ContractVerifierMessage convert(@Nullable Message<?> receive) {
 		if (receive == null) {
-			return new ContractVerifierMessage(null, null);
+			return null;
 		}
 		return new ContractVerifierMessage(receive.getPayload(), receive.getHeaders());
 	}
