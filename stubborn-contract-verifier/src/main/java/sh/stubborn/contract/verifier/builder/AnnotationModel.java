@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
  * @param memberCode the raw source for the annotation's single {@code value} member (e.g.
  * {@code "rawtypes"} or {@code MethodOrderer.MethodName.class}), or {@code null} for a
  * marker annotation with no members
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 record AnnotationModel(String type, @Nullable String memberCode) {
 

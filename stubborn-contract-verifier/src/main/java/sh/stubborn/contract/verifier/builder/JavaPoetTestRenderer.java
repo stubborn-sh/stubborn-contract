@@ -41,7 +41,7 @@ import com.palantir.javapoet.TypeSpec;
  * {@link TestMethodModel#bodyLines()} statements; the structured request/response
  * verification is ported in Phases 2–4.
  *
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 class JavaPoetTestRenderer {
 

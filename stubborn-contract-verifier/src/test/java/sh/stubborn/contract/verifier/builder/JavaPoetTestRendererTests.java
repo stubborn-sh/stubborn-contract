@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
  * Unit tests for {@link JavaPoetTestRenderer} — proves the JavaPoet dependency is wired
  * in and that a {@link TestClassModel} renders to structurally-correct Java.
  *
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 class JavaPoetTestRendererTests {
 

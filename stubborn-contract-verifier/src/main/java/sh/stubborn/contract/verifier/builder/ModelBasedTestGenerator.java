@@ -44,7 +44,7 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  * property is {@code true} (see {@code TestGenerator}); the default remains the legacy
  * generator, so this is inert until explicitly opted into.
  *
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 public class ModelBasedTestGenerator implements SingleTestGenerator {
 

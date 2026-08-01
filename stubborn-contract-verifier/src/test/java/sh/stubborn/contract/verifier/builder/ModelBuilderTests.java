@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * populates the class scaffold and that the resulting model renders through
  * {@link JavaPoetTestRenderer}.
  *
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 class ModelBuilderTests {
 

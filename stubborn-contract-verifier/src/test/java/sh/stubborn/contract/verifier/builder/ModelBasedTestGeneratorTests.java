@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * new model pipeline. The golden-master harness ({@code TestGenerationGoldenMasterTests})
  * then guards the shape of that output.
  *
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 class ModelBasedTestGeneratorTests {
 

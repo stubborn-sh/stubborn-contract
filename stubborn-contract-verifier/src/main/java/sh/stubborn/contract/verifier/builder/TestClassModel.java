@@ -43,7 +43,7 @@ import org.jspecify.annotations.Nullable;
  * Handlebars renderer), {@code false} for the Java targets (rendered by JavaPoet)
  * @param classAnnotations class-level annotations, in declaration order
  * @param methods the test methods, in declaration order
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 record TestClassModel(String packageName, String className, @Nullable String baseClass, boolean spock,
 		List<AnnotationModel> classAnnotations, List<TestMethodModel> methods) {

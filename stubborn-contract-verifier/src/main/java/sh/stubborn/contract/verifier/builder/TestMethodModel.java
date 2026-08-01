@@ -31,7 +31,7 @@ import java.util.List;
  * @param name the method name (e.g. {@code validate_shouldReturnOk})
  * @param annotations method-level annotations, in declaration order
  * @param bodyLines opaque method-body statements, in order (no trailing {@code ;})
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 record TestMethodModel(String name, List<AnnotationModel> annotations, List<String> bodyLines) {
 

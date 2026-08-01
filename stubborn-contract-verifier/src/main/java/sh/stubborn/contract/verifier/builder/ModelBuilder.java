@@ -37,7 +37,7 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  * verification bodies and the real method-name derivation (via {@code NameProvider}) are
  * ported in Phases 2–4.
  *
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 class ModelBuilder {
 
