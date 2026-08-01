@@ -24,14 +24,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.helpers.WireMockHelpers;
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.CompositeContractTemplate;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.builder.TestSideRequestTemplateModel;
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsJsonPathHelper;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
 
 /**
  * Default Handlebars template processor.
@@ -71,9 +71,10 @@ public class HandlebarsTemplateProcessor implements TemplateProcessor, ContractT
 
 	@Override
 	public boolean containsTemplateEntry(String line) {
-		return (line.contains(contractTemplate.openingTemplate()) && line.contains(contractTemplate.closingTemplate()))
-				|| (line.contains(contractTemplate.escapedOpeningTemplate())
-						&& line.contains(contractTemplate.escapedClosingTemplate()));
+		return (line.contains(this.contractTemplate.openingTemplate())
+				&& line.contains(this.contractTemplate.closingTemplate()))
+				|| (line.contains(this.contractTemplate.escapedOpeningTemplate())
+						&& line.contains(this.contractTemplate.escapedClosingTemplate()));
 	}
 
 	@Override
@@ -128,132 +129,132 @@ public class HandlebarsTemplateProcessor implements TemplateProcessor, ContractT
 
 	@Override
 	public boolean startsWithTemplate(String text) {
-		return contractTemplate.startsWithTemplate(text);
+		return this.contractTemplate.startsWithTemplate(text);
 	}
 
 	@Override
 	public boolean startsWithEscapedTemplate(String text) {
-		return contractTemplate.startsWithEscapedTemplate(text);
+		return this.contractTemplate.startsWithEscapedTemplate(text);
 	}
 
 	@Override
 	public String openingTemplate() {
-		return contractTemplate.openingTemplate();
+		return this.contractTemplate.openingTemplate();
 	}
 
 	@Override
 	public String closingTemplate() {
-		return contractTemplate.closingTemplate();
+		return this.contractTemplate.closingTemplate();
 	}
 
 	@Override
 	public String escapedOpeningTemplate() {
-		return contractTemplate.escapedOpeningTemplate();
+		return this.contractTemplate.escapedOpeningTemplate();
 	}
 
 	@Override
 	public String escapedClosingTemplate() {
-		return contractTemplate.escapedClosingTemplate();
+		return this.contractTemplate.escapedClosingTemplate();
 	}
 
 	@Override
 	public String url() {
-		return contractTemplate.url();
+		return this.contractTemplate.url();
 	}
 
 	@Override
 	public String query(String key) {
-		return contractTemplate.query(key);
+		return this.contractTemplate.query(key);
 	}
 
 	@Override
 	public String query(String key, int index) {
-		return contractTemplate.query(key, index);
+		return this.contractTemplate.query(key, index);
 	}
 
 	@Override
 	public String path() {
-		return contractTemplate.path();
+		return this.contractTemplate.path();
 	}
 
 	@Override
 	public String path(int index) {
-		return contractTemplate.path(index);
+		return this.contractTemplate.path(index);
 	}
 
 	@Override
 	public String header(String key) {
-		return contractTemplate.header(key);
+		return this.contractTemplate.header(key);
 	}
 
 	@Override
 	public String header(String key, int index) {
-		return contractTemplate.header(key, index);
+		return this.contractTemplate.header(key, index);
 	}
 
 	@Override
 	public String cookie(String key) {
-		return contractTemplate.cookie(key);
+		return this.contractTemplate.cookie(key);
 	}
 
 	@Override
 	public String body() {
-		return contractTemplate.body();
+		return this.contractTemplate.body();
 	}
 
 	@Override
 	public String body(String jsonPath) {
-		return contractTemplate.body(jsonPath);
+		return this.contractTemplate.body(jsonPath);
 	}
 
 	@Override
 	public String escapedUrl() {
-		return contractTemplate.escapedUrl();
+		return this.contractTemplate.escapedUrl();
 	}
 
 	@Override
 	public String escapedQuery(String key) {
-		return contractTemplate.escapedQuery(key);
+		return this.contractTemplate.escapedQuery(key);
 	}
 
 	@Override
 	public String escapedQuery(String key, int index) {
-		return contractTemplate.escapedQuery(key, index);
+		return this.contractTemplate.escapedQuery(key, index);
 	}
 
 	@Override
 	public String escapedPath() {
-		return contractTemplate.escapedPath();
+		return this.contractTemplate.escapedPath();
 	}
 
 	@Override
 	public String escapedPath(int index) {
-		return contractTemplate.escapedPath(index);
+		return this.contractTemplate.escapedPath(index);
 	}
 
 	@Override
 	public String escapedHeader(String key) {
-		return contractTemplate.escapedHeader(key);
+		return this.contractTemplate.escapedHeader(key);
 	}
 
 	@Override
 	public String escapedHeader(String key, int index) {
-		return contractTemplate.escapedHeader(key, index);
+		return this.contractTemplate.escapedHeader(key, index);
 	}
 
 	@Override
 	public String escapedCookie(String key) {
-		return contractTemplate.escapedCookie(key);
+		return this.contractTemplate.escapedCookie(key);
 	}
 
 	@Override
 	public String escapedBody() {
-		return contractTemplate.escapedBody();
+		return this.contractTemplate.escapedBody();
 	}
 
 	@Override
 	public String escapedBody(String jsonPath) {
-		return contractTemplate.escapedBody(jsonPath);
+		return this.contractTemplate.escapedBody(jsonPath);
 	}
 
 }

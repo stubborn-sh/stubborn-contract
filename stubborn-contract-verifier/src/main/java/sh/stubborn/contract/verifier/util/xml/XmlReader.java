@@ -25,6 +25,7 @@ package sh.stubborn.contract.verifier.util.xml;
 public interface XmlReader {
 
 	/**
+	 * Reads the value from the XML.
 	 * @return the value from the XML, based on the created XPath.
 	 */
 	String read();

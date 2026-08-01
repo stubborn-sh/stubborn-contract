@@ -53,7 +53,7 @@ final class MappingGenerator {
 			for (Map.Entry<Contract, String> entry : map.entrySet()) {
 				String value = entry.getValue();
 				File mapping = new File(mappingsFolder, stripFilenameExtension(contractFile.getName()) + "_"
-						+ Math.abs(entry.getKey().hashCode()) + stubGenerator.fileExtension());
+						+ Math.abs((long) entry.getKey().hashCode()) + stubGenerator.fileExtension());
 				mappings.add(storeFile(mapping.toPath(), value.getBytes()));
 			}
 		}

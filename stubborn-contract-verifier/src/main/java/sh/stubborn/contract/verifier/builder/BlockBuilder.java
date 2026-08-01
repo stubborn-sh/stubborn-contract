@@ -41,11 +41,13 @@ public class BlockBuilder {
 	 */
 	public BlockBuilder(String spacer) {
 		this.spacer = spacer;
-		builder = new StringBuilder();
+		this.builder = new StringBuilder();
 	}
 
 	/**
 	 * Setup line ending.
+	 * @param lineEnding the line ending to use
+	 * @return this block builder
 	 */
 	public BlockBuilder setupLineEnding(String lineEnding) {
 		this.lineEnding = lineEnding;
@@ -54,6 +56,8 @@ public class BlockBuilder {
 
 	/**
 	 * Setup label prefix.
+	 * @param labelPrefix the label prefix to use
+	 * @return this block builder
 	 */
 	public BlockBuilder setupLabelPrefix(String labelPrefix) {
 		this.labelPrefix = labelPrefix;
@@ -66,6 +70,8 @@ public class BlockBuilder {
 
 	/**
 	 * Adds indents to start a new block.
+	 * @param label the label to append
+	 * @return this block builder
 	 */
 	public BlockBuilder appendWithLabelPrefix(String label) {
 		return append(this.labelPrefix).append(label);
@@ -73,22 +79,25 @@ public class BlockBuilder {
 
 	/**
 	 * Adds indents to start a new block.
+	 * @return this block builder
 	 */
 	public BlockBuilder startBlock() {
-		indents++;
+		this.indents++;
 		return this;
 	}
 
 	/**
 	 * Ends block by removing indents.
+	 * @return this block builder
 	 */
 	public BlockBuilder endBlock() {
-		indents--;
+		this.indents--;
 		return this;
 	}
 
 	/**
 	 * Creates a block and adds indents.
+	 * @return this block builder
 	 */
 	public BlockBuilder indent() {
 		startBlock().startBlock();
@@ -97,6 +106,7 @@ public class BlockBuilder {
 
 	/**
 	 * Removes indents and closes the block.
+	 * @return this block builder
 	 */
 	public BlockBuilder unindent() {
 		endBlock().endBlock();
@@ -124,12 +134,12 @@ public class BlockBuilder {
 	}
 
 	public BlockBuilder addEndingIfNotPresent() {
-		addAtTheEnd(lineEnding);
+		addAtTheEnd(this.lineEnding);
 		return this;
 	}
 
 	public BlockBuilder addEmptyLine() {
-		builder.append("\n");
+		this.builder.append("\n");
 		return this;
 	}
 
@@ -149,19 +159,19 @@ public class BlockBuilder {
 	}
 
 	public BlockBuilder append(String string) {
-		builder.append(string);
+		this.builder.append(string);
 		return this;
 	}
 
 	public BlockBuilder addIndentation() {
-		for (int i = 0; i < indents; i++) {
-			builder.append(spacer);
+		for (int i = 0; i < this.indents; i++) {
+			this.builder.append(this.spacer);
 		}
 		return this;
 	}
 
 	BlockBuilder inBraces(Runnable runnable) {
-		builder.append("{\n");
+		this.builder.append("{\n");
 		startBlock();
 		runnable.run();
 		endBlock();
@@ -171,28 +181,30 @@ public class BlockBuilder {
 	}
 
 	public boolean endsWith(String text) {
-		return builder.toString().endsWith(text);
+		return this.builder.toString().endsWith(text);
 	}
 
 	public BlockBuilder addAtTheEndIfEndsWithAChar(String toAdd) {
-		char lastChar = builder.charAt(builder.length() - 1);
+		char lastChar = this.builder.charAt(this.builder.length() - 1);
 		if (Character.isLetter(lastChar)) {
-			builder.append(toAdd);
+			this.builder.append(toAdd);
 		}
 		return this;
 	}
 
 	/**
 	 * Adds the given text at the end of the line.
+	 * @param toAdd the text to add
 	 * @return updated BlockBuilder
 	 */
 	public BlockBuilder addAtTheEnd(String toAdd) {
-		String lastChar = String.valueOf(builder.charAt(builder.length() - 1));
-		String secondLastChar = builder.length() >= 2 ? String.valueOf(builder.charAt(builder.length() - 2)) : "";
+		String lastChar = String.valueOf(this.builder.charAt(this.builder.length() - 1));
+		String secondLastChar = (this.builder.length() >= 2)
+				? String.valueOf(this.builder.charAt(this.builder.length() - 2)) : "";
 		boolean isEndWithNewLine = endsWithNewLine(lastChar);
 		boolean lastCharSpecial = aSpecialSign(lastChar, toAdd);
 		boolean secondLastCharSpecial = aSpecialSign(secondLastChar, toAdd);
-		boolean lineEndingToAdd = toAdd.equals(lineEnding);
+		boolean lineEndingToAdd = toAdd.equals(this.lineEnding);
 		// lastChar = [;] , toAdd = [;]
 		if (lastChar.equals(toAdd)) {
 			return this;
@@ -206,11 +218,11 @@ public class BlockBuilder {
 			return this;
 		}
 		else if (isEndWithNewLine && !secondLastCharSpecial) {
-			builder.replace(builder.length() - 1, builder.length(), toAdd);
-			builder.append("\n");
+			this.builder.replace(this.builder.length() - 1, this.builder.length(), toAdd);
+			this.builder.append("\n");
 		}
 		else {
-			builder.append(toAdd);
+			this.builder.append(toAdd);
 		}
 		return this;
 	}
@@ -223,9 +235,9 @@ public class BlockBuilder {
 		if (StringUtils.isEmpty(character)) {
 			return false;
 		}
-		return character.equals("{") || (character.equals(spacer) && toAdd.equals(spacer))
-				|| (character.equals(spacer) && toAdd.equals(" ")) || character.equals(toAdd)
-				|| (endsWithNewLine(character) && StringUtils.equalsAny(toAdd, "\n", " ", lineEnding));
+		return character.equals("{") || (character.equals(this.spacer) && toAdd.equals(this.spacer))
+				|| (character.equals(this.spacer) && toAdd.equals(" ")) || character.equals(toAdd)
+				|| (endsWithNewLine(character) && StringUtils.equalsAny(toAdd, "\n", " ", this.lineEnding));
 	}
 
 	/**
@@ -240,7 +252,7 @@ public class BlockBuilder {
 
 	@Override
 	public String toString() {
-		return builder.toString();
+		return this.builder.toString();
 	}
 
 }

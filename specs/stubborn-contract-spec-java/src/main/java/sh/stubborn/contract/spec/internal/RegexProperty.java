@@ -30,6 +30,7 @@ import repackaged.nl.flotsam.xeger.Xeger;
 /**
  * Represents a regular expression property.
  *
+ * @author Marcin Grzejszczak
  * @since 2.1.0
  */
 public class RegexProperty extends DslProperty implements CanBeDynamic {
@@ -58,12 +59,12 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 		Object dynamicValue = clientDynamic ? client : server;
 		if (dynamicValue instanceof Pattern) {
 			this.pattern = (Pattern) dynamicValue;
-			this.clazz = clazz != null ? clazz : String.class;
+			this.clazz = (clazz != null) ? clazz : String.class;
 		}
 		else if (dynamicValue instanceof RegexProperty) {
 			RegexProperty regexProperty = ((RegexProperty) dynamicValue);
 			this.pattern = regexProperty.pattern;
-			this.clazz = clazz != null ? clazz : regexProperty.clazz;
+			this.clazz = (clazz != null) ? clazz : regexProperty.clazz;
 		}
 		else {
 			this.clazz = clazz;
@@ -158,8 +159,8 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 			}
 			throw ex;
 		}
-		catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException(e);
+		catch (UnsupportedEncodingException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -204,17 +205,17 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 			return false;
 		}
 		RegexProperty that = (RegexProperty) o;
-		return Objects.equals(stringPatternIfPresent(pattern), stringPatternIfPresent(that.pattern))
-				&& Objects.equals(clazz, that.clazz);
+		return Objects.equals(stringPatternIfPresent(this.pattern), stringPatternIfPresent(that.pattern))
+				&& Objects.equals(this.clazz, that.clazz);
 	}
 
 	private @Nullable Object stringPatternIfPresent(@Nullable Pattern value) {
-		return value != null ? value.pattern() : null;
+		return (value != null) ? value.pattern() : null;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(stringPatternIfPresent(pattern), clazz);
+		return Objects.hash(stringPatternIfPresent(this.pattern), this.clazz);
 	}
 
 	@Override
@@ -228,11 +229,11 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 	}
 
 	public @Nullable Pattern getPattern() {
-		return pattern;
+		return this.pattern;
 	}
 
 	public @Nullable Class getClazz() {
-		return clazz;
+		return this.clazz;
 	}
 
 }

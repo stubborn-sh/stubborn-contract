@@ -54,6 +54,7 @@ import org.springframework.util.StringUtils;
  */
 @Mojo(name = "generateTests", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES,
 		requiresDependencyResolution = ResolutionScope.TEST)
+@SuppressWarnings("NullAway.Init")
 public class GenerateTestsMojo extends AbstractMojo {
 
 	@Component
@@ -271,7 +272,7 @@ public class GenerateTestsMojo extends AbstractMojo {
 		final ContractVerifierConfigProperties config = new ContractVerifierConfigProperties();
 		config.setFailOnInProgress(this.failOnInProgress);
 		// download contracts, unzip them and pass as output directory
-		AetherStubDownloader.setRepositorySystemFromMaven(repositorySystem);
+		AetherStubDownloader.setRepositorySystemFromMaven(this.repositorySystem);
 		File contractsDirectory = new MavenContractsDownloader(this.project, this.contractDependency,
 				this.contractsPath, this.contractsRepositoryUrl, this.contractsMode, getLog(),
 				this.contractsRepositoryUsername, this.contractsRepositoryPassword, this.contractsRepositoryProxyHost,
@@ -282,7 +283,7 @@ public class GenerateTestsMojo extends AbstractMojo {
 		throwExceptionWhenFailOnNoContracts(contractsDirectory, this.contractsRepositoryUrl);
 
 		if (this.incrementalContractTests
-				&& !ChangeDetector.inputFilesChangeDetected(contractsDirectory, mojoExecution, session)) {
+				&& !ChangeDetector.inputFilesChangeDetected(contractsDirectory, this.mojoExecution, this.session)) {
 			getLog().info("Nothing to generate - all classes are up to date");
 			return;
 		}
@@ -300,16 +301,16 @@ public class GenerateTestsMojo extends AbstractMojo {
 					+ this.baseClassMappings);
 		}
 		try {
-			LeftOverPrevention leftOverPrevention = new LeftOverPrevention(this.generatedTestSourcesDir, mojoExecution,
-					session);
+			LeftOverPrevention leftOverPrevention = new LeftOverPrevention(this.generatedTestSourcesDir,
+					this.mojoExecution, this.session);
 			TestGenerator generator = new TestGenerator(config);
 			int generatedClasses = generator.generate();
 			getLog().info("Generated " + generatedClasses + " test classes.");
 			leftOverPrevention.deleteLeftOvers();
 		}
-		catch (ContractVerifierException e) {
+		catch (ContractVerifierException ex) {
 			throw new MojoExecutionException(
-					String.format("Spring Cloud Contract Verifier Plugin exception: %s", e.getMessage()), e);
+					String.format("Spring Cloud Contract Verifier Plugin exception: %s", ex.getMessage()), ex);
 		}
 	}
 

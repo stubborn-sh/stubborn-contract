@@ -16,24 +16,15 @@
 
 package sh.stubborn.contract.verifier.messaging.jms;
 
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.jms.JMSException;
 import jakarta.jms.Message;
-import jakarta.jms.ObjectMessage;
-import jakarta.jms.StreamMessage;
-import jakarta.jms.TextMessage;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.integration.ContractVerifierIntegrationConfiguration;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
 
@@ -47,6 +38,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
 
 /**
+ * Configuration that registers JMS messaging beans for contract verification.
+ *
  * @author Marcin Grzejszczak
  */
 @Configuration(proxyBeanMethods = false)
@@ -67,7 +60,7 @@ public class ContractVerifierJmsConfiguration {
 			}
 
 			@Override
-			public <T> void send(T payload, Map<String, Object> headers, String destination,
+			public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 					@Nullable YamlContract contract) {
 				jmsStubMessages.send(payload, headers, destination, contract);
 			}
@@ -82,13 +75,13 @@ public class ContractVerifierJmsConfiguration {
 		JmsStubMessages jmsStubMessages = new JmsStubMessages(jmsTemplate);
 		return new MessageVerifierReceiver<>() {
 			@Override
-			public Message receive(String destination, long timeout, TimeUnit timeUnit,
+			public @Nullable Message receive(String destination, long timeout, TimeUnit timeUnit,
 					@Nullable YamlContract contract) {
 				return jmsStubMessages.receive(destination, timeout, timeUnit, contract);
 			}
 
 			@Override
-			public Message receive(String destination, YamlContract contract) {
+			public @Nullable Message receive(String destination, @Nullable YamlContract contract) {
 				return jmsStubMessages.receive(destination, contract);
 			}
 		};
@@ -99,59 +92,6 @@ public class ContractVerifierJmsConfiguration {
 	ContractVerifierMessaging<Message> contractVerifierJmsMessaging(MessageVerifierSender<Message> sender,
 			MessageVerifierReceiver<Message> receiver) {
 		return new ContractVerifierJmsHelper(sender, receiver);
-	}
-
-}
-
-class ContractVerifierJmsHelper extends ContractVerifierMessaging<Message> {
-
-	private static final Log log = LogFactory.getLog(ContractVerifierJmsHelper.class);
-
-	ContractVerifierJmsHelper(MessageVerifierSender<Message> sender, MessageVerifierReceiver<Message> receiver) {
-		super(sender, receiver);
-	}
-
-	@Override
-	protected ContractVerifierMessage convert(Message message) {
-		try {
-			Map<String, Object> headers = headers(message);
-			return new ContractVerifierMessage(getPayload(message), headers);
-		}
-		catch (JMSException ex) {
-			log.warn("An exception occurred while trying to convert the JMS message", ex);
-			throw new IllegalStateException(ex);
-		}
-	}
-
-	private Map<String, Object> headers(Message message) throws JMSException {
-		Map<String, Object> headers = new HashMap<>();
-		if (message == null) {
-			return headers;
-		}
-		Enumeration enumeration = message.getPropertyNames();
-		while (enumeration.hasMoreElements()) {
-			Object element = enumeration.nextElement();
-			String asString = element.toString();
-			Object property = message.getObjectProperty(asString);
-			headers.put(asString, property);
-		}
-		return headers;
-	}
-
-	private Object getPayload(Message message) throws JMSException {
-		if (message == null) {
-			return null;
-		}
-		else if (message instanceof TextMessage) {
-			return ((TextMessage) message).getText();
-		}
-		else if (message instanceof StreamMessage) {
-			return ((StreamMessage) message).readObject();
-		}
-		else if (message instanceof ObjectMessage) {
-			return ((ObjectMessage) message).getObject();
-		}
-		return message.getBody(Object.class);
 	}
 
 }

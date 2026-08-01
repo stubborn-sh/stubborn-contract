@@ -17,7 +17,9 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
+import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
@@ -43,7 +45,7 @@ class JaxRsUrlPathWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		appendUrlPathAndQueryParameters(metadata.getContract().getRequest());
+		appendUrlPathAndQueryParameters(Objects.requireNonNull(metadata.getContract().getRequest()));
 		return this;
 	}
 
@@ -66,7 +68,7 @@ class JaxRsUrlPathWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 		return testSideUrl.toString();
 	}
 
-	private void appendQueryParams(QueryParameters queryParameters) {
+	private void appendQueryParams(@Nullable QueryParameters queryParameters) {
 		if (queryParameters == null || queryParameters.getParameters().isEmpty()) {
 			return;
 		}
@@ -97,6 +99,7 @@ class JaxRsUrlPathWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 	}
 
 	/**
+	 * @param param the query parameter
 	 * @return {@code true} if the query parameter is allowed
 	 */
 	private boolean allowedQueryParameter(QueryParameter param) {
@@ -104,6 +107,7 @@ class JaxRsUrlPathWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 	}
 
 	/**
+	 * @param matchingStrategy the matching strategy
 	 * @return {@code true} if the query parameter is allowed
 	 */
 	private boolean allowedQueryParameter(MatchingStrategy matchingStrategy) {
@@ -111,9 +115,10 @@ class JaxRsUrlPathWhen implements When, JaxRsAcceptor, QueryParamsResolver {
 	}
 
 	/**
+	 * @param o the object to inspect
 	 * @return {@code true} if the query parameter is allowed
 	 */
-	private boolean allowedQueryParameter(Object o) {
+	private boolean allowedQueryParameter(@Nullable Object o) {
 		if (o instanceof QueryParameter) {
 			return allowedQueryParameter((QueryParameter) o);
 		}

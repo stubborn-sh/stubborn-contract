@@ -24,6 +24,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @SuppressWarnings("serial")
 public class BookDeleted implements Serializable {
 
+	/**
+	 * Name of the deleted book.
+	 */
 	public final String bookName;
 
 	@JsonCreator

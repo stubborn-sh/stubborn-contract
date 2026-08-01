@@ -37,10 +37,11 @@ public class FromRequest {
 	}
 
 	/**
-	 * @return URL path and query.
+	 * Returns the URL path and query.
+	 * @return the URL path and query
 	 */
 	public DslProperty url() {
-		return new DslProperty(template.escapedUrl());
+		return new DslProperty(this.template.escapedUrl());
 	}
 
 	/**
@@ -49,7 +50,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty query(String key) {
-		return new DslProperty(template.escapedQuery(key));
+		return new DslProperty(this.template.escapedQuery(key));
 	}
 
 	/**
@@ -59,7 +60,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty query(String key, int index) {
-		return new DslProperty(template.escapedQuery(key, index));
+		return new DslProperty(this.template.escapedQuery(key, index));
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty path() {
-		return new DslProperty(template.escapedPath());
+		return new DslProperty(this.template.escapedPath());
 	}
 
 	/**
@@ -76,7 +77,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty path(int index) {
-		return new DslProperty(template.escapedPath(index));
+		return new DslProperty(this.template.escapedPath(index));
 	}
 
 	/**
@@ -85,7 +86,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty header(String key) {
-		return new DslProperty(template.escapedHeader(key));
+		return new DslProperty(this.template.escapedHeader(key));
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty header(String key, int index) {
-		return new DslProperty(template.escapedHeader(key, index));
+		return new DslProperty(this.template.escapedHeader(key, index));
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty cookie(String key) {
-		return new DslProperty(template.escapedCookie(key));
+		return new DslProperty(this.template.escapedCookie(key));
 	}
 
 	/**
@@ -112,7 +113,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty body() {
-		return new DslProperty(template.escapedBody());
+		return new DslProperty(this.template.escapedBody());
 	}
 
 	/**
@@ -121,7 +122,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty body(String jsonPath) {
-		return new DslProperty(template.escapedBody(jsonPath));
+		return new DslProperty(this.template.escapedBody(jsonPath));
 	}
 
 	/**
@@ -129,7 +130,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawUrl() {
-		return new DslProperty(template.url());
+		return new DslProperty(this.template.url());
 	}
 
 	/**
@@ -138,7 +139,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawQuery(String key) {
-		return new DslProperty(template.query(key));
+		return new DslProperty(this.template.query(key));
 	}
 
 	/**
@@ -149,7 +150,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawQuery(String key, int index) {
-		return new DslProperty(template.query(key, index));
+		return new DslProperty(this.template.query(key, index));
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawPath() {
-		return new DslProperty(template.path());
+		return new DslProperty(this.template.path());
 	}
 
 	/**
@@ -166,7 +167,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawPath(int index) {
-		return new DslProperty(template.path(index));
+		return new DslProperty(this.template.path(index));
 	}
 
 	/**
@@ -175,7 +176,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawHeader(String key) {
-		return new DslProperty(template.header(key));
+		return new DslProperty(this.template.header(key));
 	}
 
 	/**
@@ -186,7 +187,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawHeader(String key, int index) {
-		return new DslProperty(template.header(key, index));
+		return new DslProperty(this.template.header(key, index));
 	}
 
 	/**
@@ -196,7 +197,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawCookie(String key) {
-		return new DslProperty(template.cookie(key));
+		return new DslProperty(this.template.cookie(key));
 	}
 
 	/**
@@ -204,7 +205,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawBody() {
-		return new DslProperty(template.body());
+		return new DslProperty(this.template.body());
 	}
 
 	/**
@@ -213,7 +214,7 @@ public class FromRequest {
 	 * @return dsl property
 	 */
 	public DslProperty rawBody(String jsonPath) {
-		return new DslProperty(template.body(jsonPath));
+		return new DslProperty(this.template.body(jsonPath));
 	}
 
 }

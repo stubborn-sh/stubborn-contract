@@ -42,6 +42,7 @@ public final class StubRunnerPropertyUtils {
 	}
 
 	/**
+	 * Checks whether the given property is set to {@code true}.
 	 * @param propName property name
 	 * @return for Env vars takes the prop name, converts dots to underscores and applies
 	 * upper case
@@ -52,9 +53,10 @@ public final class StubRunnerPropertyUtils {
 	}
 
 	/**
+	 * Checks whether the given property is present.
 	 * @param options map of options
 	 * @param propName property name
-	 * @return For options, system props and env vars returns {@code true} when property
+	 * @return for options, system props and env vars returns {@code true} when property
 	 * is set
 	 */
 	public static boolean hasProperty(Map<String, String> options, String propName) {
@@ -63,9 +65,10 @@ public final class StubRunnerPropertyUtils {
 	}
 
 	/**
+	 * Fetches the value of the given property.
 	 * @param options map of options
 	 * @param propName property name
-	 * @return Tries to pick a value from options, for Env vars takes the prop name,
+	 * @return tries to pick a value from options, for Env vars takes the prop name,
 	 * converts dots to underscores and applies upper case
 	 */
 	public static String getProperty(Map<String, String> options, String propName) {
@@ -100,18 +103,6 @@ public final class StubRunnerPropertyUtils {
 			log.trace("Environment variable [" + convertedEnvProp + "] has value [" + envVar + "]");
 		}
 		return envVar;
-	}
-
-}
-
-class PropertyFetcher {
-
-	String systemProp(String prop) {
-		return System.getProperty(prop);
-	}
-
-	String envVar(String prop) {
-		return System.getenv(prop);
 	}
 
 }

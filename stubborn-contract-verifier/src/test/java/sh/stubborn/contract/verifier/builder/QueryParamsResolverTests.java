@@ -47,7 +47,7 @@ class QueryParamsResolverTests {
 	@MethodSource("queryParameterCases")
 	void should_return_serverValue_for_QueryParameter(DslProperty<String> dslProperty, String expected) {
 		Object parameter = new QueryParameter("some_param", dslProperty);
-		assertThat(resolver.resolveParamValue(parameter)).isEqualTo(expected);
+		assertThat(this.resolver.resolveParamValue(parameter)).isEqualTo(expected);
 	}
 
 	static Stream<Arguments> optionalPropertyCases() {
@@ -63,7 +63,7 @@ class QueryParamsResolverTests {
 	@MethodSource("optionalPropertyCases")
 	void should_return_optionalPattern_for_OptionalProperty(Object value, String expected) {
 		Object parameter = new OptionalProperty(value);
-		assertThat(resolver.resolveParamValue(parameter)).isEqualTo(expected);
+		assertThat(this.resolver.resolveParamValue(parameter)).isEqualTo(expected);
 	}
 
 	static Stream<Arguments> matchingStrategyCases() {
@@ -78,7 +78,7 @@ class QueryParamsResolverTests {
 	@MethodSource("matchingStrategyCases")
 	void should_return_serverValue_for_MatchingStrategy(Object value, String expected) {
 		Object parameter = new MatchingStrategy(value, MatchingStrategy.Type.EQUAL_TO);
-		assertThat(resolver.resolveParamValue(parameter)).isEqualTo(expected);
+		assertThat(this.resolver.resolveParamValue(parameter)).isEqualTo(expected);
 	}
 
 	static Stream<Arguments> dslPropertyCases() {
@@ -91,12 +91,12 @@ class QueryParamsResolverTests {
 	@ParameterizedTest
 	@MethodSource("dslPropertyCases")
 	void should_return_serverValue_for_DslProperty(DslProperty<String> parameter, String expected) {
-		assertThat(resolver.resolveParamValue(parameter)).isEqualTo(expected);
+		assertThat(this.resolver.resolveParamValue(parameter)).isEqualTo(expected);
 	}
 
 	@Test
 	void should_return_null_for_null() {
-		assertThat(resolver.resolveParamValue(null)).isEqualTo("null");
+		assertThat(this.resolver.resolveParamValue(null)).isEqualTo("null");
 	}
 
 }

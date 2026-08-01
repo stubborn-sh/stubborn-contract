@@ -25,6 +25,7 @@ import groovy.json.JsonOutput;
 import groovy.lang.GString;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 
@@ -138,7 +139,7 @@ public class JsonToJsonPathsConverter {
 	 * @return json with removed entries
 	 * @see JsonPathMatcherUtils#removeMatchingJsonPaths(Object, BodyMatchers)
 	 */
-	public static Object removeMatchingJsonPaths(Object json, BodyMatchers bodyMatchers) {
+	public static Object removeMatchingJsonPaths(Object json, @Nullable BodyMatchers bodyMatchers) {
 		return JsonPathMatcherUtils.removeMatchingJsonPaths(json, bodyMatchers);
 	}
 
@@ -156,7 +157,7 @@ public class JsonToJsonPathsConverter {
 	/**
 	 * Converts a BodyMatcher to a JSON path with regex/equality check.
 	 * @param bodyMatcher the body matcher
-	 * @return JSON path with condition
+	 * @return the JSON path with condition
 	 * @see JsonPathMatcherUtils#convertJsonPathAndRegexToAJsonPath(BodyMatcher)
 	 */
 	public static String convertJsonPathAndRegexToAJsonPath(BodyMatcher bodyMatcher) {
@@ -167,7 +168,7 @@ public class JsonToJsonPathsConverter {
 	 * Converts a BodyMatcher to a JSON path with regex/equality check.
 	 * @param bodyMatcher the body matcher
 	 * @param body the body to read from (required for EQUALITY matching)
-	 * @return JSON path with condition
+	 * @return the JSON path with condition
 	 * @see JsonPathMatcherUtils#convertJsonPathAndRegexToAJsonPath(BodyMatcher, Object)
 	 */
 	public static String convertJsonPathAndRegexToAJsonPath(BodyMatcher bodyMatcher, Object body) {

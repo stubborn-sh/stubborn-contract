@@ -25,6 +25,8 @@ import org.jspecify.annotations.Nullable;
 /**
  * Represents an element of a DSL that can contain client or sever side values.
  *
+ * @param <T> the value type
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class DslProperty<T extends @Nullable Object> implements Serializable {
@@ -58,34 +60,34 @@ public class DslProperty<T extends @Nullable Object> implements Serializable {
 			return false;
 		}
 		DslProperty<?> that = (DslProperty<?>) o;
-		Object thisClientValue = stringPatternIfPattern(clientValue);
+		Object thisClientValue = stringPatternIfPattern(this.clientValue);
 		Object thatClientValue = stringPatternIfPattern(that.clientValue);
-		Object thisServerValue = stringPatternIfPattern(serverValue);
+		Object thisServerValue = stringPatternIfPattern(this.serverValue);
 		Object thatServerValue = stringPatternIfPattern(that.serverValue);
 		return Objects.equals(thisClientValue, thatClientValue) && Objects.equals(thisServerValue, thatServerValue);
 	}
 
 	private @Nullable Object stringPatternIfPattern(@Nullable Object value) {
-		return value instanceof Pattern ? ((Pattern) value).pattern() : value;
+		return (value instanceof Pattern) ? ((Pattern) value).pattern() : value;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(stringPatternIfPattern(clientValue), stringPatternIfPattern(serverValue));
+		return Objects.hash(stringPatternIfPattern(this.clientValue), stringPatternIfPattern(this.serverValue));
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "{" + "\nclientValue=" + clientValue + ", \n\tserverValue=" + serverValue
-				+ '}';
+		return getClass().getSimpleName() + "{" + "\nclientValue=" + this.clientValue + ", \n\tserverValue="
+				+ this.serverValue + '}';
 	}
 
 	public final @Nullable T getClientValue() {
-		return clientValue;
+		return this.clientValue;
 	}
 
 	public final @Nullable T getServerValue() {
-		return serverValue;
+		return this.serverValue;
 	}
 
 }

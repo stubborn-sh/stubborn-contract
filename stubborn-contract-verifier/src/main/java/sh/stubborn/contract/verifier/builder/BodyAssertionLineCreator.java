@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import sh.stubborn.contract.spec.internal.DslProperty;
@@ -54,6 +55,10 @@ class BodyAssertionLineCreator {
 	/**
 	 * Builds the code that for the given {@code property} will compare it to the given
 	 * Object {@code value}.
+	 * @param singleContractMetadata the contract metadata
+	 * @param property the property to compare
+	 * @param value the value to compare against
+	 * @return the comparison code
 	 */
 	private String getResponseBodyPropertyComparisonString(SingleContractMetadata singleContractMetadata,
 			String property, Object value) {
@@ -68,7 +73,7 @@ class BodyAssertionLineCreator {
 		}
 		else if (value instanceof DslProperty) {
 			return getResponseBodyPropertyComparisonString(singleContractMetadata, property,
-					((DslProperty) value).getServerValue());
+					Objects.requireNonNull(((DslProperty) value).getServerValue()));
 		}
 		else if (value instanceof EscapedString) {
 			return getResponseBodyPropertyComparisonString(property, (EscapedString) value);
@@ -79,6 +84,10 @@ class BodyAssertionLineCreator {
 	/**
 	 * Builds the code that for the given {@code property} will compare it to the given
 	 * byte[] {@code value}.
+	 * @param singleContractMetadata the contract metadata
+	 * @param property the property to compare
+	 * @param value the value to compare against
+	 * @return the comparison code
 	 */
 	private String getResponseBodyPropertyComparisonString(SingleContractMetadata singleContractMetadata,
 			String property, FromFileProperty value) {
@@ -92,6 +101,9 @@ class BodyAssertionLineCreator {
 	/**
 	 * Builds the code that for the given {@code property} will compare it to the given
 	 * String {@code value}.
+	 * @param property the property to compare
+	 * @param value the value to compare against
+	 * @return the comparison code
 	 */
 	private String getResponseBodyPropertyComparisonString(String property, String value) {
 		return this.comparisonBuilder.assertThatUnescaped("responseBody" + property, value);
@@ -106,6 +118,9 @@ class BodyAssertionLineCreator {
 	/**
 	 * Builds the code that for the given {@code property} will match it to the given
 	 * regular expression {@code value}.
+	 * @param property the property to compare
+	 * @param value the value to compare against
+	 * @return the comparison code
 	 */
 	private String getResponseBodyPropertyComparisonString(String property, Pattern value) {
 		return this.comparisonBuilder.assertThat("responseBody" + property, value);
@@ -114,6 +129,9 @@ class BodyAssertionLineCreator {
 	/**
 	 * Builds the code that for the given {@code property} will match it to the given
 	 * {@link ExecutionProperty} value.
+	 * @param property the property to compare
+	 * @param value the value to compare against
+	 * @return the comparison code
 	 */
 	private String getResponseBodyPropertyComparisonString(String property, ExecutionProperty value) {
 		return value.insertValue("responseBody" + property);

@@ -19,10 +19,12 @@ package sh.stubborn.contract.verifier.builder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -33,11 +35,6 @@ import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
 import sh.stubborn.contract.verifier.template.TemplateProcessor;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.MapConverter;
-
-import static sh.stubborn.contract.verifier.util.ContentType.DEFINED;
-import static sh.stubborn.contract.verifier.util.ContentType.FORM;
-import static sh.stubborn.contract.verifier.util.ContentType.JSON;
-import static sh.stubborn.contract.verifier.util.ContentType.TEXT;
 
 class GenericJsonBodyThen implements Then {
 
@@ -72,8 +69,8 @@ class GenericJsonBodyThen implements Then {
 		BodyMatchers bodyMatchers = this.bodyParser.responseBodyMatchers(metadata);
 		Object convertedResponseBody = this.bodyParser.convertResponseBody(metadata);
 		ContentType contentType = metadata.getOutputTestContentType();
-		if (TEXT != contentType && FORM != contentType && DEFINED != contentType) {
-			boolean dontParseStrings = contentType == JSON && convertedResponseBody instanceof Map;
+		if (ContentType.TEXT != contentType && ContentType.FORM != contentType && ContentType.DEFINED != contentType) {
+			boolean dontParseStrings = contentType == ContentType.JSON && convertedResponseBody instanceof Map;
 			Function parsingClosure = dontParseStrings ? Function.identity() : MapConverter.JSON_PARSING_FUNCTION;
 			convertedResponseBody = MapConverter.getTestSideValues(convertedResponseBody, parsingClosure);
 		}
@@ -85,11 +82,11 @@ class GenericJsonBodyThen implements Then {
 	}
 
 	private void addJsonBodyVerification(SingleContractMetadata contractMetadata, Object responseBody,
-			BodyMatchers bodyMatchers) {
+			@Nullable BodyMatchers bodyMatchers) {
 		JsonBodyVerificationBuilder jsonBodyVerificationBuilder = new JsonBodyVerificationBuilder(
 				this.generatedClassMetaData.configProperties.getAssertJsonSize(), this.templateProcessor,
 				this.contractTemplate, contractMetadata.getContract(), Optional.of(this.blockBuilder.getLineEnding()),
-				bodyParser::postProcessJsonPath);
+				this.bodyParser::postProcessJsonPath);
 		// TODO: Refactor spock from should comment out bdd blocks
 		Object convertedResponseBody = jsonBodyVerificationBuilder.addJsonResponseBodyCheck(this.blockBuilder,
 				responseBody, bodyMatchers, this.bodyParser.responseAsString(),
@@ -104,7 +101,7 @@ class GenericJsonBodyThen implements Then {
 	private void processBodyElement(String oldProp, String property, Object value) {
 		String propDiff = subtract(property, oldProp);
 		String prop = wrappedWithBracketsForDottedProp(propDiff);
-		String mergedProp = (property != null && !property.isBlank()) ? oldProp + "." + prop : "";
+		String mergedProp = !property.isBlank() ? oldProp + "." + prop : "";
 		if (value instanceof ExecutionProperty) {
 			processBodyElement(mergedProp, (ExecutionProperty) value);
 		}
@@ -194,16 +191,16 @@ class GenericJsonBodyThen implements Then {
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		Object responseBody = this.bodyParser.responseBody(metadata).getServerValue();
+		Object responseBody = Objects.requireNonNull(this.bodyParser.responseBody(metadata)).getServerValue();
 		if (responseBody instanceof FromFileProperty) {
 			return !((FromFileProperty) responseBody).isByte();
 		}
 		ContentType outputTestContentType = metadata.getOutputTestContentType();
-		return JSON == outputTestContentType || mostLikelyJson(outputTestContentType, metadata);
+		return ContentType.JSON == outputTestContentType || mostLikelyJson(outputTestContentType, metadata);
 	}
 
 	private boolean mostLikelyJson(ContentType outputTestContentType, SingleContractMetadata metadata) {
-		return DEFINED == outputTestContentType && metadata.evaluatesToJson();
+		return ContentType.DEFINED == outputTestContentType && metadata.evaluatesToJson();
 	}
 
 }

@@ -24,6 +24,7 @@ import org.assertj.core.api.BDDAssertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import sh.stubborn.contract.wiremock.WiremockServerWebTestClientApplicationTests.TestConfiguration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
 import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest;

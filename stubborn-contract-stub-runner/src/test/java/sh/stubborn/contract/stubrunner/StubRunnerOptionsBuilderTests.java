@@ -18,12 +18,11 @@ package sh.stubborn.contract.stubrunner;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -179,8 +178,8 @@ class StubRunnerOptionsBuilderTests {
 		assertThat(options.getStubIdsToPortMapping()).containsEntry(new StubConfiguration("a:b:c"), 3);
 		assertThat(options.getUsername()).isEqualTo("foo");
 		assertThat(options.getPassword()).isEqualTo("bar");
-		assertThat(options.getProxyOptions().getProxyHost()).isEqualTo("host");
-		assertThat(options.getProxyOptions().getProxyPort()).isEqualTo(4);
+		assertThat(Objects.requireNonNull(options.getProxyOptions()).getProxyHost()).isEqualTo("host");
+		assertThat(Objects.requireNonNull(options.getProxyOptions()).getProxyPort()).isEqualTo(4);
 		assertThat(options.isStubsPerConsumer()).isTrue();
 		assertThat(options.getConsumerName()).isEqualTo("consumer");
 		assertThat(options.getMappingsOutputFolder()).isEqualTo("folder");
@@ -237,8 +236,8 @@ class StubRunnerOptionsBuilderTests {
 				new StubConfiguration("foo:bar:baz:classifier"));
 		assertThat(options.getUsername()).isEqualTo("foo");
 		assertThat(options.getPassword()).isEqualTo("bar");
-		assertThat(options.getProxyOptions().getProxyHost()).isEqualTo("host");
-		assertThat(options.getProxyOptions().getProxyPort()).isEqualTo(4);
+		assertThat(Objects.requireNonNull(options.getProxyOptions()).getProxyHost()).isEqualTo("host");
+		assertThat(Objects.requireNonNull(options.getProxyOptions()).getProxyPort()).isEqualTo(4);
 		assertThat(options.isStubsPerConsumer()).isTrue();
 		assertThat(options.isDeleteStubsAfterTest()).isFalse();
 		assertThat(options.isGenerateStubs()).isTrue();

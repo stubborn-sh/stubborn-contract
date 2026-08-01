@@ -30,44 +30,48 @@ import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.PropertyMapping;
 
-import static org.springframework.boot.test.context.PropertyMapping.Skip.ON_DEFAULT_VALUE;
-
 /**
- * @author Dave Syer
+ * Annotation that enables and configures the stub runner auto-configuration in tests.
  *
+ * @author Dave Syer
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ImportAutoConfiguration
 @AutoConfigureMessageVerifier
-@PropertyMapping(value = "stubborn.contract.stubrunner", skip = ON_DEFAULT_VALUE)
+@PropertyMapping(value = "stubborn.contract.stubrunner", skip = PropertyMapping.Skip.ON_DEFAULT_VALUE)
 public @interface AutoConfigureStubRunner {
 
 	/**
-	 * @return Min value of a port for the automatically started WireMock server.
+	 * Min value of a port for the automatically started WireMock server.
+	 * @return min value of a port for the automatically started WireMock server
 	 */
 	int minPort() default 10000;
 
 	/**
-	 * @return Max value of a port for the automatically started WireMock server.
+	 * Max value of a port for the automatically started WireMock server.
+	 * @return max value of a port for the automatically started WireMock server
 	 */
 	int maxPort() default 15000;
 
 	/**
-	 * @return The repository root to use (where the stubs should be downloaded from).
+	 * The repository root to use (where the stubs should be downloaded from).
+	 * @return the repository root to use (where the stubs should be downloaded from)
 	 */
 	String repositoryRoot() default "";
 
 	/**
-	 * @return The ids of the stubs to run in "ivy" notation
+	 * The ids of the stubs to run in "ivy" notation.
+	 * @return the ids of the stubs to run in "ivy" notation
 	 * ([groupId]:artifactId[:version][:classifier][:port]). {@code groupId},
 	 * {@code version}, {@code classifier} and {@code port} can be optional.
 	 */
 	String[] ids() default {};
 
 	/**
-	 * @return The classifier to use by default in ivy co-ordinates for a stub.
+	 * The classifier to use by default in ivy co-ordinates for a stub.
+	 * @return the classifier to use by default in ivy co-ordinates for a stub
 	 */
 	String classifier() default "stubs";
 
@@ -135,12 +139,15 @@ public @interface AutoConfigureStubRunner {
 	String[] properties() default {};
 
 	/**
+	 * Whether stubs should be deleted from a temporary folder after running tests.
 	 * @return If set to {@code false} will NOT delete stubs from a temporary folder after
 	 * running tests
 	 */
 	boolean deleteStubsAfterTest() default true;
 
 	/**
+	 * Whether stub runner should convert contracts at runtime instead of loading
+	 * generated stubs.
 	 * @return When enabled, this flag will tell stub runner to not load the generated
 	 * stubs, but convert the found contracts at runtime to a stub format and run those
 	 * stubs.
@@ -148,6 +155,7 @@ public @interface AutoConfigureStubRunner {
 	boolean generateStubs() default false;
 
 	/**
+	 * Whether an exception should be thrown when no stubs or contracts were found.
 	 * @return when enabled, this flag will tell stub runner to throw an exception when no
 	 * stubs / contracts were found.
 	 */

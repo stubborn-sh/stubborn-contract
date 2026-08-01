@@ -32,15 +32,3 @@ public class TestWireMockExtensions implements WireMockExtensions {
 	}
 
 }
-
-class CustomExtension implements Extension {
-
-	public CustomExtension() {
-	}
-
-	@Override
-	public String getName() {
-		return "foo-transformer";
-	}
-
-}

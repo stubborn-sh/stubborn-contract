@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,8 +34,6 @@ import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
-
-import java.util.Objects;
 
 class BodyReader {
 
@@ -116,7 +115,10 @@ class BodyReader {
 		Path relativePath = path.relativize(newFile.toPath());
 		File newFileInGeneratedTestSources = new File(
 				this.generatedClassMetaData.configProperties.getGeneratedTestResourcesDir(), relativePath.toString());
-		newFileInGeneratedTestSources.getParentFile().mkdirs();
+		File generatedTestSourcesParent = newFileInGeneratedTestSources.getParentFile();
+		if (!generatedTestSourcesParent.mkdirs() && !generatedTestSourcesParent.isDirectory()) {
+			throw new IllegalStateException("Failed to create directory [" + generatedTestSourcesParent + "]");
+		}
 		Path generatedTestSourceFilePath = newFileInGeneratedTestSources.toPath();
 		if (log.isDebugEnabled()) {
 			log.debug("Writing file for [" + generatedTestSourceFilePath

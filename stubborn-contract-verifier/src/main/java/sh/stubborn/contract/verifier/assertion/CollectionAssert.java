@@ -18,11 +18,10 @@ package sh.stubborn.contract.verifier.assertion;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.util.Streams;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Extension to {@link Iterable} assertions.
@@ -42,7 +41,7 @@ public class CollectionAssert<ELEMENT> extends IterableAssert<ELEMENT> {
 	}
 
 	private static <T> Iterable<T> toIterable(Iterator<T> iterator) {
-		return Streams.stream(iterator).collect(toList());
+		return Streams.stream(iterator).collect(Collectors.toList());
 	}
 
 	/**

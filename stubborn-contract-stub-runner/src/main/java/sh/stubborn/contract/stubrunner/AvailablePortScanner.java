@@ -25,6 +25,8 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Tries to execute a closure with an available port from the given range.
+ *
+ * @author Marcin Grzejszczak
  */
 class AvailablePortScanner {
 
@@ -55,7 +57,7 @@ class AvailablePortScanner {
 		}
 	}
 
-	public <T> T tryToExecuteWithFreePort(PortCallback<T> closure) {
+	<T> T tryToExecuteWithFreePort(PortCallback<T> closure) {
 		for (int i = 0; i < this.maxRetryCount; i++) {
 			try {
 				int numberOfPortsToBind = this.maxPortNumber - this.minPortNumber + 1;

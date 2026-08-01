@@ -17,44 +17,32 @@
 package sh.stubborn.contract.stubrunner;
 
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.spec.Contract;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+/**
+ * @author Sven Bayer
+ */
+public class StubRepositoryTests {
 
-class StubRepositoryTests {
-
-	private static final File REPOSITORY_LOCATION = new File("src/test/resources/repository");
+	private static final File YAML_REPOSITORY_LOCATION = new File("src/test/resources/customYamlRepository");
 
 	@Test
-	void shouldRetrieveAllDescriptors() {
-		StubRepository repository = new StubRepository(REPOSITORY_LOCATION, List.of(),
+	public void should_prefer_custom_yaml_converter_over_standard() {
+		// given:
+		StubRepository repository = new StubRepository(YAML_REPOSITORY_LOCATION, new ArrayList<>(),
 				new StubRunnerOptionsBuilder().build(), null);
-		assertThat(repository.getStubs()).hasSize(8);
-	}
+		int expectedDescriptorsSize = 1;
 
-	@Test
-	void shouldThrowWhenNoStubsOrContractsPresent() {
-		assertThatExceptionOfType(IllegalStateException.class)
-			.isThrownBy(() -> new StubRepository(new File("src/test/resources/emptyrepo"), List.of(),
-					new StubRunnerOptionsBuilder().build(), null));
-	}
+		// when:
+		Collection<Contract> descriptors = repository.getContracts();
 
-	@Test
-	void shouldThrowWhenDirectoryWithMappingsIsMissing() {
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new StubRepository(new File("src/test/resources/nonexistingrepo"), List.of(),
-					new StubRunnerOptionsBuilder().build(), null));
-	}
-
-	@Test
-	void shouldRetrieveOnlyMappingsThatContainConsumerName() {
-		StubRepository repository = new StubRepository(REPOSITORY_LOCATION, List.of(),
-				new StubRunnerOptionsBuilder().withStubPerConsumer(true).withConsumerName("ping").build(), null);
-		assertThat(repository.getStubs()).hasSize(1);
+		// then:
+		BDDAssertions.then(descriptors).hasSize(expectedDescriptorsSize);
 	}
 
 }

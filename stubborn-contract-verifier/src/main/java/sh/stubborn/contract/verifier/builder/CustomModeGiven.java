@@ -56,7 +56,7 @@ class CustomModeGiven implements Given, BodyMethodVisitor, CustomModeAcceptor {
 	}
 
 	private void addRequestGivenLine(SingleContractMetadata singleContractMetadata) {
-		var unused = this.requestGivens.stream()
+		this.requestGivens.stream()
 			.filter((given) -> given.accept(singleContractMetadata))
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException(
@@ -66,7 +66,7 @@ class CustomModeGiven implements Given, BodyMethodVisitor, CustomModeAcceptor {
 
 	@Override
 	public boolean accept(SingleContractMetadata singleContractMetadata) {
-		return acceptType(generatedClassMetaData, singleContractMetadata);
+		return acceptType(this.generatedClassMetaData, singleContractMetadata);
 	}
 
 }

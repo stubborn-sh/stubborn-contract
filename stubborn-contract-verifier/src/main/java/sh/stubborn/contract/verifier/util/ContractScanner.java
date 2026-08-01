@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
@@ -96,7 +97,7 @@ public final class ContractScanner {
 		return Collections.emptyList();
 	}
 
-	private static ContractConverter<?> contractConverter(File file) {
+	private static @Nullable ContractConverter<?> contractConverter(File file) {
 		List<ContractConverter> converters = new ArrayList<>();
 		ServiceLoader.load(ContractConverter.class).forEach(converters::add);
 		return converters.stream().filter((converter) -> converter.isAccepted(file)).findFirst().orElse(null);

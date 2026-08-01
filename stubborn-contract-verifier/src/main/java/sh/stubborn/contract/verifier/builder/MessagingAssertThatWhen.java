@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 class MessagingAssertThatWhen implements When {
@@ -28,13 +30,15 @@ class MessagingAssertThatWhen implements When {
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		this.blockBuilder.addIndented(metadata.getContract().getInput().getAssertThat().getExecutionCommand());
+		this.blockBuilder.addIndented(
+				Objects.requireNonNull(Objects.requireNonNull(metadata.getContract().getInput()).getAssertThat())
+					.getExecutionCommand());
 		return this;
 	}
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		return metadata.getContract().getInput().getAssertThat() != null;
+		return Objects.requireNonNull(metadata.getContract().getInput()).getAssertThat() != null;
 	}
 
 }

@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Structure representing executed stubs. Contains the configuration of each stub together
  * with the port on which its executed.
@@ -31,7 +33,7 @@ import java.util.Set;
  */
 public class RunningStubs {
 
-	final private Map<StubConfiguration, Integer> namesAndPorts = new LinkedHashMap<>();
+	private final Map<StubConfiguration, Integer> namesAndPorts = new LinkedHashMap<>();
 
 	public RunningStubs(Map<StubConfiguration, Integer> map) {
 		this.namesAndPorts.putAll(map);
@@ -43,11 +45,12 @@ public class RunningStubs {
 		}
 	}
 
-	public Integer getPort(String artifactId) {
-		return getEntry(artifactId) == null ? null : getEntry(artifactId).getValue();
+	public @Nullable Integer getPort(String artifactId) {
+		Map.Entry<StubConfiguration, Integer> entry = getEntry(artifactId);
+		return (entry != null) ? entry.getValue() : null;
 	}
 
-	public Map.Entry<StubConfiguration, Integer> getEntry(String artifactId) {
+	public Map.@Nullable Entry<StubConfiguration, Integer> getEntry(String artifactId) {
 		for (Entry<StubConfiguration, Integer> it : this.namesAndPorts.entrySet()) {
 			if (it.getKey().matchesIvyNotation(artifactId)) {
 				return it;
@@ -56,7 +59,7 @@ public class RunningStubs {
 		return null;
 	}
 
-	public Integer getPort(String groupId, String artifactId) {
+	public @Nullable Integer getPort(String groupId, String artifactId) {
 		for (Entry<StubConfiguration, Integer> it : this.namesAndPorts.entrySet()) {
 			if (it.getKey().matchesIvyNotation(groupId + ":" + artifactId)) {
 				return it.getValue();
@@ -104,19 +107,6 @@ public class RunningStubs {
 	}
 
 	@Override
-	public String toString() {
-		return "RunningStubs [namesAndPorts=" + this.namesAndPorts + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.namesAndPorts == null) ? 0 : this.namesAndPorts.hashCode());
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -137,6 +127,19 @@ public class RunningStubs {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.namesAndPorts == null) ? 0 : this.namesAndPorts.hashCode());
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "RunningStubs [namesAndPorts=" + this.namesAndPorts + "]";
 	}
 
 }

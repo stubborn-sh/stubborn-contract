@@ -21,15 +21,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static sh.stubborn.contract.verifier.util.NamesUtil.beforeLast;
-import static sh.stubborn.contract.verifier.util.NamesUtil.capitalize;
-import static sh.stubborn.contract.verifier.util.NamesUtil.packageToDirectory;
+import sh.stubborn.contract.verifier.util.NamesUtil;
 
 class FileSaver {
 
@@ -47,7 +43,7 @@ class FileSaver {
 	void saveClassFile(Path classPath, byte[] classBytes) {
 		log.info("Creating new class file [{}]", classPath);
 		try {
-			Files.write(classPath, classBytes, CREATE, TRUNCATE_EXISTING);
+			Files.write(classPath, classBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 		}
 		catch (IOException ex) {
 			throw new RuntimeException(ex);
@@ -55,12 +51,13 @@ class FileSaver {
 	}
 
 	protected Path pathToClass(Path testBaseDir, String fileName) {
-		return Paths.get(testBaseDir.toString(), capitalize(fileName) + fileExtension).toAbsolutePath();
+		return Paths.get(testBaseDir.toString(), NamesUtil.capitalize(fileName) + this.fileExtension).toAbsolutePath();
 	}
 
 	protected Path generateTestBaseDir(String basePackageClass, String includedDirectoryRelativePath) {
-		Path testBaseDir = Paths.get(targetDirectory.getAbsolutePath(), packageToDirectory(basePackageClass),
-				beforeLast(includedDirectoryRelativePath, File.separator));
+		Path testBaseDir = Paths.get(this.targetDirectory.getAbsolutePath(),
+				NamesUtil.packageToDirectory(basePackageClass),
+				NamesUtil.beforeLast(includedDirectoryRelativePath, File.separator));
 		try {
 			Files.createDirectories(testBaseDir);
 		}

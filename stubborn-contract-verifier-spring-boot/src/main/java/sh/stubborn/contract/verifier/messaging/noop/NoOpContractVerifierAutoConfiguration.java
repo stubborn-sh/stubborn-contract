@@ -59,7 +59,7 @@ public class NoOpContractVerifierAutoConfiguration {
 			}
 
 			@Override
-			public <T> void send(T payload, Map<String, Object> headers, String destination,
+			public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 					@Nullable YamlContract contract) {
 				noOpStubMessages.send(payload, headers, destination, contract);
 			}
@@ -73,13 +73,13 @@ public class NoOpContractVerifierAutoConfiguration {
 		return new MessageVerifierReceiver<>() {
 
 			@Override
-			public Object receive(String destination, long timeout, TimeUnit timeUnit,
+			public @Nullable Object receive(String destination, long timeout, TimeUnit timeUnit,
 					@Nullable YamlContract contract) {
 				return noOpStubMessages.receive(destination, timeout, timeUnit, contract);
 			}
 
 			@Override
-			public Object receive(String destination, YamlContract contract) {
+			public @Nullable Object receive(String destination, @Nullable YamlContract contract) {
 				return noOpStubMessages.receive(destination, contract);
 			}
 		};
@@ -105,8 +105,7 @@ public class NoOpContractVerifierAutoConfiguration {
 
 		@Bean
 		@ConditionalOnMissingBean
-		public ContractVerifierObjectMapper contractVerifierObjectMapperWithAvro(
-				ObjectProvider<JsonMapper> jsonMapper) {
+		ContractVerifierObjectMapper contractVerifierObjectMapperWithAvro(ObjectProvider<JsonMapper> jsonMapper) {
 			JsonMapper mapper = jsonMapper.getIfAvailable(JsonMapper::new)
 				.rebuild()
 				.addMixIn(SpecificRecordBase.class, IgnoreAvroInternals.class)

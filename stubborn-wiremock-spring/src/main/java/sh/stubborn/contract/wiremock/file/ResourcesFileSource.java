@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.github.tomakehurst.wiremock.common.BinaryFile;
@@ -35,9 +36,10 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
-import static java.util.Arrays.asList;
-
 /**
+ * A {@link FileSource} that resolves files from one or more Spring {@link Resource}
+ * instances.
+ *
  * @author Dave Syer
  * @author Pei-Tang Huang
  * @author Hunhee Jung
@@ -87,8 +89,8 @@ public class ResourcesFileSource implements FileSource {
 			}
 			return new SingleRootFileSource(getFile(file));
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -98,15 +100,15 @@ public class ResourcesFileSource implements FileSource {
 	}
 
 	private static boolean compressedResource(URI pathUri) {
-		return asList("jar", "war", "ear", "zip").contains(pathUri.getScheme());
+		return Arrays.asList("jar", "war", "ear", "zip").contains(pathUri.getScheme());
 	}
 
 	private static File getFile(UrlResource file) {
 		try {
 			return file.getFile();
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -131,16 +133,16 @@ public class ResourcesFileSource implements FileSource {
 					}
 				}
 			}
-			catch (RuntimeException e) {
+			catch (RuntimeException ex) {
 				if (log.isDebugEnabled()) {
 					log.debug("Caught exception while trying to create file handle for file " + name
-							+ ", trying next FileSource", e);
+							+ ", trying next FileSource", ex);
 				}
 			}
-			catch (IOException e) {
+			catch (IOException ex) {
 				if (log.isDebugEnabled()) {
 					log.debug("Caught exception while trying to create file handle for file " + name
-							+ ", trying next FileSource", e);
+							+ ", trying next FileSource", ex);
 				}
 			}
 		}
@@ -158,9 +160,9 @@ public class ResourcesFileSource implements FileSource {
 				file.readContentsAsString();
 				return file;
 			}
-			catch (RuntimeException e) {
+			catch (RuntimeException ex) {
 				if (log.isDebugEnabled()) {
-					log.debug("Caught exception while trying to create file handler for " + name, e);
+					log.debug("Caught exception while trying to create file handler for " + name, ex);
 				}
 			}
 		}
@@ -186,10 +188,10 @@ public class ResourcesFileSource implements FileSource {
 					childSources.add(child);
 				}
 			}
-			catch (IOException e) {
+			catch (IOException ex) {
 				if (log.isDebugEnabled()) {
 					log.debug("Caught exception while trying to create file source for " + subDirectoryName
-							+ ", continuing with next source", e);
+							+ ", continuing with next source", ex);
 				}
 			}
 		}
@@ -211,10 +213,10 @@ public class ResourcesFileSource implements FileSource {
 					return resource.getPath();
 				}
 			}
-			catch (IOException e) {
+			catch (IOException ex) {
 				if (log.isDebugEnabled()) {
 					log.debug("Caught exception while trying to create URL file handler for " + resource.getPath()
-							+ ", continuing with next source", e);
+							+ ", continuing with next source", ex);
 				}
 			}
 		}
@@ -233,10 +235,10 @@ public class ResourcesFileSource implements FileSource {
 					return resource.getUri();
 				}
 			}
-			catch (IOException e) {
+			catch (IOException ex) {
 				if (log.isDebugEnabled()) {
 					log.debug("Caught exception while trying to create URL file handler for " + resource.getPath()
-							+ ", continuing with next source", e);
+							+ ", continuing with next source", ex);
 				}
 			}
 		}

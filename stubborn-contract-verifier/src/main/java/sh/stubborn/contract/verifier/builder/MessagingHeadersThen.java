@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -43,11 +44,11 @@ class MessagingHeadersThen implements Then, BodyMethodVisitor {
 	public MethodVisitor<Then> apply(SingleContractMetadata singleContractMetadata) {
 		endBodyBlock(this.blockBuilder);
 		startBodyBlock(this.blockBuilder, "and:");
-		OutputMessage outputMessage = singleContractMetadata.getContract().getOutputMessage();
-		outputMessage.getHeaders().executeForEachHeader((header) -> {
-			processHeaderElement(header.getName(), header.getServerValue() instanceof NotToEscapePattern
-					? header.getServerValue() : MapConverter.getTestSideValues(header.getServerValue()));
-		});
+		OutputMessage outputMessage = Objects.requireNonNull(singleContractMetadata.getContract().getOutputMessage());
+		Objects.requireNonNull(outputMessage.getHeaders())
+			.executeForEachHeader((header) -> processHeaderElement(header.getName(),
+					(header.getServerValue() instanceof NotToEscapePattern) ? header.getServerValue()
+							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue()))));
 		return this;
 	}
 
@@ -79,25 +80,25 @@ class MessagingHeadersThen implements Then, BodyMethodVisitor {
 
 	private void processHeaderElement(String property, Number value) {
 		appendLineWithHeaderNotNull(property);
-		blockBuilder
+		this.blockBuilder
 			.addLineWithEnding(this.comparisonBuilder.assertThat("response.getHeader(\"" + property + "\")", value));
 	}
 
 	private void processHeaderElement(String property, Pattern pattern) {
 		appendLineWithHeaderNotNull(property);
-		blockBuilder.addLineWithEnding(
+		this.blockBuilder.addLineWithEnding(
 				this.comparisonBuilder.assertThat("response.getHeader(\"" + property + "\").toString()", pattern));
 	}
 
 	private void processHeaderElement(String property, ExecutionProperty exec) {
 		appendLineWithHeaderNotNull(property);
-		blockBuilder.addLineWithEnding(exec.insertValue("response.getHeader(\"" + property + "\").toString()"));
+		this.blockBuilder.addLineWithEnding(exec.insertValue("response.getHeader(\"" + property + "\").toString()"));
 	}
 
 	@Override
 	public boolean accept(SingleContractMetadata singleContractMetadata) {
 		return singleContractMetadata.isMessaging()
-				&& singleContractMetadata.getContract().getOutputMessage().getHeaders() != null;
+				&& Objects.requireNonNull(singleContractMetadata.getContract().getOutputMessage()).getHeaders() != null;
 	}
 
 }

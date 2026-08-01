@@ -20,8 +20,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
 
-import static org.apache.commons.text.StringEscapeUtils.escapeJava;
-
 interface ComparisonBuilder {
 
 	/**
@@ -32,7 +30,7 @@ interface ComparisonBuilder {
 	/**
 	 * Java messaging comparison builder instance.
 	 */
-	ComparisonBuilder JAVA_MESSAGING_INSTANCE = () -> JavaMessagingBodyParser.INSTANCE;
+	ComparisonBuilder JAVA_MESSAGING_INSTANCE = () -> MessagingBodyParser.INSTANCE;
 
 	default String createComparison(Object headerValue) {
 		if (headerValue instanceof Pattern) {
@@ -82,7 +80,7 @@ interface ComparisonBuilder {
 	}
 
 	default String isEqualTo(Number number) {
-		String numberString = number instanceof Long ? number.toString() + "L" : number.toString();
+		String numberString = (number instanceof Long) ? number.toString() + "L" : number.toString();
 		return ".isEqualTo(" + numberString + ")";
 	}
 
@@ -105,7 +103,7 @@ interface ComparisonBuilder {
 
 	default String convertUnicodeEscapesIfRequired(String json) {
 		String unescapedJson = StringEscapeUtils.unescapeJson(json);
-		return escapeJava(unescapedJson);
+		return StringEscapeUtils.escapeJava(unescapedJson);
 	}
 
 	BodyParser bodyParser();

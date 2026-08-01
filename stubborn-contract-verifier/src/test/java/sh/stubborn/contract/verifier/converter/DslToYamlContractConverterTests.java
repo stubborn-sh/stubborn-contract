@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
-
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
@@ -137,7 +136,7 @@ class DslToYamlContractConverterTests {
 	void should_convert_rest_dsl_without_request_headers_to_yaml() {
 		File file = contractFile("contract1-simple.groovy");
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(file);
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.request.method).isEqualTo("GET");
@@ -149,7 +148,7 @@ class DslToYamlContractConverterTests {
 	void should_convert_rest_dsl_to_yaml() {
 		File file = contractFile("contract2-full.groovy");
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(file);
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.request.method).isEqualTo("GET");
@@ -231,7 +230,7 @@ class DslToYamlContractConverterTests {
 	void should_convert_rest_dsl_with_dynamic_entries_to_yaml() {
 		File file = contractFile("contract3-dynamic.groovy");
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(file);
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.request.method).isEqualTo("PUT");
@@ -266,7 +265,7 @@ class DslToYamlContractConverterTests {
 	void should_convert_rest_dsl_with_multipart_entries_to_yaml() {
 		File file = contractFile("contract4-multipart.groovy");
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(file);
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.request.method).isEqualTo("PUT");
@@ -296,7 +295,7 @@ class DslToYamlContractConverterTests {
 	void should_convert_rest_xml_dsl_to_yaml() {
 		File file = contractFile("contract5-xml.groovy");
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(file);
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.request.method).isEqualTo("GET");
@@ -317,7 +316,7 @@ class DslToYamlContractConverterTests {
 	void should_convert_rest_dsl_to_yaml_with_save_priority_property() {
 		File file = contractFile("contract6-priority.groovy");
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(file);
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.request.method).isEqualTo("POST");

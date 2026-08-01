@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.Header;
@@ -39,13 +40,14 @@ class CustomModeHeadersThen implements Then, CustomModeAcceptor {
 
 	@Override
 	public MethodVisitor<Then> apply(SingleContractMetadata metadata) {
-		Response response = metadata.getContract().getResponse();
-		Headers headers = response.getHeaders();
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
+		Headers headers = Objects.requireNonNull(response.getHeaders());
 		Iterator<Header> iterator = headers.getEntries().iterator();
 		while (iterator.hasNext()) {
 			Header header = iterator.next();
-			String text = processHeaderElement(header.getName(), header.getServerValue() instanceof NotToEscapePattern
-					? header.getServerValue() : MapConverter.getTestSideValues(header.getServerValue()));
+			String text = processHeaderElement(header.getName(),
+					(header.getServerValue() instanceof NotToEscapePattern) ? header.getServerValue()
+							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue())));
 			if (iterator.hasNext()) {
 				this.blockBuilder.addLineWithEnding(text);
 			}
@@ -70,12 +72,13 @@ class CustomModeHeadersThen implements Then, CustomModeAcceptor {
 	}
 
 	private String matchesManuallyEscapedPattern(NotToEscapePattern value) {
-		return this.comparisonBuilder.matchesEscaped(value.getServerValue().pattern().replace("\\", "\\\\"));
+		return this.comparisonBuilder
+			.matchesEscaped(Objects.requireNonNull(value.getServerValue()).pattern().replace("\\", "\\\\"));
 	}
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		Response response = metadata.getContract().getResponse();
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
 		return response.getHeaders() != null;
 	}
 

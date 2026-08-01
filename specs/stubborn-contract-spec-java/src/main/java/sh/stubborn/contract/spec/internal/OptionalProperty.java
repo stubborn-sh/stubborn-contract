@@ -25,6 +25,7 @@ import repackaged.nl.flotsam.xeger.Xeger;
 /**
  * Represents a property that may or may not be there.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class OptionalProperty implements Serializable, CanBeDynamic {
@@ -81,7 +82,7 @@ public class OptionalProperty implements Serializable, CanBeDynamic {
 	}
 
 	public final Object getValue() {
-		return value;
+		return this.value;
 	}
 
 }

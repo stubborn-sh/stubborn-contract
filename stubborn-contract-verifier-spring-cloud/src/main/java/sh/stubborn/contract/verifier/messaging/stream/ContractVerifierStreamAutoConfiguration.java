@@ -24,7 +24,6 @@ import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.integration.ContractVerifierIntegrationConfiguration;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
 
@@ -38,9 +37,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
-import org.springframework.util.Assert;
 
 /**
+ * Auto-configuration for Spring Cloud Stream based contract verifier messaging.
+ *
  * @author Marcin Grzejszczak
  */
 @Configuration(proxyBeanMethods = false)
@@ -74,7 +74,7 @@ public class ContractVerifierStreamAutoConfiguration {
 				}
 
 				@Override
-				public <T> void send(T payload, Map<String, Object> headers, String destination,
+				public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 						@Nullable YamlContract contract) {
 					stubMessages.send(payload, headers, destination, contract);
 				}
@@ -89,32 +89,18 @@ public class ContractVerifierStreamAutoConfiguration {
 					new StreamOutputDestinationMessageReceiver(context));
 			return new MessageVerifierReceiver<>() {
 				@Override
-				public Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
+				public @Nullable Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
 						@Nullable YamlContract contract) {
 					return stubMessages.receive(destination, timeout, timeUnit, contract);
 				}
 
 				@Override
-				public Message<?> receive(String destination, YamlContract contract) {
+				public @Nullable Message<?> receive(String destination, @Nullable YamlContract contract) {
 					return stubMessages.receive(destination, contract);
 				}
 			};
 		}
 
-	}
-
-}
-
-class ContractVerifierHelper extends ContractVerifierMessaging<Message<?>> {
-
-	ContractVerifierHelper(MessageVerifierSender<Message<?>> sender, MessageVerifierReceiver<Message<?>> receiver) {
-		super(sender, receiver);
-	}
-
-	@Override
-	protected ContractVerifierMessage convert(Message<?> receive) {
-		Assert.notNull(receive, "Message must not be null!");
-		return new ContractVerifierMessage(receive.getPayload(), receive.getHeaders());
 	}
 
 }

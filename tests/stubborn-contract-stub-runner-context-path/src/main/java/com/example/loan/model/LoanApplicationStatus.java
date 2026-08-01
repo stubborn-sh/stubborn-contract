@@ -18,6 +18,14 @@ package com.example.loan.model;
 
 public enum LoanApplicationStatus {
 
-	LOAN_APPLIED, LOAN_APPLICATION_REJECTED
+	/**
+	 * The loan application was accepted.
+	 */
+	LOAN_APPLIED,
+
+	/**
+	 * The loan application was rejected.
+	 */
+	LOAN_APPLICATION_REJECTED
 
 }

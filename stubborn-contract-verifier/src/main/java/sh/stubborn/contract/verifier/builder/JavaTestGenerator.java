@@ -24,6 +24,7 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
 /**
  * Builds a single test for the given {@link ContractVerifierConfigProperties properties}.
  *
+ * @author Marcin Grzejszczak
  * @since 1.1.0
  */
 public class JavaTestGenerator implements SingleTestGenerator {

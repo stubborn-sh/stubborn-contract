@@ -20,6 +20,8 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 /**
  * Describes metadata of a single method.
+ *
+ * @author Marcin Grzejszczak
  */
 interface MethodMetadata extends Acceptor {
 

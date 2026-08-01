@@ -38,7 +38,7 @@ class AutoConfigureMessageVerifierTests {
 		.withUserConfiguration(Configuration.class);
 
 	@Test
-	public void shouldConfigureForNoOpWhenMissingImplementation() {
+	void shouldConfigureForNoOpWhenMissingImplementation() {
 		this.contextRunner
 			.withClassLoader(
 					new FilteredClassLoader(org.apache.camel.Message.class, org.springframework.messaging.Message.class,

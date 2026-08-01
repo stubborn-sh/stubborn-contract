@@ -46,14 +46,14 @@ import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.spec.internal.Url;
 import sh.stubborn.contract.verifier.util.ContentType;
+import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.JsonPaths;
 import sh.stubborn.contract.verifier.util.JsonToJsonPathsConverter;
 import sh.stubborn.contract.verifier.util.MapConverter;
 
-import static sh.stubborn.contract.verifier.util.ContentType.XML;
-import static sh.stubborn.contract.verifier.util.ContentUtils.evaluateClientSideContentType;
-
 /**
+ * Converts contracts into their YAML representation.
+ *
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
  * @author Stessy Delcroix
@@ -69,9 +69,13 @@ class ContractsToYaml {
 	/**
 	 * Null-safe bridge to ContentUtils.evaluateClientSideContentType. The Groovy
 	 * implementation uses null-safe ?. navigation, so null headers/body returns UNKNOWN.
+	 * @param headers the headers to evaluate, may be {@code null}
+	 * @param body the body to evaluate, may be {@code null}
+	 * @return the resolved content type
 	 */
 	private static ContentType evaluateContentType(@Nullable Headers headers, @Nullable Object body) {
-		return evaluateClientSideContentType(headers != null ? headers : new Headers(), body != null ? body : "");
+		return ContentUtils.evaluateClientSideContentType((headers != null) ? headers : new Headers(),
+				(body != null) ? body : "");
 	}
 
 	static {
@@ -142,7 +146,7 @@ class ContractsToYaml {
 			mapRequestMatchersMultipart(yamlContract.request, request);
 
 			// TODO: Cookie matchers - including absent
-			if (XML != requestContentType) {
+			if (ContentType.XML != requestContentType) {
 				setInputBodyMatchers(request.getBody(), yamlContract.request.matchers.body);
 			}
 			setInputHeadersMatchers(request.getHeaders(), yamlContract.request.matchers.headers);
@@ -241,26 +245,30 @@ class ContractsToYaml {
 						.orElse(null);
 					YamlContract.Named named = new YamlContract.Named();
 					named.paramName = key;
-					named.fileName = fileName instanceof String ? Optional.ofNullable(((NamedProperty) value).getName())
-						.map(DslProperty::getServerValue)
-						.map(Object::toString)
-						.orElse(null) : null;
+					named.fileName = (fileName instanceof String)
+							? Optional.ofNullable(((NamedProperty) value).getName())
+								.map(DslProperty::getServerValue)
+								.map(Object::toString)
+								.orElse(null)
+							: null;
 					named.fileContent = (String) Optional.ofNullable(fileContent)
 						.filter((f) -> f instanceof String)
 						.orElse(null);
-					named.fileContentAsBytes = fileContent instanceof FromFileProperty
+					named.fileContentAsBytes = (fileContent instanceof FromFileProperty)
 							? new String(((FromFileProperty) fileContent).asBytes()) : null;
 					named.fileContentFromFileAsBytes = resolveFileNameAsBytes(fileContent);
 					named.contentType = (String) Optional.ofNullable(contentType)
 						.filter((f) -> f instanceof String)
 						.orElse(null);
-					named.fileNameCommand = fileName instanceof ExecutionProperty ? fileName.toString() : null;
-					named.fileContentCommand = fileContent instanceof ExecutionProperty ? fileContent.toString() : null;
-					named.contentTypeCommand = contentType instanceof ExecutionProperty ? contentType.toString() : null;
+					named.fileNameCommand = (fileName instanceof ExecutionProperty) ? fileName.toString() : null;
+					named.fileContentCommand = (fileContent instanceof ExecutionProperty) ? fileContent.toString()
+							: null;
+					named.contentTypeCommand = (contentType instanceof ExecutionProperty) ? contentType.toString()
+							: null;
 					yamlContractRequest.multipart.named.add(named);
 				}
 				else {
-					yamlContractRequest.multipart.params.put(key, value != null ? value.toString() : null);
+					yamlContractRequest.multipart.params.put(key, (value != null) ? value.toString() : null);
 				}
 			});
 		}
@@ -279,7 +287,7 @@ class ContractsToYaml {
 		}
 		else {
 			DslProperty<?> reqBody = request.getBody();
-			yamlContractRequest.body = reqBody != null ? MapConverter.getTestSideValues(reqBody) : null;
+			yamlContractRequest.body = (reqBody != null) ? MapConverter.getTestSideValues(reqBody) : null;
 		}
 	}
 
@@ -290,13 +298,14 @@ class ContractsToYaml {
 	}
 
 	private void mapRequestHeaders(YamlContract.Request yamlContractRequest, Request request) {
-		yamlContractRequest.headers = request.getHeaders() != null ? request.getHeaders().asMap((headerName, prop) -> {
-			Object testSideValue = MapConverter.getTestSideValues(prop);
-			if (testSideValue instanceof ExecutionProperty) {
-				return MapConverter.getStubSideValuesForNonBody(prop).toString();
-			}
-			return testSideValue.toString();
-		}) : null;
+		yamlContractRequest.headers = (request.getHeaders() != null)
+				? request.getHeaders().asMap((headerName, prop) -> {
+					Object testSideValue = MapConverter.getTestSideValues(prop);
+					if (testSideValue instanceof ExecutionProperty) {
+						return MapConverter.getStubSideValuesForNonBody(prop).toString();
+					}
+					return testSideValue.toString();
+				}) : null;
 	}
 
 	private void mapRequestMatchersQueryParameters(YamlContract.Request yamlContractRequest, Url requestUrl) {
@@ -368,10 +377,10 @@ class ContractsToYaml {
 			yamlContract.outputMessage = new YamlContract.OutputMessage();
 			YamlContract.OutputMessage yom = yamlContract.outputMessage;
 			Object sentToValue = outputMessage.getSentTo();
-			yom.sentTo = sentToValue != null ? MapConverter.getStubSideValues(sentToValue).toString() : null;
+			yom.sentTo = (sentToValue != null) ? MapConverter.getStubSideValues(sentToValue).toString() : null;
 			yom.headers = Optional.ofNullable(outputMessage.getHeaders()).map(Headers::asStubSideMap).orElse(null);
 			DslProperty<?> msgBody = outputMessage.getBody();
-			yom.body = msgBody != null ? MapConverter.getStubSideValues(msgBody) : null;
+			yom.body = (msgBody != null) ? MapConverter.getStubSideValues(msgBody) : null;
 			Optional.ofNullable(outputMessage.getBodyMatchers())
 				.map(BodyMatchers::matchers)
 				.ifPresent((bodyMatchers) -> bodyMatchers.forEach((bodyMatcher) -> {
@@ -384,7 +393,7 @@ class ContractsToYaml {
 					yom.matchers.body.add(bodyTestMatcher);
 
 				}));
-			if (XML != contentType) {
+			if (ContentType.XML != contentType) {
 				setOutputBodyMatchers(outputMessage.getBody(), yom.matchers.body);
 			}
 			setOutputHeadersMatchers(outputMessage.getHeaders(), yom.matchers.headers);
@@ -467,7 +476,7 @@ class ContractsToYaml {
 			mapResponseCookies(contractResponse, response);
 			mapResponseBody(contractResponse, response);
 			mapResponseBodyMatchers(contractResponse, response);
-			if (XML != contentType) {
+			if (ContentType.XML != contentType) {
 				setOutputBodyMatchers(contractResponse.getBody(), yamlContract.response.matchers.body);
 			}
 			setOutputHeadersMatchers(contractResponse.getHeaders(), yamlContract.response.matchers.headers);
@@ -500,7 +509,7 @@ class ContractsToYaml {
 		}
 		else {
 			DslProperty<?> respBody = contractResponse.getBody();
-			response.body = respBody != null ? MapConverter.getStubSideValues(respBody) : null;
+			response.body = (respBody != null) ? MapConverter.getStubSideValues(respBody) : null;
 		}
 	}
 
@@ -551,7 +560,7 @@ class ContractsToYaml {
 			Object serverValue = b.getServerValue();
 			YamlContract.BodyTestMatcher bodyTestMatcher = new YamlContract.BodyTestMatcher();
 			bodyTestMatcher.type = YamlContract.TestMatcherType.by_regex;
-			bodyTestMatcher.value = serverValue != null ? ((Pattern) serverValue).pattern() : null;
+			bodyTestMatcher.value = (serverValue != null) ? ((Pattern) serverValue).pattern() : null;
 			bodyMatchers.add(bodyTestMatcher);
 		});
 	}
@@ -595,7 +604,8 @@ class ContractsToYaml {
 					Pattern notToEscapeServerValue = ((NotToEscapePattern) value).getServerValue();
 					YamlContract.TestHeaderMatcher testHeaderMatcher = new YamlContract.TestHeaderMatcher();
 					testHeaderMatcher.key = key;
-					testHeaderMatcher.regex = notToEscapeServerValue != null ? notToEscapeServerValue.pattern() : null;
+					testHeaderMatcher.regex = (notToEscapeServerValue != null) ? notToEscapeServerValue.pattern()
+							: null;
 					headerMatchers.add(testHeaderMatcher);
 				}
 			}));

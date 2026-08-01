@@ -40,8 +40,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.QueryParameter;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.RequestMethod;
-
 import org.jspecify.annotations.Nullable;
+
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
@@ -74,8 +74,8 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 			addResponseHeaders(definition, response);
 			return definition;
 		}
-		catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException("Cannot create response body", e);
+		catch (UnsupportedEncodingException ex) {
+			throw new IllegalStateException("Cannot create response body", ex);
 		}
 	}
 
@@ -102,13 +102,13 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 			@Override
 			public String getUrl() {
 				String uri = result.getRequest().getRequestURI();
-				return uri != null ? uri : "";
+				return (uri != null) ? uri : "";
 			}
 
 			@Override
 			public String getAbsoluteUrl() {
 				String uri = result.getRequest().getRequestURI();
-				return uri != null ? uri : "";
+				return (uri != null) ? uri : "";
 			}
 
 			@Override
@@ -214,7 +214,7 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 			@Override
 			public byte[] getBody() {
 				byte[] content = result.getRequest().getContentAsByteArray();
-				return content != null ? content : new byte[0];
+				return (content != null) ? content : new byte[0];
 			}
 
 			@Override
@@ -229,7 +229,7 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 					// fall through
 				}
 				byte[] content = result.getRequest().getContentAsByteArray();
-				return new String(content != null ? content : new byte[0]);
+				return new String((content != null) ? content : new byte[0]);
 			}
 
 			@Override
@@ -245,7 +245,7 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 			@Override
 			public Collection<Part> getParts() {
 				try {
-					return result.getRequest().getParts().stream().map(part -> new Part() {
+					return result.getRequest().getParts().stream().map((part) -> new Part() {
 						@Override
 						public String getName() {
 							return part.getName();
@@ -289,7 +289,7 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 
 			@Override
 			public @Nullable Part getPart(String name) {
-				return getParts().stream().filter(part -> part.getName().equals(name)).findFirst().orElse(null);
+				return getParts().stream().filter((part) -> part.getName().equals(name)).findFirst().orElse(null);
 			}
 
 			@Override
@@ -312,7 +312,7 @@ public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, Contr
 	@Override
 	protected @Nullable MediaType getContentType(MvcResult result) {
 		String contentType = result.getRequest().getContentType();
-		return contentType != null ? MediaType.valueOf(contentType) : null;
+		return (contentType != null) ? MediaType.valueOf(contentType) : null;
 	}
 
 	@Override

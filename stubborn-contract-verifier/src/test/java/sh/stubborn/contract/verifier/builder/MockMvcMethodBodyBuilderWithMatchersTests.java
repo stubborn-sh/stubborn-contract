@@ -47,8 +47,8 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 
 	@BeforeEach
 	void setup() {
-		properties = new ContractVerifierConfigProperties();
-		properties.setAssertJsonSize(true);
+		this.properties = new ContractVerifierConfigProperties();
+		this.properties.setAssertJsonSize(true);
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
@@ -176,10 +176,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_allow_to_set_dynamic_values_via_stub_test_matchers(String methodBuilderName,
 			TestFramework testFramework, TestMode testMode, String rootElement) {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(dynamicValueContract());
@@ -296,10 +296,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_allow_complex_matchers(String methodBuilderName, TestFramework testFramework, TestMode testMode,
 			String rootElement) {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(complexMatchersContract());
@@ -359,10 +359,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_use_the_flattened_assertions_when_jsonpath_contains_wildcard(String methodBuilderName,
 			TestFramework testFramework, TestMode testMode, String rootElement) {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(flattenedAssertionsContract());
@@ -418,10 +418,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_allow_matcher_with_command_to_execute(String methodBuilderName, TestFramework testFramework,
 			TestMode testMode, String rootElement) {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(commandMatcherContract());
@@ -461,10 +461,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_throw_an_exception_when_command_references_a_non_existing_entry(String methodBuilderName,
 			TestFramework testFramework, TestMode testMode, String rootElement) {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		assertThatThrownBy(() -> singleTestGenerator(nonExistingJsonPathContract()))
@@ -507,10 +507,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_work_for_matchers_and_body_with_json_array(String methodBuilderName, TestFramework testFramework,
 			TestMode testMode, String rootElement) throws Exception {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(jsonArrayContract());
@@ -559,10 +559,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_work_for_matchers_and_body_with_multiline_string(String methodBuilderName, TestFramework testFramework,
 			TestMode testMode) throws Exception {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(multilineStringContract());
@@ -612,10 +612,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_work_for_matchers_and_body_with_multiline_string_with_map_body(String methodBuilderName,
 			TestFramework testFramework, TestMode testMode) throws Exception {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(multilineStringMapBodyContract());
@@ -662,10 +662,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_work_for_map_with_array_value_where_matchers_cover_all_array_fields(String methodBuilderName,
 			TestFramework testFramework, TestMode testMode) throws Exception {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(pricesArrayContract());
@@ -717,10 +717,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_work_for_array_containing_map_with_array_value_where_matchers_cover_all_array_fields(
 			String methodBuilderName, TestFramework testFramework, TestMode testMode) throws Exception {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(nestedArrayWithPricesContract());
@@ -762,10 +762,10 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 	void should_not_generate_a_null_statement_when_there_is_no_content_type_in_the_response(String methodBuilderName,
 			TestFramework testFramework, TestMode testMode) throws Exception {
 		if (testFramework != null) {
-			properties.setTestFramework(testFramework);
+			this.properties.setTestFramework(testFramework);
 		}
 		if (testMode != null) {
-			properties.setTestMode(testMode);
+			this.properties.setTestMode(testMode);
 		}
 
 		String test = singleTestGenerator(noContentTypeContract());

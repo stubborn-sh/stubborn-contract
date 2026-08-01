@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.groovy.util.Maps;
@@ -53,7 +54,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static sh.stubborn.contract.wiremock.restdocs.SpringCloudContractRestDocs.dslContract;
 
 /**
  * @author Marcin Grzejszczak
@@ -77,6 +77,11 @@ public class ContractDslSnippetTests {
 	WebApplicationContext context;
 
 	@Before
+	// NullAway: documentationConfiguration requires a non-null (JSpecify @NonNull)
+	// RestDocumentationContextProvider, but this @Ignore'd test intentionally passes a
+	// placeholder null while the real provider stays commented out. Suppress to preserve
+	// the exact placeholder behavior without introducing a real provider.
+	@SuppressWarnings("NullAway")
 	public void setUp() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
 			.apply(documentationConfiguration(null/* this.restDocumentation */).snippets()
@@ -109,20 +114,23 @@ public class ContractDslSnippetTests {
 		Collection<Contract> parsedContracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
 				file("/contracts/index.groovy"));
 		Contract parsedContract = parsedContracts.iterator().next();
-		then(parsedContract.getRequest().getHeaders().getEntries()).isNotNull();
-		then(headerNames(parsedContract.getRequest().getHeaders().getEntries())).doesNotContain(HttpHeaders.HOST,
+		var request = Objects.requireNonNull(parsedContract.getRequest());
+		var response = Objects.requireNonNull(parsedContract.getResponse());
+		then(Objects.requireNonNull(request.getHeaders()).getEntries()).isNotNull();
+		then(headerNames(Objects.requireNonNull(request.getHeaders()).getEntries())).doesNotContain(HttpHeaders.HOST,
 				HttpHeaders.CONTENT_LENGTH);
-		then(headerNames(parsedContract.getResponse().getHeaders().getEntries())).doesNotContain(HttpHeaders.HOST,
+		then(headerNames(Objects.requireNonNull(response.getHeaders()).getEntries())).doesNotContain(HttpHeaders.HOST,
 				HttpHeaders.CONTENT_LENGTH);
-		then(parsedContract.getRequest().getMethod().getClientValue()).isNotNull();
-		then(parsedContract.getRequest().getUrlPath().getClientValue()).isNotNull();
-		then(parsedContract.getRequest().getUrlPath().getClientValue().toString()).startsWith("/");
-		then(parsedContract.getRequest().getBody().getClientValue()).isNotNull();
-		then(parsedContract.getRequest().getBodyMatchers().hasMatchers()).isTrue();
-		then(parsedContract.getResponse().getStatus().getClientValue()).isNotNull();
-		then(parsedContract.getResponse().getHeaders().getEntries()).isNotEmpty();
-		then(parsedContract.getResponse().getBody().getClientValue()).isNotNull();
-		then(parsedContract.getPriority().intValue()).isEqualTo(1);
+		then(Objects.requireNonNull(request.getMethod()).getClientValue()).isNotNull();
+		var urlPath = Objects.requireNonNull(request.getUrlPath());
+		then(urlPath.getClientValue()).isNotNull();
+		then(Objects.requireNonNull(urlPath.getClientValue()).toString()).startsWith("/");
+		then(Objects.requireNonNull(request.getBody()).getClientValue()).isNotNull();
+		then(Objects.requireNonNull(request.getBodyMatchers()).hasMatchers()).isTrue();
+		then(Objects.requireNonNull(response.getStatus()).getClientValue()).isNotNull();
+		then(Objects.requireNonNull(response.getHeaders()).getEntries()).isNotEmpty();
+		then(Objects.requireNonNull(response.getBody()).getClientValue()).isNotNull();
+		then(Objects.requireNonNull(parsedContract.getPriority()).intValue()).isEqualTo(1);
 	}
 
 	@Test
@@ -148,51 +156,57 @@ public class ContractDslSnippetTests {
 		Collection<Contract> parsedContracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
 				file("/contracts/should_create_contract_template_and_doc_with_placeholder_names.groovy"));
 		Contract parsedContract = parsedContracts.iterator().next();
-		then(parsedContract.getRequest().getHeaders().getEntries()).isNotNull();
-		then(headerNames(parsedContract.getRequest().getHeaders().getEntries())).doesNotContain(HttpHeaders.HOST,
+		var request = Objects.requireNonNull(parsedContract.getRequest());
+		var response = Objects.requireNonNull(parsedContract.getResponse());
+		then(Objects.requireNonNull(request.getHeaders()).getEntries()).isNotNull();
+		then(headerNames(Objects.requireNonNull(request.getHeaders()).getEntries())).doesNotContain(HttpHeaders.HOST,
 				HttpHeaders.CONTENT_LENGTH);
-		then(headerNames(parsedContract.getResponse().getHeaders().getEntries())).doesNotContain(HttpHeaders.HOST,
+		then(headerNames(Objects.requireNonNull(response.getHeaders()).getEntries())).doesNotContain(HttpHeaders.HOST,
 				HttpHeaders.CONTENT_LENGTH);
-		then(parsedContract.getRequest().getMethod().getClientValue()).isNotNull();
-		then(parsedContract.getRequest().getUrlPath().getClientValue()).isNotNull();
-		then(parsedContract.getRequest().getUrlPath().getClientValue().toString()).startsWith("/");
-		then(parsedContract.getRequest().getBody().getClientValue()).isNotNull();
-		then(parsedContract.getRequest().getBodyMatchers().hasMatchers()).isTrue();
-		then(parsedContract.getResponse().getStatus().getClientValue()).isNotNull();
-		then(parsedContract.getResponse().getHeaders().getEntries()).isNotEmpty();
-		then(parsedContract.getResponse().getBody().getClientValue()).isNotNull();
+		then(Objects.requireNonNull(request.getMethod()).getClientValue()).isNotNull();
+		var urlPath = Objects.requireNonNull(request.getUrlPath());
+		then(urlPath.getClientValue()).isNotNull();
+		then(Objects.requireNonNull(urlPath.getClientValue()).toString()).startsWith("/");
+		then(Objects.requireNonNull(request.getBody()).getClientValue()).isNotNull();
+		then(Objects.requireNonNull(request.getBodyMatchers()).hasMatchers()).isTrue();
+		then(Objects.requireNonNull(response.getStatus()).getClientValue()).isNotNull();
+		then(Objects.requireNonNull(response.getHeaders()).getEntries()).isNotEmpty();
+		then(Objects.requireNonNull(response.getBody()).getClientValue()).isNotNull();
 	}
 
 	@Test
 	public void should_create_contract_template_and_doc_without_body_and_headers() throws Exception {
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/foo").param("one", "newValueOne").param("two", "newValueTwo"))
 			.andExpect(status().isOk())
-			.andDo(document("empty", dslContract()));
+			.andDo(document("empty", SpringCloudContractRestDocs.dslContract()));
 
 		then(file("/contracts/empty.groovy")).exists();
 		then(file("/empty/dsl-contract.adoc")).exists();
 		Collection<Contract> parsedContracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
 				file("/contracts/empty.groovy"));
 		Contract parsedContract = parsedContracts.iterator().next();
-		then(parsedContract.getRequest().getHeaders()).isNull();
-		then(parsedContract.getRequest().getMethod().getClientValue()).isNotNull();
-		then(parsedContract.getRequest().getUrlPath().getClientValue()).isNotNull();
-		then(parsedContract.getRequest().getUrlPath().getClientValue().toString()).startsWith("/");
-		List<QueryParameter> parameters = parsedContract.getRequest().getUrlPath().getQueryParameters().getParameters();
+		var request = Objects.requireNonNull(parsedContract.getRequest());
+		then(request.getHeaders()).isNull();
+		then(Objects.requireNonNull(request.getMethod()).getClientValue()).isNotNull();
+		var urlPath = Objects.requireNonNull(request.getUrlPath());
+		then(urlPath.getClientValue()).isNotNull();
+		then(Objects.requireNonNull(urlPath.getClientValue()).toString()).startsWith("/");
+		List<QueryParameter> parameters = Objects.requireNonNull(urlPath.getQueryParameters()).getParameters();
 		QueryParameter one = parameter(parameters, "one");
 		QueryParameter two = parameter(parameters, "two");
 		then(one.getClientValue()).isEqualTo("newValueOne");
 		then(two.getClientValue()).isEqualTo("newValueTwo");
-		then(parsedContract.getRequest().getBody()).isNull();
-		then(parsedContract.getResponse().getStatus().getClientValue()).isNotNull();
-		then(parsedContract.getResponse().getHeaders()).isNull();
-		then(parsedContract.getResponse().getBody()).isNull();
-		then(parsedContract.getResponse().getBodyMatchers()).isNull();
+		then(request.getBody()).isNull();
+		var response = Objects.requireNonNull(parsedContract.getResponse());
+		then(Objects.requireNonNull(response.getStatus()).getClientValue()).isNotNull();
+		then(response.getHeaders()).isNull();
+		then(response.getBody()).isNull();
+		then(response.getBodyMatchers()).isNull();
 	}
 
 	private QueryParameter parameter(List<QueryParameter> parameters, String name) {
 		return parameters.stream()
-			.filter(queryParameter -> queryParameter.getName().equals(name))
+			.filter((queryParameter) -> queryParameter.getName().equals(name))
 			.findFirst()
 			.orElseThrow(() -> new AssertionError("Missing entry"));
 	}

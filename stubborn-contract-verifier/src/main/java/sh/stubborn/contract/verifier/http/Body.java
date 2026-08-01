@@ -35,16 +35,18 @@ public class Body {
 	}
 
 	/**
+	 * Returns the body as a byte array.
 	 * @return body as byte array
 	 */
 	public byte[] asByteArray() {
-		if (body instanceof byte[]) {
+		if (this.body instanceof byte[]) {
 			return (byte[]) this.body;
 		}
-		return body.toString().getBytes();
+		return this.body.toString().getBytes();
 	}
 
 	/**
+	 * Returns the body as a string.
 	 * @return body as string
 	 */
 	public String asString() {
@@ -52,17 +54,18 @@ public class Body {
 	}
 
 	/**
+	 * Returns the body as a string using the given charset.
 	 * @param charset to encode the body
 	 * @return body as string
 	 */
 	public String asString(Charset charset) {
-		if (body instanceof String) {
-			return (String) body;
+		if (this.body instanceof String) {
+			return (String) this.body;
 		}
-		else if (body instanceof byte[]) {
-			return new String((byte[]) body, charset);
+		else if (this.body instanceof byte[]) {
+			return new String((byte[]) this.body, charset);
 		}
-		return body.toString();
+		return this.body.toString();
 	}
 
 }

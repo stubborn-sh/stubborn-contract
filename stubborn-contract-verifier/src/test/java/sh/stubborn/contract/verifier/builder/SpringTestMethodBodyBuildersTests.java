@@ -34,9 +34,9 @@ import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubVerifier;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
+import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 import sh.stubborn.contract.verifier.util.SyntaxChecker;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -178,12 +178,12 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 
 	@BeforeEach
 	void setup() {
-		configProperties = new ContractVerifierConfigProperties();
-		configProperties.setAssertJsonSize(true);
-		configProperties.setGeneratedTestResourcesDir(new File("./target/generated-test-resources"));
-		configProperties.setGeneratedTestSourcesDir(new File("./target/generated-test-sources"));
-		configProperties.getGeneratedTestResourcesDir().mkdirs();
-		configProperties.getGeneratedTestSourcesDir().mkdirs();
+		this.configProperties = new ContractVerifierConfigProperties();
+		this.configProperties.setAssertJsonSize(true);
+		this.configProperties.setGeneratedTestResourcesDir(new File("./target/generated-test-resources"));
+		this.configProperties.setGeneratedTestSourcesDir(new File("./target/generated-test-sources"));
+		this.configProperties.getGeneratedTestResourcesDir().mkdirs();
+		this.configProperties.getGeneratedTestSourcesDir().mkdirs();
 	}
 
 	@AfterEach
@@ -220,7 +220,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 					}
 				});
 			}
-		}.buildClass(configProperties, Collections.singletonList(contractMetadata(contractDsls)), "foo",
+		}.buildClass(this.configProperties, Collections.singletonList(contractMetadata(contractDsls)), "foo",
 				GENERATED_CLASS_DATA);
 	}
 
@@ -229,10 +229,12 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 	}
 
 	private void applyBuilder(TestFramework framework, TestMode testMode) {
-		if (framework != null)
-			configProperties.setTestFramework(framework);
-		if (testMode != null)
-			configProperties.setTestMode(testMode);
+		if (framework != null) {
+			this.configProperties.setTestFramework(framework);
+		}
+		if (testMode != null) {
+			this.configProperties.setTestMode(testMode);
+		}
 	}
 
 	static Stream<Arguments> springBuilders() {
@@ -915,7 +917,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 	@MethodSource("optionalContracts")
 	void should_not_omit_the_optional_field_in_the_test_creation_with_MockMvcSpockMethodBodyBuilder(
 			Contract contractDsl) {
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("\"email\":\"abc@abc.com\"");
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['code']\").matches(\"(123123)?\")");
@@ -1323,7 +1325,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 							}
 						}
 						""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains(
 				"assertThatJson(parsedJson).array(\"['authorities']\").elementWithIndex(0).matches(\"^[a-zA-Z0-9_\\\\- ]+\\$\")");
@@ -1394,7 +1396,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 					}
 				}
 				""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test)
 			.contains("assertThatJson(parsedJson).array().elementWithIndex(0).field(\"['id']\").matches(\"[0-9]+\")");
@@ -1581,7 +1583,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 					}
 				}
 				""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("assertThatJson(parsedJson).field(\"['message']\").matches(\"^(?!\\\\s*\\$).+\")");
 		SyntaxChecker.tryToCompileGroovy("mockmvc", test, false);
@@ -1589,7 +1591,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 
 	@Test
 	void should_generate_the_regular_expression_for_the_other_side_of_communication() {
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(DSL_WITH_ONLY_ONE_SIDE_FOR_DOCS);
 		String strippedTest = test.replace("\n", "").stripIndent();
 		assertThat(Pattern.matches(".*header\\(\"header\", \"application\\/vnd\\.fraud\\.v1\\+json;.*\"\\).*",
@@ -1618,7 +1620,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 							}
 						}
 						""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("assertThatRejectionReasonIsNull(parsedJson.read(\"\\$.rejectionReason.title\"))");
 		SyntaxChecker.tryToCompileGroovy("spock", test);
@@ -1638,7 +1640,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 					}
 				}
 				""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("assertThatUserNameIsNotNull(parsedJson.read(\"\\$.[0].name\")");
 		assertThat(test).contains("assertThatUserNameIsNotNull(parsedJson.read(\"\\$.[1].name\")");
@@ -1681,7 +1683,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 							}
 						}
 						""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains(".header(\"authorization\", getOAuthTokenHeader())");
 		SyntaxChecker.tryToCompileGroovy("spock", test);
@@ -1695,7 +1697,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 					response { status OK(); body(value(stub("HELLO FROM STUB"), server(regex(".*")))) }
 				}
 				""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("responseBody ==~ java.util.regex.Pattern.compile('.*')");
 		SyntaxChecker.tryToCompileGroovy("spock", test);
@@ -1709,7 +1711,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 					response { status OK(); body(value(stub("HELLO FROM STUB"), server(execute('foo(\\$it)')))) }
 				}
 				""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains("foo(responseBody)");
 		SyntaxChecker.tryToCompileGroovy("spock", test);
@@ -1731,7 +1733,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 					}
 				}
 				""");
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(contractDsl);
 		assertThat(test).contains(".header(\"authorization\", getOAuthTokenHeader())");
 		SyntaxChecker.tryToCompileGroovy("spock", test);
@@ -2177,7 +2179,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 
 	@Test
 	void should_generate_spock_assertions_with_cookies() {
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(CONTRACT_DSL_WITH_COOKIES_VALUE);
 		assertThat(test).contains(".cookie(\"cookie-key\", \"cookie-value\")");
 		assertThat(test).contains("response.cookie(\"cookie-key\") != null");
@@ -2187,7 +2189,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 
 	@Test
 	void should_generate_spock_assertions_with_cookies_pattern() {
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(CONTRACT_DSL_WITH_COOKIES_PATTERN);
 		assertThat(test).doesNotContain(".cookie(\"cookie-key\", \"[A-Za-z]+\")");
 		assertThat(test).contains(".cookie(\"cookie-key\", \"");
@@ -2198,7 +2200,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 
 	@Test
 	void should_not_generate_spock_cookie_assertion_with_absent_cookie() {
-		configProperties.setTestFramework(TestFramework.SPOCK);
+		this.configProperties.setTestFramework(TestFramework.SPOCK);
 		String test = singleTestGenerator(CONTRACT_DSL_WITH_ABSENT_COOKIES);
 		assertThat(test).doesNotContain("cookie");
 		SyntaxChecker.tryToCompile("spock", test);

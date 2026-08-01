@@ -49,7 +49,7 @@ interface GroovyComparisonBuilder extends ComparisonBuilder {
 
 	@Override
 	default String isEqualTo(Number number) {
-		String numberString = number instanceof Long ? number.toString() + "L" : number.toString();
+		String numberString = (number instanceof Long) ? number.toString() + "L" : number.toString();
 		return " == " + numberString;
 	}
 

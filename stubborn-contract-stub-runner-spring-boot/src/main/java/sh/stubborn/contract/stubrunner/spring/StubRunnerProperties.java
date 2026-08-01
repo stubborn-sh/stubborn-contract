@@ -19,8 +19,8 @@ package sh.stubborn.contract.stubrunner.spring;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer.NoOpHttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.ResourceResolver;
@@ -30,6 +30,8 @@ import sh.stubborn.contract.stubrunner.StubsMode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
+ * Configuration properties for the stub runner.
+ *
  * @author Dave Syer
  */
 @ConfigurationProperties("stubborn.contract.stubrunner")
@@ -48,7 +50,7 @@ public class StubRunnerProperties {
 	/**
 	 * The repository root to use (where the stubs should be downloaded from).
 	 */
-	private StubResource repositoryRoot;
+	private @Nullable StubResource repositoryRoot;
 
 	/**
 	 * The ids of the stubs to run in "ivy" notation
@@ -65,22 +67,22 @@ public class StubRunnerProperties {
 	/**
 	 * Repository username.
 	 */
-	private String username;
+	private @Nullable String username;
 
 	/**
 	 * Repository password.
 	 */
-	private String password;
+	private @Nullable String password;
 
 	/**
 	 * Repository proxy port.
 	 */
-	private Integer proxyPort;
+	private @Nullable Integer proxyPort;
 
 	/**
 	 * Repository proxy host.
 	 */
-	private String proxyHost;
+	private @Nullable String proxyHost;
 
 	/**
 	 * Should only stubs for this particular consumer get registered in HTTP server stub.
@@ -91,17 +93,17 @@ public class StubRunnerProperties {
 	 * You can override the default {@code spring.application.name} of this field by
 	 * setting a value to this parameter.
 	 */
-	private String consumerName;
+	private @Nullable String consumerName;
 
 	/**
 	 * Dumps the mappings of each HTTP server to the selected folder.
 	 */
-	private String mappingsOutputFolder;
+	private @Nullable String mappingsOutputFolder;
 
 	/**
 	 * Pick where the stubs should come from.
 	 */
-	private StubsMode stubsMode;
+	private @Nullable StubsMode stubsMode;
 
 	/**
 	 * If set to {@code false} will NOT delete stubs from a temporary folder after running
@@ -133,9 +135,9 @@ public class StubRunnerProperties {
 	private Class<? extends HttpServerStubConfigurer> httpServerStubConfigurer = NoOpHttpServerStubConfigurer.class;
 
 	/**
-	 *
+	 * Server id to be used for the stub runner.
 	 */
-	private String serverId;
+	private @Nullable String serverId;
 
 	public int getMinPort() {
 		return this.minPort;
@@ -153,7 +155,7 @@ public class StubRunnerProperties {
 		this.maxPort = maxPort;
 	}
 
-	public StubResource getRepositoryRoot() {
+	public @Nullable StubResource getRepositoryRoot() {
 		return this.repositoryRoot;
 	}
 
@@ -161,7 +163,7 @@ public class StubRunnerProperties {
 		this.repositoryRoot = ResourceResolver.resource(repositoryRoot);
 	}
 
-	public String getUsername() {
+	public @Nullable String getUsername() {
 		return this.username;
 	}
 
@@ -169,7 +171,7 @@ public class StubRunnerProperties {
 		this.username = username;
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return this.password;
 	}
 
@@ -177,7 +179,7 @@ public class StubRunnerProperties {
 		this.password = password;
 	}
 
-	public Integer getProxyPort() {
+	public @Nullable Integer getProxyPort() {
 		return this.proxyPort;
 	}
 
@@ -185,7 +187,7 @@ public class StubRunnerProperties {
 		this.proxyPort = proxyPort;
 	}
 
-	public String getProxyHost() {
+	public @Nullable String getProxyHost() {
 		return this.proxyHost;
 	}
 
@@ -217,7 +219,7 @@ public class StubRunnerProperties {
 		this.stubsPerConsumer = stubsPerConsumer;
 	}
 
-	public String getConsumerName() {
+	public @Nullable String getConsumerName() {
 		return this.consumerName;
 	}
 
@@ -225,7 +227,7 @@ public class StubRunnerProperties {
 		this.consumerName = consumerName;
 	}
 
-	public String getMappingsOutputFolder() {
+	public @Nullable String getMappingsOutputFolder() {
 		return this.mappingsOutputFolder;
 	}
 
@@ -233,7 +235,7 @@ public class StubRunnerProperties {
 		this.mappingsOutputFolder = mappingsOutputFolder;
 	}
 
-	public StubsMode getStubsMode() {
+	public @Nullable StubsMode getStubsMode() {
 		return this.stubsMode;
 	}
 
@@ -258,7 +260,7 @@ public class StubRunnerProperties {
 			return;
 		}
 		for (String property : properties) {
-			int idx = property == null ? -1 : property.indexOf('=');
+			int idx = (property != null) ? property.indexOf('=') : -1;
 			if (idx > 0) {
 				this.properties.put(property.substring(0, idx).trim(), property.substring(idx + 1).trim());
 			}
@@ -289,8 +291,8 @@ public class StubRunnerProperties {
 		this.httpServerStubConfigurer = httpServerStubConfigurer;
 	}
 
-	public String getServerId() {
-		return serverId;
+	public @Nullable String getServerId() {
+		return this.serverId;
 	}
 
 	public void setServerId(String serverId) {

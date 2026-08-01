@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
@@ -28,6 +29,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.Message;
 
 /**
+ * Sends messages to a Spring Cloud Stream test binder {@link InputDestination}.
+ *
  * @author Marcin Grzejszczak
  */
 class StreamInputDestinationMessageSender implements MessageVerifierSender<Message<?>> {
@@ -43,20 +46,21 @@ class StreamInputDestinationMessageSender implements MessageVerifierSender<Messa
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
-		send(this.builder.create(payload, headers), destination, contract);
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
+		send(this.builder.create(payload, (headers != null) ? headers : Map.of()), destination, contract);
 	}
 
 	@Override
-	public void send(Message<?> message, String destination, YamlContract contract) {
+	public void send(Message<?> message, String destination, @Nullable YamlContract contract) {
 		try {
 			InputDestination inputDestination = this.context.getBean(InputDestination.class);
 			inputDestination.send(message, destination);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.error("Exception occurred while trying to send a message [" + message + "] "
-					+ "to a destination with name [" + destination + "]", e);
-			throw e;
+					+ "to a destination with name [" + destination + "]", ex);
+			throw ex;
 		}
 	}
 

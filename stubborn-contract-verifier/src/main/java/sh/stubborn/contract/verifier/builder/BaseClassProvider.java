@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.util.NamesUtil;
 
 class BaseClassProvider {
@@ -30,8 +31,8 @@ class BaseClassProvider {
 
 	private static final String SEPARATOR = "_REPLACEME_";
 
-	String retrieveBaseClass(Map<String, String> baseClassMappings, String packageWithBaseClasses,
-			String baseClassForTests, String includedDirectoryRelativePath) {
+	@Nullable String retrieveBaseClass(@Nullable Map<String, String> baseClassMappings, @Nullable String packageWithBaseClasses,
+			@Nullable String baseClassForTests, String includedDirectoryRelativePath) {
 		String contractPathAsPackage = includedDirectoryRelativePath.replace(File.separator, ".");
 		String contractPackage = includedDirectoryRelativePath.replace(File.separator, SEPARATOR);
 		// package mapping takes super precedence

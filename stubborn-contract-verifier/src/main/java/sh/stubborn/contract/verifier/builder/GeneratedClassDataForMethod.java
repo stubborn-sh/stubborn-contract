@@ -51,11 +51,11 @@ public class GeneratedClassDataForMethod {
 	}
 
 	public final SingleTestGenerator.GeneratedClassData getGeneratedClassData() {
-		return generatedClassData;
+		return this.generatedClassData;
 	}
 
 	public final String getMethodName() {
-		return methodName;
+		return this.methodName;
 	}
 
 }

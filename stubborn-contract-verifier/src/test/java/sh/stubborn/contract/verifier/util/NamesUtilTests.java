@@ -23,6 +23,7 @@ import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
 import org.springframework.util.FileSystemUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -134,7 +135,7 @@ class NamesUtilTests {
 
 	@Test
 	void should_recursively_convert_the_names_of_folders_to_package_names() throws URISyntaxException, IOException {
-		File tmp = tmpDir.toFile();
+		File tmp = this.tmpDir.toFile();
 		File resource = new File(getClass().getResource("/prependFolderName").toURI());
 		FileSystemUtils.copyRecursively(resource, tmp);
 

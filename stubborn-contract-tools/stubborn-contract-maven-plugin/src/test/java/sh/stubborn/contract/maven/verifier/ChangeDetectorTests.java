@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -32,9 +33,10 @@ class ChangeDetectorTests {
 	@Test
 	void should_mark_that_input_files_have_changed_when_goal_clean_was_called() throws MojoExecutionException {
 		MavenSession session = BDDMockito.mock(MavenSession.class);
+		MojoExecution mojoExecution = BDDMockito.mock(MojoExecution.class);
 		given(session.getGoals()).willReturn(Arrays.asList("clean", "install"));
 
-		then(ChangeDetector.inputFilesChangeDetected(new File("."), null, session)).isTrue();
+		then(ChangeDetector.inputFilesChangeDetected(new File("."), mojoExecution, session)).isTrue();
 	}
 
 }

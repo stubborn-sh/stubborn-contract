@@ -35,6 +35,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -107,7 +108,7 @@ public final class ContractVerifierUtil {
 	 * Helper method to retrieve XML {@link Node} with provided xPath.
 	 * @param parsedXml - a {@link Document} object with parsed XML content
 	 * @param path - the xPath expression to retrieve the value with
-	 * @return XML {@link Node} object
+	 * @return the XML {@link Node} object
 	 * @since 2.1.0
 	 */
 	public static Node nodeFromXPath(Document parsedXml, String path) {
@@ -130,7 +131,7 @@ public final class ContractVerifierUtil {
 	 * @return bytes of the file
 	 * @since 3.0.0
 	 */
-	public static YamlContract contract(Object testClass, String relativePath) {
+	public static @Nullable YamlContract contract(Object testClass, String relativePath) {
 		String path = fromRelativePath(relativePath);
 		byte[] bytes = fileToBytes(testClass, path);
 		List<YamlContract> read = new YamlContractConverter().read(bytes);
@@ -152,6 +153,7 @@ public final class ContractVerifierUtil {
 	}
 
 	/**
+	 * Returns a builder for a map.
 	 * @return a builder for map
 	 */
 	public static ContractVerifierMap map() {
@@ -191,7 +193,7 @@ public final class ContractVerifierUtil {
 		}
 
 		@Override
-		public Object get(Object key) {
+		public @Nullable Object get(Object key) {
 			return this.delegate.get(key);
 		}
 

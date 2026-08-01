@@ -170,7 +170,7 @@ class FromRequestDsl {
 
 }
 
-class FromRequestDslProperty(private val content: String) : DslProperty<String>(content) {
+class FromRequestDslProperty(private val content: String?) : DslProperty<String>(content) {
     // Overridden to support String interpolation
-    override fun toString(): String = content
+    override fun toString(): String = content ?: ""
 }

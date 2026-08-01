@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 
 /**
  * Taken from https://gist.github.com/skeller88/5eb73dc0090d4ff1249a.
+ *
+ * @author Marcin Grzejszczak
  */
 final class UrlHelper {
 

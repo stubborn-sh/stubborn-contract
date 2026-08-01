@@ -28,6 +28,9 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A utility class that helps to convert names.
  *
@@ -36,12 +39,16 @@ import java.util.Locale;
  */
 public final class NamesUtil {
 
+	private static final Logger log = LoggerFactory.getLogger(NamesUtil.class);
+
 	private NamesUtil() {
 		throw new IllegalStateException("Can't instantiate a utility class");
 	}
 
 	/**
 	 * Returns the first element before the last separator presence.
+	 * @param string the string to inspect
+	 * @param separator the separator to look for
 	 * @return empty string if separator is not found.
 	 */
 	public static String beforeLast(String string, String separator) {
@@ -53,6 +60,8 @@ public final class NamesUtil {
 
 	/**
 	 * Returns the first element after the last separator presence.
+	 * @param string the string to inspect
+	 * @param separator the separator to look for
 	 * @return the provided string if separator is not found.
 	 */
 	public static String afterLast(String string, String separator) {
@@ -64,6 +73,9 @@ public final class NamesUtil {
 
 	/**
 	 * Returns {@code true} if has a separatot in the string.
+	 * @param string the string to check
+	 * @param separator the separator to look for
+	 * @return {@code true} if the string has the separator
 	 */
 	public static boolean hasSeparator(String string, String separator) {
 		return string.indexOf(separator) > -1;
@@ -71,6 +83,7 @@ public final class NamesUtil {
 
 	/**
 	 * Returns the first element after the last dot presence.
+	 * @param string the string to inspect
 	 * @return the provided string if separator is not found.
 	 */
 	public static String afterLastDot(String string) {
@@ -78,6 +91,8 @@ public final class NamesUtil {
 	}
 
 	/**
+	 * Returns {@code true} if the string has a dot.
+	 * @param string the string to check
 	 * @return {@code true} if has a dot
 	 */
 	public static boolean hasDot(String string) {
@@ -85,6 +100,7 @@ public final class NamesUtil {
 	}
 
 	/**
+	 * Returns the default contract name resolved from the file name.
 	 * @param file - file with contracts
 	 * @param contracts - collection of contracts
 	 * @param counter - given contract index
@@ -95,11 +111,13 @@ public final class NamesUtil {
 	public static String defaultContractName(File file, Collection contracts, int counter) {
 		int lastIndexOfDot = file.getName().lastIndexOf(".");
 		String tillExtension = file.getName().substring(0, lastIndexOfDot);
-		return tillExtension + (counter > 0 || contracts.size() > 1 ? "_" + counter : "");
+		return tillExtension + ((counter > 0 || contracts.size() > 1) ? "_" + counter : "");
 	}
 
 	/**
 	 * Converts a string into a camel case format.
+	 * @param className the string to convert
+	 * @return the camel case formatted string
 	 */
 	public static String camelCase(String className) {
 		if (isEmpty(className)) {
@@ -111,6 +129,8 @@ public final class NamesUtil {
 
 	/**
 	 * Capitalizes the provided string.
+	 * @param className the string to capitalize
+	 * @return the capitalized string
 	 */
 	public static String capitalize(String className) {
 		if (isEmpty(className)) {
@@ -126,6 +146,7 @@ public final class NamesUtil {
 
 	/**
 	 * Returns the whole string to the last present dot.
+	 * @param string the string to inspect
 	 * @return input string if there is no dot
 	 */
 	public static String toLastDot(String string) {
@@ -137,6 +158,8 @@ public final class NamesUtil {
 
 	/**
 	 * Converts the Java package notation to a path format.
+	 * @param packageName the package name to convert
+	 * @return the directory path
 	 */
 	public static String packageToDirectory(String packageName) {
 		return packageName.replace('.', File.separatorChar);
@@ -144,6 +167,8 @@ public final class NamesUtil {
 
 	/**
 	 * Converts the path format to a Java package notation.
+	 * @param directory the directory path to convert
+	 * @return the package notation
 	 */
 	public static String directoryToPackage(String directory) {
 		return directory.replace('.', '_')
@@ -173,6 +198,8 @@ public final class NamesUtil {
 
 	/**
 	 * Converts illegal package characters to underscores.
+	 * @param packageName the package name to convert
+	 * @return the package name with illegal characters replaced
 	 */
 	public static String convertIllegalPackageChars(String packageName) {
 		return packageName.replaceAll("[_\\- .+]", "_");
@@ -180,6 +207,8 @@ public final class NamesUtil {
 
 	/**
 	 * Converts illegal characters in method names to underscores.
+	 * @param methodName the method name to convert
+	 * @return the method name with illegal characters replaced
 	 */
 	public static String convertIllegalMethodNameChars(String methodName) {
 		String result = methodName.replaceAll("^[^a-zA-Z_$0-9]", "_");
@@ -203,7 +232,10 @@ public final class NamesUtil {
 
 		void rename() {
 			this.filesToRename.forEach((fileAndNewName) -> {
-				fileAndNewName.file.renameTo(new File(fileAndNewName.file.getParentFile(), fileAndNewName.newName));
+				File target = new File(fileAndNewName.file.getParentFile(), fileAndNewName.newName);
+				if (!fileAndNewName.file.renameTo(target) && log.isWarnEnabled()) {
+					log.warn("Failed to rename [{}] to [{}]", fileAndNewName.file, target);
+				}
 			});
 		}
 

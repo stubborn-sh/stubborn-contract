@@ -18,15 +18,9 @@ package sh.stubborn.contract.stubrunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,9 +63,10 @@ public class ContractProjectUpdater {
 	 * @param rootStubsFolder root folder of the stubs
 	 */
 	public void updateContractProject(String projectName, Path rootStubsFolder) {
-		File clonedRepo = this.gitContractsRepo.clonedRepo(this.stubRunnerOptions.stubRepositoryRoot);
-		GitStubDownloaderProperties properties = new GitStubDownloaderProperties(
-				this.stubRunnerOptions.stubRepositoryRoot, this.stubRunnerOptions);
+		StubResource stubRepositoryRoot = Objects.requireNonNull(this.stubRunnerOptions.stubRepositoryRoot);
+		File clonedRepo = this.gitContractsRepo.clonedRepo(stubRepositoryRoot);
+		GitStubDownloaderProperties properties = new GitStubDownloaderProperties(stubRepositoryRoot,
+				this.stubRunnerOptions);
 		copyStubs(projectName, rootStubsFolder, clonedRepo);
 		GitRepo gitRepo = new GitRepo(clonedRepo, properties);
 		String msg = StubRunnerPropertyUtils.getProperty(this.stubRunnerOptions.getProperties(), GIT_COMMIT_MESSAGE);
@@ -82,10 +77,10 @@ public class ContractProjectUpdater {
 		}
 		String attempts = StubRunnerPropertyUtils.getProperty(this.stubRunnerOptions.getProperties(),
 				GIT_ATTEMPTS_NO_PROP);
-		int intAttempts = attempts != null && !attempts.isBlank() ? Integer.parseInt(attempts) : DEFAULT_ATTEMPTS_NO;
+		int intAttempts = (attempts != null && !attempts.isBlank()) ? Integer.parseInt(attempts) : DEFAULT_ATTEMPTS_NO;
 		String wait = StubRunnerPropertyUtils.getProperty(this.stubRunnerOptions.getProperties(),
 				GIT_WAIT_BETWEEN_ATTEMPTS);
-		long longWait = wait != null && !wait.isBlank() ? Long.parseLong(wait) : DEFAULT_WAIT_BETWEEN_ATTEMPTS;
+		long longWait = (wait != null && !wait.isBlank()) ? Long.parseLong(wait) : DEFAULT_WAIT_BETWEEN_ATTEMPTS;
 		tryToPushCurrentBranch(clonedRepo, gitRepo, intAttempts, longWait);
 	}
 
@@ -100,9 +95,9 @@ public class ContractProjectUpdater {
 				log.info("Successfully pushed changes with current stubs");
 				break;
 			}
-			catch (IllegalStateException e) {
+			catch (IllegalStateException ex) {
 				// empty
-				log.error("Exception occurred while trying to push the changes", e);
+				log.error("Exception occurred while trying to push the changes", ex);
 				currentAttempt++;
 				if (currentAttempt == intAttempts) {
 					throw new IllegalStateException(
@@ -120,7 +115,7 @@ public class ContractProjectUpdater {
 	}
 
 	private String commitMessage(String projectName, String msg) {
-		return msg != null && !msg.isBlank() ? replaceProject(projectName, msg)
+		return (msg != null && !msg.isBlank()) ? replaceProject(projectName, msg)
 				: replaceProject(projectName, DEFAULT_COMMIT_MESSAGE);
 	}
 
@@ -139,142 +134,9 @@ public class ContractProjectUpdater {
 				log.debug("Successfully copied stubs to the cloned repo for project [" + projectName + "]");
 			}
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
-	}
-
-}
-
-class DirectoryCopyingVisitor extends SimpleFileVisitor<Path> {
-
-	private static final List<String> FOLDERS_TO_DELETE = Arrays.asList("contracts", "mappings");
-
-	private static final Log log = LogFactory.getLog(DirectoryCopyingVisitor.class);
-
-	private final Path from;
-
-	private final Path to;
-
-	DirectoryCopyingVisitor(Path from, Path to) {
-		this.from = from;
-		this.to = to;
-		if (log.isDebugEnabled()) {
-			log.debug("Will copy from [" + from.toString() + "] to [" + to.toString() + "]");
-		}
-	}
-
-	@Override
-	public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-		Path relativePath = this.from.relativize(dir);
-		if (".git".equals(relativePath.toString())) {
-			return FileVisitResult.SKIP_SUBTREE;
-		}
-		Path targetPath = this.to.resolve(relativePath);
-		if (!Files.exists(targetPath)) {
-			if (log.isDebugEnabled()) {
-				log.debug("Created a folder [" + targetPath.toString() + "]");
-			}
-			Files.createDirectory(targetPath);
-		}
-		else {
-			if (log.isDebugEnabled()) {
-				log.debug("Folder [" + targetPath.toString() + "] already exists");
-			}
-			if (FOLDERS_TO_DELETE.contains(targetPath.toFile().getName())) {
-				if (log.isDebugEnabled()) {
-					log.debug("Will remove the folder [" + targetPath.toString() + "]");
-				}
-				deleteRecursively(targetPath);
-				Files.createDirectory(targetPath);
-				if (log.isDebugEnabled()) {
-					log.debug("Recreated folder [" + targetPath.toString() + "]");
-				}
-			}
-		}
-		return FileVisitResult.CONTINUE;
-	}
-
-	private boolean deleteRecursively(Path root) throws IOException {
-		if (root == null) {
-			return false;
-		}
-		if (!Files.exists(root)) {
-			return false;
-		}
-		Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				Files.delete(file);
-				return FileVisitResult.CONTINUE;
-			}
-
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				// a hack for Windows not to fail when directory is removed
-				// related to
-				// https://github.com/spring-cloud/spring-cloud-sleuth/issues/834
-				if (exc == null) {
-					int maxTries = 5;
-					int count = 0;
-					boolean deleted;
-					do {
-						deleted = this.isDeleted(dir);
-						if (deleted) {
-							if (log.isDebugEnabled()) {
-								log.debug("Deleted [" + dir + "]");
-							}
-							break;
-						}
-						if (log.isDebugEnabled()) {
-							log.debug("Failed to delete [" + dir + "]");
-						}
-						// wait a bit and try again
-						count++;
-						try {
-							Thread.sleep(2);
-						}
-						catch (InterruptedException e1) {
-							Thread.currentThread().interrupt();
-							break;
-						}
-
-					}
-					while (count < maxTries);
-					if (!deleted) {
-						if (log.isDebugEnabled()) {
-							log.debug("Failed to delete [" + dir + "] after [" + maxTries + "] attempts to do it");
-						}
-						throw new DirectoryNotEmptyException(dir.toString());
-					}
-					return FileVisitResult.CONTINUE;
-				}
-				throw exc;
-			}
-
-			private boolean isDeleted(Path dir) throws IOException {
-				try {
-					Files.delete(dir);
-					return true;
-				}
-				catch (DirectoryNotEmptyException e) {
-					// happens sometimes if Windows is too slow to remove children of a
-					// directory
-					return false;
-				}
-			}
-		});
-		return true;
-	}
-
-	@Override
-	public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-		Path relativePath = this.to.resolve(this.from.relativize(file));
-		Files.copy(file, relativePath, StandardCopyOption.REPLACE_EXISTING);
-		if (log.isDebugEnabled()) {
-			log.debug("Copied file from [" + file.toString() + "] to [" + relativePath.toString() + "]");
-		}
-		return FileVisitResult.CONTINUE;
 	}
 
 }

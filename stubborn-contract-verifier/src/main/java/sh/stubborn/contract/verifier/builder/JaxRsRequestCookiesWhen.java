@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 import sh.stubborn.contract.spec.internal.Cookie;
@@ -38,12 +39,12 @@ class JaxRsRequestCookiesWhen implements When {
 
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
-		appendCookies(metadata.getContract().getRequest());
+		appendCookies(Objects.requireNonNull(metadata.getContract().getRequest()));
 		return this;
 	}
 
 	private void appendCookies(Request request) {
-		Iterator<Cookie> iterator = request.getCookies()
+		Iterator<Cookie> iterator = Objects.requireNonNull(request.getCookies())
 			.getEntries()
 			.stream()
 			.filter((cookie) -> !cookieOfAbsentType(cookie))
@@ -51,7 +52,8 @@ class JaxRsRequestCookiesWhen implements When {
 		while (iterator.hasNext()) {
 			Cookie cookie = iterator.next();
 			String value = ".cookie(" + this.bodyParser.quotedShortText(cookie.getKey()) + ", "
-					+ this.bodyParser.quotedShortText(MapConverter.getTestSideValuesForNonBody(cookie.getServerValue()))
+					+ this.bodyParser.quotedShortText(
+							MapConverter.getTestSideValuesForNonBody(Objects.requireNonNull(cookie.getServerValue())))
 					+ ")";
 			if (iterator.hasNext()) {
 				this.blockBuilder.addLine(value);
@@ -69,13 +71,14 @@ class JaxRsRequestCookiesWhen implements When {
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
-		return metadata.getContract().getRequest().getCookies() != null
-				&& !metadata.getContract().getRequest().getCookies().getEntries().isEmpty()
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		return request.getCookies() != null && !request.getCookies().getEntries().isEmpty()
 				&& !hasOnlyAbsentCookies(metadata);
 	}
 
 	private boolean hasOnlyAbsentCookies(SingleContractMetadata metadata) {
-		Set<Cookie> entries = metadata.getContract().getRequest().getCookies().getEntries();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		Set<Cookie> entries = Objects.requireNonNull(request.getCookies()).getEntries();
 		long filteredOut = entries.stream().filter(this::cookieOfAbsentType).count();
 		return filteredOut == entries.size();
 	}

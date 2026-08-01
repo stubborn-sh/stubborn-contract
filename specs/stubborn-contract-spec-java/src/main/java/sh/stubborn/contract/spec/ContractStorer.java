@@ -36,7 +36,7 @@ public interface ContractStorer<T> {
 	 */
 	default Map<String, byte[]> store(T contracts) {
 		Map<String, byte[]> map = new HashMap<>();
-		map.put(String.valueOf(Math.abs(hashCode())), contracts.toString().getBytes());
+		map.put(String.valueOf(Math.abs((long) hashCode())), contracts.toString().getBytes());
 		return map;
 	}
 

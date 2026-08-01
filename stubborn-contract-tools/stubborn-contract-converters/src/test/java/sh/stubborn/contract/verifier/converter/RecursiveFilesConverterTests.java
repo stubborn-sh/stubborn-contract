@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.spec.Contract;
@@ -48,13 +50,17 @@ class RecursiveFilesConverterTests {
 					Paths.get("dir1/shouldHaveIndex1.json"), Paths.get("dir1/shouldHaveIndex2.json")));
 
 	@TempDir
-	Path tmpDir;
+	@Nullable Path tmpDir;
+
+	private Path tmpDir() {
+		return Objects.requireNonNull(this.tmpDir);
+	}
 
 	@Test
 	void should_recursively_convert_all_matching_files_with_stubs() throws Exception {
 		File originalSourceRootDirectory = new File(getClass().getResource("/converter/dir3").toURI());
-		File contractsDslDir = Files.createDirectories(tmpDir.resolve("source")).toFile();
-		File stubsOutputDir = Files.createDirectories(tmpDir.resolve("target")).toFile();
+		File contractsDslDir = Files.createDirectories(tmpDir().resolve("source")).toFile();
+		File stubsOutputDir = Files.createDirectories(tmpDir().resolve("target")).toFile();
 		FileSystemUtils.copyRecursively(originalSourceRootDirectory, contractsDslDir);
 		RecursiveFilesConverter converter = new RecursiveFilesConverter(stubsOutputDir, contractsDslDir,
 				new ArrayList<>(), ".*", false);
@@ -68,8 +74,8 @@ class RecursiveFilesConverterTests {
 	@Test
 	void should_recursively_convert_all_matching_files() throws Exception {
 		File originalSourceRootDirectory = new File(getClass().getResource("/converter/source").toURI());
-		File contractsDslDir = Files.createDirectories(tmpDir.resolve("source")).toFile();
-		File stubsOutputDir = Files.createDirectories(tmpDir.resolve("target")).toFile();
+		File contractsDslDir = Files.createDirectories(tmpDir().resolve("source")).toFile();
+		File stubsOutputDir = Files.createDirectories(tmpDir().resolve("target")).toFile();
 		FileSystemUtils.copyRecursively(originalSourceRootDirectory, contractsDslDir);
 		RecursiveFilesConverter converter = new RecursiveFilesConverter(stubsOutputDir, contractsDslDir,
 				new ArrayList<>(), ".*", false);
@@ -85,8 +91,8 @@ class RecursiveFilesConverterTests {
 	@Test
 	void should_recursively_convert_matching_files_with_exclusions() throws Exception {
 		File originalSourceRootDirectory = new File(getClass().getResource("/converter/source").toURI());
-		File contractsDslDir = Files.createDirectories(tmpDir.resolve("source")).toFile();
-		File stubsOutputDir = Files.createDirectories(tmpDir.resolve("target")).toFile();
+		File contractsDslDir = Files.createDirectories(tmpDir().resolve("source")).toFile();
+		File stubsOutputDir = Files.createDirectories(tmpDir().resolve("target")).toFile();
 		List<String> excludedFiles = List.of("dir1/**");
 		FileSystemUtils.copyRecursively(originalSourceRootDirectory, contractsDslDir);
 		RecursiveFilesConverter converter = new RecursiveFilesConverter(stubsOutputDir, contractsDslDir, excludedFiles,
@@ -103,7 +109,7 @@ class RecursiveFilesConverterTests {
 
 	@Test
 	void on_failure_should_break_processing_and_throw_meaningful_exception() throws Exception {
-		File sourceFile = tmpDir.resolve("test.groovy").toFile();
+		File sourceFile = tmpDir().resolve("test.groovy").toFile();
 		Files.writeString(sourceFile.toPath(), """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -130,8 +136,8 @@ class RecursiveFilesConverterTests {
 				return inputFileName + "2";
 			}
 		};
-		File contractsDslDir = tmpDir.toFile();
-		File stubsOutputDir = tmpDir.toFile();
+		File contractsDslDir = tmpDir().toFile();
+		File stubsOutputDir = tmpDir().toFile();
 		RecursiveFilesConverter converter = new RecursiveFilesConverter(stubsOutputDir, contractsDslDir,
 				new ArrayList<>(), ".*", false, new StubGeneratorProvider(List.of(failingGenerator)));
 		assertThatThrownBy(converter::processFiles).isInstanceOf(ConversionContractVerifierException.class)
@@ -142,7 +148,7 @@ class RecursiveFilesConverterTests {
 
 	@Test
 	void should_convert_contract_into_stub_using_all_possible_converters() throws Exception {
-		File sourceFile = tmpDir.resolve("test.groovy").toFile();
+		File sourceFile = tmpDir().resolve("test.groovy").toFile();
 		Files.writeString(sourceFile.toPath(), """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -155,17 +161,17 @@ class RecursiveFilesConverterTests {
 				}""");
 		StubGenerator<String> generator1 = stubGenerator("foo");
 		StubGenerator<String> generator2 = stubGenerator("bar");
-		File contractsDslDir = tmpDir.toFile();
-		File stubsOutputDir = tmpDir.toFile();
+		File contractsDslDir = tmpDir().toFile();
+		File stubsOutputDir = tmpDir().toFile();
 		RecursiveFilesConverter converter = new RecursiveFilesConverter(stubsOutputDir, contractsDslDir,
 				new ArrayList<>(), ".*", false, new StubGeneratorProvider(List.of(generator1, generator2)));
 		converter.processFiles();
-		assertThat(List.of(tmpDir.toFile().list())).contains("foo", "bar");
+		assertThat(List.of(tmpDir().toFile().list())).contains("foo", "bar");
 	}
 
 	@Test
 	void should_not_create_stub_file_when_generated_stub_is_empty() throws Exception {
-		File sourceFile = tmpDir.resolve("test.groovy").toFile();
+		File sourceFile = tmpDir().resolve("test.groovy").toFile();
 		Files.writeString(sourceFile.toPath(), """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -177,8 +183,8 @@ class RecursiveFilesConverterTests {
 					}
 				}""");
 		StubGenerator<String> generator = stubGenerator("");
-		File contractsDslDir = tmpDir.toFile();
-		File stubsOutputDir = Files.createDirectories(tmpDir.resolve("target")).toFile();
+		File contractsDslDir = tmpDir().toFile();
+		File stubsOutputDir = Files.createDirectories(tmpDir().resolve("target")).toFile();
 		RecursiveFilesConverter converter = new RecursiveFilesConverter(stubsOutputDir, contractsDslDir,
 				new ArrayList<>(), ".*", false, new StubGeneratorProvider(List.of(generator)));
 		converter.processFiles();
@@ -197,7 +203,7 @@ class RecursiveFilesConverterTests {
 
 	private static List<File> listFilesRecursively(File dir) throws IOException {
 		List<File> result = new ArrayList<>();
-		Files.walk(dir.toPath()).filter(Files::isRegularFile).forEach(p -> result.add(p.toFile()));
+		Files.walk(dir.toPath()).filter(Files::isRegularFile).forEach((p) -> result.add(p.toFile()));
 		return result;
 	}
 

@@ -29,22 +29,26 @@ package sh.stubborn.contract.verifier.config.framework;
 public interface TestFrameworkDefinition {
 
 	/**
+	 * Returns the file extension.
 	 * @return the file extension. E.g. for Java tests that would be {@code .java}
 	 */
 	String getClassExtension();
 
 	/**
+	 * Returns the test class name suffix.
 	 * @return the test class name suffix. E.g. for JUnit tests that would be {@code Test}
 	 */
 	String getClassNameSuffix();
 
 	/**
+	 * Returns the qualified name of the class used to ignore or disable tests.
 	 * @return the qualified name of the class used to ignore or disable tests. E.g. for
 	 * JUnit 4 tests that would be {@code org.junit.Ignore}
 	 */
 	String getIgnoreClass();
 
 	/**
+	 * Returns the annotation used for ignoring or disabling tests.
 	 * @return the annotation used for ignoring or disabling tests. E.g. for JUnit tests
 	 * that would mean {@code @Ignore}
 	 */

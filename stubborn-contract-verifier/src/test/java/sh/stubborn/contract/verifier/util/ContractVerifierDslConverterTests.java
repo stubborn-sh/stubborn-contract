@@ -25,7 +25,6 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
-import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

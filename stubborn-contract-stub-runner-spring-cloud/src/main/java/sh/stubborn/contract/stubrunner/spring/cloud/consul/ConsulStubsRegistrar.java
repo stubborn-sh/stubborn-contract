@@ -20,6 +20,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.ecwid.consul.v1.ConsulClient;
 import com.ecwid.consul.v1.agent.model.NewService;
@@ -79,9 +80,9 @@ public class ConsulStubsRegistrar implements StubsRegistrar {
 							+ "] in Service Discovery");
 				}
 			}
-			catch (Exception e) {
+			catch (Exception ex) {
 				log.warn("Exception occurred while trying to register a stub ["
-						+ entry.getKey().toColonSeparatedDependencyNotation() + "] in Service Discovery", e);
+						+ entry.getKey().toColonSeparatedDependencyNotation() + "] in Service Discovery", ex);
 			}
 		}
 	}
@@ -90,7 +91,7 @@ public class ConsulStubsRegistrar implements StubsRegistrar {
 		NewService newService = new NewService();
 		newService.setAddress(StringUtils.hasText(this.consulDiscoveryProperties.getHostname())
 				? this.consulDiscoveryProperties.getHostname()
-				: this.inetUtils.findFirstNonLoopbackAddress().getHostName());
+				: Objects.requireNonNull(this.inetUtils.findFirstNonLoopbackAddress()).getHostName());
 		newService.setId(stubConfiguration.getArtifactId());
 		newService.setName(name(stubConfiguration));
 		newService.setPort(port);

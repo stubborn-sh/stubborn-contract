@@ -21,9 +21,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.RunningStubs;
 import sh.stubborn.contract.stubrunner.StubFinder;
 
@@ -50,7 +52,7 @@ class StubRunnerDiscoveryClient implements DiscoveryClient {
 
 	StubRunnerDiscoveryClient(DiscoveryClient delegate, StubFinder stubFinder,
 			StubMapperProperties stubMapperProperties) {
-		this.delegate = delegate instanceof StubRunnerDiscoveryClient ? noOpDiscoveryClient() : delegate;
+		this.delegate = (delegate instanceof StubRunnerDiscoveryClient) ? noOpDiscoveryClient() : delegate;
 		if (log.isDebugEnabled()) {
 			log.debug("Will delegate calls to discovery service [" + this.delegate + "] if a stub is not found");
 		}
@@ -76,9 +78,9 @@ class StubRunnerDiscoveryClient implements DiscoveryClient {
 		try {
 			return this.delegate.description();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			if (log.isDebugEnabled()) {
-				log.debug("Failed to fetch description from delegate", e);
+				log.debug("Failed to fetch description from delegate", ex);
 			}
 		}
 		return "";
@@ -94,27 +96,27 @@ class StubRunnerDiscoveryClient implements DiscoveryClient {
 		if (stubUrl == null) {
 			return getInstancesFromDelegate(serviceId);
 		}
-		return Collections.singletonList(
-				new StubRunnerServiceInstance(serviceId, stubUrl.getHost(), stubUrl.getPort(), toUri(stubUrl)));
+		return Collections.singletonList(new StubRunnerServiceInstance(serviceId, stubUrl.getHost(), stubUrl.getPort(),
+				Objects.requireNonNull(toUri(stubUrl))));
 	}
 
 	private List<ServiceInstance> getInstancesFromDelegate(String serviceId) {
 		try {
 			return new ArrayList<>(this.delegate.getInstances(serviceId));
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			if (log.isDebugEnabled()) {
-				log.debug("Failed to fetch instances from delegate", e);
+				log.debug("Failed to fetch instances from delegate", ex);
 			}
 			return new ArrayList<>();
 		}
 	}
 
-	private URI toUri(URL url) {
+	private @Nullable URI toUri(URL url) {
 		try {
 			return url.toURI();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return null;
 		}
 	}
@@ -133,9 +135,9 @@ class StubRunnerDiscoveryClient implements DiscoveryClient {
 		try {
 			return new ArrayList<>(this.delegate.getServices());
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			if (log.isDebugEnabled()) {
-				log.debug("Failed to fetch services from delegate", e);
+				log.debug("Failed to fetch services from delegate", ex);
 			}
 		}
 		return new ArrayList<>();
@@ -144,25 +146,6 @@ class StubRunnerDiscoveryClient implements DiscoveryClient {
 	@Override
 	public int getOrder() {
 		return this.delegate.getOrder();
-	}
-
-}
-
-class StubRunnerNoOpDiscoveryClient implements DiscoveryClient {
-
-	@Override
-	public String description() {
-		return "Spring Cloud Stub Runner No-op DiscoveryClient";
-	}
-
-	@Override
-	public List<ServiceInstance> getInstances(String serviceId) {
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<String> getServices() {
-		return Collections.emptyList();
 	}
 
 }

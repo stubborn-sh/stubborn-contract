@@ -29,9 +29,9 @@ import sh.stubborn.contract.verifier.config.TestFramework;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GeneratorScannerTests {
@@ -44,41 +44,45 @@ class GeneratorScannerTests {
 
 	@Test
 	void should_find_all_json_files_and_generate_6_classes_for_them() throws URISyntaxException {
-		when(classGenerator.buildClass(any(), any(), any(), any())).thenReturn("qwerty");
+		given(this.classGenerator.buildClass(any(), any(), any(), any())).willReturn("qwerty");
 		File resource = new File(getClass().getResource("/directory/with/stubs/stubsRepositoryIndicator").toURI());
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setContractsDslDir(resource.getParentFile());
-		TestGenerator testGenerator = new TestGenerator(properties, classGenerator, fileSaver);
+		TestGenerator testGenerator = new TestGenerator(properties, this.classGenerator, this.fileSaver);
 		testGenerator.generateTestClasses("sh.stubborn.contract.verifier");
-		verify(classGenerator, times(6)).buildClass(any(), any(), any(), any());
+		verify(this.classGenerator, times(6)).buildClass(any(), any(), any(), any());
 	}
 
 	@Test
 	void should_create_class_with_full_package() throws URISyntaxException {
-		when(classGenerator.buildClass(any(), any(), any(), any())).thenReturn("spec");
+		given(this.classGenerator.buildClass(any(), any(), any(), any())).willReturn("spec");
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.SPOCK);
 		properties.setContractsDslDir(new File(getClass().getResource("/directory/with/stubs/package").toURI()));
-		TestGenerator testGenerator = new TestGenerator(properties, classGenerator, fileSaver);
+		TestGenerator testGenerator = new TestGenerator(properties, this.classGenerator, this.fileSaver);
 		testGenerator.generateTestClasses("sh.stubborn.contract.verifier");
-		verify(classGenerator).buildClass(any(), any(), any(), argThat((it) -> "exceptionsSpec".equals(it.className)
-				&& "sh.stubborn.contract.verifier".equals(it.classPackage)));
-		verify(classGenerator).buildClass(any(), any(), any(), argThat((it) -> "exceptionsSpec".equals(it.className)
-				&& "sh.stubborn.contract.verifier.v1".equals(it.classPackage)));
-		verify(classGenerator).buildClass(any(), any(), any(), argThat((it) -> "exceptionsSpec".equals(it.className)
-				&& "sh.stubborn.contract.verifier.v2".equals(it.classPackage)));
+		verify(this.classGenerator).buildClass(any(), any(), any(),
+				argThat((it) -> "exceptionsSpec".equals(it.className)
+						&& "sh.stubborn.contract.verifier".equals(it.classPackage)));
+		verify(this.classGenerator).buildClass(any(), any(), any(),
+				argThat((it) -> "exceptionsSpec".equals(it.className)
+						&& "sh.stubborn.contract.verifier.v1".equals(it.classPackage)));
+		verify(this.classGenerator).buildClass(any(), any(), any(),
+				argThat((it) -> "exceptionsSpec".equals(it.className)
+						&& "sh.stubborn.contract.verifier.v2".equals(it.classPackage)));
 	}
 
 	@Test
 	void should_create_class_with_name_with_hyphen() throws URISyntaxException {
-		when(classGenerator.buildClass(any(), any(), any(), any())).thenReturn("spec");
+		given(this.classGenerator.buildClass(any(), any(), any(), any())).willReturn("spec");
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.SPOCK);
 		properties.setContractsDslDir(new File(getClass().getResource("/directory/with/name-with-hyphen").toURI()));
-		TestGenerator testGenerator = new TestGenerator(properties, classGenerator, fileSaver);
+		TestGenerator testGenerator = new TestGenerator(properties, this.classGenerator, this.fileSaver);
 		testGenerator.generateTestClasses("sh.stubborn.contract.verifier");
-		verify(classGenerator).buildClass(any(), any(), any(), argThat((it) -> "car_rentalSpec".equals(it.className)
-				&& "sh.stubborn.contract.verifier".equals(it.classPackage)));
+		verify(this.classGenerator).buildClass(any(), any(), any(),
+				argThat((it) -> "car_rentalSpec".equals(it.className)
+						&& "sh.stubborn.contract.verifier".equals(it.classPackage)));
 	}
 
 }

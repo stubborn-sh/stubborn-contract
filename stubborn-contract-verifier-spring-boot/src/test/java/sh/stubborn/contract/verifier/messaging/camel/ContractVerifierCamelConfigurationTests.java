@@ -32,24 +32,21 @@ class ContractVerifierCamelConfigurationTests {
 		.withConfiguration(AutoConfigurations.of(ContractVerifierCamelConfiguration.class));
 
 	@Test
-	public void shouldCreateBeansByDefault() {
-		this.contextRunner.run((context) -> {
-			assertThat(context.getBeansOfType(ContractVerifierCamelHelper.class)).hasSize(1);
-		});
+	void shouldCreateBeansByDefault() {
+		this.contextRunner
+			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierCamelHelper.class)).hasSize(1));
 	}
 
 	@Test
-	public void shouldNotCreateBeansWhenDisabled() {
-		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.camel.enabled=false").run((context) -> {
-			assertThat(context.getBeansOfType(ContractVerifierCamelHelper.class)).hasSize(0);
-		});
+	void shouldNotCreateBeansWhenDisabled() {
+		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.camel.enabled=false")
+			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierCamelHelper.class)).hasSize(0));
 	}
 
 	@Test
-	public void shouldCreateBeansWhenExplicitlyEnabled() {
-		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.camel.enabled=true").run((context) -> {
-			assertThat(context.getBeansOfType(ContractVerifierCamelHelper.class)).hasSize(1);
-		});
+	void shouldCreateBeansWhenExplicitlyEnabled() {
+		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.camel.enabled=true")
+			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierCamelHelper.class)).hasSize(1));
 	}
 
 }

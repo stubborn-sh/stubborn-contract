@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Represents Contract Verifier configuration properties.
@@ -47,22 +48,22 @@ public class ContractVerifierConfigProperties {
 	/**
 	 * Base package for generated tests.
 	 */
-	private String basePackageForTests;
+	private @Nullable String basePackageForTests;
 
 	/**
 	 * Class which all generated tests should extend.
 	 */
-	private String baseClassForTests;
+	private @Nullable String baseClassForTests;
 
 	/**
 	 * Suffix for generated test classes, like Spec or Test.
 	 */
-	private String nameSuffixForTests;
+	private @Nullable String nameSuffixForTests;
 
 	/**
 	 * Rule class that should be added to generated tests.
 	 */
-	private String ruleClassForTests;
+	private @Nullable String ruleClassForTests;
 
 	/**
 	 * Patterns that should not be taken into account for processing.
@@ -92,22 +93,30 @@ public class ContractVerifierConfigProperties {
 	/**
 	 * Directory containing contracts.
 	 */
+	// Always set by the Maven/Gradle plugin before contract processing begins.
+	@SuppressWarnings("NullAway.Init")
 	private File contractsDslDir;
 
 	/**
 	 * Test source directory where tests generated.
 	 */
+	// Always set by the Maven/Gradle plugin before contract processing begins.
+	@SuppressWarnings("NullAway.Init")
 	private File generatedTestSourcesDir;
 
 	/**
 	 * Test resource directory where additional resources for tests will be set.
 	 */
+	// Always set by the Maven/Gradle plugin before contract processing begins.
+	@SuppressWarnings("NullAway.Init")
 	private File generatedTestResourcesDir;
 
 	/**
 	 * Dir where the generated stubs from the contracts should be placed. You can then
 	 * mention them in your packaging task to create jar with stubs.
 	 */
+	// Always set by the Maven/Gradle plugin before contract processing begins.
+	@SuppressWarnings("NullAway.Init")
 	private File stubsOutputDir;
 
 	/**
@@ -143,7 +152,7 @@ public class ContractVerifierConfigProperties {
 	 * {@code ExampleV1Base}. As you can see it will take the two last folders to and
 	 * attach {@code Base} to its name.
 	 */
-	private String packageWithBaseClasses;
+	private @Nullable String packageWithBaseClasses;
 
 	/**
 	 * A way to override any base class mappings. The keys are regular expressions on the
@@ -158,7 +167,7 @@ public class ContractVerifierConfigProperties {
 	 * class will be the one provided in the map - in this case
 	 * {@code com.example.SomeBaseClass}
 	 */
-	private Map<String, String> baseClassMappings;
+	private @Nullable Map<String, String> baseClassMappings;
 
 	/**
 	 * If set to true then the {@code target} or {@code build} folders are getting
@@ -176,7 +185,7 @@ public class ContractVerifierConfigProperties {
 	private boolean failOnInProgress = true;
 
 	public TestFramework getTestFramework() {
-		return testFramework;
+		return this.testFramework;
 	}
 
 	public void setTestFramework(TestFramework testFramework) {
@@ -184,39 +193,39 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public TestMode getTestMode() {
-		return testMode;
+		return this.testMode;
 	}
 
 	public void setTestMode(TestMode testMode) {
 		this.testMode = testMode;
 	}
 
-	public String getBasePackageForTests() {
-		return basePackageForTests;
+	public @Nullable String getBasePackageForTests() {
+		return this.basePackageForTests;
 	}
 
 	public void setBasePackageForTests(String basePackageForTests) {
 		this.basePackageForTests = basePackageForTests;
 	}
 
-	public String getBaseClassForTests() {
-		return baseClassForTests;
+	public @Nullable String getBaseClassForTests() {
+		return this.baseClassForTests;
 	}
 
 	public void setBaseClassForTests(String baseClassForTests) {
 		this.baseClassForTests = baseClassForTests;
 	}
 
-	public String getNameSuffixForTests() {
-		return nameSuffixForTests;
+	public @Nullable String getNameSuffixForTests() {
+		return this.nameSuffixForTests;
 	}
 
 	public void setNameSuffixForTests(String nameSuffixForTests) {
 		this.nameSuffixForTests = nameSuffixForTests;
 	}
 
-	public String getRuleClassForTests() {
-		return ruleClassForTests;
+	public @Nullable String getRuleClassForTests() {
+		return this.ruleClassForTests;
 	}
 
 	public void setRuleClassForTests(String ruleClassForTests) {
@@ -224,7 +233,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public List<String> getExcludedFiles() {
-		return excludedFiles;
+		return this.excludedFiles;
 	}
 
 	public void setExcludedFiles(List<String> excludedFiles) {
@@ -232,7 +241,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public List<String> getIncludedFiles() {
-		return includedFiles;
+		return this.includedFiles;
 	}
 
 	public void setIncludedFiles(List<String> includedFiles) {
@@ -240,7 +249,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public List<String> getIgnoredFiles() {
-		return ignoredFiles;
+		return this.ignoredFiles;
 	}
 
 	public void setIgnoredFiles(List<String> ignoredFiles) {
@@ -248,7 +257,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String[] getImports() {
-		return imports;
+		return this.imports;
 	}
 
 	public void setImports(String[] imports) {
@@ -256,7 +265,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String[] getStaticImports() {
-		return staticImports;
+		return this.staticImports;
 	}
 
 	public void setStaticImports(String[] staticImports) {
@@ -264,7 +273,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public File getContractsDslDir() {
-		return contractsDslDir;
+		return this.contractsDslDir;
 	}
 
 	public void setContractsDslDir(File contractsDslDir) {
@@ -272,7 +281,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public File getGeneratedTestSourcesDir() {
-		return generatedTestSourcesDir;
+		return this.generatedTestSourcesDir;
 	}
 
 	public void setGeneratedTestSourcesDir(File generatedTestSourcesDir) {
@@ -280,7 +289,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public File getGeneratedTestResourcesDir() {
-		return generatedTestResourcesDir;
+		return this.generatedTestResourcesDir;
 	}
 
 	public void setGeneratedTestResourcesDir(File generatedTestResourcesDir) {
@@ -288,7 +297,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public File getStubsOutputDir() {
-		return stubsOutputDir;
+		return this.stubsOutputDir;
 	}
 
 	public void setStubsOutputDir(File stubsOutputDir) {
@@ -296,7 +305,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String getStubsSuffix() {
-		return stubsSuffix;
+		return this.stubsSuffix;
 	}
 
 	public void setStubsSuffix(String stubsSuffix) {
@@ -304,7 +313,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public Boolean getAssertJsonSize() {
-		return assertJsonSize;
+		return this.assertJsonSize;
 	}
 
 	public void setAssertJsonSize(Boolean assertJsonSize) {
@@ -312,7 +321,7 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String getIncludedContracts() {
-		return includedContracts;
+		return this.includedContracts;
 	}
 
 	public void setIncludedContracts(String includedContracts) {
@@ -320,23 +329,23 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public String getIncludedRootFolderAntPattern() {
-		return includedRootFolderAntPattern;
+		return this.includedRootFolderAntPattern;
 	}
 
 	public void setIncludedRootFolderAntPattern(String includedRootFolderAntPattern) {
 		this.includedRootFolderAntPattern = includedRootFolderAntPattern;
 	}
 
-	public String getPackageWithBaseClasses() {
-		return packageWithBaseClasses;
+	public @Nullable String getPackageWithBaseClasses() {
+		return this.packageWithBaseClasses;
 	}
 
 	public void setPackageWithBaseClasses(String packageWithBaseClasses) {
 		this.packageWithBaseClasses = packageWithBaseClasses;
 	}
 
-	public Map<String, String> getBaseClassMappings() {
-		return baseClassMappings;
+	public @Nullable Map<String, String> getBaseClassMappings() {
+		return this.baseClassMappings;
 	}
 
 	public void setBaseClassMappings(Map<String, String> baseClassMappings) {
@@ -344,11 +353,11 @@ public class ContractVerifierConfigProperties {
 	}
 
 	public boolean getExcludeBuildFolders() {
-		return excludeBuildFolders;
+		return this.excludeBuildFolders;
 	}
 
 	public boolean isExcludeBuildFolders() {
-		return excludeBuildFolders;
+		return this.excludeBuildFolders;
 	}
 
 	public void setExcludeBuildFolders(boolean excludeBuildFolders) {

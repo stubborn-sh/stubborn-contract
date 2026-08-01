@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
 import sh.stubborn.contract.spec.internal.OptionalProperty;
@@ -25,8 +26,10 @@ interface QueryParamsResolver {
 
 	/**
 	 * Converts the query parameter value into String.
+	 * @param value the query parameter value to resolve
+	 * @return the resolved string representation of the value
 	 */
-	default String resolveParamValue(Object value) {
+	default String resolveParamValue(@Nullable Object value) {
 		if (value instanceof QueryParameter) {
 			return resolveParamValue(((QueryParameter) value).getServerValue());
 		}
@@ -39,7 +42,7 @@ interface QueryParamsResolver {
 		else if (value instanceof DslProperty) {
 			return resolveParamValue(((DslProperty) value).getServerValue());
 		}
-		return value == null ? "null" : value.toString();
+		return (value != null) ? value.toString() : "null";
 	}
 
 }

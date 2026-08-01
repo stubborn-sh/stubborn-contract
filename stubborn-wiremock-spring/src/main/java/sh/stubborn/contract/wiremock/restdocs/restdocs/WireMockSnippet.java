@@ -26,8 +26,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.jspecify.annotations.Nullable;
-
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -36,6 +34,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -48,22 +47,6 @@ import org.springframework.restdocs.snippet.StandardWriterResolver;
 import org.springframework.restdocs.snippet.WriterResolver;
 import org.springframework.restdocs.templates.TemplateFormat;
 import org.springframework.util.StringUtils;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToXml;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.head;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath;
-import static com.github.tomakehurst.wiremock.client.WireMock.options;
-import static com.github.tomakehurst.wiremock.client.WireMock.patch;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.trace;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 /**
  * Represents a snippet for a WireMock stub.
@@ -147,7 +130,9 @@ public class WireMockSnippet implements Snippet {
 
 	private ResponseDefinitionBuilder response(Operation operation) {
 		String content = operation.getResponse().getContentAsString();
-		ResponseDefinitionBuilder response = aResponse().withHeaders(responseHeaders(operation)).withBody(content);
+		ResponseDefinitionBuilder response = WireMock.aResponse()
+			.withHeaders(responseHeaders(operation))
+			.withBody(content);
 		if (content != null && content.contains("localhost:{{request.requestLine.port}}")) {
 			response = response.withTransformers("response-template");
 		}
@@ -165,7 +150,7 @@ public class WireMockSnippet implements Snippet {
 		}
 		for (String queryPair : rawQuery.split("&")) {
 			String[] splitQueryPair = queryPair.split("=");
-			String value = splitQueryPair.length > 1 ? splitQueryPair[1] : "";
+			String value = (splitQueryPair.length > 1) ? splitQueryPair[1] : "";
 			request = request.withQueryParam(splitQueryPair[0], WireMock.equalTo(value));
 		}
 		return request;
@@ -173,7 +158,7 @@ public class WireMockSnippet implements Snippet {
 
 	private MappingBuilder requestCookies(MappingBuilder request, Operation operation) {
 		for (RequestCookie cookie : operation.getRequest().getCookies()) {
-			request = request.withCookie(cookie.getName(), equalTo(cookie.getValue()));
+			request = request.withCookie(cookie.getName(), WireMock.equalTo(cookie.getValue()));
 		}
 		return request;
 	}
@@ -186,11 +171,12 @@ public class WireMockSnippet implements Snippet {
 				if ("content-type".equalsIgnoreCase(name) && this.contentType != null) {
 					continue;
 				}
-				request = request.withHeader(name, equalTo(headers.getFirst(name)));
+				request = request.withHeader(name, WireMock.equalTo(headers.getFirst(name)));
 			}
 		}
 		if (this.contentType != null) {
-			request = request.withHeader("Content-Type", matching(Pattern.quote(this.contentType.toString()) + ".*"));
+			request = request.withHeader("Content-Type",
+					WireMock.matching(Pattern.quote(this.contentType.toString()) + ".*"));
 		}
 		return request;
 	}
@@ -198,28 +184,28 @@ public class WireMockSnippet implements Snippet {
 	private MappingBuilder requestBuilder(Operation operation) {
 		HttpMethod method = operation.getRequest().getMethod();
 		if (method.equals(HttpMethod.DELETE)) {
-			return delete(requestPattern(operation));
+			return WireMock.delete(requestPattern(operation));
 		}
 		else if (method.equals(HttpMethod.POST)) {
-			return bodyPattern(post(requestPattern(operation)), operation.getRequest().getContentAsString());
+			return bodyPattern(WireMock.post(requestPattern(operation)), operation.getRequest().getContentAsString());
 		}
 		else if (method.equals(HttpMethod.PUT)) {
-			return bodyPattern(put(requestPattern(operation)), operation.getRequest().getContentAsString());
+			return bodyPattern(WireMock.put(requestPattern(operation)), operation.getRequest().getContentAsString());
 		}
 		else if (method.equals(HttpMethod.PATCH)) {
-			return bodyPattern(patch(requestPattern(operation)), operation.getRequest().getContentAsString());
+			return bodyPattern(WireMock.patch(requestPattern(operation)), operation.getRequest().getContentAsString());
 		}
 		else if (method.equals(HttpMethod.GET)) {
-			return get(requestPattern(operation));
+			return WireMock.get(requestPattern(operation));
 		}
 		else if (method.equals(HttpMethod.HEAD)) {
-			return head(requestPattern(operation));
+			return WireMock.head(requestPattern(operation));
 		}
 		else if (method.equals(HttpMethod.OPTIONS)) {
-			return options(requestPattern(operation));
+			return WireMock.options(requestPattern(operation));
 		}
 		else if (method.equals(HttpMethod.TRACE)) {
-			return trace(requestPattern(operation));
+			return WireMock.trace(requestPattern(operation));
 		}
 		throw new UnsupportedOperationException("Unsupported method type: " + method);
 	}
@@ -227,25 +213,25 @@ public class WireMockSnippet implements Snippet {
 	private MappingBuilder bodyPattern(MappingBuilder builder, String content) {
 		if (this.jsonPaths != null && !this.jsonPaths.isEmpty()) {
 			for (String jsonPath : this.jsonPaths) {
-				builder.withRequestBody(matchingJsonPath(jsonPath));
+				builder.withRequestBody(WireMock.matchingJsonPath(jsonPath));
 			}
 		}
 		else if (!!StringUtils.hasText(content)) {
 			if (this.hasJsonBodyRequestToMatch) {
-				builder.withRequestBody(equalToJson(content));
+				builder.withRequestBody(WireMock.equalToJson(content));
 			}
 			else if (this.hasXmlBodyRequestToMatch) {
-				builder.withRequestBody(equalToXml(content));
+				builder.withRequestBody(WireMock.equalToXml(content));
 			}
 			else {
-				builder.withRequestBody(equalTo(content));
+				builder.withRequestBody(WireMock.equalTo(content));
 			}
 		}
 		return builder;
 	}
 
 	private UrlPattern requestPattern(Operation operation) {
-		return urlPathEqualTo(operation.getRequest().getUri().getPath());
+		return WireMock.urlPathEqualTo(operation.getRequest().getUri().getPath());
 	}
 
 	private HttpHeaders responseHeaders(Operation operation) {

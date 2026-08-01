@@ -96,7 +96,7 @@ public interface XmlVerifiable extends IteratingOverArray, XmlReader {
 
 	/**
 	 * Adds attribute query to xPath without comparing with any provided value.
-	 * @param attribute AttributeName
+	 * @param attribute attributeName
 	 * @return new {@code XmlVerifiable}
 	 */
 	XmlVerifiable withAttribute(String attribute);
@@ -209,6 +209,7 @@ public interface XmlVerifiable extends IteratingOverArray, XmlReader {
 	XmlVerifiable withoutThrowingException();
 
 	/**
+	 * Returns the current XPath expression.
 	 * @return current XPath expression
 	 */
 	String xPath();

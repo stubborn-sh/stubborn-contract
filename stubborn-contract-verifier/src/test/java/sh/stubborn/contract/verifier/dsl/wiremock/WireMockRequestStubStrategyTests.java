@@ -31,7 +31,7 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 /**
  * Tests for {@link WireMockRequestStubStrategy}.
@@ -81,9 +81,9 @@ class WireMockRequestStubStrategyTests {
 		Files.writeString(tmp.toPath(), yaml, StandardCharsets.UTF_8);
 		Contract contract = new YamlContractConverter().convertFrom(tmp).iterator().next();
 
-		when(metadata.getEvaluatedInputStubContentType()).thenReturn(ContentType.JSON);
+		given(this.metadata.getEvaluatedInputStubContentType()).willReturn(ContentType.JSON);
 
-		WireMockRequestStubStrategy subject = new WireMockRequestStubStrategy(contract, metadata);
+		WireMockRequestStubStrategy subject = new WireMockRequestStubStrategy(contract, this.metadata);
 		var content = subject.buildClientRequestContent();
 
 		assertThat(content.getHeaders().get("Content-Type").getExpected())

@@ -33,6 +33,7 @@ import sh.stubborn.contract.spec.internal.Response;
  * The definition of a Contract. Contains helper methods in Groovy left for backward
  * compatibility reasons.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class Contract {
@@ -293,7 +294,7 @@ public class Contract {
 	}
 
 	public @Nullable Integer getPriority() {
-		return priority;
+		return this.priority;
 	}
 
 	public void setPriority(@Nullable Integer priority) {
@@ -301,7 +302,7 @@ public class Contract {
 	}
 
 	public @Nullable Request getRequest() {
-		return request;
+		return this.request;
 	}
 
 	public void setRequest(@Nullable Request request) {
@@ -309,7 +310,7 @@ public class Contract {
 	}
 
 	public @Nullable Response getResponse() {
-		return response;
+		return this.response;
 	}
 
 	public void setResponse(@Nullable Response response) {
@@ -317,7 +318,7 @@ public class Contract {
 	}
 
 	public @Nullable String getLabel() {
-		return label;
+		return this.label;
 	}
 
 	public void setLabel(@Nullable String label) {
@@ -325,7 +326,7 @@ public class Contract {
 	}
 
 	public @Nullable String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(@Nullable String description) {
@@ -333,7 +334,7 @@ public class Contract {
 	}
 
 	public @Nullable String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(@Nullable String name) {
@@ -341,7 +342,7 @@ public class Contract {
 	}
 
 	public @Nullable Input getInput() {
-		return input;
+		return this.input;
 	}
 
 	public void setInput(@Nullable Input input) {
@@ -349,7 +350,7 @@ public class Contract {
 	}
 
 	public @Nullable OutputMessage getOutputMessage() {
-		return outputMessage;
+		return this.outputMessage;
 	}
 
 	public void setOutputMessage(@Nullable OutputMessage outputMessage) {
@@ -357,11 +358,11 @@ public class Contract {
 	}
 
 	public boolean getIgnored() {
-		return ignored;
+		return this.ignored;
 	}
 
 	public boolean isIgnored() {
-		return ignored;
+		return this.ignored;
 	}
 
 	public void setIgnored(boolean ignored) {
@@ -381,7 +382,7 @@ public class Contract {
 	}
 
 	public Map<String, Object> getMetadata() {
-		return metadata;
+		return this.metadata;
 	}
 
 	@Override
@@ -393,25 +394,26 @@ public class Contract {
 			return false;
 		}
 		Contract contract = (Contract) o;
-		return ignored == contract.ignored && Objects.equals(priority, contract.priority)
-				&& Objects.equals(request, contract.request) && Objects.equals(response, contract.response)
-				&& Objects.equals(label, contract.label) && Objects.equals(description, contract.description)
-				&& Objects.equals(name, contract.name) && Objects.equals(input, contract.input)
-				&& Objects.equals(metadata, contract.metadata) && Objects.equals(outputMessage, contract.outputMessage);
+		return this.ignored == contract.ignored && Objects.equals(this.priority, contract.priority)
+				&& Objects.equals(this.request, contract.request) && Objects.equals(this.response, contract.response)
+				&& Objects.equals(this.label, contract.label) && Objects.equals(this.description, contract.description)
+				&& Objects.equals(this.name, contract.name) && Objects.equals(this.input, contract.input)
+				&& Objects.equals(this.metadata, contract.metadata)
+				&& Objects.equals(this.outputMessage, contract.outputMessage);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(priority, request, response, label, description, name, input, outputMessage, metadata,
-				ignored);
+		return Objects.hash(this.priority, this.request, this.response, this.label, this.description, this.name,
+				this.input, this.outputMessage, this.metadata, this.ignored);
 	}
 
 	@Override
 	public String toString() {
-		return "Contract{" + "\npriority=" + priority + ", \n\trequest=" + request + ", \n\tresponse=" + response
-				+ ", \n\tlabel='" + label + '\'' + ", \n\tdescription='" + description + '\'' + ", \n\tname='" + name
-				+ '\'' + ", \n\tinput=" + input + ", \n\toutputMessage=" + outputMessage + ", \n\tignored=" + ignored
-				+ '}';
+		return "Contract{" + "\npriority=" + this.priority + ", \n\trequest=" + this.request + ", \n\tresponse="
+				+ this.response + ", \n\tlabel='" + this.label + '\'' + ", \n\tdescription='" + this.description + '\''
+				+ ", \n\tname='" + this.name + '\'' + ", \n\tinput=" + this.input + ", \n\toutputMessage="
+				+ this.outputMessage + ", \n\tignored=" + this.ignored + '}';
 	}
 
 }

@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.stubrunner.messaging.amqp;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Person pojo.
  *
@@ -23,11 +25,11 @@ package sh.stubborn.contract.stubrunner.messaging.amqp;
  */
 public class Person {
 
-	private Integer id;
+	private @Nullable Integer id;
 
-	private String name;
+	private @Nullable String name;
 
-	public Integer getId() {
+	public @Nullable Integer getId() {
 		return this.id;
 	}
 
@@ -35,7 +37,7 @@ public class Person {
 		this.id = id;
 	}
 
-	public String getName() {
+	public @Nullable String getName() {
 		return this.name;
 	}
 

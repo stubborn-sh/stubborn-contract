@@ -33,8 +33,7 @@ import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-
-import static sh.stubborn.contract.verifier.util.ContractVerifierDslConverter.convertAsCollection;
+import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 public class GeneratedTestClassTests {
 
@@ -119,16 +118,16 @@ public class GeneratedTestClassTests {
 
 	@BeforeEach
 	public void setup() throws IOException, URISyntaxException {
-		this.file = Files.createTempFile(tmpDir, "tmp", ".groovy").toFile();
+		this.file = Files.createTempFile(this.tmpDir, "tmp", ".groovy").toFile();
 		Files.write(this.file.toPath(), this.contract.getBytes());
-		this.tmp = Files.createTempDirectory(tmpDir, "tmp").toFile();
+		this.tmp = Files.createTempDirectory(this.tmpDir, "tmp").toFile();
 		File classpath = new File(GeneratedTestClassTests.class.getResource("/classpath/").toURI());
 		copyRecursively(classpath.toPath(), this.tmp.toPath());
 	}
 
 	private static void copyRecursively(Path src, Path dst) throws IOException {
 		try (Stream<Path> stream = Files.walk(src)) {
-			stream.forEach(source -> {
+			stream.forEach((source) -> {
 				Path destination = dst.resolve(src.relativize(source));
 				try {
 					if (Files.isDirectory(source)) {
@@ -138,8 +137,8 @@ public class GeneratedTestClassTests {
 						Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
 					}
 				}
-				catch (IOException e) {
-					throw new RuntimeException(e);
+				catch (IOException ex) {
+					throw new RuntimeException(ex);
 				}
 			});
 		}
@@ -152,7 +151,8 @@ public class GeneratedTestClassTests {
 		ContractVerifierConfigProperties configProperties = new ContractVerifierConfigProperties();
 		configProperties.setTestFramework(TestFramework.JUNIT5);
 		Collection<ContractMetadata> contracts = Collections.singletonList(
-				new ContractMetadata(this.file.toPath(), true, 1, 2, convertAsCollection(new File("/"), this.file)));
+				new ContractMetadata(this.file.toPath(), true, 1, 2,
+						ContractVerifierDslConverter.convertAsCollection(new File("/"), this.file)));
 		String includedDirectoryRelativePath = "some/path";
 		String convertedClassName = "fooBar";
 		String packageName = "test";

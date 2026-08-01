@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.text.StringEscapeUtils;
 import repackaged.nl.flotsam.xeger.Xeger;
 import tools.jackson.core.JsonPointer;
+import tools.jackson.core.json.JsonReadFeature;
 import tools.jackson.core.util.DefaultIndenter;
 import tools.jackson.core.util.DefaultPrettyPrinter;
 import tools.jackson.databind.JsonNode;
@@ -33,12 +35,6 @@ import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.IntNode;
 import tools.jackson.databind.node.ObjectNode;
 import tools.jackson.databind.node.StringNode;
-
-import static org.apache.commons.text.StringEscapeUtils.escapeJava;
-import static tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS;
-import static tools.jackson.core.json.JsonReadFeature.ALLOW_SINGLE_QUOTES;
-import static tools.jackson.core.json.JsonReadFeature.ALLOW_UNQUOTED_PROPERTY_NAMES;
-import static tools.jackson.core.json.JsonReadFeature.ALLOW_YAML_COMMENTS;
 
 /**
  * Converts WireMock stubs into the DSL format.
@@ -72,15 +68,16 @@ public class WireMockToDslConverter {
 	private static final JsonPointer RESPONSE_HEADERS_POINTER = JsonPointer.compile("/response/headers");
 
 	private static final JsonMapper OBJECT_MAPPER = JsonMapper.builder()
-		.configure(ALLOW_JAVA_COMMENTS, true)
-		.configure(ALLOW_YAML_COMMENTS, true)
-		.configure(ALLOW_UNQUOTED_PROPERTY_NAMES, true)
-		.configure(ALLOW_SINGLE_QUOTES, true)
+		.configure(JsonReadFeature.ALLOW_JAVA_COMMENTS, true)
+		.configure(JsonReadFeature.ALLOW_YAML_COMMENTS, true)
+		.configure(JsonReadFeature.ALLOW_UNQUOTED_PROPERTY_NAMES, true)
+		.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES, true)
 		.build();
 
 	/**
 	 * Returns the string content of the contract.
 	 * @param wireMockStringStub - string content of the WireMock JSON stub
+	 * @return the contract DSL string content
 	 */
 	public static String fromWireMockStub(String wireMockStringStub) {
 		return new WireMockToDslConverter().convertFromWireMockStub(wireMockStringStub);
@@ -100,8 +97,8 @@ public class WireMockToDslConverter {
 		try {
 			return OBJECT_MAPPER.reader().readTree(wireMockStringStub);
 		}
-		catch (Exception e) {
-			throw new RuntimeException("WireMock string stub could not be read", e);
+		catch (Exception ex) {
+			throw new RuntimeException("WireMock string stub could not be read", ex);
 		}
 	}
 
@@ -145,7 +142,7 @@ public class WireMockToDslConverter {
 		String requestUrlPattern = "";
 		JsonNode requestUrlPatternNode = wireMockStub.at(REQUEST_URL_PATTERN_POINTER);
 		if (!requestUrlPatternNode.isMissingNode()) {
-			String escapedRequestUrlPatternValue = escapeJava(requestUrlPatternNode.asString());
+			String escapedRequestUrlPatternValue = StringEscapeUtils.escapeJava(requestUrlPatternNode.asString());
 			requestUrlPattern = "url $(consumer(regex('" + escapedRequestUrlPatternValue + "')), producer('"
 					+ new Xeger(escapedRequestUrlPatternValue).generate() + "'))\n";
 		}
@@ -156,7 +153,8 @@ public class WireMockToDslConverter {
 		String requestUrlPathPattern = "";
 		JsonNode requestUrlPathPatternNode = wireMockStub.at(REQUEST_URL_PATH_PATTERN_POINTER);
 		if (!requestUrlPathPatternNode.isMissingNode()) {
-			String escapedRequestUrlPathPatternValue = escapeJava(requestUrlPathPatternNode.asString());
+			String escapedRequestUrlPathPatternValue = StringEscapeUtils
+				.escapeJava(requestUrlPathPatternNode.asString());
 			requestUrlPathPattern = "urlPath $(consumer(regex('" + escapedRequestUrlPathPatternValue + "')), producer('"
 					+ new Xeger(escapedRequestUrlPathPatternValue).generate() + "'))'\n";
 		}
@@ -171,7 +169,7 @@ public class WireMockToDslConverter {
 			requestHeadersBuilder.append("headers {\n");
 			JsonNode requestHeadersObjectNode = requestHeadersNode.deepCopy();
 			Set<Map.Entry<String, JsonNode>> fields = requestHeadersObjectNode.properties();
-			fields.forEach(c -> {
+			fields.forEach((c) -> {
 				requestHeadersBuilder.append("header('").append(c.getKey()).append("',");
 				ObjectNode headersNode = (ObjectNode) c.getValue().deepCopy();
 				Iterator<Map.Entry<String, JsonNode>> headersNodeIterator = headersNode.properties().iterator();
@@ -192,9 +190,9 @@ public class WireMockToDslConverter {
 				return "'" + value + "'";
 			case "contains":
 				String regex = "^.*" + value + ".*$";
-				return "c(regex('" + escapeJava(regex) + "'))";
+				return "c(regex('" + StringEscapeUtils.escapeJava(regex) + "'))";
 			default:
-				return "c(regex('" + escapeJava(value) + "'))";
+				return "c(regex('" + StringEscapeUtils.escapeJava(value) + "'))";
 		}
 	}
 
@@ -207,25 +205,25 @@ public class WireMockToDslConverter {
 			List<Map.Entry<String, JsonNode>> requestBodyObjectNodes = new ArrayList<>();
 
 			elements.stream()
-				.filter(f -> f instanceof ObjectNode)
-				.map(f -> (ObjectNode) f)
+				.filter((f) -> f instanceof ObjectNode)
+				.map((f) -> (ObjectNode) f)
 				.map(ObjectNode::properties)
 				.forEachOrdered(requestBodyObjectNodes::addAll);
 			requestBodyObjectNodes.stream()
-				.filter(b -> b.getKey().equals("equalTo"))
+				.filter((b) -> b.getKey().equals("equalTo"))
 				.findFirst()
-				.ifPresent(b -> requestBody.append("body ('").append(b.getValue().asString()).append("')"));
+				.ifPresent((b) -> requestBody.append("body ('").append(b.getValue().asString()).append("')"));
 			requestBodyObjectNodes.stream()
-				.filter(b -> b.getKey().equals("equalToJson"))
+				.filter((b) -> b.getKey().equals("equalToJson"))
 				.findFirst()
-				.ifPresent(b -> requestBody.append("body ('").append(b.getValue().asString()).append("')"));
+				.ifPresent((b) -> requestBody.append("body ('").append(b.getValue().asString()).append("')"));
 			requestBodyObjectNodes.stream()
-				.filter(b -> b.getKey().equals("matches"))
+				.filter((b) -> b.getKey().equals("matches"))
 				.findFirst()
-				.ifPresent(b -> requestBody.append("body $(consumer(regex('")
-					.append(escapeJava(b.getValue().asString()))
+				.ifPresent((b) -> requestBody.append("body $(consumer(regex('")
+					.append(StringEscapeUtils.escapeJava(b.getValue().asString()))
 					.append("')), producer('")
-					.append(new Xeger(escapeJava(b.getValue().asString())).generate())
+					.append(new Xeger(StringEscapeUtils.escapeJava(b.getValue().asString())).generate())
 					.append("'))"));
 		}
 		return requestBody.toString();
@@ -245,10 +243,12 @@ public class WireMockToDslConverter {
 		String responseBody = "";
 		JsonNode responseBodyNode = wireMockStub.at(RESPONSE_BODY_POINTER);
 		if (responseBodyNode.isInt()) {
-			responseBody += "body( " + escapeJava(buildPrettyPrintResponseBody((IntNode) responseBodyNode)) + ")\n";
+			responseBody += "body( "
+					+ StringEscapeUtils.escapeJava(buildPrettyPrintResponseBody((IntNode) responseBodyNode)) + ")\n";
 		}
 		if (responseBodyNode.isString()) {
-			responseBody += "body( \"" + escapeJava(buildPrettyPrintResponseBody((StringNode) responseBodyNode))
+			responseBody += "body( \""
+					+ StringEscapeUtils.escapeJava(buildPrettyPrintResponseBody((StringNode) responseBodyNode))
 					+ "\")\n";
 		}
 		return responseBody;
@@ -268,8 +268,8 @@ public class WireMockToDslConverter {
 				.with(new DefaultPrettyPrinter().withArrayIndenter(customIndenter).withObjectIndenter(customIndenter))
 				.writeValueAsString(intermediateObjectForPrettyPrinting);
 		}
-		catch (Exception e) {
-			throw new RuntimeException("WireMock response body could not be pretty printed", e);
+		catch (Exception ex) {
+			throw new RuntimeException("WireMock response body could not be pretty printed", ex);
 		}
 	}
 
@@ -281,7 +281,7 @@ public class WireMockToDslConverter {
 			responseHeadersBuilder.append("headers {\n");
 			JsonNode responseHeadersObjectNode = requestHeadersNode.deepCopy();
 			Set<Map.Entry<String, JsonNode>> fields = responseHeadersObjectNode.properties();
-			fields.forEach(c -> responseHeadersBuilder.append("header('")
+			fields.forEach((c) -> responseHeadersBuilder.append("header('")
 				.append(c.getKey())
 				.append("',")
 				.append("'")

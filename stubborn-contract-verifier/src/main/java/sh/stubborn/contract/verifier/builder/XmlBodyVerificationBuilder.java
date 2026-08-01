@@ -18,8 +18,10 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
@@ -42,11 +44,11 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 		this.lineSuffix = lineSuffix;
 	}
 
-	void addXmlResponseBodyCheck(BlockBuilder blockBuilder, Object responseBody, BodyMatchers bodyMatchers,
+	void addXmlResponseBodyCheck(BlockBuilder blockBuilder, Object responseBody, @Nullable BodyMatchers bodyMatchers,
 			String responseString, boolean shouldCommentOutBDDBlocks) {
 		addXmlProcessingLines(blockBuilder, responseString);
 		Object processedBody = XmlToXPathsConverter.removeMatchingXPaths(responseBody, bodyMatchers);
-		List<BodyMatcher> matchers = new XmlToXPathsConverter().mapToMatchers(processedBody);
+		List<BodyMatcher> matchers = XmlToXPathsConverter.mapToMatchers(processedBody);
 		if (bodyMatchers != null && bodyMatchers.hasMatchers()) {
 			matchers.addAll(bodyMatchers.matchers());
 		}
@@ -63,7 +65,7 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 							+ ")))")
 			.forEach((it) -> {
 				blockBuilder.addLine(it);
-				addColonIfRequired(lineSuffix, blockBuilder);
+				addColonIfRequired(this.lineSuffix, blockBuilder);
 			});
 	}
 
@@ -72,25 +74,26 @@ class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 		String quotedAndEscapedPath = quotedAndEscaped(bodyMatcher.path());
 		String method = "assertThat(nodeFromXPath(parsedXml, " + quotedAndEscapedPath + ")).isNull()";
 		bb.addLine(method.replace("$", "\\$"));
-		addColonIfRequired(lineSuffix, bb);
+		addColonIfRequired(this.lineSuffix, bb);
 	}
 
 	@Override
 	public void methodForEqualityCheck(BodyMatcher bodyMatcher, BlockBuilder bb, Object body) {
 		Object retrievedValue = quotedAndEscaped(XmlToXPathsConverter.retrieveValue(bodyMatcher, body));
-		String comparisonMethod = bodyMatcher.matchingType().equals(MatchingType.EQUALITY) ? "isEqualTo" : "matches";
+		String comparisonMethod = Objects.requireNonNull(bodyMatcher.matchingType()).equals(MatchingType.EQUALITY)
+				? "isEqualTo" : "matches";
 		String method = "assertThat(valueFromXPath(parsedXml, " + quotedAndEscaped(bodyMatcher.path()) + "))."
 				+ comparisonMethod + "(" + retrievedValue + ")";
 		bb.addLine(method.replace("$", "\\$"));
-		addColonIfRequired(lineSuffix, bb);
+		addColonIfRequired(this.lineSuffix, bb);
 	}
 
 	@Override
 	public void methodForCommandExecution(BodyMatcher bodyMatcher, BlockBuilder bb, Object body) {
 		Object retrievedValue = quotedAndEscaped(XmlToXPathsConverter.retrieveValueFromBody(bodyMatcher.path(), body));
-		ExecutionProperty property = (ExecutionProperty) bodyMatcher.value();
+		ExecutionProperty property = (ExecutionProperty) Objects.requireNonNull(bodyMatcher.value());
 		bb.addLine(property.insertValue(((String) retrievedValue).replace("$", "\\$")));
-		addColonIfRequired(lineSuffix, bb);
+		addColonIfRequired(this.lineSuffix, bb);
 	}
 
 	@Override

@@ -44,7 +44,8 @@ public class StreamStubMessages implements MessageVerifierSender<Message<?>>, Me
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, @Nullable YamlContract contract) {
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
 		this.sender.send(payload, headers, destination, contract);
 	}
 

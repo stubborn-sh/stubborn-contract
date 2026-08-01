@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import sh.stubborn.contract.spec.internal.Cookie;
@@ -32,13 +33,14 @@ interface CookieElementProcessor {
 	ComparisonBuilder comparisonBuilder();
 
 	default void processCookies(SingleContractMetadata metadata) {
-		Response response = metadata.getContract().getResponse();
-		Cookies cookies = response.getCookies();
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
+		Cookies cookies = Objects.requireNonNull(response.getCookies());
 		Iterator<Cookie> iterator = cookies.getEntries().iterator();
 		while (iterator.hasNext()) {
 			Cookie cookie = iterator.next();
-			String text = processCookieElement(cookie.getKey(), cookie.getServerValue() instanceof NotToEscapePattern
-					? cookie.getServerValue() : MapConverter.getTestSideValues(cookie.getServerValue()));
+			String text = processCookieElement(cookie.getKey(),
+					(cookie.getServerValue() instanceof NotToEscapePattern) ? cookie.getServerValue()
+							: MapConverter.getTestSideValues(Objects.requireNonNull(cookie.getServerValue())));
 			if (iterator.hasNext()) {
 				blockBuilder().addLine(text).addEndingIfNotPresent();
 			}
@@ -53,8 +55,10 @@ interface CookieElementProcessor {
 	default String processCookieElement(String property, Object value) {
 		if (value instanceof NotToEscapePattern) {
 			verifyCookieNotNull(property);
-			return comparisonBuilder().assertThat(cookieValue(property)) + comparisonBuilder()
-				.matches(((NotToEscapePattern) value).getServerValue().pattern().replace("\\", "\\\\"));
+			return comparisonBuilder().assertThat(cookieValue(property))
+					+ comparisonBuilder().matches(Objects.requireNonNull(((NotToEscapePattern) value).getServerValue())
+						.pattern()
+						.replace("\\", "\\\\"));
 		}
 		else if (value instanceof String || value instanceof Pattern) {
 			verifyCookieNotNull(property);

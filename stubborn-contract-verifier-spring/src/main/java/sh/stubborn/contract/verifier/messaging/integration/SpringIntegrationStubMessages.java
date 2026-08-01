@@ -51,8 +51,9 @@ public class SpringIntegrationStubMessages
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, @Nullable YamlContract contract) {
-		send(this.builder.create(payload, headers), destination, contract);
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
+		send(this.builder.create(payload, (headers != null) ? headers : Map.of()), destination, contract);
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public class SpringIntegrationStubMessages
 			sendMethod.invoke(inputDestination, message, destination);
 			return true;
 		}
-		catch (Exception ignored) {
+		catch (ReflectiveOperationException | RuntimeException ignored) {
 			return false;
 		}
 	}
@@ -131,7 +132,7 @@ public class SpringIntegrationStubMessages
 					String.class);
 			return (Message<?>) receiveMethod.invoke(outputDestination, timeoutMillis, destination);
 		}
-		catch (Exception ignored) {
+		catch (ReflectiveOperationException | RuntimeException ignored) {
 			return null;
 		}
 	}

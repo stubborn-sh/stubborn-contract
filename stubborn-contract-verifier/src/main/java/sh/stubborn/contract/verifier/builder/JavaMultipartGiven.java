@@ -17,14 +17,15 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Map;
+import java.util.Objects;
 
+import sh.stubborn.contract.spec.internal.Multipart;
 import sh.stubborn.contract.spec.internal.NamedProperty;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
+import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.MapConverter;
-
-import static sh.stubborn.contract.verifier.util.ContentUtils.getJavaMultipartFileParameterContent;
 
 class JavaMultipartGiven implements Given, RestAssuredAcceptor {
 
@@ -61,12 +62,14 @@ class JavaMultipartGiven implements Given, RestAssuredAcceptor {
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getMultipartParameters(SingleContractMetadata metadata) {
-		return (Map<String, Object>) metadata.getContract().getRequest().getMultipart().getServerValue();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
+		Multipart multipart = Objects.requireNonNull(request.getMultipart());
+		return (Map<String, Object>) Objects.requireNonNull(multipart.getServerValue());
 	}
 
 	private String getMultipartFileParameterContent(SingleContractMetadata metadata, String propertyName,
 			NamedProperty propertyValue) {
-		return getJavaMultipartFileParameterContent(propertyName, propertyValue,
+		return ContentUtils.getJavaMultipartFileParameterContent(propertyName, propertyValue,
 				(fileProp) -> this.bodyReader.readBytesFromFileString(metadata, fileProp, CommunicationType.REQUEST));
 	}
 

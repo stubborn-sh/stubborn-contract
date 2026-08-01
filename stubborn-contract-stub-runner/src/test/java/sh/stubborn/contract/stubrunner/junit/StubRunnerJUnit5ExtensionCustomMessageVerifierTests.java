@@ -19,11 +19,11 @@ package sh.stubborn.contract.stubrunner.junit;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
@@ -59,7 +59,7 @@ class StubRunnerJUnit5ExtensionCustomMessageVerifierTests {
 				.toURI()
 				.toString();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return "";
 		}
 	}
@@ -77,25 +77,27 @@ class StubRunnerJUnit5ExtensionCustomMessageVerifierTests {
 		assertThat(wrongLabelWithIvyNotation.getMessage()).contains("Failed to send a message with headers");
 	}
 
-	static class MyMessageVerifier implements MessageVerifierSender, MessageVerifierReceiver {
+	static class MyMessageVerifier implements MessageVerifierSender<Object>, MessageVerifierReceiver<Object> {
 
 		@Override
-		public void send(Object message, String destination, YamlContract contract) {
+		public void send(Object message, String destination, @Nullable YamlContract contract) {
 			throw new IllegalStateException("Failed to send a message");
 		}
 
 		@Override
-		public Object receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+		public @Nullable Object receive(String destination, long timeout, TimeUnit timeUnit,
+				@Nullable YamlContract contract) {
 			throw new IllegalStateException("Failed to receive a message with timeout");
 		}
 
 		@Override
-		public Object receive(String destination, YamlContract contract) {
+		public @Nullable Object receive(String destination, @Nullable YamlContract contract) {
 			throw new IllegalStateException("Failed to receive a message");
 		}
 
 		@Override
-		public void send(Object payload, Map headers, String destination, YamlContract contract) {
+		public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+				@Nullable YamlContract contract) {
 			throw new IllegalStateException("Failed to send a message with headers");
 		}
 

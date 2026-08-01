@@ -19,35 +19,41 @@ package sh.stubborn.contract.stubrunner.junit;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
 /**
+ * Message verifier that throws on every operation, used as a default when none is
+ * provided.
+ *
  * @author Olga Maciaszek-Sharma
  * @since 2.1.0
  */
-class ExceptionThrowingMessageVerifier implements MessageVerifierSender, MessageVerifierReceiver {
+class ExceptionThrowingMessageVerifier implements MessageVerifierSender<Object>, MessageVerifierReceiver<Object> {
 
 	private static final String EXCEPTION_MESSAGE = "Please provide a custom MessageVerifier to use this feature";
 
 	@Override
-	public void send(Object message, String destination, YamlContract contract) {
+	public void send(Object message, String destination, @Nullable YamlContract contract) {
 		throw new UnsupportedOperationException(EXCEPTION_MESSAGE);
 	}
 
 	@Override
-	public Object receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+	public @Nullable Object receive(String destination, long timeout, TimeUnit timeUnit,
+			@Nullable YamlContract contract) {
 		throw new UnsupportedOperationException(EXCEPTION_MESSAGE);
 	}
 
 	@Override
-	public Object receive(String destination, YamlContract contract) {
+	public @Nullable Object receive(String destination, @Nullable YamlContract contract) {
 		throw new UnsupportedOperationException(EXCEPTION_MESSAGE);
 	}
 
 	@Override
-	public void send(Object payload, Map headers, String destination, YamlContract contract) {
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
 		throw new UnsupportedOperationException(EXCEPTION_MESSAGE);
 	}
 

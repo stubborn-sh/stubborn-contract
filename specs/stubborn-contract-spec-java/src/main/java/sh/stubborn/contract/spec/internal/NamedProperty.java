@@ -117,12 +117,13 @@ public class NamedProperty {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, value, contentType);
+		return Objects.hash(this.name, this.value, this.contentType);
 	}
 
 	@Override
 	public String toString() {
-		return "NamedProperty{" + "name=" + name + ", value=" + value + ", contentType=" + contentType + '}';
+		return "NamedProperty{" + "name=" + this.name + ", value=" + this.value + ", contentType=" + this.contentType
+				+ '}';
 	}
 
 }

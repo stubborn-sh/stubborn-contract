@@ -24,6 +24,8 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 /**
  * Adds a label, proper indents and line endings for the body of a method.
+ *
+ * @author Marcin Grzejszczak
  */
 interface BodyMethodVisitor {
 
@@ -98,7 +100,7 @@ interface BodyMethodVisitor {
 		Iterator<MethodVisitor> iterator = visitors.iterator();
 		while (iterator.hasNext()) {
 			MethodVisitor visitor = iterator.next();
-			var unused = visitor.apply(singleContractMetadata);
+			visitor.apply(singleContractMetadata);
 			if (iterator.hasNext()) {
 				blockBuilder.addEmptyLine();
 			}
@@ -117,7 +119,7 @@ interface BodyMethodVisitor {
 		Iterator<MethodVisitor> iterator = visitors.iterator();
 		while (iterator.hasNext()) {
 			MethodVisitor visitor = iterator.next();
-			var unused = visitor.apply(singleContractMetadata);
+			visitor.apply(singleContractMetadata);
 			blockBuilder.addEndingIfNotPresent();
 			if (iterator.hasNext()) {
 				blockBuilder.addEmptyLine();

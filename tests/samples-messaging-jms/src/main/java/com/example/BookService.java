@@ -43,7 +43,7 @@ public class BookService {
 	@JmsListener(destination = "input2")
 	public void returnBook() {
 		BookReturned bookReturned = new BookReturned("foo");
-		jmsTemplate.convertAndSend("output2", "{\"bookName\":\"foo\"}", message -> {
+		this.jmsTemplate.convertAndSend("output2", "{\"bookName\":\"foo\"}", (message) -> {
 			message.setStringProperty("BOOKNAME", bookReturned.bookName);
 			return message;
 		});

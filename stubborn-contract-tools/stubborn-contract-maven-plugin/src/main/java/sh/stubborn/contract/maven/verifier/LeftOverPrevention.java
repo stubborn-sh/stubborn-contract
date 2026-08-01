@@ -34,6 +34,8 @@ import org.apache.maven.shared.incremental.IncrementalBuildHelperRequest;
  * 3. Contract is deleted
  *
  * 4. Derived file still exists
+ *
+ * @author Marcin Grzejszczak
  */
 class LeftOverPrevention {
 
@@ -50,9 +52,9 @@ class LeftOverPrevention {
 	}
 
 	void deleteLeftOvers() throws MojoExecutionException {
-		if (generatedDirectory.exists()) {
-			incrementalBuildHelper
-				.afterRebuildExecution(new IncrementalBuildHelperRequest().outputDirectory(generatedDirectory));
+		if (this.generatedDirectory.exists()) {
+			this.incrementalBuildHelper
+				.afterRebuildExecution(new IncrementalBuildHelperRequest().outputDirectory(this.generatedDirectory));
 		}
 	}
 

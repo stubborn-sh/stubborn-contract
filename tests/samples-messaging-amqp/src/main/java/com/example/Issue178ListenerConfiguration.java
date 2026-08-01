@@ -32,6 +32,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Listener configuration reproducing issue 178.
+ *
  * @author Marcin Grzejszczak
  */
 @Configuration
@@ -49,7 +51,7 @@ class Issue178ListenerConfiguration {
 
 	@Bean
 	MessageListener exampleListener(final RabbitTemplate rabbitTemplate) {
-		return message -> {
+		return (message) -> {
 			System.out.println("received: " + message);
 			String payload = new ObjectMapper()
 				.writeValueAsString(new MyPojo("992e46d8-ab05-4a26-a740-6ef7b0daeab3", "CREATED"));
@@ -79,22 +81,6 @@ class Issue178ListenerConfiguration {
 		return BindingBuilder.bind(issue178InputQueue())
 			.to(issue178InputExchange())
 			.with("rated-item-service.rated-item-event.exchange");
-	}
-
-	static class MyPojo {
-
-		public String ratedItemId;
-
-		public String eventType;
-
-		MyPojo(String ratedItemId, String eventType) {
-			this.ratedItemId = ratedItemId;
-			this.eventType = eventType;
-		}
-
-		MyPojo() {
-		}
-
 	}
 
 }

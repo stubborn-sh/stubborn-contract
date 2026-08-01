@@ -28,9 +28,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStub;
 import sh.stubborn.contract.verifier.converter.RecursiveFilesConverter;
 import sh.stubborn.contract.verifier.converter.StubGenerator;
@@ -38,11 +41,11 @@ import sh.stubborn.contract.verifier.converter.StubGeneratorProvider;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
 
-import java.util.ServiceLoader;
-
 /**
  * Factory of StubRunners. Basing on the options and passed collaborators downloads the
  * stubs and returns a list of corresponding stub runners.
+ *
+ * @author Marcin Grzejszczak
  */
 class StubRunnerFactory {
 
@@ -61,7 +64,7 @@ class StubRunnerFactory {
 		this.contractVerifierMessaging = contractVerifierMessaging;
 	}
 
-	public Collection<StubRunner> createStubsFromServiceConfiguration() {
+	Collection<StubRunner> createStubsFromServiceConfiguration() {
 		if (log.isDebugEnabled()) {
 			log.debug("Will download stubs for dependencies " + this.stubRunnerOptions.getDependencies());
 		}
@@ -86,7 +89,7 @@ class StubRunnerFactory {
 					}
 					generateMappingsAtRuntime(path);
 				}
-				result.add(createStubRunner(entry.getKey(), unpackedLocation));
+				result.add(Objects.requireNonNull(createStubRunner(entry.getKey(), unpackedLocation)));
 			}
 		}
 		return result;
@@ -133,15 +136,16 @@ class StubRunnerFactory {
 					File potentialStubMapping = file.toFile();
 					Collection<StubGenerator> stubGenerators = this.provider
 						.allOrDefault(new DslToWireMockClientConverter());
-					if (stubGenerators.stream().anyMatch(s -> s.canReadStubMapping(potentialStubMapping))) {
-						if (log.isDebugEnabled()) {
-							log.debug("Deleting file [" + file.toString() + "] since it contains a valid mapping.");
+					if (stubGenerators.stream().anyMatch((s) -> s.canReadStubMapping(potentialStubMapping))) {
+						if (this.log.isDebugEnabled()) {
+							this.log
+								.debug("Deleting file [" + file.toString() + "] since it contains a valid mapping.");
 						}
 						try {
 							Files.delete(file);
 						}
 						catch (IOException ex) {
-							log.warn("Failed to delete file [" + file.toString() + "]", ex);
+							this.log.warn("Failed to delete file [" + file.toString() + "]", ex);
 						}
 					}
 					return FileVisitResult.CONTINUE;
@@ -169,7 +173,7 @@ class StubRunnerFactory {
 		return unpackedLocation;
 	}
 
-	private StubRunner createStubRunner(StubConfiguration stubsConfiguration, File unzipedStubDir) {
+	private @Nullable StubRunner createStubRunner(StubConfiguration stubsConfiguration, @Nullable File unzipedStubDir) {
 		if (unzipedStubDir == null) {
 			return null;
 		}

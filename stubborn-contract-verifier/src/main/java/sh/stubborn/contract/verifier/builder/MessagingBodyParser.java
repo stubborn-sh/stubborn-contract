@@ -16,11 +16,20 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 interface MessagingBodyParser extends BodyParser {
+
+	/**
+	 * Shared Java messaging body parser instance.
+	 */
+	MessagingBodyParser INSTANCE = new MessagingBodyParser() {
+	};
 
 	default String responseAsString() {
 		return "contractVerifierObjectMapper.writeValueAsString(response.getPayload())";
@@ -31,13 +40,13 @@ interface MessagingBodyParser extends BodyParser {
 	}
 
 	@Override
-	default DslProperty responseBody(SingleContractMetadata metadata) {
-		return metadata.getContract().getOutputMessage().getBody();
+	default @Nullable DslProperty responseBody(SingleContractMetadata metadata) {
+		return Objects.requireNonNull(metadata.getContract().getOutputMessage()).getBody();
 	}
 
 	@Override
-	default BodyMatchers responseBodyMatchers(SingleContractMetadata metadata) {
-		return metadata.getContract().getOutputMessage().getBodyMatchers();
+	default @Nullable BodyMatchers responseBodyMatchers(SingleContractMetadata metadata) {
+		return Objects.requireNonNull(metadata.getContract().getOutputMessage()).getBodyMatchers();
 	}
 
 }

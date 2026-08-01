@@ -16,12 +16,11 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
-
-import static sh.stubborn.contract.verifier.util.ContentType.JSON;
-import static sh.stubborn.contract.verifier.util.ContentType.XML;
 
 class GenericTextBodyThen implements Then {
 
@@ -66,9 +65,10 @@ class GenericTextBodyThen implements Then {
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
 		ContentType outputTestContentType = metadata.getOutputTestContentType();
-		return outputTestContentType != JSON && outputTestContentType != XML
+		return outputTestContentType != ContentType.JSON && outputTestContentType != ContentType.XML
 				&& this.bodyParser.responseBody(metadata) != null
-				&& !(this.bodyParser.responseBody(metadata).getServerValue() instanceof FromFileProperty);
+				&& !(Objects.requireNonNull(this.bodyParser.responseBody(metadata))
+					.getServerValue() instanceof FromFileProperty);
 	}
 
 }

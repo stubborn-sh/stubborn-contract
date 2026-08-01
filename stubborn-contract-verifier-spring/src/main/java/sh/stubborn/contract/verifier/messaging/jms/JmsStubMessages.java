@@ -60,7 +60,7 @@ class JmsStubMessages implements sh.stubborn.contract.verifier.messaging.Message
 	public void send(Object payload, @Nullable Map headers, String destination, @Nullable YamlContract contract) {
 		this.jmsTemplate.send(destination, (session) -> {
 			Message message = createMessage(session, payload);
-			setHeaders(message, (headers == null) ? Collections.emptyMap() : headers);
+			setHeaders(message, (headers != null) ? headers : Collections.emptyMap());
 			return message;
 		});
 	}

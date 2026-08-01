@@ -44,6 +44,8 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
 /**
+ * Generates documentation snippets describing the contract DSL properties.
+ *
  * @author Marcin Grzejszczak
  */
 public class Main {
@@ -120,7 +122,7 @@ public class Main {
 					.append("```json\n").append(generateJsonSchemaForClass(metadatum)).append("\n```\n")
 					.append("+++ </div></details> +++\n\n")
 					.append("If you are interested in learning more about the types and its properties, check out the following classes:\n\n")
-					.append(additionalClasses.stream().map(aClass -> "* `" + aClass.getName() + "`").collect(Collectors.joining("\n")))
+					.append(additionalClasses.stream().map((aClass) -> "* `" + aClass.getName() + "`").collect(Collectors.joining("\n")))
 					.append("\n\n");
 			// @formatter:on
 		}

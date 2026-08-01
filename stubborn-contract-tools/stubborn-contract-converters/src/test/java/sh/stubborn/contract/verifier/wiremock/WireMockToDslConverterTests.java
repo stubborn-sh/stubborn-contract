@@ -18,11 +18,12 @@ package sh.stubborn.contract.verifier.wiremock;
 
 import java.io.File;
 import java.util.Collection;
-
-import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.spec.Contract;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.RegexProperty;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
@@ -89,7 +90,8 @@ class WireMockToDslConverterTests {
 						""");
 		String groovyDsl = WireMockToDslConverter.fromWireMockStub(wireMockStub);
 		Contract actual = fromGroovyDsl(groovyDsl);
-		assertThat(actual.getRequest().getMethod()).isEqualTo(expected.getRequest().getMethod());
+		assertThat(Objects.requireNonNull(actual.getRequest()).getMethod())
+			.isEqualTo(Objects.requireNonNull(expected.getRequest()).getMethod());
 		assertThat(actual.getRequest().getUrl()).isEqualTo(expected.getRequest().getUrl());
 		String actualCustomHeaderPattern = findHeaderClientPattern(actual, "X-Custom-Header");
 		String expectedCustomHeaderPattern = findHeaderClientPattern(expected, "X-Custom-Header");
@@ -97,8 +99,8 @@ class WireMockToDslConverterTests {
 		String actualAcceptPattern = findHeaderClientPattern(actual, "Accept");
 		String expectedAcceptPattern = findHeaderClientPattern(expected, "Accept");
 		assertThat(actualAcceptPattern).isEqualTo(expectedAcceptPattern);
-		assertThat(StringUtils.trimAllWhitespace(actual.getResponse().toString()))
-			.isEqualTo(StringUtils.trimAllWhitespace(expected.getResponse().toString()));
+		assertThat(StringUtils.trimAllWhitespace(Objects.requireNonNull(actual.getResponse()).toString()))
+			.isEqualTo(StringUtils.trimAllWhitespace(Objects.requireNonNull(expected.getResponse()).toString()));
 	}
 
 	@Test
@@ -144,8 +146,10 @@ class WireMockToDslConverterTests {
 			.convertAsCollection(new File("/"), "sh.stubborn.contract.spec.Contract.make {\n" + groovyDsl + "\n}")
 			.iterator()
 			.next();
-		String actualPattern = patternOf(actual.getRequest().getUrl().getClientValue());
-		String expectedPattern = patternOf(expected.getRequest().getUrl().getClientValue());
+		String actualPattern = patternOf(
+				Objects.requireNonNull(Objects.requireNonNull(actual.getRequest()).getUrl()).getClientValue());
+		String expectedPattern = patternOf(
+				Objects.requireNonNull(Objects.requireNonNull(expected.getRequest()).getUrl()).getClientValue());
 		assertThat(actualPattern).isEqualTo(expectedPattern);
 	}
 
@@ -361,8 +365,10 @@ class WireMockToDslConverterTests {
 				""");
 		String groovyDsl = WireMockToDslConverter.fromWireMockStub(wireMockStub);
 		Contract actual = fromGroovyDsl(groovyDsl);
-		assertThat(patternOf(actual.getRequest().getBody().getClientValue()))
-			.isEqualTo(patternOf(expected.getRequest().getBody().getClientValue()));
+		assertThat(patternOf(
+				Objects.requireNonNull(Objects.requireNonNull(actual.getRequest()).getBody()).getClientValue()))
+			.isEqualTo(patternOf(
+					Objects.requireNonNull(Objects.requireNonNull(expected.getRequest()).getBody()).getClientValue()));
 	}
 
 	@Test
@@ -456,8 +462,10 @@ class WireMockToDslConverterTests {
 				""");
 		String groovyDsl = WireMockToDslConverter.fromWireMockStub(wireMockStub);
 		Contract actual = fromGroovyDsl(groovyDsl);
-		assertThat(patternOf(actual.getRequest().getBody().getClientValue()))
-			.isEqualTo(patternOf(expected.getRequest().getBody().getClientValue()));
+		assertThat(patternOf(
+				Objects.requireNonNull(Objects.requireNonNull(actual.getRequest()).getBody()).getClientValue()))
+			.isEqualTo(patternOf(
+					Objects.requireNonNull(Objects.requireNonNull(expected.getRequest()).getBody()).getClientValue()));
 	}
 
 	@Test
@@ -490,17 +498,16 @@ class WireMockToDslConverterTests {
 	}
 
 	private static String findHeaderClientPattern(Contract contract, String headerName) {
-		return contract.getRequest()
-			.getHeaders()
+		return Objects.requireNonNull(Objects.requireNonNull(contract.getRequest()).getHeaders())
 			.getEntries()
 			.stream()
-			.filter(h -> h.getName().equals(headerName))
+			.filter((h) -> h.getName().equals(headerName))
 			.findFirst()
-			.map(h -> patternOf(h.getClientValue()))
+			.map((h) -> patternOf(h.getClientValue()))
 			.orElseThrow();
 	}
 
-	private static String patternOf(Object value) {
+	private static String patternOf(@Nullable Object value) {
 		if (value instanceof RegexProperty rp) {
 			return rp.pattern();
 		}

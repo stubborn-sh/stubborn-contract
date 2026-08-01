@@ -17,17 +17,28 @@
 package sh.stubborn.contract.verifier.messaging.stream;
 
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
+import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+
+import org.springframework.messaging.Message;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 /**
+ * Tests for {@link ContractVerifierHelper} stream conversion.
+ *
  * @author Marcin Grzejszczak
  */
 class ContractVerifierHelperForStreamTests {
 
 	@Test
 	void should_throw_exception_when_a_null_payload_was_sent() {
-		ContractVerifierHelper helper = new ContractVerifierHelper(null, null);
+		@SuppressWarnings("unchecked")
+		MessageVerifierSender<Message<?>> sender = mock(MessageVerifierSender.class);
+		@SuppressWarnings("unchecked")
+		MessageVerifierReceiver<Message<?>> receiver = mock(MessageVerifierReceiver.class);
+		ContractVerifierHelper helper = new ContractVerifierHelper(sender, receiver);
 		assertThatThrownBy(() -> helper.convert(null)).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("Message must not be null");
 	}

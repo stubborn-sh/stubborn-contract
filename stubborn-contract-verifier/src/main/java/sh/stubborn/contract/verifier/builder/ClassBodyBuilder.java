@@ -32,6 +32,8 @@ final class ClassBodyBuilder {
 
 	private List<Field> fields = new LinkedList<>();
 
+	// Set via methodBuilder(...) as part of the builder flow before build() is called.
+	@SuppressWarnings("NullAway.Init")
 	private SingleMethodBuilder methodBuilder;
 
 	final BlockBuilder blockBuilder;

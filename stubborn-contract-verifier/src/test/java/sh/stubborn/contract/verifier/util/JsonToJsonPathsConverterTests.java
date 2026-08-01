@@ -103,7 +103,7 @@ class JsonToJsonPathsConverterTests {
 	@MethodSource("jsonWithListAsRoot")
 	void shouldConvertAJsonWithListAsRootToAMapOfPathToValue(String json) {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
@@ -155,7 +155,7 @@ class JsonToJsonPathsConverterTests {
 					}
 				""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
@@ -189,7 +189,7 @@ class JsonToJsonPathsConverterTests {
 					}
 				""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array(\"['items']\").arrayField().isEqualTo(\"HOP\").value()");
@@ -208,7 +208,7 @@ class JsonToJsonPathsConverterTests {
 					}
 				""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isNull()");
@@ -228,7 +228,7 @@ class JsonToJsonPathsConverterTests {
 				     }
 				""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['extensions']\").field(\"['7']\").isEqualTo(28.00)");
@@ -257,7 +257,7 @@ class JsonToJsonPathsConverterTests {
 					}
 				""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
@@ -345,7 +345,7 @@ class JsonToJsonPathsConverterTests {
 				"property2": "b"
 				}""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isEqualTo(\"a\")");
@@ -367,7 +367,7 @@ class JsonToJsonPathsConverterTests {
 				"property3": false
 				}""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property1']\").isEqualTo(\"true\")");
@@ -457,7 +457,7 @@ class JsonToJsonPathsConverterTests {
 					"property2": "b"
 				}]""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".array().contains(\"['property1']\").isEqualTo(\"a\")");
@@ -482,7 +482,7 @@ class JsonToJsonPathsConverterTests {
 					"property2": "b"
 				}]""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
@@ -507,7 +507,7 @@ class JsonToJsonPathsConverterTests {
 				]
 				}""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method())
@@ -533,7 +533,7 @@ class JsonToJsonPathsConverterTests {
 				]
 				}""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(
@@ -556,7 +556,7 @@ class JsonToJsonPathsConverterTests {
 				"property2": {"property3": "b"}
 				}""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['property2']\").field(\"['property3']\").isEqualTo(\"b\")");
@@ -654,7 +654,7 @@ class JsonToJsonPathsConverterTests {
 				}]
 				""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		DocumentContext context = JsonPath.parse(json);
 		for (var entry : pathAndValues) {
@@ -710,7 +710,7 @@ class JsonToJsonPathsConverterTests {
 				}]
 				""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		DocumentContext context = JsonPath.parse(json);
 		for (var entry : pathAndValues) {
@@ -849,7 +849,7 @@ class JsonToJsonPathsConverterTests {
 				"anEmptyMap": {}
 				}""";
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
-			.transformToJsonPathWithTestsSideValues(slurper.parseText(json));
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
 
 		assertThat(pathAndValues).anySatisfy((entry) -> {
 			assertThat(entry.method()).isEqualTo(".field(\"['aMap']\").field(\"['foo']\").isEqualTo(\"bar\")");

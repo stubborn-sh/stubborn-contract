@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.Objects;
+
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
@@ -34,7 +36,7 @@ class TemplateUpdatingMethodPostProcessor implements MethodPostProcessor {
 
 	@Override
 	public MethodVisitor<MethodPostProcessor> apply(SingleContractMetadata metadata) {
-		Request request = metadata.getContract().getRequest();
+		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
 		String newBody = this.templateProcessor.transform(request, this.blockBuilder.toString());
 		this.blockBuilder.updateContents(newBody);
 		return this;

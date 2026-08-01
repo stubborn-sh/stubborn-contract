@@ -16,7 +16,7 @@
 
 package sh.stubborn.contract.verifier.builder;
 
-import static sh.stubborn.contract.verifier.util.NamesUtil.capitalize;
+import sh.stubborn.contract.verifier.util.NamesUtil;
 
 interface DefaultClassMetadata extends ClassMetaData, DefaultBaseClassProvider {
 
@@ -34,7 +34,7 @@ interface DefaultClassMetadata extends ClassMetaData, DefaultBaseClassProvider {
 
 	@Override
 	default ClassMetaData className() {
-		String className = capitalize(generatedClassMetaData().generatedClassData.className);
+		String className = NamesUtil.capitalize(generatedClassMetaData().generatedClassData.className);
 		blockBuilder().addAtTheEnd(className);
 		return this;
 	}

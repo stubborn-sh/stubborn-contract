@@ -28,7 +28,7 @@ public class StubbornKafkaProperties {
 	private String image = "apache/kafka:latest";
 
 	public Duration getReceiveTimeout() {
-		return receiveTimeout;
+		return this.receiveTimeout;
 	}
 
 	public void setReceiveTimeout(Duration receiveTimeout) {
@@ -36,7 +36,7 @@ public class StubbornKafkaProperties {
 	}
 
 	public String getImage() {
-		return image;
+		return this.image;
 	}
 
 	public void setImage(String image) {

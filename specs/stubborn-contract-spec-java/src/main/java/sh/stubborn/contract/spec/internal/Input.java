@@ -76,7 +76,7 @@ public class Input extends Common implements RegexCreatingProperty<ClientDslProp
 	}
 
 	public ClientPatternValueDslProperty getProperty() {
-		return property;
+		return this.property;
 	}
 
 	public void setProperty(ClientPatternValueDslProperty property) {
@@ -84,7 +84,7 @@ public class Input extends Common implements RegexCreatingProperty<ClientDslProp
 	}
 
 	public @Nullable ExecutionProperty getTriggeredBy() {
-		return triggeredBy;
+		return this.triggeredBy;
 	}
 
 	public void setTriggeredBy(@Nullable ExecutionProperty triggeredBy) {
@@ -92,7 +92,7 @@ public class Input extends Common implements RegexCreatingProperty<ClientDslProp
 	}
 
 	public @Nullable ExecutionProperty getAssertThat() {
-		return assertThat;
+		return this.assertThat;
 	}
 
 	public void setAssertThat(@Nullable ExecutionProperty assertThat) {
@@ -101,107 +101,107 @@ public class Input extends Common implements RegexCreatingProperty<ClientDslProp
 
 	@Override
 	public ClientDslProperty anyAlphaUnicode() {
-		return property.anyAlphaUnicode();
+		return this.property.anyAlphaUnicode();
 	}
 
 	@Override
 	public ClientDslProperty anyAlphaNumeric() {
-		return property.anyAlphaNumeric();
+		return this.property.anyAlphaNumeric();
 	}
 
 	@Override
 	public ClientDslProperty anyNumber() {
-		return property.anyNumber();
+		return this.property.anyNumber();
 	}
 
 	@Override
 	public ClientDslProperty anyInteger() {
-		return property.anyInteger();
+		return this.property.anyInteger();
 	}
 
 	@Override
 	public ClientDslProperty anyPositiveInt() {
-		return property.anyPositiveInt();
+		return this.property.anyPositiveInt();
 	}
 
 	@Override
 	public ClientDslProperty anyDouble() {
-		return property.anyDouble();
+		return this.property.anyDouble();
 	}
 
 	@Override
 	public ClientDslProperty anyHex() {
-		return property.anyHex();
+		return this.property.anyHex();
 	}
 
 	@Override
 	public ClientDslProperty aBoolean() {
-		return property.aBoolean();
+		return this.property.aBoolean();
 	}
 
 	@Override
 	public ClientDslProperty anyIpAddress() {
-		return property.anyIpAddress();
+		return this.property.anyIpAddress();
 	}
 
 	@Override
 	public ClientDslProperty anyHostname() {
-		return property.anyHostname();
+		return this.property.anyHostname();
 	}
 
 	@Override
 	public ClientDslProperty anyEmail() {
-		return property.anyEmail();
+		return this.property.anyEmail();
 	}
 
 	@Override
 	public ClientDslProperty anyUrl() {
-		return property.anyUrl();
+		return this.property.anyUrl();
 	}
 
 	@Override
 	public ClientDslProperty anyHttpsUrl() {
-		return property.anyHttpsUrl();
+		return this.property.anyHttpsUrl();
 	}
 
 	@Override
 	public ClientDslProperty anyUuid() {
-		return property.anyUuid();
+		return this.property.anyUuid();
 	}
 
 	@Override
 	public ClientDslProperty anyDate() {
-		return property.anyDate();
+		return this.property.anyDate();
 	}
 
 	@Override
 	public ClientDslProperty anyDateTime() {
-		return property.anyDateTime();
+		return this.property.anyDateTime();
 	}
 
 	@Override
 	public ClientDslProperty anyTime() {
-		return property.anyTime();
+		return this.property.anyTime();
 	}
 
 	@Override
 	public ClientDslProperty anyIso8601WithOffset() {
-		return property.anyIso8601WithOffset();
+		return this.property.anyIso8601WithOffset();
 	}
 
 	@Override
 	public ClientDslProperty anyNonBlankString() {
-		return property.anyNonBlankString();
+		return this.property.anyNonBlankString();
 	}
 
 	@Override
 	public ClientDslProperty anyNonEmptyString() {
-		return property.anyNonEmptyString();
+		return this.property.anyNonEmptyString();
 	}
 
 	@Override
 	public ClientDslProperty anyOf(String... values) {
-		return property.anyOf(values);
+		return this.property.anyOf(values);
 	}
 
 	@Override
@@ -213,17 +213,17 @@ public class Input extends Common implements RegexCreatingProperty<ClientDslProp
 			return false;
 		}
 		Input input = (Input) o;
-		return Objects.equals(triggeredBy, input.triggeredBy) && Objects.equals(assertThat, input.assertThat);
+		return Objects.equals(this.triggeredBy, input.triggeredBy) && Objects.equals(this.assertThat, input.assertThat);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(triggeredBy, assertThat);
+		return Objects.hash(this.triggeredBy, this.assertThat);
 	}
 
 	@Override
 	public String toString() {
-		return "Input{\n\t" + ", \n\ttriggeredBy=" + triggeredBy + ", \n\tassertThat=" + assertThat + "} \n\t"
+		return "Input{\n\t" + ", \n\ttriggeredBy=" + this.triggeredBy + ", \n\tassertThat=" + this.assertThat + "} \n\t"
 				+ super.toString();
 	}
 
