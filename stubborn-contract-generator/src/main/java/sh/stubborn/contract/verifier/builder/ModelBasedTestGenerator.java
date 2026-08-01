@@ -18,8 +18,6 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.Collection;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
@@ -29,15 +27,13 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  * test-generation migration (see {@code proposals/test-generation-migration.md}).
  *
  * <p>
- * <strong>Phase 1 behaviour:</strong> the emitted source is still produced by the legacy
- * {@link JavaTestGenerator}; this class only <em>additionally</em> exercises the new
- * pipeline — {@link ModelBuilder} builds a {@link TestClassModel} and, for the Java
- * targets, {@link JavaPoetTestRenderer} renders its scaffold — logging the result at
- * debug level. That proves the model → renderer path runs end-to-end against real
- * contracts without changing any output. As later phases move class scaffold, request,
- * and response generation into the model, this generator's output progressively becomes
- * the model's until the final cutover flips it over entirely and the legacy delegate is
- * removed.
+ * <strong>Phase 2 behaviour:</strong> for the Java targets (JUnit 5, TestNG) the emitted
+ * source is produced by the model path — {@link ModelBuilder} builds a
+ * {@link TestClassModel} whose scaffold (package, imports, annotations, signatures) is
+ * rendered by {@link JavaPoetTestRenderer}, while each method's body is captured verbatim
+ * from the legacy {@link JavaTestGenerator} via the escape hatch. Spock stays entirely on
+ * the legacy delegate this phase. As later phases move request/response generation into
+ * the model, the escape hatch shrinks until the legacy delegate can be removed.
  *
  * <p>
  * Selected only when the {@code stubborn.contract.verifier.model-based-generator} system
@@ -47,8 +43,6 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  * @author Marcin Grzejszczak
  */
 public class ModelBasedTestGenerator implements SingleTestGenerator {
-
-	private static final Logger log = LoggerFactory.getLogger(ModelBasedTestGenerator.class);
 
 	private final SingleTestGenerator delegate;
 
@@ -70,30 +64,13 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 	@Override
 	public String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData) {
-		exerciseModelPipeline(properties, listOfFiles, generatedClassData);
-		return this.delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath, generatedClassData);
-	}
-
-	// Builds the model and, for Java targets, renders its scaffold, logging the result.
-	// Any failure is swallowed to debug: the model's coverage is partial during the
-	// migration, and this preview must never affect the (legacy-produced) output.
-	private void exerciseModelPipeline(ContractVerifierConfigProperties properties,
-			Collection<ContractMetadata> listOfFiles, GeneratedClassData generatedClassData) {
-		if (!log.isDebugEnabled()) {
-			return;
+		if (properties.getTestFramework() == TestFramework.SPOCK) {
+			// Spock cannot be modelled by JavaPoet; stays on the legacy generator.
+			return this.delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath, generatedClassData);
 		}
-		try {
-			TestClassModel model = this.modelBuilder.build(properties, listOfFiles, generatedClassData);
-			if (properties.getTestFramework() != TestFramework.SPOCK) {
-				log.debug("[test-gen migration] JavaPoet scaffold preview for {}:\n{}", generatedClassData.className,
-						this.javaRenderer.render(model));
-			}
-		}
-		catch (RuntimeException ex) {
-			log.debug(
-					"[test-gen migration] model pipeline preview failed for {} (expected while coverage is partial): {}",
-					generatedClassData.className, ex.toString());
-		}
+		TestClassModel model = this.modelBuilder.build(properties, listOfFiles, includedDirectoryRelativePath,
+				generatedClassData);
+		return this.javaRenderer.render(model);
 	}
 
 }

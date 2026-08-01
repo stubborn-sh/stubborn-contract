@@ -16,7 +16,6 @@
 
 package sh.stubborn.contract.verifier.builder;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,18 +23,22 @@ import java.util.List;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
+import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 /**
  * Walks the plugin configuration and parsed contracts into a {@link TestClassModel}.
  *
  * <p>
  * This is where today's builder <em>decisions</em> (which class name, base class, class
- * annotations, which methods) move to, separated from formatting. Phase 1 populates the
- * class scaffold: package/name/base-class, the {@code @SuppressWarnings("rawtypes")}
- * class annotation that the Java targets carry, and one method skeleton per contract with
- * its {@code @Test}/{@code @Disabled} annotations. The structured request/response
- * verification bodies and the real method-name derivation (via {@code NameProvider}) are
- * ported in Phases 2–4.
+ * annotations, which methods) live, separated from formatting. Phase 2 populates the full
+ * class scaffold: package/name/base-class, class-level annotations (the
+ * {@code @SuppressWarnings("rawtypes")} the Java targets carry, plus JUnit 5's
+ * {@code @TestMethodOrder} when a contract carries an order), one method per contract
+ * with its {@code @Test}/{@code @Disabled}/{@code @Test(enabled = false)} annotations,
+ * the real method-name derivation (via {@link NameProvider}) and the verbatim method body
+ * captured from the legacy generator by {@link LegacyMethodBodyExtractor}. The
+ * class-level import set is captured from the legacy generator so the renderer can merge
+ * it in.
  *
  * @author Marcin Grzejszczak
  */
@@ -43,56 +46,96 @@ class ModelBuilder {
 
 	private static final String JUNIT_JUPITER_TEST = "org.junit.jupiter.api.Test";
 
+	private static final String JUNIT_JUPITER_DISABLED = "org.junit.jupiter.api.Disabled";
+
+	private static final String JUNIT_JUPITER_TEST_METHOD_ORDER = "org.junit.jupiter.api.TestMethodOrder";
+
 	private static final String TESTNG_TEST = "org.testng.annotations.Test";
 
+	private final NameProvider nameProvider = new NameProvider();
+
+	private final LegacyMethodBodyExtractor bodyExtractor = new LegacyMethodBodyExtractor();
+
 	TestClassModel build(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
-			SingleTestGenerator.GeneratedClassData generatedClassData) {
+			String includedDirectoryRelativePath, SingleTestGenerator.GeneratedClassData generatedClassData) {
 		TestFramework framework = properties.getTestFramework();
 		boolean spock = framework == TestFramework.SPOCK;
+
+		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, listOfFiles, includedDirectoryRelativePath,
+				generatedClassData);
 
 		List<AnnotationModel> classAnnotations = new ArrayList<>();
 		if (!spock) {
 			classAnnotations.add(new AnnotationModel("java.lang.SuppressWarnings", "\"rawtypes\""));
 		}
+		if (framework == TestFramework.JUNIT5 && hasOrder(listOfFiles)) {
+			// Mirrors JUnit5OrderClassAnnotation. Kept short so it matches the legacy
+			// output; the MethodOrderer import is supplied by the merged import set.
+			classAnnotations.add(
+					AnnotationModel.member(JUNIT_JUPITER_TEST_METHOD_ORDER, "value", "MethodOrderer.MethodName.class"));
+		}
 
 		List<TestMethodModel> methods = new ArrayList<>();
-		int index = 0;
-		for (ContractMetadata metadata : listOfFiles) {
-			methods.add(methodModel(metadata, framework, index++));
+		for (SingleContractMetadata scm : meta.toSingleContractMetadata()) {
+			methods.add(methodModel(scm, framework, meta));
 		}
+
+		List<String> imports = importDeclarations(properties, listOfFiles, includedDirectoryRelativePath,
+				generatedClassData);
 
 		return new TestClassModel(generatedClassData.classPackage, generatedClassData.className,
-				properties.getBaseClassForTests(), spock, classAnnotations, methods);
+				properties.getBaseClassForTests(), spock, classAnnotations, methods, imports);
 	}
 
-	private TestMethodModel methodModel(ContractMetadata metadata, TestFramework framework, int index) {
+	private TestMethodModel methodModel(SingleContractMetadata scm, TestFramework framework,
+			GeneratedClassMetaData meta) {
 		List<AnnotationModel> annotations = new ArrayList<>();
-		annotations.add(AnnotationModel.marker(testAnnotationType(framework)));
-		if (metadata.getIgnored()) {
-			annotations.add(AnnotationModel.marker(framework.getIgnoreClass()));
+		boolean ignored = isIgnored(scm);
+		if (framework == TestFramework.TESTNG) {
+			// TestNG disables via a named member on @Test, not a separate annotation.
+			annotations.add(ignored ? AnnotationModel.member(TESTNG_TEST, "enabled", "false")
+					: AnnotationModel.marker(TESTNG_TEST));
 		}
-		return new TestMethodModel(methodName(metadata, index), annotations, List.of());
+		else {
+			annotations.add(AnnotationModel.marker(JUNIT_JUPITER_TEST));
+			if (ignored) {
+				annotations.add(AnnotationModel.marker(JUNIT_JUPITER_DISABLED));
+			}
+		}
+		List<String> bodyLines = this.bodyExtractor.bodyLines(meta, scm);
+		return new TestMethodModel(this.nameProvider.methodName(scm), annotations, bodyLines);
 	}
 
-	private String testAnnotationType(TestFramework framework) {
-		return (framework == TestFramework.TESTNG) ? TESTNG_TEST : JUNIT_JUPITER_TEST;
+	// Mirrors JUnit5IgnoreMethodAnnotation#accept: a contract is treated as ignored when
+	// the contract or its metadata is ignored, or the contract is in progress.
+	private boolean isIgnored(SingleContractMetadata scm) {
+		return scm.getContractMetadata().isIgnored() || scm.getContract().isIgnored()
+				|| scm.getContract().isInProgress();
 	}
 
-	private String methodName(ContractMetadata metadata, int index) {
-		Path path = metadata.getPath();
-		String base = (path.getFileName() != null) ? path.getFileName().toString() : ("contract_" + index);
-		int dot = base.lastIndexOf('.');
-		if (dot > 0) {
-			base = base.substring(0, dot);
+	// Mirrors JUnit5OrderClassAnnotation#accept.
+	private boolean hasOrder(Collection<ContractMetadata> listOfFiles) {
+		return listOfFiles.stream().anyMatch((file) -> file.getOrder() != null);
+	}
+
+	// Captures the legacy generator's class-level import set (both `import` and `import
+	// static`), in order, so the renderer can merge it with JavaPoet's own imports.
+	private List<String> importDeclarations(ContractVerifierConfigProperties properties,
+			Collection<ContractMetadata> listOfFiles, String includedDirectoryRelativePath,
+			SingleTestGenerator.GeneratedClassData generatedClassData) {
+		String legacy = new JavaTestGenerator().buildClass(properties, listOfFiles, includedDirectoryRelativePath,
+				generatedClassData);
+		List<String> imports = new ArrayList<>();
+		for (String line : legacy.lines().toList()) {
+			String trimmed = line.trim();
+			if (trimmed.startsWith("import ")) {
+				imports.add(trimmed);
+			}
+			else if (trimmed.startsWith("class ") || trimmed.startsWith("public ") || trimmed.startsWith("@")) {
+				break;
+			}
 		}
-		String sanitized = base.replaceAll("[^A-Za-z0-9]", "_");
-		if (sanitized.isEmpty()) {
-			sanitized = "contract_" + index;
-		}
-		if (Character.isDigit(sanitized.charAt(0))) {
-			sanitized = "_" + sanitized;
-		}
-		return "validate_" + sanitized;
+		return imports;
 	}
 
 }

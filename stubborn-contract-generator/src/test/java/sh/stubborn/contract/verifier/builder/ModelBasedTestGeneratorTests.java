@@ -25,9 +25,6 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.EnumSource.Mode;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
@@ -36,11 +33,11 @@ import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {@link ModelBasedTestGenerator}. Phase 1 requires that enabling the
- * model-based generator produces output <em>byte-identical</em> to the legacy generator
- * across the framework matrix — it delegates for output while additionally exercising the
- * new model pipeline. The golden-master harness ({@code TestGenerationGoldenMasterTests})
- * then guards the shape of that output.
+ * Unit tests for {@link ModelBasedTestGenerator}. Phase 2 routes the Java targets (JUnit
+ * 5, TestNG) through the model + typed-renderer path, while Spock stays on the legacy
+ * delegate. The golden-master harness ({@code TestGenerationGoldenMasterTests}) guards
+ * the legacy output and {@code ModelBasedScaffoldParityTests} proves the model path
+ * reaches normalized + compile parity with it.
  *
  * @author Marcin Grzejszczak
  */
@@ -69,11 +66,10 @@ class ModelBasedTestGeneratorTests {
 	@TempDir
 	Path tmpDir;
 
-	@ParameterizedTest
-	@EnumSource(value = TestFramework.class, names = "CUSTOM", mode = Mode.EXCLUDE)
-	void delegates_output_identically_to_legacy_generator(TestFramework framework) throws IOException {
+	@Test
+	void spock_delegates_output_identically_to_legacy_generator() throws IOException {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
-		properties.setTestFramework(framework);
+		properties.setTestFramework(TestFramework.SPOCK);
 		properties.setBaseClassForTests("com.example.BaseClass");
 		Collection<ContractMetadata> contracts = contracts();
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
@@ -86,9 +82,25 @@ class ModelBasedTestGeneratorTests {
 	}
 
 	@Test
-	void uses_the_provided_delegate() throws IOException {
+	void java_targets_route_through_the_model_renderer() throws IOException {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.JUNIT5);
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
+
+		assertThat(modelBased).contains("package com.example;")
+			.contains("public class FooTest")
+			.contains("public void validate_")
+			.contains("@Test");
+	}
+
+	@Test
+	void uses_the_provided_delegate_for_spock() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.SPOCK);
 		Collection<ContractMetadata> contracts = contracts();
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
 				"com.example", new File("/tmp").toPath());

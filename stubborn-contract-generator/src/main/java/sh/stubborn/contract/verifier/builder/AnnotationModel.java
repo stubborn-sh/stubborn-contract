@@ -24,12 +24,24 @@ import org.jspecify.annotations.Nullable;
  *
  * @param type fully-qualified (or simple) name of the annotation type, e.g.
  * {@code org.junit.jupiter.api.Test}
- * @param memberCode the raw source for the annotation's single {@code value} member (e.g.
- * {@code "rawtypes"} or {@code MethodOrderer.MethodName.class}), or {@code null} for a
- * marker annotation with no members
+ * @param memberName the name of the annotation member {@code memberCode} is bound to,
+ * defaulting to {@code "value"} (e.g. {@code enabled} for {@code @Test(enabled = false)})
+ * @param memberCode the raw source for the annotation's single member (e.g.
+ * {@code "rawtypes"}, {@code MethodOrderer.MethodName.class} or {@code false}), or
+ * {@code null} for a marker annotation with no members
  * @author Marcin Grzejszczak
  */
-record AnnotationModel(String type, @Nullable String memberCode) {
+record AnnotationModel(String type, String memberName, @Nullable String memberCode) {
+
+	/**
+	 * Creates an annotation bound to the default {@code value} member.
+	 * @param type fully-qualified (or simple) name of the annotation type
+	 * @param memberCode the raw source for the {@code value} member, or {@code null} for
+	 * a marker annotation
+	 */
+	AnnotationModel(String type, @Nullable String memberCode) {
+		this(type, "value", memberCode);
+	}
 
 	/**
 	 * Creates a marker annotation with no members, e.g. {@code @Test}.
@@ -37,7 +49,18 @@ record AnnotationModel(String type, @Nullable String memberCode) {
 	 * @return a member-less annotation model
 	 */
 	static AnnotationModel marker(String type) {
-		return new AnnotationModel(type, null);
+		return new AnnotationModel(type, "value", null);
+	}
+
+	/**
+	 * Creates an annotation with a named member, e.g. {@code @Test(enabled = false)}.
+	 * @param type fully-qualified (or simple) name of the annotation type
+	 * @param memberName the member name (e.g. {@code enabled})
+	 * @param memberCode the raw source for the member (e.g. {@code false})
+	 * @return an annotation model with the named member
+	 */
+	static AnnotationModel member(String type, String memberName, String memberCode) {
+		return new AnnotationModel(type, memberName, memberCode);
 	}
 
 }

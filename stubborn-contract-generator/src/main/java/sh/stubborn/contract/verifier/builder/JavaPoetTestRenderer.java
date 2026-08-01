@@ -16,6 +16,11 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.lang.model.element.Modifier;
 
 import com.palantir.javapoet.AnnotationSpec;
@@ -36,10 +41,11 @@ import com.palantir.javapoet.TypeSpec;
  * (added in a later phase).
  *
  * <p>
- * Phase 1 scope: the class scaffold (package, class declaration, base class, class- and
- * method-level annotations, method signatures). Method bodies are the placeholder
- * {@link TestMethodModel#bodyLines()} statements; the structured request/response
- * verification is ported in Phases 2–4.
+ * Phase 2 scope: the full class scaffold (package, class declaration, base class, class-
+ * and method-level annotations, method signatures) plus each method's body emitted
+ * verbatim from {@link TestMethodModel#bodyLines()} (captured from the legacy generator).
+ * After JavaPoet renders the scaffold, the legacy import set carried on the model is
+ * merged into JavaPoet's own imports so body-referenced types resolve.
  *
  * @author Marcin Grzejszczak
  */
@@ -68,11 +74,66 @@ class JavaPoetTestRenderer {
 		for (TestMethodModel method : model.methods()) {
 			type.addMethod(toMethodSpec(method));
 		}
-		return JavaFile.builder(model.packageName(), type.build())
+		String rendered = JavaFile.builder(model.packageName(), type.build())
 			.skipJavaLangImports(true)
 			.indent("\t")
 			.build()
 			.toString();
+		return mergeImports(rendered, model.importDeclarations());
+	}
+
+	/**
+	 * Merges JavaPoet's own emitted imports with the legacy import set carried on the
+	 * model, de-duplicating by exact text. JavaPoet only imports the types it references
+	 * in the scaffold (annotations, base class); the verbatim method bodies reference
+	 * types JavaPoet never sees, so their imports must come from the legacy set.
+	 * @param rendered the JavaPoet output
+	 * @param extraImports the legacy {@code import ...;} lines to fold in
+	 * @return the source with a single merged import block
+	 */
+	private String mergeImports(String rendered, List<String> extraImports) {
+		List<String> lines = rendered.lines().toList();
+		String packageLine = "";
+		Set<String> imports = new LinkedHashSet<>();
+		List<String> remainder = new ArrayList<>();
+		boolean inRemainder = false;
+		for (String line : lines) {
+			String trimmed = line.trim();
+			if (inRemainder) {
+				remainder.add(line);
+				continue;
+			}
+			if (trimmed.startsWith("package ")) {
+				packageLine = line;
+			}
+			else if (trimmed.startsWith("import ")) {
+				imports.add(trimmed);
+			}
+			else if (trimmed.isEmpty()) {
+				// skip blank lines between package/imports
+			}
+			else {
+				inRemainder = true;
+				remainder.add(line);
+			}
+		}
+		for (String extra : extraImports) {
+			String trimmed = extra.trim();
+			if (!trimmed.isEmpty()) {
+				imports.add(trimmed);
+			}
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append(packageLine).append('\n').append('\n');
+		for (String imp : imports) {
+			sb.append(imp).append('\n');
+		}
+		sb.append('\n');
+		sb.append(String.join("\n", remainder));
+		if (!remainder.isEmpty()) {
+			sb.append('\n');
+		}
+		return sb.toString();
 	}
 
 	private MethodSpec toMethodSpec(TestMethodModel method) {
@@ -83,8 +144,12 @@ class JavaPoetTestRenderer {
 		for (AnnotationModel annotation : method.annotations()) {
 			builder.addAnnotation(toAnnotationSpec(annotation));
 		}
-		for (String line : method.bodyLines()) {
-			builder.addStatement("$L", line);
+		// Emit the body verbatim as a $L argument (never inline into the format string)
+		// so $, { and } in template/JSON bodies stay literal. addStatement is avoided: it
+		// appends a stray ; and mangles multi-line bodies, comments and blank lines.
+		String body = String.join("\n", method.bodyLines());
+		if (!body.isBlank()) {
+			builder.addCode("$L\n", body);
 		}
 		return builder.build();
 	}
@@ -93,7 +158,15 @@ class JavaPoetTestRenderer {
 		AnnotationSpec.Builder builder = AnnotationSpec.builder(ClassName.bestGuess(annotation.type()));
 		String member = annotation.memberCode();
 		if (member != null && !member.isBlank()) {
-			builder.addMember("value", "$L", member);
+			if ("value".equals(annotation.memberName())) {
+				builder.addMember("value", "$L", member);
+			}
+			else {
+				// A named member (e.g. enabled = false) is emitted as a single value
+				// member so JavaPoet keeps it inline (@Test(enabled = false)) rather than
+				// spreading it over three lines.
+				builder.addMember("value", "$L", annotation.memberName() + " = " + member);
+			}
 		}
 		return builder.build();
 	}
