@@ -188,6 +188,9 @@ public class StubbornContractGradlePlugin implements Plugin<Project> {
 		configureConfigurations();
 
 		project.getDependencies().add(CONTRACT_TEST_GENERATOR_RUNTIME_CLASSPATH_CONFIGURATION_NAME, "sh.stubborn:stubborn-contract-converters:" + SPRING_CLOUD_VERSION);
+		// TestGeneratorApplication (the generation entry point launched by GenerateServerTestsTask)
+		// lives in the build-time generator module; add it to the generation classpath.
+		project.getDependencies().add(CONTRACT_TEST_GENERATOR_RUNTIME_CLASSPATH_CONFIGURATION_NAME, "sh.stubborn:stubborn-contract-generator:" + SPRING_CLOUD_VERSION);
 	}
 
 	private SourceSet configureSourceSets(ContractVerifierExtension extension, JavaPluginExtension javaExtension, SourceSet contractTest) {

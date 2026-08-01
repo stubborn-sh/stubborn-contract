@@ -30,7 +30,6 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.helpers.Wire
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.CompositeContractTemplate;
 import sh.stubborn.contract.spec.internal.Request;
-import sh.stubborn.contract.verifier.builder.TestSideRequestTemplateModel;
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsJsonPathHelper;
 
 /**

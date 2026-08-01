@@ -251,6 +251,10 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-generator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-converters</artifactId>
 			<exclusions>
 				<exclusion>

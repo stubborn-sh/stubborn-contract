@@ -39,6 +39,7 @@ import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.MatchingType;
 import sh.stubborn.contract.spec.internal.RegexProperty;
 import sh.stubborn.contract.verifier.template.TemplateProcessor;
+import sh.stubborn.contract.verifier.template.TestSideRequestTemplateModel;
 import sh.stubborn.contract.verifier.util.JsonPaths;
 import sh.stubborn.contract.verifier.util.JsonToJsonPathsConverter;
 import sh.stubborn.contract.verifier.util.MapConverter;
