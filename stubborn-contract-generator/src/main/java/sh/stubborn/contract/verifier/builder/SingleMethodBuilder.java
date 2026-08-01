@@ -180,17 +180,7 @@ final class SingleMethodBuilder {
 					.appendWithSpace(() -> methodMetadatum.name(metaData))
 					.append("() throws Exception ");
 			// (space) {
-			this.blockBuilder.inBraces(() -> {
-				// (indent) given
-				if (visit(this.givens, metaData)) {
-					this.blockBuilder.addEmptyLine();
-				}
-				// (indent) when
-				visit(this.whens, metaData);
-				this.blockBuilder.addEmptyLine();
-				// (indent) then
-				visit(this.thens, metaData);
-			});
+			this.blockBuilder.inBraces(() -> appendMethodBody(metaData));
 			this.blockBuilder.addEmptyLine();
 			this.methodPostProcessors.stream()
 				.filter((m) -> m.accept(metaData))
@@ -198,6 +188,41 @@ final class SingleMethodBuilder {
 			// }
 		});
 		// @formatter:on
+		return this.blockBuilder;
+	}
+
+	/**
+	 * Appends a single method's body (givens/whens/thens) to the {@link BlockBuilder},
+	 * without the signature, annotations or enclosing braces.
+	 * @param metaData the contract to render
+	 * @return the block builder
+	 */
+	BlockBuilder appendMethodBody(SingleContractMetadata metaData) {
+		// (indent) given
+		if (visit(this.givens, metaData)) {
+			this.blockBuilder.addEmptyLine();
+		}
+		// (indent) when
+		visit(this.whens, metaData);
+		this.blockBuilder.addEmptyLine();
+		// (indent) then
+		visit(this.thens, metaData);
+		return this.blockBuilder;
+	}
+
+	/**
+	 * Escape hatch for the model-based generator: writes only one method's body (no
+	 * signature, annotations or braces), applying the method post-processors. Used by
+	 * {@link LegacyMethodBodyExtractor} to capture the legacy body for a single contract.
+	 * @param metaData the contract to render
+	 * @return the block builder
+	 */
+	BlockBuilder buildSingleMethodBody(SingleContractMetadata metaData) {
+		if (shouldStopProcessing(metaData)) {
+			return this.blockBuilder;
+		}
+		appendMethodBody(metaData);
+		this.methodPostProcessors.stream().filter((m) -> m.accept(metaData)).forEach((m) -> m.apply(metaData));
 		return this.blockBuilder;
 	}
 

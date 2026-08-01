@@ -67,7 +67,7 @@ class ModelBuilderTests {
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
 				new File("/tmp").toPath());
 
-		TestClassModel model = this.modelBuilder.build(properties, contracts, data);
+		TestClassModel model = this.modelBuilder.build(properties, contracts, "com/example", data);
 
 		assertThat(model.packageName()).isEqualTo("test");
 		assertThat(model.className()).isEqualTo("FooTest");
@@ -80,6 +80,9 @@ class ModelBuilderTests {
 		assertThat(method.name()).startsWith("validate_");
 		assertThat(method.annotations()).extracting(AnnotationModel::type)
 			.containsExactly("org.junit.jupiter.api.Test", "org.junit.jupiter.api.Disabled");
+		// the body is captured verbatim from the legacy generator
+		assertThat(method.bodyLines()).isNotEmpty();
+		assertThat(model.importDeclarations()).isNotEmpty();
 
 		// the model renders to a structurally-correct Java class
 		String rendered = new JavaPoetTestRenderer().render(model);
@@ -94,7 +97,7 @@ class ModelBuilderTests {
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooSpec", "test",
 				new File("/tmp").toPath());
 
-		TestClassModel model = this.modelBuilder.build(properties, contracts, data);
+		TestClassModel model = this.modelBuilder.build(properties, contracts, "com/example", data);
 
 		assertThat(model.spock()).isTrue();
 		assertThat(model.classAnnotations()).isEmpty();
@@ -111,10 +114,28 @@ class ModelBuilderTests {
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
 				new File("/tmp").toPath());
 
-		TestClassModel model = this.modelBuilder.build(properties, contracts, data);
+		TestClassModel model = this.modelBuilder.build(properties, contracts, "com/example", data);
 
-		assertThat(model.methods().get(0).annotations()).extracting(AnnotationModel::type)
-			.containsExactly("org.testng.annotations.Test");
+		AnnotationModel testAnnotation = model.methods().get(0).annotations().get(0);
+		assertThat(testAnnotation.type()).isEqualTo("org.testng.annotations.Test");
+		assertThat(testAnnotation.memberCode()).isNull();
+	}
+
+	@Test
+	void testng_ignored_uses_enabled_false_member() throws IOException {
+		Collection<ContractMetadata> contracts = contracts(true);
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.TESTNG);
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
+				new File("/tmp").toPath());
+
+		TestClassModel model = this.modelBuilder.build(properties, contracts, "com/example", data);
+
+		AnnotationModel testAnnotation = model.methods().get(0).annotations().get(0);
+		assertThat(model.methods().get(0).annotations()).hasSize(1);
+		assertThat(testAnnotation.type()).isEqualTo("org.testng.annotations.Test");
+		assertThat(testAnnotation.memberName()).isEqualTo("enabled");
+		assertThat(testAnnotation.memberCode()).isEqualTo("false");
 	}
 
 	private Collection<ContractMetadata> contracts(boolean ignored) throws IOException {

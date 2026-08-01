@@ -43,14 +43,18 @@ import org.jspecify.annotations.Nullable;
  * Handlebars renderer), {@code false} for the Java targets (rendered by JavaPoet)
  * @param classAnnotations class-level annotations, in declaration order
  * @param methods the test methods, in declaration order
+ * @param importDeclarations the full {@code import ...;} lines (including
+ * {@code import static ...;}) the generated class needs, captured from the legacy
+ * generator in its original order; merged with the renderer's own imports at render time
  * @author Marcin Grzejszczak
  */
 record TestClassModel(String packageName, String className, @Nullable String baseClass, boolean spock,
-		List<AnnotationModel> classAnnotations, List<TestMethodModel> methods) {
+		List<AnnotationModel> classAnnotations, List<TestMethodModel> methods, List<String> importDeclarations) {
 
 	TestClassModel {
 		classAnnotations = List.copyOf(classAnnotations);
 		methods = List.copyOf(methods);
+		importDeclarations = List.copyOf(importDeclarations);
 	}
 
 }

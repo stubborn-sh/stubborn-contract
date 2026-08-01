@@ -22,15 +22,15 @@ import java.util.List;
  * Formatting-free description of a single test method within a {@link TestClassModel}.
  *
  * <p>
- * In Phase 1 {@code bodyLines} is a placeholder; the structured
- * {@code given}/{@code when} /{@code then} representation of request and response
- * verification lands in later phases. Each entry is a single complete statement
- * <em>without</em> a trailing {@code ;} — the renderer owns statement termination (and
- * the {@code ;}-vs-nothing Java/Groovy split).
+ * {@code bodyLines} are the <em>verbatim</em> body lines captured from the legacy
+ * generator by {@link LegacyMethodBodyExtractor}: each line is emitted exactly as-is by
+ * the renderer, so a line may already carry a trailing {@code ;}, be a {@code // given:}
+ * label comment, or be blank. The renderer does <em>not</em> add statement termination.
  *
  * @param name the method name (e.g. {@code validate_shouldReturnOk})
  * @param annotations method-level annotations, in declaration order
- * @param bodyLines opaque method-body statements, in order (no trailing {@code ;})
+ * @param bodyLines verbatim method-body lines, in order (may contain {@code ;}, comments
+ * and blank lines)
  * @author Marcin Grzejszczak
  */
 record TestMethodModel(String name, List<AnnotationModel> annotations, List<String> bodyLines) {
