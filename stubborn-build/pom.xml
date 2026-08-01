@@ -161,7 +161,7 @@
 						<compilerArgs>
 							<arg>-XDcompilePolicy=simple</arg>
 							<arg>--should-stop=ifError=FLOW</arg>
-							<arg>-Xplugin:ErrorProne -XepExcludedPaths:.*/(generated-sources|generated-test-sources)/.* -Xep:NullAway:ERROR -XepOpt:NullAway:JSpecifyMode=true -XepOpt:NullAway:AnnotatedPackages=sh.stubborn,com.toomuchcoding</arg>
+							<arg>-Xplugin:ErrorProne -XepExcludedPaths:.*/(generated-sources|generated-test-sources)/.* -Xep:NullAway:ERROR -XepOpt:NullAway:JSpecifyMode=true -XepOpt:NullAway:AnnotatedPackages=sh.stubborn</arg>
 						</compilerArgs>
 						<annotationProcessorPaths>
 							<path>

@@ -20,11 +20,11 @@ import java.util.LinkedList;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.toomuchcoding.jsonassert.JsonVerifiable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.Nullable;
+import sh.stubborn.jsonassert.JsonVerifiable;
 
 /**
  * Implementation of the {@link MethodBufferingJsonVerifiable} that contains a list of

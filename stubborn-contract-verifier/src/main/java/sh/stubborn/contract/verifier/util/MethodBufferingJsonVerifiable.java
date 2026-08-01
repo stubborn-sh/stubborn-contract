@@ -16,8 +16,8 @@
 
 package sh.stubborn.contract.verifier.util;
 
-import com.toomuchcoding.jsonassert.JsonVerifiable;
 import org.jspecify.annotations.Nullable;
+import sh.stubborn.jsonassert.JsonVerifiable;
 
 /**
  * A wrapper over {@link JsonVerifiable} that allows to store the method name in order to

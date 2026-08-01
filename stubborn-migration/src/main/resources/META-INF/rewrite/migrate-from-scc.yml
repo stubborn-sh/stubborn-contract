@@ -83,7 +83,8 @@ name: sh.stubborn.contract.migration.RenameJavaPackages
 displayName: Rename org.springframework.cloud.contract packages to sh.stubborn.contract
 description: >-
   Recursively rewrites all Java import statements from
-  org.springframework.cloud.contract.* to sh.stubborn.contract.*.
+  org.springframework.cloud.contract.* to sh.stubborn.contract.*, and the JSON/XML
+  assertion packages from com.toomuchcoding.* to sh.stubborn.*.
 tags:
   - spring-cloud-contract
   - stubborn-contract
@@ -91,6 +92,14 @@ recipeList:
   - org.openrewrite.java.ChangePackage:
       oldPackageName: org.springframework.cloud.contract
       newPackageName: sh.stubborn.contract
+      recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: com.toomuchcoding.jsonassert
+      newPackageName: sh.stubborn.jsonassert
+      recursive: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: com.toomuchcoding.xmlassert
+      newPackageName: sh.stubborn.xmlassert
       recursive: true
 
 ---

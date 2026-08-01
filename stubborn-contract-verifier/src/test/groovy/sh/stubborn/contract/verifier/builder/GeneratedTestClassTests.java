@@ -78,7 +78,7 @@ public class GeneratedTestClassTests {
 + "\n"
 + "import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;\n"
 + "import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;\n"
-+ "import static com.toomuchcoding.jsonassert.JsonAssertion.assertThatJson;\n"
++ "import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;\n"
 + "import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;\n"
 + "\n"
 + "@SuppressWarnings(\"rawtypes\")\n"

@@ -41,6 +41,16 @@ class MigrateJavaPackagesTests implements RewriteTest {
 					""", """
 					package org.springframework.cloud.contract.verifier.config;
 					public enum TestFramework { JUNIT5, SPOCK, JUNIT }
+					""", """
+					package com.toomuchcoding.jsonassert;
+					public class JsonAssertion {
+						public static Object assertThatJson(String body) { return null; }
+					}
+					""", """
+					package com.toomuchcoding.xmlassert;
+					public class XmlAssertion {
+						public static Object assertThat(String body) { return null; }
+					}
 					"""));
 	}
 
@@ -76,6 +86,40 @@ class MigrateJavaPackagesTests implements RewriteTest {
 
 				class MyTest {
 					TestFramework framework = TestFramework.JUNIT5;
+				}
+				"""));
+	}
+
+	@Test
+	void renamesJsonAssertImport() {
+		rewriteRun(Assertions.java("""
+				import com.toomuchcoding.jsonassert.JsonAssertion;
+
+				class MyTest {
+					Object result = JsonAssertion.assertThatJson("{}");
+				}
+				""", """
+				import sh.stubborn.jsonassert.JsonAssertion;
+
+				class MyTest {
+					Object result = JsonAssertion.assertThatJson("{}");
+				}
+				"""));
+	}
+
+	@Test
+	void renamesXmlAssertImport() {
+		rewriteRun(Assertions.java("""
+				import com.toomuchcoding.xmlassert.XmlAssertion;
+
+				class MyTest {
+					Object result = XmlAssertion.assertThat("<a/>");
+				}
+				""", """
+				import sh.stubborn.xmlassert.XmlAssertion;
+
+				class MyTest {
+					Object result = XmlAssertion.assertThat("<a/>");
 				}
 				"""));
 	}
