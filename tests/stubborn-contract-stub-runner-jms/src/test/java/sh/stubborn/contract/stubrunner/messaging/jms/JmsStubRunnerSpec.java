@@ -30,7 +30,6 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
 
@@ -182,20 +181,6 @@ class JmsStubRunnerSpec {
 		JsonNode json = OBJECT_MAPPER.readTree(objectAsString);
 		return "foo".equals(json.get("bookName").asText());
 	}
-
-	Contract dsl =
-			// tag::sample_dsl[]
-			Contract.make((c) -> {
-				c.label("return_book_1");
-				c.input((i) -> i.triggeredBy("bookReturnedTriggered()"));
-				c.outputMessage((o) -> {
-					o.sentTo("output");
-					o.body("{ \"bookName\" : \"foo\" }");
-					o.headers((h) -> h.header("BOOKNAME", "foo"));
-				});
-			});
-
-	// end::sample_dsl[]
 
 	@Configuration
 	@ComponentScan

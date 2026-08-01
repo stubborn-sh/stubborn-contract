@@ -16,13 +16,10 @@
 
 package sh.stubborn.contract.stubrunner.messaging.amqp;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.stubrunner.StubTrigger;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
 
@@ -49,29 +46,6 @@ class AmqpStubRunnerSpec {
 	@Test
 	@DisplayName("should trigger stub amqp message")
 	void shouldTriggerStubAmqpMessage() {
-		// tag::amqp_contract[]
-
-		Contract.make((c) -> {
-			// Human readable description
-			c.description("Should produce valid person data");
-			// Label by means of which the output message can be triggered
-			c.label("contract-test.person.created.event");
-			// input to the contract
-			c.input((i) -> i.triggeredBy("createPerson()"));
-			// output message of the contract
-			c.outputMessage((o) -> {
-				// destination to which the output message will be sent
-				o.sentTo("contract-test.exchange");
-				o.headers((h) -> {
-					h.header("contentType", "application/json");
-					h.header("__TypeId__", "sh.stubborn.contract.stubrunner.messaging.amqp.Person");
-				});
-				// the body of the output message
-				o.body(Map.of("id", o.$(o.consumer(9), o.producer(o.regex("[0-9]+"))), "name", "me"));
-			});
-		});
-		// end::amqp_contract[]
-
 		// tag::client_trigger[]
 		this.stubTrigger.trigger("contract-test.person.created.event");
 		// end::client_trigger[]

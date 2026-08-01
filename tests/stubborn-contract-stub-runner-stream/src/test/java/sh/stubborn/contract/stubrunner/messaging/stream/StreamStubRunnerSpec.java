@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
@@ -147,36 +146,8 @@ class StreamStubRunnerSpec {
 	}
 
 	// Contract from the other service that is a producer (I'm a consumer)
-	Contract dsl =
-			// tag::sample_dsl[]
-			Contract.make((c) -> {
-				c.label("return_book_1");
-				c.input((i) -> i.triggeredBy("bookReturnedTriggered()"));
-				c.outputMessage((o) -> {
-					o.sentTo("returnBook");
-					o.body("{ \"bookName\" : \"foo\" }");
-					o.headers((h) -> h.header("BOOK-NAME", "foo"));
-				});
-			});
-
-	// end::sample_dsl[]
-
 	// Contract from my service that is processing the input message and sending out
 	// another message (I'm a producer)
-	Contract myDsl =
-			// tag::sample_producer_dsl[]
-			Contract.make((c) -> {
-				c.label("return_book_2");
-				c.input((i) -> i.triggeredBy("gotAMessageFromFunction()"));
-				c.outputMessage((o) -> {
-					o.sentTo("outputToAssertBook");
-					o.body("{ \"bookName\" : \"foo\" }");
-					o.headers((h) -> h.header("BOOK-NAME", "foo"));
-				});
-			});
-
-	// end::sample_producer_dsl[]
-
 	// tag::setup[]
 	@ImportAutoConfiguration(TestChannelBinderConfiguration.class)
 	@Configuration(proxyBeanMethods = true)

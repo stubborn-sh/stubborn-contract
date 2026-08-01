@@ -26,7 +26,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
@@ -157,20 +156,6 @@ class IntegrationStubRunnerSpec {
 			throw new IllegalStateException(ex);
 		}
 	}
-
-	Contract dsl =
-			// tag::sample_dsl[]
-			Contract.make((c) -> {
-				c.label("return_book_1");
-				c.input((i) -> i.triggeredBy("bookReturnedTriggered()"));
-				c.outputMessage((o) -> {
-					o.sentTo("output");
-					o.body("{ \"bookName\" : \"foo\" }");
-					o.headers((h) -> h.header("BOOK-NAME", "foo"));
-				});
-			});
-
-	// end::sample_dsl[]
 
 	@Configuration
 	@ComponentScan

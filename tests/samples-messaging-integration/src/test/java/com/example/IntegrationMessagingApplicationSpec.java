@@ -23,7 +23,6 @@ import com.jayway.jsonpath.JsonPath;
 import com.toomuchcoding.jsonassert.JsonAssertion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
@@ -49,25 +48,6 @@ class IntegrationMessagingApplicationSpec {
 	@Test
 	@DisplayName("should work for triggered based messaging")
 	void shouldWorkForTriggeredBasedMessaging() {
-		// tag::method_trigger[]
-		Contract dsl = Contract.make((c) -> {
-			// Human readable description
-			c.description("Some description");
-			// Label by means of which the output message can be triggered
-			c.label("some_label");
-			// input to the contract
-			c.input((i) -> i.triggeredBy("bookReturnedTriggered()"));
-			// output message of the contract
-			c.outputMessage((o) -> {
-				// destination to which the output message will be sent
-				o.sentTo("output");
-				// the body of the output message
-				o.body("{ \"bookName\" : \"foo\" }");
-				// the headers of the output message
-				o.headers((h) -> h.header("BOOK-NAME", "foo"));
-			});
-		});
-		// end::method_trigger[]
 		// generated test should look like this:
 		bookReturnedTriggered();
 		ContractVerifierMessage response = Objects.requireNonNull(this.contractVerifierMessaging.receive("output"));

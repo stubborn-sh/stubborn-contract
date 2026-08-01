@@ -27,7 +27,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
@@ -66,15 +65,6 @@ class JmsMessagingApplicationSpec {
 	@Test
 	@DisplayName("should work for triggered based messaging")
 	void shouldWorkForTriggeredBasedMessaging() {
-		Contract.make((c) -> {
-			c.label("some_label");
-			c.input((i) -> i.triggeredBy("bookReturnedTriggered()"));
-			c.outputMessage((o) -> {
-				o.sentTo("output");
-				o.body("{ \"bookName\" : \"foo\" }");
-				o.headers((h) -> h.header("BOOKNAME", "foo"));
-			});
-		});
 		// generated test should look like this:
 		bookReturnedTriggered();
 		ContractVerifierMessage response = Objects.requireNonNull(this.contractVerifierMessaging.receive("output"));

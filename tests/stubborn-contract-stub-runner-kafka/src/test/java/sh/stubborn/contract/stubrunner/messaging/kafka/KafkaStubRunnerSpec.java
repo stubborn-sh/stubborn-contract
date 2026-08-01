@@ -35,7 +35,6 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
 
@@ -270,20 +269,6 @@ class KafkaStubRunnerSpec {
 		JsonNode json = OBJECT_MAPPER.readTree(objectAsString);
 		return json.get("bookName") != null;
 	}
-
-	Contract dsl =
-			// tag::sample_dsl[]
-			Contract.make((c) -> {
-				c.label("return_book_1");
-				c.input((i) -> i.triggeredBy("bookReturnedTriggered()"));
-				c.outputMessage((o) -> {
-					o.sentTo("output");
-					o.body("{ \"bookName\" : \"foo\" }");
-					o.headers((h) -> h.header("BOOK-NAME", "foo"));
-				});
-			});
-
-	// end::sample_dsl[]
 
 	@Configuration
 	@ComponentScan

@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
@@ -70,17 +69,6 @@ class CamelMessagingApplicationSpec {
 	@Test
 	@DisplayName("should work for triggered based messaging")
 	void shouldWorkForTriggeredBasedMessaging() {
-		// tag::sample_dsl[]
-		Contract.make((c) -> {
-			c.label("return_book_1");
-			c.input((i) -> i.triggeredBy("bookReturnedTriggered()"));
-			c.outputMessage((o) -> {
-				o.sentTo("rabbitmq:output?queue=output");
-				o.body("{ \"bookName\" : \"foo\" }");
-				o.headers((h) -> h.header("BOOK-NAME", "foo"));
-			});
-		});
-		// end::sample_dsl[]
 		// generated test should look like this:
 		bookReturnedTriggered();
 		ContractVerifierMessage response = Objects

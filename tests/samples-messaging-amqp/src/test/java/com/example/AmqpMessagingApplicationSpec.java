@@ -23,7 +23,6 @@ import com.jayway.jsonpath.JsonPath;
 import com.toomuchcoding.jsonassert.JsonAssertion;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
@@ -50,26 +49,6 @@ class AmqpMessagingApplicationSpec {
 
 	@Test
 	void should_work_for_triggered_based_messaging() {
-		Contract.make((c) -> {
-			// Human readable description
-			c.description("Some description");
-			// Label by means of which the output message can be triggered
-			c.label("some_label");
-			// input to the contract
-			c.input((i) -> i.triggeredBy("publishBook()"));
-			// output message of the contract
-			c.outputMessage((o) -> {
-				// destination to which the output message will be sent
-				o.sentTo("test-exchange");
-				// the body of the output message
-				o.body("{ \"name\" : \"some\" }");
-				// the headers of the output message
-				o.headers((h) -> {
-					h.header("contentType", "application/json");
-					h.header("__TypeId__", "com.example.Book");
-				});
-			});
-		});
 		// generated test should look like this:
 		publishBook();
 		ContractVerifierMessage response = Objects

@@ -1,0 +1,16 @@
+// tag::sample_dsl[]
+			Contract.make {
+				label 'return_book_1'
+				input {
+					triggeredBy('bookReturnedTriggered()')
+				}
+				outputMessage {
+					sentTo('rabbitmq:output?queue=output')
+					body('''{ "bookName" : "foo" }''')
+					headers {
+						header('BOOK-NAME', 'foo')
+					}
+				}
+			}
+			
+// end::sample_dsl[]
