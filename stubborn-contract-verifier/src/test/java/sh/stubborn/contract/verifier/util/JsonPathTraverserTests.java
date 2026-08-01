@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import sh.stubborn.jsonassert.JsonAssertion;
 import groovy.json.JsonOutput;
 import groovy.json.JsonSlurper;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.jsonassert.JsonAssertion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

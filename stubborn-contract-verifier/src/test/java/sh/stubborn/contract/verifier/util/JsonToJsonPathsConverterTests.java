@@ -24,7 +24,6 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
-import sh.stubborn.jsonassert.JsonAssertion;
 import groovy.json.JsonOutput;
 import groovy.json.JsonSlurper;
 import net.minidev.json.JSONArray;
@@ -34,6 +33,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.MatchingType;
+import sh.stubborn.jsonassert.JsonAssertion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

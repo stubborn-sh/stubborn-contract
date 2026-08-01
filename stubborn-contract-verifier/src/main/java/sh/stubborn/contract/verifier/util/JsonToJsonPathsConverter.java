@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import sh.stubborn.jsonassert.JsonAssertion;
 import groovy.json.JsonOutput;
 import groovy.lang.GString;
 import org.apache.commons.logging.Log;
@@ -28,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
+import sh.stubborn.jsonassert.JsonAssertion;
 
 /**
  * Converts JSON to a set of JSON paths together with methods needed to be called to build
