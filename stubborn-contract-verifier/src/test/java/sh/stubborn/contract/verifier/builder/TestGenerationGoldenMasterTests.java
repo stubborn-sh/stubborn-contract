@@ -55,7 +55,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * compares and fails on any difference. A missing golden always fails (unless updating)
  * so new corpus entries can't silently pass.
  *
- * @author Claude Code
+ * @author Marcin Grzejszczak
  */
 class TestGenerationGoldenMasterTests {
 
