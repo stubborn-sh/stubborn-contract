@@ -16,6 +16,15 @@
 
 package sh.stubborn.contract.wiremock;
 
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.restclient.RestTemplateBuilder;
@@ -47,7 +56,25 @@ public class WiremockTestsApplication {
 	@Bean
 	@Primary
 	public RestTemplate restTemplate() {
-		return new RestTemplate();
+		return new RestTemplate(new HttpComponentsClientHttpRequestFactory(createSslHttpClient()));
+	}
+
+	private static HttpClient createSslHttpClient() {
+		try {
+			SSLConnectionSocketFactoryBuilder sslConnectionSocketFactoryBuilder = SSLConnectionSocketFactoryBuilder
+				.create();
+			sslConnectionSocketFactoryBuilder
+				.setSslContext(
+						new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+				.setHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+			PoolingHttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
+				.setSSLSocketFactory(sslConnectionSocketFactoryBuilder.build())
+				.build();
+			return HttpClients.custom().setConnectionManager(connectionManager).build();
+		}
+		catch (Exception ex) {
+			throw new IllegalStateException("Unable to create SSL HttpClient", ex);
+		}
 	}
 
 	@Bean
