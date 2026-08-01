@@ -23,6 +23,14 @@ import java.util.Objects;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.assertj.core.api.BDDAssertions;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
@@ -153,7 +161,18 @@ class StubRunnerConfigurationTests {
 	}
 
 	private static String readUrl(String url) throws Exception {
-		return new String(new URL(url).openStream().readAllBytes()).trim();
+		try (CloseableHttpClient client = HttpClients.custom()
+			.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+				.setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+					.setSslContext(
+							new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+					.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+					.build())
+				.build())
+			.build()) {
+			return client.execute(new HttpGet(url),
+					(response) -> new String(response.getEntity().getContent().readAllBytes()).trim());
+		}
 	}
 
 	@Configuration
