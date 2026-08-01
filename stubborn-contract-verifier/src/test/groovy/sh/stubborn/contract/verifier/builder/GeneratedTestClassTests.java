@@ -82,7 +82,7 @@ public class GeneratedTestClassTests {
 + "import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;\n"
 + "\n"
 + "@SuppressWarnings(\"rawtypes\")\n"
-+ "@TestMethodOrder(MethodOrderer.MethodName.class)"
++ "@TestMethodOrder(MethodOrderer.MethodName.class)\n"
 + "public class FooBarTest extends BazBar {\n"
 + "\n"
 + "\t@Test\n"
