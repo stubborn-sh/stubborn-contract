@@ -70,7 +70,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 				"stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=false", "eureka.client.enabled=true",
 				"eureka.client.restclient.enabled=false", "eureka.client.webclient.enabled=false",
 				"eureka.client.jersey.enabled=false", "debug=true", "eureka.instance.leaseRenewalIntervalInSeconds=1",
-				"eureka.instance.leaseExpirationDurationInSeconds=2", "eureka.client.registryFetchIntervalSeconds=1",
+				"eureka.client.registryFetchIntervalSeconds=1",
 				"eureka.client.instanceInfoReplicationIntervalSeconds=1",
 				"eureka.client.initialInstanceInfoReplicationIntervalSeconds=0" })
 @AutoConfigureStubRunner(ids = { "sh.stubborn.contract.verifier.stubs:loanIssuance",
@@ -97,11 +97,13 @@ class StubRunnerSpringCloudEurekaAutoConfigurationSpec {
 				"--spring.cloud.contract.stubrunner.cloud.eureka.enabled=true",
 				"--stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=false", "--eureka.client.enabled=true",
 				"--server.port=8761", "--spring.profiles.active=eureka",
-				// Aggressive Eureka timings: a registered instance is discoverable within
-				// ~1-2s instead of the 30s+ defaults (response cache + registry fetch),
-				// keeping this test fast and non-flaky.
-				"--eureka.server.responseCacheUpdateIntervalMs=500", "--eureka.server.useReadOnlyResponseCache=false",
-				"--eureka.server.evictionIntervalTimerInMs=2000");
+				// Fast propagation so a registered instance is discoverable within ~1-2s
+				// instead of the 30s+ defaults (response cache + registry fetch). We do
+				// NOT
+				// shorten the lease/eviction here: under CI load an aggressive lease can
+				// evict a healthy instance between renewals, which reintroduces
+				// flakiness.
+				"--eureka.server.responseCacheUpdateIntervalMs=500", "--eureka.server.useReadOnlyResponseCache=false");
 	}
 
 	@AfterAll
@@ -117,14 +119,18 @@ class StubRunnerSpringCloudEurekaAutoConfigurationSpec {
 		then(read(this.stubFinder.findStubUrl("fraudDetectionServer").toString() + "/name"))
 			.isEqualTo("fraudDetectionServer");
 		// Stubs can be reached via load-balanced service discovery. Poll until both
-		// instances have registered and the client has fetched them (fast with the
-		// timings above); asserting both inside the same block avoids a race where one
-		// name resolves before the other.
+		// instances have registered and the client has fetched them. ignoreExceptions()
+		// is essential: before the instances are discovered the load balancer throws
+		// IllegalStateException("No instances available ..."), which is NOT an
+		// AssertionError, so untilAsserted would otherwise fail on the first poll instead
+		// of retrying. Asserting both names in one block avoids a one-resolves-first
+		// race.
 		log.info("Waiting for stubs to register in Eureka...");
 		Awaitility.await()
 			.pollDelay(0, TimeUnit.SECONDS)
 			.pollInterval(500, TimeUnit.MILLISECONDS)
 			.atMost(90, TimeUnit.SECONDS)
+			.ignoreExceptions()
 			.untilAsserted(() -> {
 				then(this.restTemplate.getForObject("http://loanIssuance/name", String.class))
 					.isEqualTo("loanIssuance");
