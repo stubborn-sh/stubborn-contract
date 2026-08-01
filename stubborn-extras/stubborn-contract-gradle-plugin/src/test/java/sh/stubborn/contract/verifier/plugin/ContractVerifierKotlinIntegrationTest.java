@@ -14,26 +14,31 @@
  * limitations under the License.
  */
 
-package sh.stubborn.contract.verifier.plugin
+package sh.stubborn.contract.verifier.plugin;
 
-import java.nio.file.Files
-import java.nio.file.Path
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import static java.nio.charset.StandardCharsets.UTF_8
 abstract class ContractVerifierKotlinIntegrationTest extends ContractVerifierIntegrationTest {
-	public static final String SPOCK = "testFramework.set(TestFramework.SPOCK)"
-	public static final String JUNIT = "testFramework.set(TestFramework.JUNIT5)"
+
+	public static final String SPOCK = "testFramework.set(TestFramework.SPOCK)";
+
+	public static final String JUNIT = "testFramework.set(TestFramework.JUNIT5)";
 
 	@Override
 	protected File getBuildFile() {
-		return new File(testProjectDir, 'build.gradle.kts')
+		return new File(getTestProjectDir(), "build.gradle.kts");
 	}
 
 	@Override
-	protected void switchToJunitTestFramework(String from, String to) {
-		Path path = buildFile.toPath()
-		String content = new StringBuilder(new String(Files.readAllBytes(path), UTF_8)).replaceAll(SPOCK, JUNIT)
-																					   .replaceAll(from, to)
-		Files.write(path, content.getBytes(UTF_8))
+	protected void switchToJunitTestFramework(String from, String to) throws IOException {
+		Path path = getBuildFile().toPath();
+		String content = new String(Files.readAllBytes(path), StandardCharsets.UTF_8).replaceAll(SPOCK, JUNIT)
+			.replaceAll(from, to);
+		Files.write(path, content.getBytes(StandardCharsets.UTF_8));
 	}
+
 }
