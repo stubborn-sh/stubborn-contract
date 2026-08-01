@@ -25,7 +25,7 @@ class BookReturned implements Serializable {
 
 	final String bookName;
 
-	@JsonCreator
+	@JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
 	BookReturned(String bookName) {
 		this.bookName = bookName;
 	}

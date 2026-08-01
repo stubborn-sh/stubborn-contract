@@ -827,6 +827,7 @@
 								<artifactId>stubborn-contract-docker-parent</artifactId>
 								<artifactId>stubborn-contract-specs</artifactId>
 								<artifactId>stubborn-contract-tests</artifactId>
+								<artifactId>stubborn-contract-tests-support</artifactId>
 								<artifactId>stubborn-contract-stub-runner-boot-zookeeper</artifactId>
 								<artifactId>stubborn-contract-stub-runner-boot-eureka</artifactId>
 								<artifactId>stubborn-contract-sample-jms</artifactId>
