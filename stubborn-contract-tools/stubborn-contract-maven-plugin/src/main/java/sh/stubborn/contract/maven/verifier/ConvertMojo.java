@@ -20,12 +20,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -56,7 +57,7 @@ public class ConvertMojo extends AbstractMojo {
 	static final String CONTRACTS_PATH = "/contracts";
 	static final String ORIGINAL_PATH = "/original";
 
-	@Component
+	@Inject
 	private RepositorySystem repositorySystem;
 
 	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
@@ -174,7 +175,7 @@ public class ConvertMojo extends AbstractMojo {
 	@Parameter(property = "convertToYaml", defaultValue = "false")
 	private boolean convertToYaml;
 
-	@Component(role = MavenResourcesFiltering.class, hint = "default")
+	@Inject
 	private MavenResourcesFiltering mavenResourcesFiltering;
 
 	/**

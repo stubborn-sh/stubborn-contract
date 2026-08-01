@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -66,7 +68,7 @@ public class GenerateStubsMojo extends AbstractMojo {
 	@Parameter(property = "spring.cloud.contract.verifier.jar.skip", defaultValue = "false")
 	private boolean jarSkip;
 
-	@Component
+	@Inject
 	private MavenProjectHelper projectHelper;
 
 	/**
@@ -78,8 +80,9 @@ public class GenerateStubsMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", readonly = true)
 	private MavenProject project;
 
-	@Component(role = Archiver.class, hint = "jar")
-	private JarArchiver archiver;
+	@Inject
+	@Named("jar")
+	private Archiver archiver;
 
 	@Parameter(defaultValue = "stubs")
 	private String classifier;
@@ -140,12 +143,13 @@ public class GenerateStubsMojo extends AbstractMojo {
 		getLog().info(
 				"Files matching this pattern will be excluded from " + "stubs generation " + Arrays.toString(excludes));
 		try {
-			this.archiver.addDirectory(stubsOutputDir, new String[] { "**/*.*" },
+			JarArchiver jarArchiver = (JarArchiver) this.archiver;
+			jarArchiver.addDirectory(stubsOutputDir, new String[] { "**/*.*" },
 					excludedFilesEmpty() ? new String[0] : this.excludedFiles);
-			this.archiver.setCompress(true);
-			this.archiver.setDestFile(stubsJarFile);
-			this.archiver.addConfiguredManifest(ManifestCreator.createManifest(this.project));
-			this.archiver.createArchive();
+			jarArchiver.setCompress(true);
+			jarArchiver.setDestFile(stubsJarFile);
+			jarArchiver.addConfiguredManifest(ManifestCreator.createManifest(this.project));
+			jarArchiver.createArchive();
 		}
 		catch (Exception ex) {
 			throw new MojoFailureException("Exception while packaging " + this.classifier + " jar.", ex);
