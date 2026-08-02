@@ -63,6 +63,33 @@
 	</suppress>
 
 	<!--
+	  ADJACENT-CPE FALSE POSITIVE: io.github.x-stream:mxparser is the XML pull-parser fork that
+	  XStream bundles (an MXP1/XPP3 successor), NOT XStream itself. dependency-check matches it to
+	  the XStream CPE (cpe:/a:x-stream:xstream, a.k.a. cpe:/a:xstream:xstream) on the "x-stream"
+	  groupId token and assigns it XStream's own deserialization CVEs — CVE-2020-26217 (8.8),
+	  CVE-2021-39144 (8.5), CVE-2021-39145/39146/39147/39148/39149. Those CVEs belong to the
+	  com.thoughtworks.xstream:xstream engine, not to the parser. The real XStream jar on this
+	  reactor's classpath is already at the fixed 1.4.21 (>= 1.4.21 remediates every one of those
+	  CVEs; it reaches only stubborn-contract-stub-runner-spring-cloud transitively via Curator),
+	  so nothing is actually exploitable — the parser fork merely inherits the CPE. Suppress ONLY
+	  the xstream CPEs, scoped to the mxparser packageUrl, so a genuine CVE filed against mxparser
+	  itself (matched some other way) is still surfaced and the real xstream jar is untouched.
+	  Structural name-token mismatch, not version-dependent — keep.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			io.github.x-stream:mxparser is XStream's bundled XML pull-parser fork, not XStream.
+			It is CPE-matched to cpe:/a:x-stream:xstream on the "x-stream" groupId token and assigned
+			XStream's deserialization CVEs (CVE-2020-26217, CVE-2021-39144..39149), which belong to
+			the com.thoughtworks.xstream:xstream engine (present at the fixed 1.4.21 here), not the
+			parser. Only the xstream CPEs are suppressed, scoped to this artifact.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/io\.github\.x-stream/mxparser@.*$</packageUrl>
+		<cpe>cpe:/a:x-stream:xstream</cpe>
+		<cpe>cpe:/a:xstream:xstream</cpe>
+	</suppress>
+
+	<!--
 	  DOMPurify — the DOMPurify JavaScript library vendored inside the swagger-ui bundle
 	  (swagger-ui-bundle.js / swagger-ui-es-bundle.js, pkg:javascript/DOMPurify) that WireMock
 	  3.13.2 ships inside wiremock-*.jar for its standalone admin UI.
