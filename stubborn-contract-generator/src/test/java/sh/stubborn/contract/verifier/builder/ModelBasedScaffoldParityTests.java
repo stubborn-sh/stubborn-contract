@@ -165,6 +165,20 @@ class ModelBasedScaffoldParityTests {
 					}
 				}
 			}
+			""", "http_resp_cookie", """
+			sh.stubborn.contract.spec.Contract.make {
+				request {
+					method 'GET'
+					url '/resp/cookie'
+				}
+				response {
+					status OK()
+					cookies {
+						cookie('session', 'abc123')
+					}
+					body([id: 1])
+				}
+			}
 			""");
 
 	@TempDir

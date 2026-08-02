@@ -28,10 +28,10 @@ import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
 import sh.stubborn.contract.verifier.template.TemplateProcessor;
 
 /**
- * Builds the structured {@link ResponseModel} (the response status-code assertion and the
- * response header assertions of the {@code // then:} block) for the eligible subset of
- * HTTP contracts, reusing the exact legacy string helpers so the output stays
- * byte-identical to the legacy builders.
+ * Builds the structured {@link ResponseModel} (the response status-code assertion, the
+ * response header assertions and the response cookie assertions of the {@code // then:}
+ * block) for the eligible subset of HTTP contracts, reusing the exact legacy string
+ * helpers so the output stays byte-identical to the legacy builders.
  *
  * <p>
  * A contract is eligible only when <em>all</em> of the following hold; otherwise
@@ -41,14 +41,12 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
  * <li>the request portion is already eligible for the structured path (the
  * {@link RequestModelBuilder} returns non-{@code null})</li>
  * <li>the response is present</li>
- * <li>the response carries no cookies (response cookies are deferred to a later
- * slice)</li>
- * <li>no structured then line (status or header) carries a template entry</li>
+ * <li>no structured then line (status, header or cookie) carries a template entry</li>
  * </ul>
  *
  * <p>
- * The response body assertions (the {@code // and:} block) and response cookie assertions
- * are never modelled here; they stay captured verbatim from the legacy pipeline.
+ * The response body assertions (the {@code // and:} block) are never modelled here; they
+ * stay captured verbatim from the legacy pipeline.
  *
  * @author Marcin Grzejszczak
  */
@@ -76,15 +74,13 @@ final class ResponseModelBuilder {
 		if (response == null) {
 			return null;
 		}
-		if (response.getCookies() != null) {
-			// Response cookies are still emitted verbatim in the // then: block (next
-			// slice); fall back to the whole-then-verbatim path when present.
-			return null;
-		}
 		List<String> statements = new ArrayList<>();
 		statements.add(RestAssuredStatusCodeThen.statusLine(contract, ComparisonBuilder.JAVA_HTTP_INSTANCE));
 		if (response.getHeaders() != null) {
 			statements.addAll(RestAssuredHeadersThen.headerLines(contract, ComparisonBuilder.JAVA_HTTP_INSTANCE));
+		}
+		if (response.getCookies() != null) {
+			statements.addAll(RestAssuredCookiesThen.cookieLines(contract, ComparisonBuilder.JAVA_HTTP_INSTANCE));
 		}
 		StatementList thenBlock = new StatementList(statements);
 		if (containsTemplateEntry(thenBlock)) {

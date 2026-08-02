@@ -65,6 +65,36 @@ class ResponseModelRendererTests {
 	}
 
 	@Test
+	void renders_structured_then_cookies_after_headers_null_check_before_value() {
+		RequestModel request = new RequestModel(
+				new FluentStatement("MockMvcRequestSpecification request = given()", List.of()),
+				new FluentStatement("ResponseOptions response = given().spec(request)", List.of(".get(\"/foo\")")));
+		// then block: status, then header, then per-cookie null-check followed by value
+		ResponseModel response = new ResponseModel(
+				new StatementList(List.of("assertThat(response.statusCode()).isEqualTo(200)",
+						"assertThat(response.header(\"X-Reply\")).isEqualTo(\"def\")",
+						"assertThat(response.cookie(\"session\")).isNotNull()",
+						"assertThat(response.cookie(\"session\")).isEqualTo(\"abc123\")")));
+		TestClassModel model = new TestClassModel("com.example", "ContractTest", null, false, List.of(),
+				List.of(new TestMethodModel("validate_contract",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")), List.of(), request, response)),
+				List.of());
+
+		List<String> lines = bodyLines(this.renderer.render(model));
+
+		// the cookie assertions come after the header assertion, with the null-check
+		// preceding the value assertion, each ;-terminated
+		assertThat(lines).containsSubsequence("// then:", "assertThat(response.statusCode()).isEqualTo(200);",
+				"assertThat(response.header(\"X-Reply\")).isEqualTo(\"def\");",
+				"assertThat(response.cookie(\"session\")).isNotNull();",
+				"assertThat(response.cookie(\"session\")).isEqualTo(\"abc123\");");
+		// the structured cookie statements carry a single terminator
+		assertThat(lines).contains("assertThat(response.cookie(\"session\")).isNotNull();")
+			.doesNotContain("assertThat(response.cookie(\"session\")).isNotNull()")
+			.doesNotContain("assertThat(response.cookie(\"session\")).isNotNull();;");
+	}
+
+	@Test
 	void renders_structured_then_status_only_with_no_and_body() {
 		RequestModel request = new RequestModel(
 				new FluentStatement("MockMvcRequestSpecification request = given()", List.of()), new FluentStatement(

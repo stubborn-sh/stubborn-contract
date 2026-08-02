@@ -357,10 +357,25 @@ class ModelBuilderTests {
 	}
 
 	@Test
-	void response_model_is_null_when_response_has_cookies() throws IOException {
-		assertThat(responseModelFor(RESPONSE_COOKIE_CONTRACT))
-			.as("response cookies are deferred, so the response must fall back to the verbatim then block")
-			.isNull();
+	void response_model_is_built_for_a_status_and_cookie_contract() throws IOException {
+		ResponseModel model = responseModelFor(RESPONSE_COOKIE_CONTRACT);
+
+		assertThat(model).as("a status+cookie response must now flow through the structured path").isNotNull();
+		List<String> lines = model.thenBlock().render();
+		// the status-code assertion is the first structured then statement
+		assertThat(lines).first(org.assertj.core.api.InstanceOfAssertFactories.STRING)
+			.isEqualTo("assertThat(response.statusCode()).isEqualTo(200);");
+		// each cookie contributes a null-check followed by a value assertion, both
+		// present
+		assertThat(lines).contains("assertThat(response.cookie(\"session\")).isNotNull();")
+			.contains("assertThat(response.cookie(\"session\")).isEqualTo(\"abc123\");");
+		// the null-check precedes the value assertion for the cookie
+		int nullCheckIndex = lines.indexOf("assertThat(response.cookie(\"session\")).isNotNull();");
+		int valueIndex = lines.indexOf("assertThat(response.cookie(\"session\")).isEqualTo(\"abc123\");");
+		assertThat(nullCheckIndex).as("cookie null-check must precede its value assertion").isLessThan(valueIndex);
+		// every structured then statement is ;-terminated (standalone statements, not a
+		// fluent chain)
+		assertThat(lines).allSatisfy((line) -> assertThat(line).endsWith(";"));
 	}
 
 	private ResponseModel responseModelFor(String contractDsl) throws IOException {

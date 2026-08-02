@@ -16,10 +16,19 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
+import sh.stubborn.contract.spec.internal.Cookie;
+import sh.stubborn.contract.spec.internal.Cookies;
+import sh.stubborn.contract.spec.internal.ExecutionProperty;
+import sh.stubborn.contract.spec.internal.NotToEscapePattern;
 import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
+import sh.stubborn.contract.verifier.util.MapConverter;
 
 class RestAssuredCookiesThen implements Then, RestAssuredAcceptor, CookieElementProcessor {
 
@@ -34,8 +43,73 @@ class RestAssuredCookiesThen implements Then, RestAssuredAcceptor, CookieElement
 
 	@Override
 	public MethodVisitor<Then> apply(SingleContractMetadata metadata) {
-		processCookies(metadata);
+		List<String> lines = cookieLines(metadata, this.comparisonBuilder);
+		Iterator<String> iterator = lines.iterator();
+		while (iterator.hasNext()) {
+			String text = iterator.next();
+			if (iterator.hasNext()) {
+				this.blockBuilder.addLineWithEnding(text);
+			}
+			else {
+				this.blockBuilder.addIndented(text);
+			}
+		}
+		this.blockBuilder.addEndingIfNotPresent();
 		return this;
+	}
+
+	/**
+	 * The per-cookie response assertion lines for a single contract, without trailing
+	 * statement terminators. Each cookie contributes two ordered standalone statements: a
+	 * null-check (e.g. {@code assertThat(response.cookie("session")).isNotNull()})
+	 * followed by the value assertion (e.g. {@code assertThat(response.cookie("session"))
+	 * .isEqualTo("abc123")} or a {@code .matches(...)} / {@code ExecutionProperty}
+	 * variant). Shared by the legacy {@link #apply} path and the structured
+	 * {@code ResponseModelBuilder} so both emit byte-identical text.
+	 * @param metadata the contract whose response cookies to assert
+	 * @param comparisonBuilder the comparison builder producing the assertion text
+	 * @return the null-check and value assertions, in declaration order, each without a
+	 * trailing {@code ;}
+	 */
+	static List<String> cookieLines(SingleContractMetadata metadata, ComparisonBuilder comparisonBuilder) {
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
+		Cookies cookies = Objects.requireNonNull(response.getCookies());
+		List<String> lines = new ArrayList<>();
+		for (Cookie cookie : cookies.getEntries()) {
+			Object value = (cookie.getServerValue() instanceof NotToEscapePattern) ? cookie.getServerValue()
+					: MapConverter.getTestSideValues(Objects.requireNonNull(cookie.getServerValue()));
+			String key = cookie.getKey();
+			lines.add(comparisonBuilder.assertThatIsNotNull(cookieKeyExpression(key)));
+			lines.add(cookieValueAssertion(key, value, comparisonBuilder));
+		}
+		return lines;
+	}
+
+	private static String cookieKeyExpression(String key) {
+		return "response.cookie(\"" + key + "\")";
+	}
+
+	private static String cookieValueAssertion(String property, Object value, ComparisonBuilder comparisonBuilder) {
+		String cookieValue = cookieKeyExpression(property);
+		if (value instanceof NotToEscapePattern) {
+			return comparisonBuilder.assertThat(cookieValue)
+					+ comparisonBuilder.matches(Objects.requireNonNull(((NotToEscapePattern) value).getServerValue())
+						.pattern()
+						.replace("\\", "\\\\"));
+		}
+		else if (value instanceof String || value instanceof Pattern) {
+			return comparisonBuilder.assertThat(cookieValue, value);
+		}
+		else if (value instanceof Number) {
+			return comparisonBuilder.assertThat(cookieValue, value);
+		}
+		else if (value instanceof ExecutionProperty) {
+			return ((ExecutionProperty) value).insertValue(cookieValue);
+		}
+		else {
+			// fallback
+			return cookieValueAssertion(property, value.toString(), comparisonBuilder);
+		}
 	}
 
 	@Override
@@ -50,7 +124,7 @@ class RestAssuredCookiesThen implements Then, RestAssuredAcceptor, CookieElement
 
 	@Override
 	public String cookieKey(String key) {
-		return "response.cookie(\"" + key + "\")";
+		return cookieKeyExpression(key);
 	}
 
 	@Override
