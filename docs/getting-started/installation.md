@@ -1,8 +1,10 @@
 # Installation & Coordinates
 
 Everything Stubborn Contract publishes lives under the **`sh.stubborn`** group id, and every
-artifact shares the same version (currently `0.1.0-SNAPSHOT` on `main`). You never pin those
-versions by hand — you import the BOM once and let it manage them.
+artifact shares a single version per release. You never pin those versions by hand — you
+import the BOM once and let it manage them. The examples below use
+`${stubborn-contract.version}` (Maven) / `${verifierVersion}` (Gradle) as a stand-in for the
+version you are targeting; set it to the current release or snapshot.
 
 ## 1. Import the BOM
 
@@ -17,7 +19,7 @@ declare `sh.stubborn:*` dependencies **without a `<version>`**.
         <dependency>
             <groupId>sh.stubborn</groupId>
             <artifactId>stubborn-contract-dependencies</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>${stubborn-contract.version}</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -27,7 +29,7 @@ declare `sh.stubborn:*` dependencies **without a `<version>`**.
 
 ```groovy [build.gradle]
 dependencies {
-    implementation platform("sh.stubborn:stubborn-contract-dependencies:0.1.0-SNAPSHOT")
+    implementation platform("sh.stubborn:stubborn-contract-dependencies:${verifierVersion}")
 }
 ```
 
@@ -98,7 +100,7 @@ stub JAR.
 <plugin>
     <groupId>sh.stubborn</groupId>
     <artifactId>stubborn-contract-maven-plugin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>${stubborn-contract.version}</version>
     <extensions>true</extensions>
     <configuration>
         <baseClassForTests>com.example.BaseTestClass</baseClassForTests>
@@ -108,7 +110,7 @@ stub JAR.
 
 ```groovy [Gradle]
 plugins {
-    id 'sh.stubborn.contract' version '0.1.0-SNAPSHOT'
+    id 'sh.stubborn.contract' version "${verifierVersion}"
 }
 ```
 

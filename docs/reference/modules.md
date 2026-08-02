@@ -1,7 +1,7 @@
 # Modules & Architecture
 
 Stubborn Contract is a multi-module Maven build. Every module publishes under the
-`sh.stubborn` group id and the same version (`0.1.0-SNAPSHOT` on `main`). You rarely
+`sh.stubborn` group id and shares a single version per release. You rarely
 depend on individual modules directly — the [BOM and starters](../getting-started/installation)
 pull in the right set for you. This page explains how the modules are layered so you know
 what each one is for and which tier you are allowed to depend on.
