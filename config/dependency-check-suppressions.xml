@@ -45,26 +45,76 @@
 	</suppress>
 
 	<!--
-	  CVE-2026-65898 — DOMPurify DOM-clobbering/XSS in the swagger-ui JavaScript bundle
-	  (swagger-ui-bundle.js / swagger-ui-es-bundle.js, pkg:javascript/DOMPurify@3.2.6) that
-	  WireMock 3.13.2 vendors inside wiremock-*.jar for its admin UI.
+	  DOMPurify — the DOMPurify JavaScript library vendored inside the swagger-ui bundle
+	  (swagger-ui-bundle.js / swagger-ui-es-bundle.js, pkg:javascript/DOMPurify) that WireMock
+	  3.13.2 ships inside wiremock-*.jar for its standalone admin UI.
 	  This is a browser-only front-end asset: it is exploitable only when a user loads WireMock's
 	  standalone admin swagger-ui in a browser. Stubborn Contract embeds WireMock purely as an
 	  in-process HTTP stub server (verifier / wiremock modules) and never serves that swagger-ui,
 	  so the vulnerable code path is not reachable from any artifact we publish. It is also outside
 	  our control — the fix must come from an upstream WireMock release bundling a patched DOMPurify.
-	  The reported CVSSv2 base is 5.1 (below the CVSS 7 gate) but dependency-check gates on the
-	  unscored CVSSv3 default, so an explicit suppression is required.
+	  Suppressed by packageUrl WITHOUT a <cve> filter on purpose: the vendored DOMPurify version
+	  attracts a rolling set of low-severity DOM-clobbering/XSS CVEs (the original CVE-2026-65898 no
+	  longer matches; ODC now reports CVE-2026-49978, CVE-2026-49458, CVE-2026-49459, CVE-2026-41240,
+	  CVE-2026-0540, CVE-2026-65902, CVE-2026-65914 and more, currently <7 but churning). A
+	  CVE-pinned rule would rot into a dead "zero matches" entry on every WireMock bump; scoping to
+	  the DOMPurify packageUrl keeps the browser-only asset suppressed regardless of the exact CVE.
 	  REMOVE THIS SUPPRESSION once WireMock ships a swagger-ui bundle with a patched DOMPurify.
 	-->
 	<suppress>
 		<notes><![CDATA[
 			Browser-only DOMPurify inside WireMock's vendored swagger-ui admin bundle. WireMock is
 			used only as an in-process stub server here; the swagger-ui is never served, so the XSS
-			path is unreachable at runtime. Upstream-owned. Remove once WireMock bundles a patched
-			DOMPurify.
+			path is unreachable at runtime. Upstream-owned, browser-only asset — suppressed by
+			packageUrl (no CVE filter) as the vendored version churns through low-severity CVEs.
+			Remove once WireMock bundles a patched DOMPurify.
 		]]></notes>
 		<packageUrl regex="true">^pkg:javascript/DOMPurify@.*$</packageUrl>
-		<cve>CVE-2026-65898</cve>
+	</suppress>
+
+	<!--
+	  SELF-CPE FALSE POSITIVE: our own modules whose artifactId contains "wiremock"
+	  (sh.stubborn:stubborn-contract-wiremock and the stubborn-wiremock-spring* helpers) get
+	  matched by dependency-check to cpe:2.3:a:wiremock:wiremock purely on the "wiremock" name
+	  token, which then assigns them WireMock's own CVE-2018-9116 (CVSS 9.1, an SSRF in the real
+	  WireMock server). These are OUR jars, not the WireMock product; the "@" version (0.1.0-...) is
+	  a Stubborn version, not a WireMock release. Suppress ONLY the wiremock:wiremock CPE, scoped to
+	  the sh.stubborn wiremock-named packageUrls, so genuine CVEs on the real org.wiremock:wiremock
+	  dependency (different groupId) are still evaluated and any future CVE filed against our own
+	  jars is still caught. Structural name-token mismatch, not version-dependent — keep.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			Self-CPE mismatch: our sh.stubborn *wiremock* modules matched to cpe:/a:wiremock:wiremock
+			on the "wiremock" name token and assigned the real WireMock server's CVE-2018-9116. These
+			are our own artifacts, not the WireMock product. Only the wiremock:wiremock CPE is
+			suppressed; the real org.wiremock:wiremock dependency is unaffected.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/sh\.stubborn/.*wiremock.*@.*$</packageUrl>
+		<cpe>cpe:/a:wiremock:wiremock</cpe>
+	</suppress>
+
+	<!--
+	  SELF-CPE FALSE POSITIVE: sh.stubborn:stubborn-contract-converters is our own contract-format
+	  converter module. Its low SNAPSHOT version (0.1.0-...) plus the "spring"/"contract" name and
+	  description tokens make dependency-check match it to old VMware/Pivotal products —
+	  cpe:2.3:a:vmware:cloud_foundation, vmware:spring_cloud_contract, vmware:spring_framework and
+	  vmware:spring_tools — and assign it their historical CVEs (e.g. CVE-2018-11040, a legacy Spring
+	  Framework JSONP issue). Our jar is not any VMware product. Suppress ONLY those specific vmware
+	  CPEs, scoped to the converters packageUrl, so a genuine future CVE filed against our own jar
+	  (matched some other way) is still surfaced. Structural mismatch, not version-dependent — keep.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			Self-CPE mismatch: our sh.stubborn:stubborn-contract-converters jar matched to old
+			VMware/Pivotal Spring product CPEs because of its "spring"/"contract" name tokens and low
+			0.1.0 SNAPSHOT version. Not a VMware product. Only the specific vmware CPEs are suppressed,
+			scoped to this artifact, so real CVEs on our jar are still evaluated.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/sh\.stubborn/stubborn-contract-converters@.*$</packageUrl>
+		<cpe>cpe:/a:vmware:cloud_foundation</cpe>
+		<cpe>cpe:/a:vmware:spring_cloud_contract</cpe>
+		<cpe>cpe:/a:vmware:spring_framework</cpe>
+		<cpe>cpe:/a:vmware:spring_tools</cpe>
 	</suppress>
 </suppressions>
