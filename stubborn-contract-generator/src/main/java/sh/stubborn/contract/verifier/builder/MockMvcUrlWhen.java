@@ -55,15 +55,39 @@ class MockMvcUrlWhen implements When, MockMvcAcceptor, QueryParamsResolver {
 	}
 
 	private void addUrl(Url buildUrl, Request request) {
+		this.blockBuilder.addIndented(urlLine(request, this.bodyParser));
+	}
+
+	/**
+	 * The {@code .<method>(url)} continuation line for the request, in the exact form the
+	 * legacy MockMvc/Explicit builders emit. Reused by {@link RequestModelBuilder} so the
+	 * structured request path stays byte-identical to the legacy output.
+	 * @param request the request whose method and URL to render
+	 * @param bodyParser the body parser used to quote the URL (the Java parser for
+	 * MockMvc/Explicit)
+	 * @return the {@code .<method>(url)} line (no statement terminator)
+	 */
+	static String urlLine(Request request, BodyParser bodyParser) {
+		Url buildUrl = url(request);
 		Object testSideUrl = MapConverter.getTestSideValues(buildUrl);
 		String method = Objects.requireNonNull(Objects.requireNonNull(request.getMethod()).getServerValue())
 			.toString()
 			.toLowerCase(Locale.ROOT);
 		String url = testSideUrl.toString();
 		if (!(testSideUrl instanceof ExecutionProperty)) {
-			url = this.bodyParser.quotedShortText(testSideUrl.toString());
+			url = bodyParser.quotedShortText(testSideUrl.toString());
 		}
-		this.blockBuilder.addIndented("." + method + "(" + url + ")");
+		return "." + method + "(" + url + ")";
+	}
+
+	private static Url url(Request request) {
+		if (request.getUrl() != null) {
+			return request.getUrl();
+		}
+		if (request.getUrlPath() != null) {
+			return request.getUrlPath();
+		}
+		throw new IllegalStateException("URL is not set!");
 	}
 
 	@Override

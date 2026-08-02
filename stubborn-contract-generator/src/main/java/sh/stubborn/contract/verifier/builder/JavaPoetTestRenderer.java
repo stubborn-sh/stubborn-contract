@@ -144,14 +144,37 @@ class JavaPoetTestRenderer {
 		for (AnnotationModel annotation : method.annotations()) {
 			builder.addAnnotation(toAnnotationSpec(annotation));
 		}
-		// Emit the body verbatim as a $L argument (never inline into the format string)
-		// so $, { and } in template/JSON bodies stay literal. addStatement is avoided: it
-		// appends a stray ; and mangles multi-line bodies, comments and blank lines.
+		RequestModel request = method.request();
+		if (request != null) {
+			// Structured request path: emit the // given: and // when: chains from the
+			// model, then the verbatim // then: block. Each line goes through addCode as
+			// a
+			// $L argument so $, { and } stay literal.
+			emitLine(builder, "// given:");
+			for (String line : request.given().render()) {
+				emitLine(builder, line);
+			}
+			emitLine(builder, "");
+			emitLine(builder, "// when:");
+			for (String line : request.whenBlock().render()) {
+				emitLine(builder, line);
+			}
+			emitLine(builder, "");
+		}
+		// Emit the (remaining) body verbatim as a $L argument (never inline into the
+		// format
+		// string) so $, { and } in template/JSON bodies stay literal. addStatement is
+		// avoided: it appends a stray ; and mangles multi-line bodies, comments and blank
+		// lines.
 		String body = String.join("\n", method.bodyLines());
 		if (!body.isBlank()) {
 			builder.addCode("$L\n", body);
 		}
 		return builder.build();
+	}
+
+	private void emitLine(MethodSpec.Builder builder, String line) {
+		builder.addCode("$L\n", line);
 	}
 
 	private AnnotationSpec toAnnotationSpec(AnnotationModel annotation) {

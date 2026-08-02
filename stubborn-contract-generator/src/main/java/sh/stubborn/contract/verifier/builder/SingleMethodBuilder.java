@@ -226,6 +226,24 @@ final class SingleMethodBuilder {
 		return this.blockBuilder;
 	}
 
+	/**
+	 * Escape hatch for the model-based generator: writes only the {@code then} block of a
+	 * single method's body (no signature, annotations, braces, givens or whens), applying
+	 * the method post-processors. Used by {@link LegacyMethodBodyExtractor} to capture
+	 * the verbatim {@code // then:} block when the request portion is emitted from the
+	 * structured {@link RequestModel}.
+	 * @param metaData the contract to render
+	 * @return the block builder
+	 */
+	BlockBuilder buildThenOnly(SingleContractMetadata metaData) {
+		if (shouldStopProcessing(metaData)) {
+			return this.blockBuilder;
+		}
+		visit(this.thens, metaData);
+		this.methodPostProcessors.stream().filter((m) -> m.accept(metaData)).forEach((m) -> m.apply(metaData));
+		return this.blockBuilder;
+	}
+
 	private boolean shouldStopProcessing(SingleContractMetadata metaData) {
 		List<MethodPreProcessor> matchingPreProcessors = this.methodPreProcessors.stream()
 			.filter((m) -> m.accept(metaData))
