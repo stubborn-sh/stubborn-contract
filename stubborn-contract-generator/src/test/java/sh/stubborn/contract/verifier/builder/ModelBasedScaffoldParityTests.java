@@ -138,6 +138,33 @@ class ModelBasedScaffoldParityTests {
 					status OK()
 				}
 			}
+			""", "http_resp_pattern_header", """
+			sh.stubborn.contract.spec.Contract.make {
+				request {
+					method 'GET'
+					url '/resp/pattern'
+				}
+				response {
+					status OK()
+					headers {
+						header('X-Reply', value(producer(regex('[0-9]{7}')), consumer('1234567')))
+					}
+					body([id: 1])
+				}
+			}
+			""", "http_resp_execproperty_header", """
+			sh.stubborn.contract.spec.Contract.make {
+				request {
+					method 'GET'
+					url '/resp/exec'
+				}
+				response {
+					status OK()
+					headers {
+						header('X-Exec', value(consumer('abc'), producer(execute('$it.length()'))))
+					}
+				}
+			}
 			""");
 
 	@TempDir

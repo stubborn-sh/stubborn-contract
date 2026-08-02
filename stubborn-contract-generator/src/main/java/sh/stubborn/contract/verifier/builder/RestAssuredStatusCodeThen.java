@@ -34,12 +34,23 @@ class RestAssuredStatusCodeThen implements Then {
 
 	@Override
 	public MethodVisitor<Then> apply(SingleContractMetadata metadata) {
-		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
-		this.blockBuilder
-			.addIndented(this.comparisonBuilder.assertThat("response.statusCode()",
-					Objects.requireNonNull(Objects.requireNonNull(response.getStatus()).getServerValue())))
-			.addEndingIfNotPresent();
+		this.blockBuilder.addIndented(statusLine(metadata, this.comparisonBuilder)).addEndingIfNotPresent();
 		return this;
+	}
+
+	/**
+	 * The status-code assertion line for a single contract, without a trailing statement
+	 * terminator, e.g. {@code assertThat(response.statusCode()).isEqualTo(200)}. Shared
+	 * by the legacy {@link #apply} path and the structured {@code ResponseModelBuilder}
+	 * so both emit byte-identical text.
+	 * @param metadata the contract whose response status to assert
+	 * @param comparisonBuilder the comparison builder producing the assertion text
+	 * @return the status-code assertion, without a trailing {@code ;}
+	 */
+	static String statusLine(SingleContractMetadata metadata, ComparisonBuilder comparisonBuilder) {
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
+		return comparisonBuilder.assertThat("response.statusCode()",
+				Objects.requireNonNull(Objects.requireNonNull(response.getStatus()).getServerValue()));
 	}
 
 	@Override

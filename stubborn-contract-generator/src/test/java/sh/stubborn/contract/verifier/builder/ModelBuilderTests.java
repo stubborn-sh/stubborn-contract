@@ -109,6 +109,30 @@ class ModelBuilderTests {
 			+ " }\n"
 			+ "}";
 
+	private static final String RESPONSE_HEADER_CONTRACT = "sh.stubborn.contract.spec.Contract.make {\n"
+			+ " request {\n"
+			+ "  method 'GET'\n"
+			+ "  url '/foo'\n"
+			+ " }\n"
+			+ " response {\n"
+			+ "  status OK()\n"
+			+ "  headers { header('X-Reply', 'def') }\n"
+			+ "  body([id: 1])\n"
+			+ " }\n"
+			+ "}";
+
+	private static final String RESPONSE_COOKIE_CONTRACT = "sh.stubborn.contract.spec.Contract.make {\n"
+			+ " request {\n"
+			+ "  method 'GET'\n"
+			+ "  url '/foo'\n"
+			+ " }\n"
+			+ " response {\n"
+			+ "  status OK()\n"
+			+ "  cookies { cookie('session', 'abc123') }\n"
+			+ "  body([id: 1])\n"
+			+ " }\n"
+			+ "}";
+
 	private static final String MULTIPART_CONTRACT = "sh.stubborn.contract.spec.Contract.make {\n"
 			+ " request {\n"
 			+ "  method 'PUT'\n"
@@ -132,6 +156,8 @@ class ModelBuilderTests {
 
 	private final RequestModelBuilder requestModelBuilder = new RequestModelBuilder();
 
+	private final ResponseModelBuilder responseModelBuilder = new ResponseModelBuilder();
+
 	@Test
 	void builds_java_class_scaffold_from_contract() throws IOException {
 		Collection<ContractMetadata> contracts = contracts(true);
@@ -154,8 +180,13 @@ class ModelBuilderTests {
 		assertThat(method.name()).startsWith("validate_");
 		assertThat(method.annotations()).extracting(AnnotationModel::type)
 			.containsExactly("org.junit.jupiter.api.Test", "org.junit.jupiter.api.Disabled");
-		// the body is captured verbatim from the legacy generator
-		assertThat(method.bodyLines()).isNotEmpty();
+		// the request and the // then: status assertion are now emitted from the
+		// structured request/response model; a bodyless response leaves no verbatim
+		// // and: tail, so bodyLines is empty for this contract
+		assertThat(method.request()).isNotNull();
+		assertThat(method.response()).isNotNull();
+		assertThat(method.response().thenBlock().render())
+			.contains("assertThat(response.statusCode()).isEqualTo(200);");
 		assertThat(model.importDeclarations()).isNotEmpty();
 
 		// the model renders to a structurally-correct Java class
@@ -307,6 +338,46 @@ class ModelBuilderTests {
 			.startsWith(".body(")
 			.contains("fileToBytes(this,");
 		assertThat(model.given().render()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING).endsWith(");");
+	}
+
+	@Test
+	void response_model_is_built_for_a_status_and_header_contract() throws IOException {
+		ResponseModel model = responseModelFor(RESPONSE_HEADER_CONTRACT);
+
+		assertThat(model).as("a status+header response must flow through the structured path").isNotNull();
+		List<String> lines = model.thenBlock().render();
+		// the status-code assertion is the first structured then statement
+		assertThat(lines).first(org.assertj.core.api.InstanceOfAssertFactories.STRING)
+			.isEqualTo("assertThat(response.statusCode()).isEqualTo(200);");
+		// the header assertion follows
+		assertThat(lines).anySatisfy((line) -> assertThat(line).startsWith("assertThat(response.header(\"X-Reply\"))"));
+		// every structured then statement is ;-terminated (standalone statements, not a
+		// fluent chain)
+		assertThat(lines).allSatisfy((line) -> assertThat(line).endsWith(";"));
+	}
+
+	@Test
+	void response_model_is_null_when_response_has_cookies() throws IOException {
+		assertThat(responseModelFor(RESPONSE_COOKIE_CONTRACT))
+			.as("response cookies are deferred, so the response must fall back to the verbatim then block")
+			.isNull();
+	}
+
+	private ResponseModel responseModelFor(String contractDsl) throws IOException {
+		File file = Files.createTempFile(this.tmpDir, "contract", ".groovy").toFile();
+		Files.write(file.toPath(), contractDsl.getBytes());
+		Collection<ContractMetadata> contracts = Collections.singletonList(new ContractMetadata(file.toPath(), false, 1,
+				null, ContractVerifierDslConverter.convertAsCollection(new File("/"), file)));
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setTestMode(TestMode.MOCKMVC);
+		properties.setGeneratedTestSourcesDir(this.tmpDir.toFile());
+		properties.setGeneratedTestResourcesDir(this.tmpDir.toFile());
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
+				file.toPath());
+		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, contracts, "com/example", data);
+		SingleContractMetadata scm = meta.toSingleContractMetadata().iterator().next();
+		return this.responseModelBuilder.build(scm, TestFramework.JUNIT5, meta, TestMode.MOCKMVC);
 	}
 
 	private RequestModel requestModelFor(String contractDsl) throws IOException {
