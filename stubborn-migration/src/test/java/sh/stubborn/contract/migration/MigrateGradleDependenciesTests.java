@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.Recipe;
-import org.openrewrite.Validated;
 import org.openrewrite.config.Environment;
 
 import static org.assertj.core.api.Assertions.assertThat;
