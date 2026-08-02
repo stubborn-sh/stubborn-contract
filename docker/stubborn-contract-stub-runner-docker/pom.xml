@@ -20,7 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-contract-stub-runner-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-app</artifactId>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
@@ -48,7 +48,7 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
-									<artifactId>stubborn-contract-stub-runner-boot</artifactId>
+									<artifactId>stubborn-contract-stub-runner-app</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>

@@ -170,8 +170,8 @@
 				<module>samples-messaging-integration</module>
 				<module>samples-messaging-amqp</module>
 				<module>samples-messaging-jms</module>
-				<module>stubborn-contract-stub-runner-boot-eureka</module>
-				<module>stubborn-contract-stub-runner-boot-zookeeper</module>
+				<module>stubborn-contract-stub-runner-app-eureka</module>
+				<module>stubborn-contract-stub-runner-app-zookeeper</module>
 				<module>stubborn-contract-stub-runner-context-path</module>
 				<module>stubborn-contract-stub-runner-integration</module>
 				<module>stubborn-contract-stub-runner-stream</module>
@@ -193,8 +193,8 @@
 				<module>samples-messaging-integration</module>
 				<module>samples-messaging-amqp</module>
 				<module>samples-messaging-jms</module>
-				<module>stubborn-contract-stub-runner-boot-eureka</module>
-				<module>stubborn-contract-stub-runner-boot-zookeeper</module>
+				<module>stubborn-contract-stub-runner-app-eureka</module>
+				<module>stubborn-contract-stub-runner-app-zookeeper</module>
 				<module>stubborn-contract-stub-runner-context-path</module>
 				<module>stubborn-contract-stub-runner-moco-contract-jar</module>
 				<module>stubborn-contract-stub-runner-moco</module>

@@ -52,7 +52,7 @@ cd ../consumer && ./mvnw test
 | Module | Description |
 |--------|-------------|
 | `stubborn-contract-verifier-spring` | Messaging abstractions (ContractVerifierMessage, MessageVerifierSender/Receiver) |
-| `stubborn-contract-stub-runner-boot` | Spring Framework stub runner integration |
+| `stubborn-contract-stub-runner-app` | Spring Framework stub runner integration |
 | `stubborn-wiremock-spring` | Spring MVC/RestTemplate WireMock helpers |
 
 ### Spring Boot tier (`-spring-boot`)

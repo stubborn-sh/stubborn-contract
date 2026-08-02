@@ -9,10 +9,10 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-contract-stub-runner-boot</artifactId>
+	<artifactId>stubborn-contract-stub-runner-app</artifactId>
 	<packaging>jar</packaging>
-	<name>Stubborn Contract Stub Runner Boot</name>
-	<description>Stubborn Contract Stub Runner Boot</description>
+	<name>Stubborn Contract Stub Runner App</name>
+	<description>Standalone runnable Stubborn Contract Stub Runner application</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
