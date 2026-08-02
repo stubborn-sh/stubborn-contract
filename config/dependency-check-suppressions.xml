@@ -22,6 +22,7 @@
 		<packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/.*$</packageUrl>
 		<cve>CVE-2026-53914</cve>
 	</suppress>
+
 	<!--
 	  FALSE POSITIVE: org.apache.camel:camel-kafka is the Camel *Kafka component* (the Camel
 	  connector for Kafka), NOT Apache Kafka itself. dependency-check auto-generates the CPE
@@ -41,5 +42,29 @@
 		]]></notes>
 		<packageUrl regex="true">^pkg:maven/org\.apache\.camel/camel-kafka@.*$</packageUrl>
 		<cpe>cpe:/a:apache:kafka</cpe>
+	</suppress>
+
+	<!--
+	  CVE-2026-65898 — DOMPurify DOM-clobbering/XSS in the swagger-ui JavaScript bundle
+	  (swagger-ui-bundle.js / swagger-ui-es-bundle.js, pkg:javascript/DOMPurify@3.2.6) that
+	  WireMock 3.13.2 vendors inside wiremock-*.jar for its admin UI.
+	  This is a browser-only front-end asset: it is exploitable only when a user loads WireMock's
+	  standalone admin swagger-ui in a browser. Stubborn Contract embeds WireMock purely as an
+	  in-process HTTP stub server (verifier / wiremock modules) and never serves that swagger-ui,
+	  so the vulnerable code path is not reachable from any artifact we publish. It is also outside
+	  our control — the fix must come from an upstream WireMock release bundling a patched DOMPurify.
+	  The reported CVSSv2 base is 5.1 (below the CVSS 7 gate) but dependency-check gates on the
+	  unscored CVSSv3 default, so an explicit suppression is required.
+	  REMOVE THIS SUPPRESSION once WireMock ships a swagger-ui bundle with a patched DOMPurify.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			Browser-only DOMPurify inside WireMock's vendored swagger-ui admin bundle. WireMock is
+			used only as an in-process stub server here; the swagger-ui is never served, so the XSS
+			path is unreachable at runtime. Upstream-owned. Remove once WireMock bundles a patched
+			DOMPurify.
+		]]></notes>
+		<packageUrl regex="true">^pkg:javascript/DOMPurify@.*$</packageUrl>
+		<cve>CVE-2026-65898</cve>
 	</suppress>
 </suppressions>
