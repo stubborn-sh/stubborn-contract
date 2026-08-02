@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
-
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.Headers;
 import sh.stubborn.contract.spec.internal.Request;
