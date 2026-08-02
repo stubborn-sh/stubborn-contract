@@ -87,7 +87,7 @@ For Kafka contracts, add the Kafka messaging verifier to your producer test:
 
 ```xml
 <dependency>
-  <groupId>sh.stubborn.contract</groupId>
+  <groupId>sh.stubborn</groupId>
   <artifactId>stubborn-starter-contract-verifier</artifactId>
   <scope>test</scope>
 </dependency>
@@ -148,8 +148,29 @@ class OrderConsumerTest {
 }
 ```
 
+## Messaging backends
+
+The messaging abstractions (`ContractVerifierMessage`, `MessageVerifierSender` /
+`MessageVerifierReceiver`) live in `stubborn-contract-verifier-spring`. The concrete backends
+are auto-configured by `@AutoConfigureMessageVerifier` in
+`stubborn-contract-verifier-spring-boot`:
+
+| Backend | Where |
+|---------|-------|
+| Spring Integration | `stubborn-contract-verifier-spring-boot` (`integration`) |
+| JMS | `stubborn-contract-verifier-spring-boot` (`jms`) |
+| Apache Camel | `stubborn-contract-verifier-spring-boot` (`camel`) |
+| Apache Avro payloads | `stubborn-contract-verifier-spring-boot` (`avro`) |
+| Spring Cloud Stream | `stubborn-contract-verifier-spring-cloud` |
+| Kafka | `stubborn-messaging-kafka` |
+
+`@AutoConfigureMessageVerifier` picks the backend present on the classpath, so in most projects
+you add the relevant Spring Boot messaging starter and Stubborn wires the rest. See
+[Modules & Architecture](./modules) for how these sit in the tier model.
+
 ## See also
 
 - [HTTP Contracts](./http-contracts)
 - [Stub Runner Reference](./stub-runner)
 - [Spring Boot Auto-configuration](./stub-runner-spring-boot)
+- [Modules & Architecture](./modules)
