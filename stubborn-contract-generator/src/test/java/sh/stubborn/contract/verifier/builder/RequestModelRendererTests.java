@@ -60,6 +60,33 @@ class RequestModelRendererTests {
 	}
 
 	@Test
+	void renders_mockmvc_request_model_with_header_and_body() {
+		RequestModel request = new RequestModel(
+				new FluentStatement("MockMvcRequestSpecification request = given()",
+						List.of(".header(\"Content-Type\", \"application/json\")",
+								".body(\"{\\\"foo\\\":\\\"bar\\\"}\")")),
+				new FluentStatement("ResponseOptions response = given().spec(request)", List.of(".put(\"/foo\")")));
+		TestClassModel model = new TestClassModel("com.example", "ContractTest", null, false, List.of(),
+				List.of(new TestMethodModel("validate_contract",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")),
+						List.of("// then:", "assertThat(response.statusCode()).isEqualTo(200);"), request)),
+				List.of());
+
+		List<String> lines = bodyLines(this.renderer.render(model));
+
+		// given: head + header (unterminated) + body (the body, being last, carries the
+		// ;)
+		assertThat(lines).containsSubsequence("// given:", "MockMvcRequestSpecification request = given()",
+				".header(\"Content-Type\", \"application/json\")", ".body(\"{\\\"foo\\\":\\\"bar\\\"}\");", "// when:",
+				"ResponseOptions response = given().spec(request)", ".put(\"/foo\");", "// then:",
+				"assertThat(response.statusCode()).isEqualTo(200);");
+		// the header line must NOT be terminated (only the trailing body line is)
+		assertThat(lines).contains(".header(\"Content-Type\", \"application/json\")")
+			.doesNotContain(".header(\"Content-Type\", \"application/json\");")
+			.doesNotContain(".body(\"{\\\"foo\\\":\\\"bar\\\"}\")");
+	}
+
+	@Test
 	void renders_explicit_request_model_heads() {
 		RequestModel request = new RequestModel(
 				new FluentStatement("RequestSpecification request = given()", List.of(".header(\"X-Trace\", \"abc\")")),
