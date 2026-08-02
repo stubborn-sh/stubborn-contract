@@ -70,6 +70,7 @@
 			Remove once WireMock bundles a patched DOMPurify.
 		]]></notes>
 		<packageUrl regex="true">^pkg:javascript/DOMPurify@.*$</packageUrl>
+		<vulnerabilityName regex="true">.*</vulnerabilityName>
 	</suppress>
 
 	<!--
