@@ -32,14 +32,18 @@
 			<version>${openrewrite.version}</version>
 		</dependency>
 		<!--
-		  NOTE: rewrite-gradle is intentionally NOT a dependency. The migrate-from-scc recipe
-		  operates only on Maven POMs (org.openrewrite.maven.*) and Java sources
-		  (org.openrewrite.java.*); it contains no Gradle (org.openrewrite.gradle.*) recipes.
-		  rewrite-gradle would drag in rewrite-kotlin and the entire Kotlin runtime — which at
-		  the versions OpenRewrite resolves is exposed to CVE-2026-53914 (CVSS 9.8) — for zero
-		  functional benefit. If/when Gradle build-script migration recipes are added, re-add
-		  rewrite-gradle and pin the Kotlin runtime to a fixed (>= 2.4.20 GA) version at that time.
+		  rewrite-gradle is kept for the planned Gradle build-script migration recipes
+		  (org.openrewrite.gradle.*), even though migrate-from-scc is currently Maven/Java only.
+		  It transitively pulls rewrite-kotlin + the Kotlin runtime (2.3.21), which is exposed to
+		  CVE-2026-53914 (CVSS 9.8). No GA fix (Kotlin 2.4.20) is on Maven Central yet, so rather
+		  than pin a pre-release, the CVE is suppressed centrally for all org.jetbrains.kotlin
+		  coordinates in config/dependency-check-suppressions.xml (documented, removal-on-GA).
 		-->
+		<dependency>
+			<groupId>org.openrewrite</groupId>
+			<artifactId>rewrite-gradle</artifactId>
+			<version>${openrewrite.version}</version>
+		</dependency>
 		<!-- test -->
 		<dependency>
 			<groupId>org.openrewrite</groupId>
