@@ -28,23 +28,35 @@ class MockMvcBodyGiven implements Given {
 
 	private final BlockBuilder blockBuilder;
 
-	private final BodyReader bodyReader;
+	private final GeneratedClassMetaData generatedClassMetaData;
 
 	private final BodyParser bodyParser;
 
 	MockMvcBodyGiven(BlockBuilder blockBuilder, GeneratedClassMetaData generatedClassMetaData, BodyParser bodyParser) {
 		this.blockBuilder = blockBuilder;
-		this.bodyReader = new BodyReader(generatedClassMetaData);
+		this.generatedClassMetaData = generatedClassMetaData;
 		this.bodyParser = bodyParser;
 	}
 
 	@Override
 	public MethodVisitor<Given> apply(SingleContractMetadata metadata) {
-		processInput(this.blockBuilder, metadata);
+		this.blockBuilder.addIndented(bodyLine(metadata, this.generatedClassMetaData, this.bodyParser));
 		return this;
 	}
 
-	private void processInput(BlockBuilder bb, SingleContractMetadata metadata) {
+	/**
+	 * The {@code .body(...)} continuation line for the request, in the exact form the
+	 * legacy MockMvc/Explicit builders emit. Reused by {@link RequestModelBuilder} so the
+	 * structured request path stays byte-identical to the legacy output.
+	 * @param metadata the contract whose request body to render
+	 * @param generatedClassMetaData the class-level metadata (needed to resolve
+	 * file-based bodies)
+	 * @param bodyParser the body parser used to quote/escape the body (the Java parser
+	 * for MockMvc/Explicit)
+	 * @return the {@code .body(...)} line (no statement terminator)
+	 */
+	static String bodyLine(SingleContractMetadata metadata, GeneratedClassMetaData generatedClassMetaData,
+			BodyParser bodyParser) {
 		Object body;
 		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
 		Object serverValue = Objects.requireNonNull(request.getBody()).getServerValue();
@@ -52,12 +64,13 @@ class MockMvcBodyGiven implements Given {
 			body = serverValue;
 		}
 		else {
-			body = this.bodyParser.requestBodyAsString(metadata);
+			body = bodyParser.requestBodyAsString(metadata);
 		}
-		bb.addIndented(getBodyString(metadata, body));
+		return getBodyString(metadata, body, new BodyReader(generatedClassMetaData), bodyParser);
 	}
 
-	private String getBodyString(SingleContractMetadata metadata, Object body) {
+	private static String getBodyString(SingleContractMetadata metadata, Object body, BodyReader bodyReader,
+			BodyParser bodyParser) {
 		String value;
 		if (body instanceof ExecutionProperty) {
 			value = body.toString();
@@ -65,17 +78,17 @@ class MockMvcBodyGiven implements Given {
 		else if (body instanceof FromFileProperty) {
 			FromFileProperty fileProperty = (FromFileProperty) body;
 			value = fileProperty.isByte()
-					? this.bodyReader.readBytesFromFileString(metadata, fileProperty, CommunicationType.REQUEST)
-					: this.bodyReader.readStringFromFileString(metadata, fileProperty, CommunicationType.REQUEST);
+					? bodyReader.readBytesFromFileString(metadata, fileProperty, CommunicationType.REQUEST)
+					: bodyReader.readStringFromFileString(metadata, fileProperty, CommunicationType.REQUEST);
 		}
 		else {
 			String escaped = escapeRequestSpecialChars(metadata, body.toString());
-			value = this.bodyParser.quotedEscapedLongText(escaped);
+			value = bodyParser.quotedEscapedLongText(escaped);
 		}
 		return ".body(" + value + ")";
 	}
 
-	private String escapeRequestSpecialChars(SingleContractMetadata metadata, String string) {
+	private static String escapeRequestSpecialChars(SingleContractMetadata metadata, String string) {
 		if (metadata.getInputTestContentType() == ContentType.JSON) {
 			return string.replaceAll("\\\\n", "\\\\\\\\n");
 		}

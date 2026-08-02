@@ -27,7 +27,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
+import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
+import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,10 +55,38 @@ class ModelBuilderTests {
 			+ "}";
 	// @formatter:on
 
+	// @formatter:off
+	private static final String PLAIN_BODY_CONTRACT = "sh.stubborn.contract.spec.Contract.make {\n"
+			+ " request {\n"
+			+ "  method 'PUT'\n"
+			+ "  url '/foo'\n"
+			+ "  headers { contentType(applicationJson()) }\n"
+			+ "  body([foo: 'bar'])\n"
+			+ " }\n"
+			+ " response {\n"
+			+ "  status OK()\n"
+			+ " }\n"
+			+ "}";
+
+	private static final String FILE_BODY_CONTRACT = "sh.stubborn.contract.spec.Contract.make {\n"
+			+ " request {\n"
+			+ "  method 'PUT'\n"
+			+ "  url '/foo'\n"
+			+ "  headers { contentType(applicationJson()) }\n"
+			+ "  body(file('request.json'))\n"
+			+ " }\n"
+			+ " response {\n"
+			+ "  status OK()\n"
+			+ " }\n"
+			+ "}";
+	// @formatter:on
+
 	@TempDir
 	Path tmpDir;
 
 	private final ModelBuilder modelBuilder = new ModelBuilder();
+
+	private final RequestModelBuilder requestModelBuilder = new RequestModelBuilder();
 
 	@Test
 	void builds_java_class_scaffold_from_contract() throws IOException {
@@ -136,6 +166,44 @@ class ModelBuilderTests {
 		assertThat(testAnnotation.type()).isEqualTo("org.testng.annotations.Test");
 		assertThat(testAnnotation.memberName()).isEqualTo("enabled");
 		assertThat(testAnnotation.memberCode()).isEqualTo("false");
+	}
+
+	@Test
+	void request_model_is_built_for_a_plain_body_contract() throws IOException {
+		RequestModel model = requestModelFor(PLAIN_BODY_CONTRACT);
+
+		assertThat(model).as("plain-body contract must flow through the structured path").isNotNull();
+		// the .body(...) line is the LAST continuation of the given chain (so it, not a
+		// header, receives the trailing `;`)
+		assertThat(model.given().continuations()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING)
+			.startsWith(".body(");
+		assertThat(model.given().render()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING).endsWith(");");
+	}
+
+	@Test
+	void request_model_is_not_built_for_a_file_body_contract() throws IOException {
+		RequestModel model = requestModelFor(FILE_BODY_CONTRACT);
+
+		assertThat(model).as("file-based request body is deferred and must fall back to verbatim").isNull();
+	}
+
+	private RequestModel requestModelFor(String contractDsl) throws IOException {
+		File file = Files.createTempFile(this.tmpDir, "contract", ".groovy").toFile();
+		Files.write(file.toPath(), contractDsl.getBytes());
+		// The DSL's file('request.json') is resolved (and validated to exist) at parse
+		// time
+		// via the context classloader; a matching resource lives at the test classpath
+		// root.
+		Collection<ContractMetadata> contracts = Collections.singletonList(new ContractMetadata(file.toPath(), false, 1,
+				null, ContractVerifierDslConverter.convertAsCollection(new File("/"), file)));
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setTestMode(TestMode.MOCKMVC);
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
+				file.toPath());
+		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, contracts, "com/example", data);
+		SingleContractMetadata scm = meta.toSingleContractMetadata().iterator().next();
+		return this.requestModelBuilder.build(scm, TestFramework.JUNIT5, meta, TestMode.MOCKMVC);
 	}
 
 	private Collection<ContractMetadata> contracts(boolean ignored) throws IOException {

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
+import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.Headers;
 import sh.stubborn.contract.spec.internal.Request;
@@ -45,7 +46,9 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
  * <li>HTTP contract</li>
  * <li>{@link TestMode} is {@link TestMode#MOCKMVC} or {@link TestMode#EXPLICIT}</li>
  * <li>{@link TestFramework} is not {@link TestFramework#SPOCK}</li>
- * <li>the request has no body, cookies, query parameters or multipart</li>
+ * <li>the request body is a plain body or an {@code ExecutionProperty} (a file-based
+ * {@code FromFileProperty} body is deferred to a later slice), and the request has no
+ * cookies, query parameters or multipart</li>
  * <li>the response is neither async nor delayed</li>
  * <li>the request chain carries no template entry</li>
  * </ul>
@@ -75,7 +78,14 @@ final class RequestModelBuilder {
 		if (request == null) {
 			return null;
 		}
-		FluentStatement given = new FluentStatement(givenHead(mode), headerLines(request));
+		List<String> givenLines = new ArrayList<>(headerLines(request));
+		// The body line (when present) is the LAST continuation of the given chain, so it
+		// (not a header) receives the `;` — matching the legacy given order in
+		// RestAssuredGiven: head, headers, cookies, body, multipart.
+		if (request.getBody() != null) {
+			givenLines.add(MockMvcBodyGiven.bodyLine(contract, meta, RestAssuredBodyParser.INSTANCE));
+		}
+		FluentStatement given = new FluentStatement(givenHead(mode), givenLines);
 		FluentStatement whenBlock = new FluentStatement(responseHead(mode),
 				List.of(MockMvcUrlWhen.urlLine(request, RestAssuredBodyParser.INSTANCE)));
 		if (containsTemplateEntry(given) || containsTemplateEntry(whenBlock)) {
@@ -98,7 +108,10 @@ final class RequestModelBuilder {
 		if (request == null) {
 			return false;
 		}
-		if (request.getBody() != null) {
+		if (isFileBody(request)) {
+			// A plain body or an ExecutionProperty body is handled by the structured
+			// path;
+			// a file-based request body (FromFileProperty) is deferred to a later slice.
 			return false;
 		}
 		if (hasCookies(request)) {
@@ -118,6 +131,10 @@ final class RequestModelBuilder {
 			return false;
 		}
 		return true;
+	}
+
+	private boolean isFileBody(Request request) {
+		return request.getBody() != null && request.getBody().getServerValue() instanceof FromFileProperty;
 	}
 
 	private boolean hasCookies(Request request) {
