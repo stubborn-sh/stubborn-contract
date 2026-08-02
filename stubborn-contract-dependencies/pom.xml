@@ -264,6 +264,16 @@
 				<artifactId>stubborn-xmlassert</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<!--
+			  CVE-2025-5222 (CVSS 7.0): stubborn-xmlassert pulls icu4j 4.6 transitively via the
+			  Eclipse WST xpath2 processor. Pin it here too so consumers importing this BOM get the
+			  safe version in their own dependencyManagement (which beats a parent BOM).
+			-->
+			<dependency>
+				<groupId>com.ibm.icu</groupId>
+				<artifactId>icu4j</artifactId>
+				<version>${icu4j.version}</version>
+			</dependency>
 			<!-- Spring Boot 4 split modules (needed for RestClient / TestRestTemplate) -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>

@@ -21,6 +21,49 @@
 		<rewrite-spring.version>6.35.0</rewrite-spring.version>
 	</properties>
 
+	<!--
+	  CVE-2026-53914 (CVSS 9.8): OpenRewrite's rewrite-gradle -> rewrite-kotlin drags the whole
+	  Kotlin runtime (stdlib, reflect, compiler/daemon-embeddable, script-runtime, build-tools-api)
+	  in transitively at a vulnerable 2.3.21, unmanaged. Pin it to the 2.4.20 fix line here rather
+	  than in the reactor-wide parent DM, so the Kotlin toolchain of the Spring-Boot-BOM-managed
+	  stubborn-extras module is left untouched (avoids a stdlib/compiler version skew there).
+	  Version comes from stubborn-build's shared kotlin-stdlib.version property.
+	-->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-stdlib</artifactId>
+				<version>${kotlin-stdlib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-reflect</artifactId>
+				<version>${kotlin-stdlib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-compiler-embeddable</artifactId>
+				<version>${kotlin-stdlib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-script-runtime</artifactId>
+				<version>${kotlin-stdlib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-daemon-embeddable</artifactId>
+				<version>${kotlin-stdlib.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-build-tools-api</artifactId>
+				<version>${kotlin-stdlib.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.openrewrite</groupId>
