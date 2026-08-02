@@ -59,6 +59,8 @@ class ModelBuilder {
 
 	private final RequestModelBuilder requestModelBuilder = new RequestModelBuilder();
 
+	private final ResponseModelBuilder responseModelBuilder = new ResponseModelBuilder();
+
 	TestClassModel build(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, SingleTestGenerator.GeneratedClassData generatedClassData) {
 		TestFramework framework = properties.getTestFramework();
@@ -106,13 +108,24 @@ class ModelBuilder {
 				annotations.add(AnnotationModel.marker(JUNIT_JUPITER_DISABLED));
 			}
 		}
-		// When the request portion is eligible for the structured path, emit it from the
-		// model and capture only the verbatim // then: block; otherwise fall back to the
+		// Layered structured gate. When the request portion is eligible, emit it from the
+		// model. When the response status/header assertions are also eligible, emit them
+		// from the model too and capture only the verbatim // and: body block; else emit
+		// the whole // then: block verbatim. When neither is eligible, fall back to the
 		// whole body verbatim from the legacy generator.
 		RequestModel request = this.requestModelBuilder.build(scm, framework, meta, mode);
-		List<String> bodyLines = (request != null) ? this.bodyExtractor.responseBodyLines(meta, scm)
-				: this.bodyExtractor.bodyLines(meta, scm);
-		return new TestMethodModel(this.nameProvider.methodName(scm), annotations, bodyLines, request);
+		ResponseModel response = (request != null) ? this.responseModelBuilder.build(scm, framework, meta, mode) : null;
+		List<String> bodyLines;
+		if (response != null) {
+			bodyLines = this.bodyExtractor.responseBodyAssertionLines(meta, scm);
+		}
+		else if (request != null) {
+			bodyLines = this.bodyExtractor.responseBodyLines(meta, scm);
+		}
+		else {
+			bodyLines = this.bodyExtractor.bodyLines(meta, scm);
+		}
+		return new TestMethodModel(this.nameProvider.methodName(scm), annotations, bodyLines, request, response);
 	}
 
 	// Mirrors JUnit5IgnoreMethodAnnotation#accept: a contract is treated as ignored when

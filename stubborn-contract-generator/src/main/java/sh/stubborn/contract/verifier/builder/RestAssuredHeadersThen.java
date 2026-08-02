@@ -16,7 +16,9 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
@@ -40,14 +42,10 @@ class RestAssuredHeadersThen implements Then, RestAssuredAcceptor {
 
 	@Override
 	public MethodVisitor<Then> apply(SingleContractMetadata metadata) {
-		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
-		Headers headers = Objects.requireNonNull(response.getHeaders());
-		Iterator<Header> iterator = headers.getEntries().iterator();
+		List<String> lines = headerLines(metadata, this.comparisonBuilder);
+		Iterator<String> iterator = lines.iterator();
 		while (iterator.hasNext()) {
-			Header header = iterator.next();
-			String text = processHeaderElement(header.getName(),
-					(header.getServerValue() instanceof NotToEscapePattern) ? header.getServerValue()
-							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue())));
+			String text = iterator.next();
 			if (iterator.hasNext()) {
 				this.blockBuilder.addLineWithEnding(text);
 			}
@@ -59,20 +57,43 @@ class RestAssuredHeadersThen implements Then, RestAssuredAcceptor {
 		return this;
 	}
 
-	private String processHeaderElement(String property, Object value) {
+	/**
+	 * The per-header response assertion lines for a single contract, without trailing
+	 * statement terminators, e.g. {@code assertThat(response.header("X-Reply"))
+	 * .isEqualTo("def")} or a {@code .matches(...)} / {@code ExecutionProperty} variant.
+	 * Shared by the legacy {@link #apply} path and the structured
+	 * {@code ResponseModelBuilder} so both emit byte-identical text.
+	 * @param metadata the contract whose response headers to assert
+	 * @param comparisonBuilder the comparison builder producing the assertion text
+	 * @return one assertion per header, in declaration order, without trailing {@code ;}
+	 */
+	static List<String> headerLines(SingleContractMetadata metadata, ComparisonBuilder comparisonBuilder) {
+		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
+		Headers headers = Objects.requireNonNull(response.getHeaders());
+		List<String> lines = new ArrayList<>();
+		for (Header header : headers.getEntries()) {
+			lines.add(processHeaderElement(header.getName(),
+					(header.getServerValue() instanceof NotToEscapePattern) ? header.getServerValue()
+							: MapConverter.getTestSideValues(Objects.requireNonNull(header.getServerValue())),
+					comparisonBuilder));
+		}
+		return lines;
+	}
+
+	private static String processHeaderElement(String property, Object value, ComparisonBuilder comparisonBuilder) {
 		if (value instanceof NotToEscapePattern) {
-			return this.comparisonBuilder.assertThat("response.header(\"" + property + "\")")
-					+ matchesManuallyEscapedPattern((NotToEscapePattern) value);
+			return comparisonBuilder.assertThat("response.header(\"" + property + "\")")
+					+ matchesManuallyEscapedPattern((NotToEscapePattern) value, comparisonBuilder);
 		}
 		else if (value instanceof ExecutionProperty) {
 			return ((ExecutionProperty) value).insertValue("response.header(\"" + property + "\")");
 
 		}
-		return this.comparisonBuilder.assertThat("response.header(\"" + property + "\")", value);
+		return comparisonBuilder.assertThat("response.header(\"" + property + "\")", value);
 	}
 
-	private String matchesManuallyEscapedPattern(NotToEscapePattern value) {
-		return this.comparisonBuilder
+	private static String matchesManuallyEscapedPattern(NotToEscapePattern value, ComparisonBuilder comparisonBuilder) {
+		return comparisonBuilder
 			.matchesEscaped(Objects.requireNonNull(value.getServerValue()).pattern().replace("\\", "\\\\"));
 	}
 

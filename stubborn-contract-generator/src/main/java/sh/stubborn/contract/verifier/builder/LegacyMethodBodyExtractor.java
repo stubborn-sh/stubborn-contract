@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,6 +76,35 @@ final class LegacyMethodBodyExtractor {
 		SingleMethodBuilder smb = new JavaTestGenerator().singleMethodBuilder(bb, meta);
 		smb.buildThenOnly(contract);
 		return bb.toString().lines().collect(Collectors.toList());
+	}
+
+	/**
+	 * Captures only the verbatim {@code // and:} response-body assertion block for a
+	 * single contract, used when the request portion and the {@code // then:}
+	 * status/header assertions are emitted from the structured
+	 * {@link RequestModel}/{@link ResponseModel} and only the response body assertions
+	 * are still taken from the legacy pipeline.
+	 * @param meta the class-level metadata (shared across all contracts of the class)
+	 * @param contract the contract whose {@code // and:} body block to render
+	 * @return the {@code // and:} block lines, verbatim (may contain {@code ;} and the
+	 * {@code // and:} label); an empty list when the response has no body
+	 */
+	List<String> responseBodyAssertionLines(GeneratedClassMetaData meta, SingleContractMetadata contract) {
+		BlockBuilder bb = new BlockBuilder("\t");
+		bb.setupLineEnding(";").setupLabelPrefix("// ");
+		SingleMethodBuilder smb = new JavaTestGenerator().singleMethodBuilder(bb, meta);
+		smb.buildResponseBodyOnly(contract);
+		List<String> lines = bb.toString().lines().collect(Collectors.toList());
+		// buildResponseBodyOnly primes an open // then: block (with a placeholder
+		// statement) so GenericHttpBodyThen's opening block-close is balanced; keep only
+		// the // and: block onward. With no response body nothing is emitted, so no
+		// // and: label exists and the tail is empty.
+		for (int i = 0; i < lines.size(); i++) {
+			if (lines.get(i).trim().equals("// and:")) {
+				return new ArrayList<>(lines.subList(i, lines.size()));
+			}
+		}
+		return List.of();
 	}
 
 }

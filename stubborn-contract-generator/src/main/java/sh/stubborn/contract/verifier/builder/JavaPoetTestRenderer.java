@@ -161,6 +161,17 @@ class JavaPoetTestRenderer {
 			}
 			emitLine(builder, "");
 		}
+		ResponseModel response = method.response();
+		if (response != null) {
+			// Structured response path: emit the // then: status/header assertions from
+			// the model, then fall through to the verbatim // and: body block carried on
+			// bodyLines (the existing !body.isBlank() guard handles an empty tail).
+			emitLine(builder, "// then:");
+			for (String line : response.thenBlock().render()) {
+				emitLine(builder, line);
+			}
+			emitLine(builder, "");
+		}
 		// Emit the (remaining) body verbatim as a $L argument (never inline into the
 		// format
 		// string) so $, { and } in template/JSON bodies stay literal. addStatement is
