@@ -33,6 +33,13 @@ class MockMvcQueryParamsWhen implements When, MockMvcAcceptor, QueryParamsResolv
 
 	private static final String QUERY_PARAM_METHOD = "queryParam";
 
+	/**
+	 * Stateless resolver used by the static {@link #queryParamLine} helper (the
+	 * {@link QueryParamsResolver#resolveParamValue} default method carries no state).
+	 */
+	private static final QueryParamsResolver RESOLVER = new QueryParamsResolver() {
+	};
+
 	private final BlockBuilder blockBuilder;
 
 	private final BodyParser bodyParser;
@@ -64,7 +71,7 @@ class MockMvcQueryParamsWhen implements When, MockMvcAcceptor, QueryParamsResolv
 		List<QueryParameter> queryParameters = Objects.requireNonNull(buildUrl.getQueryParameters())
 			.getParameters()
 			.stream()
-			.filter(this::allowedQueryParameter)
+			.filter(MockMvcQueryParamsWhen::allowedQueryParameter)
 			.collect(Collectors.toList());
 		Iterator<QueryParameter> iterator = queryParameters.iterator();
 		while (iterator.hasNext()) {
@@ -79,7 +86,14 @@ class MockMvcQueryParamsWhen implements When, MockMvcAcceptor, QueryParamsResolv
 		}
 	}
 
-	private boolean allowedQueryParameter(Object o) {
+	/**
+	 * Whether the query parameter is allowed (not an {@code ABSENT} matching strategy),
+	 * matching the legacy filter. Reused by {@link RequestModelBuilder} so the structured
+	 * request path stays byte-identical to the legacy output.
+	 * @param o the query parameter (or its resolved server value)
+	 * @return {@code true} if the parameter should be emitted
+	 */
+	static boolean allowedQueryParameter(Object o) {
 		if (o instanceof QueryParameter) {
 			return allowedQueryParameter(Objects.requireNonNull(((QueryParameter) o).getServerValue()));
 		}
@@ -90,17 +104,32 @@ class MockMvcQueryParamsWhen implements When, MockMvcAcceptor, QueryParamsResolv
 	}
 
 	private String addQueryParameter(QueryParameter queryParam) {
-		String queryParamValue = getQueryParamValue(queryParam);
-		return "." + QUERY_PARAM_METHOD + "(" + this.bodyParser.quotedLongText(queryParam.getName()) + ","
-				+ queryParamValue + ")";
+		return queryParamLine(queryParam, this.bodyParser);
 	}
 
-	private String getQueryParamValue(QueryParameter queryParam) {
+	/**
+	 * The {@code .queryParam(name, value)} continuation line for a single query
+	 * parameter, in the exact form the legacy MockMvc/Explicit builders emit. Reused by
+	 * {@link RequestModelBuilder} so the structured request path stays byte-identical to
+	 * the legacy output.
+	 * @param queryParam the query parameter
+	 * @param bodyParser the body parser used to quote the name/value (the Java parser for
+	 * MockMvc/Explicit)
+	 * @return the {@code .queryParam(...)} line (no statement terminator)
+	 */
+	static String queryParamLine(QueryParameter queryParam, BodyParser bodyParser) {
+		String queryParamValue = getQueryParamValue(queryParam, bodyParser);
+		return "." + QUERY_PARAM_METHOD + "(" + bodyParser.quotedLongText(queryParam.getName()) + "," + queryParamValue
+				+ ")";
+	}
+
+	private static String getQueryParamValue(QueryParameter queryParam, BodyParser bodyParser) {
 		Object serverValue = queryParam.getServerValue();
 		if (serverValue instanceof ExecutionProperty) {
 			return ((ExecutionProperty) serverValue).getExecutionCommand();
 		}
-		return this.bodyParser.quotedLongText(resolveParamValue(MapConverter.getTestSideValuesForNonBody(queryParam)));
+		return bodyParser
+			.quotedLongText(RESOLVER.resolveParamValue(MapConverter.getTestSideValuesForNonBody(queryParam)));
 	}
 
 	@Override

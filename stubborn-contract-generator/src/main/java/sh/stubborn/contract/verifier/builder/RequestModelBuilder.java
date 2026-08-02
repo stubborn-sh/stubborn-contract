@@ -20,9 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
+import sh.stubborn.contract.spec.internal.Cookie;
+import sh.stubborn.contract.spec.internal.Cookies;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.Headers;
+import sh.stubborn.contract.spec.internal.QueryParameter;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.spec.internal.Url;
@@ -48,7 +51,7 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
  * <li>{@link TestFramework} is not {@link TestFramework#SPOCK}</li>
  * <li>the request body is a plain body or an {@code ExecutionProperty} (a file-based
  * {@code FromFileProperty} body is deferred to a later slice), and the request has no
- * cookies, query parameters or multipart</li>
+ * multipart (cookies and query parameters are emitted structurally)</li>
  * <li>the response is neither async nor delayed</li>
  * <li>the request chain carries no template entry</li>
  * </ul>
@@ -78,16 +81,25 @@ final class RequestModelBuilder {
 		if (request == null) {
 			return null;
 		}
+		// The given chain follows the legacy RestAssuredGiven order: head, headers,
+		// cookies, body, multipart. Headers and cookies are intermediate continuations;
+		// the
+		// body line (when present) is the LAST continuation, so it — not a header or
+		// cookie
+		// — receives the trailing `;` (placed by FluentStatement.render, never by hand).
 		List<String> givenLines = new ArrayList<>(headerLines(request));
-		// The body line (when present) is the LAST continuation of the given chain, so it
-		// (not a header) receives the `;` — matching the legacy given order in
-		// RestAssuredGiven: head, headers, cookies, body, multipart.
+		givenLines.addAll(cookieLines(request));
 		if (request.getBody() != null) {
 			givenLines.add(MockMvcBodyGiven.bodyLine(contract, meta, RestAssuredBodyParser.INSTANCE));
 		}
 		FluentStatement given = new FluentStatement(givenHead(mode), givenLines);
-		FluentStatement whenBlock = new FluentStatement(responseHead(mode),
-				List.of(MockMvcUrlWhen.urlLine(request, RestAssuredBodyParser.INSTANCE)));
+		// The when chain follows the legacy RestAssuredWhen order: queryParam, async,
+		// url.
+		// Query params are intermediate continuations; the url line is always last, so it
+		// carries the trailing `;`.
+		List<String> whenLines = new ArrayList<>(queryParamLines(request));
+		whenLines.add(MockMvcUrlWhen.urlLine(request, RestAssuredBodyParser.INSTANCE));
+		FluentStatement whenBlock = new FluentStatement(responseHead(mode), whenLines);
 		if (containsTemplateEntry(given) || containsTemplateEntry(whenBlock)) {
 			return null;
 		}
@@ -114,13 +126,7 @@ final class RequestModelBuilder {
 			// a file-based request body (FromFileProperty) is deferred to a later slice.
 			return false;
 		}
-		if (hasCookies(request)) {
-			return false;
-		}
 		if (request.getMultipart() != null) {
-			return false;
-		}
-		if (hasQueryParams(request)) {
 			return false;
 		}
 		if (noUrl(request)) {
@@ -135,15 +141,6 @@ final class RequestModelBuilder {
 
 	private boolean isFileBody(Request request) {
 		return request.getBody() != null && request.getBody().getServerValue() instanceof FromFileProperty;
-	}
-
-	private boolean hasCookies(Request request) {
-		return request.getCookies() != null && !request.getCookies().getEntries().isEmpty();
-	}
-
-	private boolean hasQueryParams(Request request) {
-		Url url = urlOrNull(request);
-		return url != null && url.getQueryParameters() != null;
 	}
 
 	private boolean noUrl(Request request) {
@@ -178,6 +175,38 @@ final class RequestModelBuilder {
 				continue;
 			}
 			lines.add(MockMvcHeadersGiven.headerLine(header));
+		}
+		return lines;
+	}
+
+	private List<String> cookieLines(Request request) {
+		List<String> lines = new ArrayList<>();
+		Cookies cookies = request.getCookies();
+		if (cookies == null) {
+			return lines;
+		}
+		for (Cookie cookie : cookies.getEntries()) {
+			// The legacy MockMvcCookiesGiven stops at the first absent cookie (it returns
+			// rather than continues), so break here to keep the emitted chain identical.
+			if (MockMvcCookiesGiven.isAbsent(cookie)) {
+				break;
+			}
+			lines.add(MockMvcCookiesGiven.cookieLine(cookie));
+		}
+		return lines;
+	}
+
+	private List<String> queryParamLines(Request request) {
+		List<String> lines = new ArrayList<>();
+		Url url = urlOrNull(request);
+		if (url == null || url.getQueryParameters() == null) {
+			return lines;
+		}
+		for (QueryParameter parameter : url.getQueryParameters().getParameters()) {
+			if (!MockMvcQueryParamsWhen.allowedQueryParameter(parameter)) {
+				continue;
+			}
+			lines.add(MockMvcQueryParamsWhen.queryParamLine(parameter, RestAssuredBodyParser.INSTANCE));
 		}
 		return lines;
 	}

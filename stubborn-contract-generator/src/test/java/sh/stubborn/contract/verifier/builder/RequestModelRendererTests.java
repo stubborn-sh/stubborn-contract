@@ -105,6 +105,53 @@ class RequestModelRendererTests {
 	}
 
 	@Test
+	void renders_mockmvc_request_model_with_header_then_cookie() {
+		RequestModel request = new RequestModel(
+				new FluentStatement("MockMvcRequestSpecification request = given()",
+						List.of(".header(\"X-Trace\", \"abc\")", ".cookie(\"session\", \"abc123\")")),
+				new FluentStatement("ResponseOptions response = given().spec(request)", List.of(".get(\"/items\")")));
+		TestClassModel model = new TestClassModel("com.example", "ContractTest", null, false, List.of(),
+				List.of(new TestMethodModel("validate_contract",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")),
+						List.of("// then:", "assertThat(response.statusCode()).isEqualTo(200);"), request)),
+				List.of());
+
+		List<String> lines = bodyLines(this.renderer.render(model));
+
+		// given: head + header (unterminated) + cookie (last continuation carries the ;)
+		assertThat(lines).containsSubsequence("// given:", "MockMvcRequestSpecification request = given()",
+				".header(\"X-Trace\", \"abc\")", ".cookie(\"session\", \"abc123\");", "// when:",
+				"ResponseOptions response = given().spec(request)", ".get(\"/items\");");
+		// the .cookie(...) line follows the .header(...) line, and only the cookie (being
+		// last) is terminated
+		assertThat(lines).containsSubsequence(".header(\"X-Trace\", \"abc\")", ".cookie(\"session\", \"abc123\");")
+			.doesNotContain(".header(\"X-Trace\", \"abc\");")
+			.doesNotContain(".cookie(\"session\", \"abc123\")");
+	}
+
+	@Test
+	void renders_mockmvc_request_model_with_query_param_before_url() {
+		RequestModel request = new RequestModel(
+				new FluentStatement("MockMvcRequestSpecification request = given()", List.of()),
+				new FluentStatement("ResponseOptions response = given().spec(request)",
+						List.of(".queryParam(\"page\",\"2\")", ".get(\"/items\")")));
+		TestClassModel model = new TestClassModel("com.example", "ContractTest", null, false, List.of(),
+				List.of(new TestMethodModel("validate_contract",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")),
+						List.of("// then:", "assertThat(response.statusCode()).isEqualTo(200);"), request)),
+				List.of());
+
+		List<String> lines = bodyLines(this.renderer.render(model));
+
+		// when: head + queryParam (unterminated) + url (the url, being last, carries the
+		// ;)
+		assertThat(lines).containsSubsequence("// when:", "ResponseOptions response = given().spec(request)",
+				".queryParam(\"page\",\"2\")", ".get(\"/items\");");
+		// the .queryParam(...) line precedes the url line, and only the url is terminated
+		assertThat(lines).doesNotContain(".queryParam(\"page\",\"2\");").doesNotContain(".get(\"/items\")");
+	}
+
+	@Test
 	void head_only_when_chain_terminates_the_head() {
 		RequestModel request = new RequestModel(
 				new FluentStatement("MockMvcRequestSpecification request = given()", List.of()),

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -62,6 +63,23 @@ class ModelBuilderTests {
 			+ "  url '/foo'\n"
 			+ "  headers { contentType(applicationJson()) }\n"
 			+ "  body([foo: 'bar'])\n"
+			+ " }\n"
+			+ " response {\n"
+			+ "  status OK()\n"
+			+ " }\n"
+			+ "}";
+
+	private static final String QUERY_COOKIE_CONTRACT = "sh.stubborn.contract.spec.Contract.make {\n"
+			+ " request {\n"
+			+ "  method 'GET'\n"
+			+ "  urlPath('/items') {\n"
+			+ "   queryParameters {\n"
+			+ "    parameter('page', '2')\n"
+			+ "   }\n"
+			+ "  }\n"
+			+ "  cookies {\n"
+			+ "   cookie('session', 'abc123')\n"
+			+ "  }\n"
 			+ " }\n"
 			+ " response {\n"
 			+ "  status OK()\n"
@@ -178,6 +196,35 @@ class ModelBuilderTests {
 		assertThat(model.given().continuations()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING)
 			.startsWith(".body(");
 		assertThat(model.given().render()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING).endsWith(");");
+	}
+
+	@Test
+	void request_model_is_built_for_a_query_and_cookie_contract() throws IOException {
+		RequestModel model = requestModelFor(QUERY_COOKIE_CONTRACT);
+
+		assertThat(model).as("query+cookie contract must flow through the structured path").isNotNull();
+		// given chain: the .cookie(...) line comes AFTER any .header(...) line (legacy
+		// order head, headers, cookies)
+		assertThat(model.given().continuations()).anySatisfy((line) -> assertThat(line).startsWith(".cookie("));
+		// when chain: the .queryParam(...) line comes BEFORE the terminal url line
+		List<String> whenLines = model.whenBlock().continuations();
+		int queryIndex = indexOfPrefix(whenLines, ".queryParam(");
+		int urlIndex = indexOfPrefix(whenLines, ".get(");
+		assertThat(queryIndex).as(".queryParam( must be present").isNotNegative();
+		assertThat(urlIndex).as(".get( url line must be present").isNotNegative();
+		assertThat(queryIndex).as(".queryParam( must precede the url line").isLessThan(urlIndex);
+		// the url line is the LAST continuation and gets the trailing `;`
+		assertThat(model.whenBlock().render()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING)
+			.endsWith(");");
+	}
+
+	private static int indexOfPrefix(List<String> lines, String prefix) {
+		for (int i = 0; i < lines.size(); i++) {
+			if (lines.get(i).startsWith(prefix)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	@Test
