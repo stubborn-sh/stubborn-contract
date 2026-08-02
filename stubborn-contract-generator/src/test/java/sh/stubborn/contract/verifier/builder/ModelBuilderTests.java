@@ -97,6 +97,32 @@ class ModelBuilderTests {
 			+ "  status OK()\n"
 			+ " }\n"
 			+ "}";
+
+	private static final String ASYNC_CONTRACT = "sh.stubborn.contract.spec.Contract.make {\n"
+			+ " request {\n"
+			+ "  method 'GET'\n"
+			+ "  url '/async'\n"
+			+ " }\n"
+			+ " response {\n"
+			+ "  async()\n"
+			+ "  status OK()\n"
+			+ " }\n"
+			+ "}";
+
+	private static final String MULTIPART_CONTRACT = "sh.stubborn.contract.spec.Contract.make {\n"
+			+ " request {\n"
+			+ "  method 'PUT'\n"
+			+ "  url '/multipart'\n"
+			+ "  headers { contentType('multipart/form-data') }\n"
+			+ "  multipart(\n"
+			+ "   formParameter: 'formValue',\n"
+			+ "   file: named(name: value('filename.csv'), content: value('file content'))\n"
+			+ "  )\n"
+			+ " }\n"
+			+ " response {\n"
+			+ "  status OK()\n"
+			+ " }\n"
+			+ "}";
 	// @formatter:on
 
 	@TempDir
@@ -225,6 +251,48 @@ class ModelBuilderTests {
 			}
 		}
 		return -1;
+	}
+
+	@Test
+	void request_model_is_built_for_an_async_contract() throws IOException {
+		RequestModel model = requestModelFor(ASYNC_CONTRACT);
+
+		assertThat(model).as("async contract must flow through the structured path").isNotNull();
+		// when chain: the .when().async() line comes AFTER any query params and BEFORE
+		// the
+		// terminal url line (legacy order queryParam, async, url)
+		List<String> whenLines = model.whenBlock().continuations();
+		int asyncIndex = indexOfPrefix(whenLines, ".when().async()");
+		int urlIndex = indexOfPrefix(whenLines, ".get(");
+		assertThat(asyncIndex).as(".when().async() must be present").isNotNegative();
+		assertThat(urlIndex).as(".get( url line must be present").isNotNegative();
+		assertThat(asyncIndex).as(".when().async() must precede the url line").isLessThan(urlIndex);
+		// the url line is the LAST continuation and gets the trailing `;`; the async line
+		// is intermediate and stays unterminated
+		assertThat(model.whenBlock().render()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING)
+			.endsWith(");");
+		assertThat(whenLines).contains(".when().async()").doesNotContain(".when().async();");
+	}
+
+	@Test
+	void request_model_is_built_for_a_multipart_contract() throws IOException {
+		RequestModel model = requestModelFor(MULTIPART_CONTRACT);
+
+		assertThat(model).as("multipart contract must flow through the structured path").isNotNull();
+		// given chain: the multipart lines come AFTER the header line (legacy order head,
+		// headers, cookies, body, multipart) — a plain .param(...) and a named
+		// .multiPart()
+		List<String> givenLines = model.given().continuations();
+		int headerIndex = indexOfPrefix(givenLines, ".header(");
+		int paramIndex = indexOfPrefix(givenLines, ".param(");
+		int multiPartIndex = indexOfPrefix(givenLines, ".multiPart(");
+		assertThat(headerIndex).as(".header( must be present").isNotNegative();
+		assertThat(paramIndex).as(".param( must be present").isNotNegative();
+		assertThat(multiPartIndex).as(".multiPart( must be present").isNotNegative();
+		assertThat(headerIndex).as("multipart lines must follow the header").isLessThan(paramIndex);
+		assertThat(paramIndex).as(".param( must precede .multiPart(").isLessThan(multiPartIndex);
+		// the last multipart line is the LAST continuation and gets the trailing `;`
+		assertThat(model.given().render()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING).endsWith(");");
 	}
 
 	@Test

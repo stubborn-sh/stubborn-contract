@@ -35,16 +35,24 @@ class MockMvcAsyncWhen implements When, MockMvcAcceptor {
 	@Override
 	public MethodVisitor<When> apply(SingleContractMetadata metadata) {
 		Response response = Objects.requireNonNull(metadata.getContract().getResponse());
-		addAsync();
-		if (response.getDelay() != null) {
-			String delay = ".timeout(" + response.getDelay().getServerValue() + ")";
-			this.blockBuilder.append(delay);
-		}
+		this.blockBuilder.addIndented(asyncLine(response));
 		return this;
 	}
 
-	private void addAsync() {
-		this.blockBuilder.addIndented(".when().async()");
+	/**
+	 * The {@code .when().async()} continuation line (with an appended
+	 * {@code .timeout(<n>)} when the response declares a fixed delay), in the exact form
+	 * the legacy MockMvc builder emits. Reused by {@link RequestModelBuilder} so the
+	 * structured request path stays byte-identical to the legacy output.
+	 * @param response the response whose async/delay to render
+	 * @return the async continuation line (no statement terminator)
+	 */
+	static String asyncLine(Response response) {
+		String async = ".when().async()";
+		if (response.getDelay() != null) {
+			return async + ".timeout(" + response.getDelay().getServerValue() + ")";
+		}
+		return async;
 	}
 
 	@Override

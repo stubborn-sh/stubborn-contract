@@ -116,6 +116,38 @@ class TestGenerationGoldenMasterTests {
 					body([id: 1])
 				}
 			}
+			""", "http_async", """
+			sh.stubborn.contract.spec.Contract.make {
+				request {
+					method 'GET'
+					url '/async'
+				}
+				response {
+					async()
+					status OK()
+					body([status: 'ok'])
+				}
+			}
+			""", "http_multipart", """
+			sh.stubborn.contract.spec.Contract.make {
+				request {
+					method 'PUT'
+					url '/multipart'
+					headers {
+						contentType('multipart/form-data')
+					}
+					multipart(
+						formParameter: 'formValue',
+						file: named(
+							name: value('filename.csv'),
+							content: value('file content')
+						)
+					)
+				}
+				response {
+					status OK()
+				}
+			}
 			""");
 
 	@TempDir

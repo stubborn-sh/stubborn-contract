@@ -152,6 +152,59 @@ class RequestModelRendererTests {
 	}
 
 	@Test
+	void renders_mockmvc_request_model_with_async_between_query_param_and_url() {
+		RequestModel request = new RequestModel(
+				new FluentStatement("MockMvcRequestSpecification request = given()", List.of()),
+				new FluentStatement("ResponseOptions response = given().spec(request)",
+						List.of(".queryParam(\"page\",\"2\")", ".when().async()", ".get(\"/async\")")));
+		TestClassModel model = new TestClassModel("com.example", "ContractTest", null, false, List.of(),
+				List.of(new TestMethodModel("validate_contract",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")),
+						List.of("// then:", "assertThat(response.statusCode()).isEqualTo(200);"), request)),
+				List.of());
+
+		List<String> lines = bodyLines(this.renderer.render(model));
+
+		// when: head + queryParam (unterminated) + async (unterminated) + url (last,
+		// carries the ;) — the async line sits AFTER queryParams and BEFORE the url
+		assertThat(lines).containsSubsequence("// when:", "ResponseOptions response = given().spec(request)",
+				".queryParam(\"page\",\"2\")", ".when().async()", ".get(\"/async\");");
+		// only the terminal url line is terminated
+		assertThat(lines).doesNotContain(".queryParam(\"page\",\"2\");")
+			.doesNotContain(".when().async();")
+			.doesNotContain(".get(\"/async\")");
+	}
+
+	@Test
+	void renders_mockmvc_request_model_with_multipart_after_body() {
+		RequestModel request = new RequestModel(
+				new FluentStatement("MockMvcRequestSpecification request = given()",
+						List.of(".header(\"Content-Type\", \"multipart/form-data\")", ".body(\"{}\")",
+								".param(\"formParameter\", \"formValue\")",
+								".multiPart(\"file\", \"filename.csv\", \"file content\".getBytes())")),
+				new FluentStatement("ResponseOptions response = given().spec(request)",
+						List.of(".put(\"/multipart\")")));
+		TestClassModel model = new TestClassModel("com.example", "ContractTest", null, false, List.of(),
+				List.of(new TestMethodModel("validate_contract",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")),
+						List.of("// then:", "assertThat(response.statusCode()).isEqualTo(200);"), request)),
+				List.of());
+
+		List<String> lines = bodyLines(this.renderer.render(model));
+
+		// given: head + header + body + multipart lines (in that order); only the LAST
+		// multipart line carries the ; — the body and the .param(...) line do not
+		assertThat(lines).containsSubsequence("// given:", "MockMvcRequestSpecification request = given()",
+				".header(\"Content-Type\", \"multipart/form-data\")", ".body(\"{}\")",
+				".param(\"formParameter\", \"formValue\")",
+				".multiPart(\"file\", \"filename.csv\", \"file content\".getBytes());");
+		assertThat(lines).contains(".body(\"{}\")")
+			.doesNotContain(".body(\"{}\");")
+			.doesNotContain(".param(\"formParameter\", \"formValue\");")
+			.doesNotContain(".multiPart(\"file\", \"filename.csv\", \"file content\".getBytes())");
+	}
+
+	@Test
 	void head_only_when_chain_terminates_the_head() {
 		RequestModel request = new RequestModel(
 				new FluentStatement("MockMvcRequestSpecification request = given()", List.of()),

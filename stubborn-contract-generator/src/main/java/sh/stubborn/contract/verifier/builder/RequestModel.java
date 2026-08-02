@@ -25,9 +25,10 @@ package sh.stubborn.contract.verifier.builder;
  *
  * <p>
  * Built by {@link RequestModelBuilder} only for the eligible subset of HTTP contracts (a
- * plain or {@code ExecutionProperty} body is allowed, but no file-based body, multipart,
- * async/delay or request templates); otherwise the whole method body is captured verbatim
- * from the legacy generator and this model is {@code null}.
+ * plain or {@code ExecutionProperty} body, cookies, query parameters, multipart parts and
+ * an async/delayed response are allowed, but no file-based body or request templates);
+ * otherwise the whole method body is captured verbatim from the legacy generator and this
+ * model is {@code null}.
  *
  * @param given the {@code // given:} request-specification chain
  * @param whenBlock the {@code // when:} response chain (named to avoid the {@code when}

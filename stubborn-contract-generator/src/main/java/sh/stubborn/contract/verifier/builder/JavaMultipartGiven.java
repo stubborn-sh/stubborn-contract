@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,49 +35,66 @@ class JavaMultipartGiven implements Given, RestAssuredAcceptor {
 
 	private final GeneratedClassMetaData generatedClassMetaData;
 
-	private final BodyReader bodyReader;
-
 	private final BodyParser bodyParser;
 
 	JavaMultipartGiven(BlockBuilder blockBuilder, GeneratedClassMetaData generatedClassMetaData,
 			BodyParser bodyParser) {
 		this.blockBuilder = blockBuilder;
-		this.bodyReader = new BodyReader(generatedClassMetaData);
 		this.bodyParser = bodyParser;
 		this.generatedClassMetaData = generatedClassMetaData;
 	}
 
 	@Override
 	public MethodVisitor<Given> apply(SingleContractMetadata metadata) {
-		getMultipartParameters(metadata).entrySet()
-			.forEach((entry) -> this.blockBuilder.addLine(getMultipartParameterLine(metadata, entry)));
+		multipartLines(metadata, this.generatedClassMetaData, this.bodyParser).forEach(this.blockBuilder::addLine);
 		return this;
 	}
 
-	private String getMultipartParameterLine(SingleContractMetadata metadata, Map.Entry<String, Object> parameter) {
-		if (parameter.getValue() instanceof NamedProperty) {
-			return ".multiPart(" + getMultipartFileParameterContent(metadata, parameter.getKey(),
-					(NamedProperty) parameter.getValue()) + ")";
+	/**
+	 * The multipart continuation lines ({@code .multiPart(...)} for a named file part,
+	 * {@code .param(...)} for a plain form parameter), in the exact order and form the
+	 * legacy MockMvc/Explicit builder emits. Reused by {@link RequestModelBuilder} so the
+	 * structured request path stays byte-identical to the legacy output.
+	 * @param metadata the contract whose multipart to render
+	 * @param generatedClassMetaData the class metadata (used to read file-based parts)
+	 * @param bodyParser the body parser used to quote plain parameters (the Java parser
+	 * for MockMvc/Explicit)
+	 * @return the multipart continuation lines (no statement terminators)
+	 */
+	static List<String> multipartLines(SingleContractMetadata metadata, GeneratedClassMetaData generatedClassMetaData,
+			BodyParser bodyParser) {
+		BodyReader bodyReader = new BodyReader(generatedClassMetaData);
+		List<String> lines = new ArrayList<>();
+		getMultipartParameters(metadata)
+			.forEach((key, value) -> lines.add(multipartParameterLine(metadata, key, value, bodyReader, bodyParser)));
+		return lines;
+	}
+
+	private static String multipartParameterLine(SingleContractMetadata metadata, String key, Object value,
+			BodyReader bodyReader, BodyParser bodyParser) {
+		if (value instanceof NamedProperty) {
+			return ".multiPart(" + getMultipartFileParameterContent(metadata, key, (NamedProperty) value, bodyReader)
+					+ ")";
 		}
-		return getParameterString(parameter);
+		return getParameterString(key, value, bodyParser);
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> getMultipartParameters(SingleContractMetadata metadata) {
+	private static Map<String, Object> getMultipartParameters(SingleContractMetadata metadata) {
 		Request request = Objects.requireNonNull(metadata.getContract().getRequest());
 		Multipart multipart = Objects.requireNonNull(request.getMultipart());
 		return (Map<String, Object>) Objects.requireNonNull(multipart.getServerValue());
 	}
 
-	private String getMultipartFileParameterContent(SingleContractMetadata metadata, String propertyName,
-			NamedProperty propertyValue) {
+	private static String getMultipartFileParameterContent(SingleContractMetadata metadata, String propertyName,
+			NamedProperty propertyValue, BodyReader bodyReader) {
 		return ContentUtils.getJavaMultipartFileParameterContent(propertyName, propertyValue,
-				(fileProp) -> this.bodyReader.readBytesFromFileString(metadata, fileProp, CommunicationType.REQUEST));
+				(fileProp) -> bodyReader.readBytesFromFileString(metadata, fileProp, CommunicationType.REQUEST));
 	}
 
-	private String getParameterString(Map.Entry<String, Object> parameter) {
-		return ".param(" + this.bodyParser.quotedShortText(parameter.getKey()) + ", "
-				+ this.bodyParser.quotedShortText(MapConverter.getTestSideValuesForNonBody(parameter.getValue())) + ")";
+	private static String getParameterString(String key, Object value, BodyParser bodyParser) {
+		return ".param(" + bodyParser.quotedShortText(key) + ", "
+				+ bodyParser.quotedShortText(MapConverter.getTestSideValuesForNonBody(value)) + ")";
 	}
 
 	@Override
