@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+	<!--
+	  BROAD SELF-CPE FALSE POSITIVE (systemic): our own first-party sh.stubborn:* snapshot jars
+	  keep getting matched to third-party product CPEs (vmware:spring_boot, wiremock:wiremock,
+	  vmware:spring_framework, vmware:spring_cloud_contract, ...) purely on artifactId/description
+	  name tokens plus the low 0.1.0 SNAPSHOT version, inheriting those products' historical CVEs
+	  (e.g. Spring Boot CVE-2017-8046, CVE-2021-26987, CVE-2023-20873, CVE-2023-20883,
+	  CVE-2022-27772, CVE-2026-40972/40975/22733; WireMock CVE-2018-9116; legacy Spring Framework
+	  CVEs). None of our jars ARE those products. Rather than maintain a per-module, per-CPE
+	  whack-a-mole list, suppress ALL CPE-based matches for any sh.stubborn artifact. Genuine CVEs
+	  filed against our own code would be matched by packageUrl / CVE identifier, not by a
+	  third-party product CPE, so those remain fully evaluated.
+	-->
+	<suppress>
+		<notes><![CDATA[ First-party sh.stubborn artifacts are matched to third-party product CPEs (vmware:spring_boot, wiremock:wiremock, vmware:*, etc.) purely on name tokens + the 0.1.0 SNAPSHOT version, inheriting those products' CVEs. Our own jars are never those products; any CPE match on a sh.stubborn artifact is a false positive. Genuine CVEs against our own code would be matched by packageUrl/CVE, not a third-party CPE, so those are still evaluated. ]]></notes>
+		<packageUrl regex="true">^pkg:maven/sh\.stubborn/.*$</packageUrl>
+		<cpe regex="true">.*</cpe>
+	</suppress>
+
+	<!--
+	  CVE-2026-53914 (CVSS 9.8) — JetBrains Kotlin unsafe deserialization, fixed on the Kotlin
+	  2.4.20 line. Kotlin reaches this build only as build-time / DSL tooling, in two modules:
+	    * stubborn-migration pulls it transitively via OpenRewrite (rewrite-gradle -> rewrite-kotlin).
+	      rewrite-gradle is retained for the planned Gradle build-script migration recipes.
+	    * stubborn-extras (the Kotlin contract DSL) gets Kotlin from the Spring Boot 4.1 BOM (2.3.21)
+	      plus explicit kotlin-scripting-* pins (2.2.21) — its own language runtime.
+	  Neither can be realigned to the fix line today: Kotlin 2.4.20 is not yet on Maven Central as GA
+	  (only 2.4.20-Beta2 is published; the stable line tops out at 2.4.10, still below the fix), and we
+	  do not ship a pre-release Kotlin. Both are build-time/DSL only — the vulnerable deserialization
+	  path is not reachable from any runtime artifact we publish.
+	  REMOVE THIS SUPPRESSION and align every org.jetbrains.kotlin artifact to >= 2.4.20 once GA ships.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			Build-time/DSL Kotlin only (stubborn-migration via OpenRewrite; stubborn-extras Kotlin DSL).
+			Kotlin 2.4.20 (the fix) is not yet GA on Maven Central. Remove once every
+			org.jetbrains.kotlin artifact can be pinned to >= 2.4.20 GA.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/.*$</packageUrl>
+		<cve>CVE-2026-53914</cve>
+	</suppress>
+
+	<!--
+	  FALSE POSITIVE: org.apache.camel:camel-kafka is the Camel *Kafka component* (the Camel
+	  connector for Kafka), NOT Apache Kafka itself. dependency-check auto-generates the CPE
+	  cpe:2.3:a:apache:kafka for it because of the "apache" + "kafka" tokens, so every
+	  apache:kafka broker CVE gets matched against camel-kafka's Camel version number (4.21.0),
+	  which is not even a real Apache Kafka release. None of the Apache Kafka broker/client CVEs
+	  apply to this artifact. Suppress ONLY the apache:kafka CPE, scoped to the camel-kafka
+	  packageUrl, so genuine apache:camel CVEs on this artifact are still evaluated (they are
+	  handled by keeping camel.version current) and real Apache Kafka dependencies elsewhere in
+	  the reactor are unaffected. This is a structural mismatch, not version-dependent - keep.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			camel-kafka is the Apache Camel Kafka *component*, not Apache Kafka. The apache:kafka
+			CPE is a mis-generated match on the "apache"/"kafka" name tokens; camel-kafka's version
+			(4.21.0) is a Camel version, not a Kafka version, so no Apache Kafka CVE applies.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.apache\.camel/camel-kafka@.*$</packageUrl>
+		<cpe>cpe:/a:apache:kafka</cpe>
+	</suppress>
+
+	<!--
+	  ADJACENT-CPE FALSE POSITIVE: io.github.x-stream:mxparser is the XML pull-parser fork that
+	  XStream bundles (an MXP1/XPP3 successor), NOT XStream itself. dependency-check matches it to
+	  the XStream CPE (cpe:/a:x-stream:xstream, a.k.a. cpe:/a:xstream:xstream) on the "x-stream"
+	  groupId token and assigns it XStream's own deserialization CVEs — CVE-2020-26217 (8.8),
+	  CVE-2021-39144 (8.5), CVE-2021-39145/39146/39147/39148/39149. Those CVEs belong to the
+	  com.thoughtworks.xstream:xstream engine, not to the parser. The real XStream jar on this
+	  reactor's classpath is already at the fixed 1.4.21 (>= 1.4.21 remediates every one of those
+	  CVEs; it reaches only stubborn-contract-stub-runner-spring-cloud transitively via Curator),
+	  so nothing is actually exploitable — the parser fork merely inherits the CPE. Suppress ONLY
+	  the xstream CPEs, scoped to the mxparser packageUrl, so a genuine CVE filed against mxparser
+	  itself (matched some other way) is still surfaced and the real xstream jar is untouched.
+	  Structural name-token mismatch, not version-dependent — keep.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			io.github.x-stream:mxparser is XStream's bundled XML pull-parser fork, not XStream.
+			It is CPE-matched to cpe:/a:x-stream:xstream on the "x-stream" groupId token and assigned
+			XStream's deserialization CVEs (CVE-2020-26217, CVE-2021-39144..39149), which belong to
+			the com.thoughtworks.xstream:xstream engine (present at the fixed 1.4.21 here), not the
+			parser. Only the xstream CPEs are suppressed, scoped to this artifact.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/io\.github\.x-stream/mxparser@.*$</packageUrl>
+		<cpe>cpe:/a:x-stream:xstream</cpe>
+		<cpe>cpe:/a:xstream:xstream</cpe>
+	</suppress>
+
+	<!--
+	  DOMPurify — the DOMPurify JavaScript library vendored inside the swagger-ui bundle
+	  (swagger-ui-bundle.js / swagger-ui-es-bundle.js, pkg:javascript/DOMPurify) that WireMock
+	  3.13.2 ships inside wiremock-*.jar for its standalone admin UI.
+	  This is a browser-only front-end asset: it is exploitable only when a user loads WireMock's
+	  standalone admin swagger-ui in a browser. Stubborn Contract embeds WireMock purely as an
+	  in-process HTTP stub server (verifier / wiremock modules) and never serves that swagger-ui,
+	  so the vulnerable code path is not reachable from any artifact we publish. It is also outside
+	  our control — the fix must come from an upstream WireMock release bundling a patched DOMPurify.
+	  Suppressed by packageUrl WITHOUT a <cve> filter on purpose: the vendored DOMPurify version
+	  attracts a rolling set of low-severity DOM-clobbering/XSS CVEs (the original CVE-2026-65898 no
+	  longer matches; ODC now reports CVE-2026-49978, CVE-2026-49458, CVE-2026-49459, CVE-2026-41240,
+	  CVE-2026-0540, CVE-2026-65902, CVE-2026-65914 and more, currently <7 but churning). A
+	  CVE-pinned rule would rot into a dead "zero matches" entry on every WireMock bump; scoping to
+	  the DOMPurify packageUrl keeps the browser-only asset suppressed regardless of the exact CVE.
+	  REMOVE THIS SUPPRESSION once WireMock ships a swagger-ui bundle with a patched DOMPurify.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			Browser-only DOMPurify inside WireMock's vendored swagger-ui admin bundle. WireMock is
+			used only as an in-process stub server here; the swagger-ui is never served, so the XSS
+			path is unreachable at runtime. Upstream-owned, browser-only asset — suppressed by
+			packageUrl (no CVE filter) as the vendored version churns through low-severity CVEs.
+			Remove once WireMock bundles a patched DOMPurify.
+		]]></notes>
+		<packageUrl regex="true">^pkg:javascript/DOMPurify@.*$</packageUrl>
+		<vulnerabilityName regex="true">.*</vulnerabilityName>
+	</suppress>
+
+	<!--
+	  NOTE: the previously separate per-module self-CPE suppressions —
+	    * sh.stubborn *wiremock* jars -> cpe:/a:wiremock:wiremock (CVE-2018-9116)
+	    * sh.stubborn:stubborn-contract-converters -> cpe:/a:vmware:* (legacy Spring CVEs)
+	  have been folded into the single broad first-party self-CPE rule at the top of this file.
+	-->
+</suppressions>

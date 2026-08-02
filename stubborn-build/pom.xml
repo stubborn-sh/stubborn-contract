@@ -69,7 +69,6 @@
 
 		<!-- Kotlin (for stubborn-extras/spec-kotlin) -->
 		<kotlin.version>2.2.21</kotlin.version>
-
 		<!-- Test dependencies -->
 		<archunit.version>1.4.2</archunit.version>
 
@@ -106,6 +105,57 @@
 		<error-prone.version>2.36.0</error-prone.version>
 		<nullaway.version>0.12.7</nullaway.version>
 		<jspecify.version>1.0.0</jspecify.version>
+
+		<!--
+		  Security-pinned third-party library versions. Defined here (the common build
+		  parent) so the reactor pom, the consumer BOM, and every module share one source of
+		  truth. Jetty is held on the 12.0.x line that WireMock 3.13.2 requires (12.1.x
+		  removed APIs wiremock-jetty12 calls); httpcore5 is pinned above its vulnerable 5.4.2.
+		  icu4j is pinned above CVE-2025-5222 (buffer overflow, fixed from ICU 77 onward); it
+		  leaks in as a deep transitive of the Eclipse WST xpath2 processor in stubborn-xmlassert.
+		-->
+		<jetty.version>12.0.37</jetty.version>
+		<httpcore5.version>5.4.3</httpcore5.version>
+		<icu4j.version>78.3</icu4j.version>
+		<!--
+		  Netty is managed by the Spring Boot 4.1 BOM at 4.2.15.Final, which carries a batch of
+		  DoS / OCSP-bypass CVEs matched against the netty:netty CPE (CVE-2026-56820 [9.1],
+		  CVE-2026-55851 [8.7], CVE-2026-56745 [8.7], CVE-2026-56817 [8.3], CVE-2026-56819 [7.5],
+		  CVE-2026-44891 [7.5], CVE-2026-55833 [7.5], CVE-2026-55831 [7.5], CVE-2026-56816 [7.5]).
+		  All are fixed in 4.2.16.Final (same 4.2.x line). Realigned reactor-wide by importing
+		  io.netty:netty-bom:${netty.version} ahead of spring-boot-dependencies (see root pom /
+		  consumer BOM). Remove once the Spring Boot BOM ships >= 4.2.16.Final.
+		-->
+		<netty.version>4.2.16.Final</netty.version>
+		<!--
+		  Tomcat is managed by the Spring Boot 4.1 BOM at 11.0.22, which carries a batch of
+		  high-severity CVEs matched against the apache:tomcat CPE (CVE-2026-55276 [9.1],
+		  CVE-2026-53434 [9.1], CVE-2026-59083 [9.1], CVE-2026-59084 [9.1], CVE-2026-53404 [7.3]).
+		  All are fixed on the same 11.0.x line; pin the latest patched 11.0.24. Realigned
+		  reactor-wide by declaring explicit tomcat-embed-* / tomcat-* dependencyManagement entries
+		  at ${tomcat.version} ahead of spring-boot-dependencies (see root pom / consumer BOM), since
+		  Tomcat has no published BOM to import. Remove once the Spring Boot BOM ships >= 11.0.24.
+		-->
+		<tomcat.version>11.0.24</tomcat.version>
+		<!--
+		  Zookeeper is pulled transitively by spring-cloud-starter-zookeeper-discovery (via Curator)
+		  and managed by the spring-cloud-zookeeper-dependencies BOM at 3.9.3, which carries
+		  CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5). Both are fixed on the same 3.9.x line; pin
+		  the latest patched 3.9.5. Realigned by declaring explicit org.apache.zookeeper:zookeeper /
+		  zookeeper-jute dependencyManagement entries at ${zookeeper.version} in the security-override
+		  section of the root pom (and the consumer BOM), ahead of the spring-cloud BOM imports.
+		  Remove once spring-cloud-zookeeper ships >= 3.9.4.
+		-->
+		<zookeeper.version>3.9.5</zookeeper.version>
+		<!--
+		  CVE-2025-67030 (CVSS 8.8): Directory Traversal in plexus-utils Expand.extractFile.
+		  maven-embedder 3.9.16 (used by stubborn-contract-stub-runner to resolve stubs) pulls
+		  plexus-utils transitively; the Spring Boot 4.1 BOM *downgrades* it to the vulnerable
+		  3.6.0. Pin the patched 3.6.1 (the version maven-embedder 3.9.16 itself declares, so
+		  fully API-compatible with the Maven 3.9 stack). The stubborn-contract-maven-plugin
+		  module keeps its own local plexus-utils.version (4.0.x) for its Groovy tooling needs.
+		-->
+		<plexus-utils.version>3.6.1</plexus-utils.version>
 
 		<!--
 		  Core module gate: set to false in Spring-agnostic core modules to ban
@@ -373,6 +423,24 @@
 					<configuration>
 						<failBuildOnCVSS>7</failBuildOnCVSS>
 						<nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
+						<!--
+						  Sonatype OSS Index now requires authentication: without credentials the
+						  analyzer returns HTTP 401 Unauthorized and throws an AnalysisException that
+						  fails modules independently of any CVE. Disable it so the NVD (the
+						  authoritative source, gated by failBuildOnCVSS above) is the single source
+						  of truth for this scan.
+						-->
+						<ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+						<!--
+						  Suppress CVEs that have no pinnable GA fix yet (currently CVE-2026-53914:
+						  Kotlin build-time/DSL tooling whose fix, Kotlin 2.4.20, is not on Maven
+						  Central as GA). See config/dependency-check-suppressions.xml for the full
+						  justification and removal condition. Path is anchored to the reactor root so
+						  it resolves the same for every module.
+						-->
+						<suppressionFiles>
+							<suppressionFile>${maven.multiModuleProjectDirectory}/config/dependency-check-suppressions.xml</suppressionFile>
+						</suppressionFiles>
 					</configuration>
 				</plugin>
 				<plugin>

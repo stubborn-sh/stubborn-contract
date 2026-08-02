@@ -1,0 +1,83 @@
+name: Security
+
+# Runs the OWASP dependency-check `security` Maven profile (see the root pom.xml
+# `security` profile and the dependency-check-maven plugin managed in
+# stubborn-build/pom.xml). Fails the build on any dependency with a CVSS >= 7.
+#
+# Coverage (the authoritative scan; it no longer runs per pull_request — the
+# ~50-minute NVD scan was not sustainable on every PR, so it now runs post-merge
+# and on a schedule, fix-forward):
+#   - weekly schedule (Tue 05:30 UTC)  -> continuous monitoring of the codebase
+#   - every push to main               -> catches CVEs as changes land on main
+#   - workflow_dispatch                -> on-demand runs
+#
+# NOTE: set the NVD_API_KEY repository secret. Without it the NVD API is heavily
+# rate-limited and the initial database build can take 30+ minutes or time out.
+# Request a free key at https://nvd.nist.gov/developers/request-an-api-key.
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '30 5 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+
+jobs:
+  dependency-check:
+    name: OWASP Dependency-Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      # Cache the NVD vulnerability database so runs after the first are fast.
+      - name: Cache dependency-check data
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: dependency-check-data-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            dependency-check-data-${{ runner.os }}-
+
+      - name: Build stubborn-build parent
+        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Install BOM (stubborn-contract-dependencies)
+        run: |
+          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
+
+      # Install all reactor modules so inter-module dependencies resolve, then run the
+      # `security` profile which binds dependency-check:check to the verify phase.
+      - name: Install reactor (skip tests)
+        run: ./mvnw clean install -DskipTests --no-transfer-progress
+
+      - name: Run OWASP dependency-check (-Psecurity)
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        # -fae (fail-at-end): scan every module and report all CVEs in one run, rather
+        # than stopping at the first module that fails the CVSS gate.
+        run: ./mvnw verify -Psecurity -DskipTests -fae --no-transfer-progress
+
+      - name: Upload dependency-check reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: dependency-check-reports
+          path: '**/target/dependency-check-report.*'
+          if-no-files-found: ignore
+          retention-days: 14
