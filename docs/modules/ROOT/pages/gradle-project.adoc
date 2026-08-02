@@ -58,8 +58,6 @@ pluginManagement {
         mavenLocal()
         // for snapshots
         maven { url "https://repo.spring.io/snapshot" }
-        // for milestones
-        maven { url "https://repo.spring.io/milestone" }
         // for GA versions
         gradlePluginPortal()
     }
