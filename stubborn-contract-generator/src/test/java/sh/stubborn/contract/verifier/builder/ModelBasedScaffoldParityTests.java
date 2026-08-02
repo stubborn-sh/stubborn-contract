@@ -138,6 +138,18 @@ class ModelBasedScaffoldParityTests {
 					status OK()
 				}
 			}
+			""", "http_file_body", """
+			sh.stubborn.contract.spec.Contract.make {
+				request {
+					method 'PUT'
+					url '/foo'
+					headers { contentType(applicationJson()) }
+					body(file('request.json'))
+				}
+				response {
+					status OK()
+				}
+			}
 			""");
 
 	@TempDir
@@ -185,6 +197,14 @@ class ModelBasedScaffoldParityTests {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(framework);
 		properties.setTestMode(mode);
+		// A file-based request body materialises the referenced file next to the
+		// generated
+		// test; point the generated sources/resources dirs at the temp dir so that write
+		// succeeds. Contracts without a file body never touch the BodyReader, so this is
+		// a
+		// no-op for them.
+		properties.setGeneratedTestSourcesDir(this.tmp);
+		properties.setGeneratedTestResourcesDir(this.tmp);
 
 		ContractMetadata contract = new ContractMetadata(contractFile.toPath(), true, 1, 2,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), contractFile));
