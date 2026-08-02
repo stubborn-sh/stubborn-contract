@@ -138,6 +138,16 @@
 		-->
 		<tomcat.version>11.0.24</tomcat.version>
 		<!--
+		  Zookeeper is pulled transitively by spring-cloud-starter-zookeeper-discovery (via Curator)
+		  and managed by the spring-cloud-zookeeper-dependencies BOM at 3.9.3, which carries
+		  CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5). Both are fixed on the same 3.9.x line; pin
+		  the latest patched 3.9.5. Realigned by declaring explicit org.apache.zookeeper:zookeeper /
+		  zookeeper-jute dependencyManagement entries at ${zookeeper.version} in the security-override
+		  section of the root pom (and the consumer BOM), ahead of the spring-cloud BOM imports.
+		  Remove once spring-cloud-zookeeper ships >= 3.9.4.
+		-->
+		<zookeeper.version>3.9.5</zookeeper.version>
+		<!--
 		  CVE-2025-67030 (CVSS 8.8): Directory Traversal in plexus-utils Expand.extractFile.
 		  maven-embedder 3.9.16 (used by stubborn-contract-stub-runner to resolve stubs) pulls
 		  plexus-utils transitively; the Spring Boot 4.1 BOM *downgrades* it to the vulnerable
