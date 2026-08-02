@@ -98,6 +98,24 @@ class TestGenerationGoldenMasterTests {
 					body([id: 1, name: 'widget'])
 				}
 			}
+			""", "http_get_query_cookie", """
+			sh.stubborn.contract.spec.Contract.make {
+				request {
+					method 'GET'
+					urlPath('/items') {
+						queryParameters {
+							parameter('page', '2')
+						}
+					}
+					cookies {
+						cookie('session', 'abc123')
+					}
+				}
+				response {
+					status OK()
+					body([id: 1])
+				}
+			}
 			""");
 
 	@TempDir

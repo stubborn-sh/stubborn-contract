@@ -1,0 +1,37 @@
+package com.example;
+
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.testng.annotations.Test;
+import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification;
+import io.restassured.response.ResponseOptions;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.*;
+
+@SuppressWarnings("rawtypes")
+public class ContractTest {
+
+	@Test(enabled = false)
+	public void validate_contract() throws Exception {
+		// given:
+			MockMvcRequestSpecification request = given()
+					.cookie("session", "abc123");
+
+		// when:
+			ResponseOptions response = given().spec(request)
+					.queryParam("page","2")
+					.get("/items");
+
+		// then:
+			assertThat(response.statusCode()).isEqualTo(200);
+
+		// and:
+			DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
+			assertThatJson(parsedJson).field("['id']").isEqualTo(1);
+	}
+
+}
+
