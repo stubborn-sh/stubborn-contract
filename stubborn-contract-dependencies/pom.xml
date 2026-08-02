@@ -37,6 +37,49 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!--
+			  Security override: pin every Tomcat artifact the Spring Boot 4.1 BOM manages up to the
+			  patched ${tomcat.version} (11.0.24), off the vulnerable 11.0.22 (CVE-2026-55276,
+			  -53434, -59083, -59084, -53404). As with the Jetty pins below, this relies on consumers
+			  importing stubborn-contract-dependencies ahead of spring-boot-dependencies. Tomcat has
+			  no published BOM, so each managed artifact is pinned explicitly. Remove once the Spring
+			  Boot BOM ships >= 11.0.24.
+			-->
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-core</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-el</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-jasper</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-websocket</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-annotations-api</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jdbc</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jsp-api</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-contract-wiremock</artifactId>

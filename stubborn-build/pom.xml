@@ -128,6 +128,16 @@
 		-->
 		<netty.version>4.2.16.Final</netty.version>
 		<!--
+		  Tomcat is managed by the Spring Boot 4.1 BOM at 11.0.22, which carries a batch of
+		  high-severity CVEs matched against the apache:tomcat CPE (CVE-2026-55276 [9.1],
+		  CVE-2026-53434 [9.1], CVE-2026-59083 [9.1], CVE-2026-59084 [9.1], CVE-2026-53404 [7.3]).
+		  All are fixed on the same 11.0.x line; pin the latest patched 11.0.24. Realigned
+		  reactor-wide by declaring explicit tomcat-embed-* / tomcat-* dependencyManagement entries
+		  at ${tomcat.version} ahead of spring-boot-dependencies (see root pom / consumer BOM), since
+		  Tomcat has no published BOM to import. Remove once the Spring Boot BOM ships >= 11.0.24.
+		-->
+		<tomcat.version>11.0.24</tomcat.version>
+		<!--
 		  CVE-2025-67030 (CVSS 8.8): Directory Traversal in plexus-utils Expand.extractFile.
 		  maven-embedder 3.9.16 (used by stubborn-contract-stub-runner to resolve stubs) pulls
 		  plexus-utils transitively; the Spring Boot 4.1 BOM *downgrades* it to the vulnerable

@@ -58,7 +58,18 @@
 		<junit-jupiter.version>6.0.3</junit-jupiter.version>
 		<!-- @releaser:version-check-off for surefire -->
 		<awaitility.version>4.3.0</awaitility.version>
-		<artemis.version>2.44.0</artemis.version>
+		<!--
+		  CVE-2026-27446 (CVSS 9.3) against org.apache.activemq:artemis-* (apache:artemis CPE).
+		  The Spring Boot 4.1 BOM imports artemis-bom at 2.53.0 (still in the affected range); the
+		  fix ships on the same 2.x line, so pin the latest patched 2.55.0. Realigned reactor-wide by
+		  importing org.apache.activemq:artemis-bom:${artemis.version} ahead of spring-boot-dependencies
+		  below, so every artemis-* artifact wins over the Boot BOM's 2.53.0. Artemis reaches this
+		  build only through the JMS/Artemis test-and-sample harness (tests/samples-messaging-jms,
+		  tests/stubborn-contract-stub-runner-jms) — it is NOT shipped in any published runtime
+		  artifact — but we bump it anyway since a patched release exists. Remove once the Spring Boot
+		  BOM ships artemis >= 2.54.
+		-->
+		<artemis.version>2.55.0</artemis.version>
 		<testcontainers.version>1.21.4</testcontainers.version>
 		<hamcrest.version>3.0</hamcrest.version>
 
@@ -123,6 +134,61 @@
 				<version>${netty.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<!--
+			  Security override: import artemis-bom at the patched ${artemis.version} (2.55.0)
+			  BEFORE spring-boot-dependencies so every org.apache.activemq:artemis-* artifact wins
+			  over the Boot BOM's vulnerable 2.53.0 (CVE-2026-27446, CVSS 9.3). See the artemis.version
+			  property above. Remove once the Spring Boot BOM ships artemis >= 2.54.
+			-->
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>artemis-bom</artifactId>
+				<version>${artemis.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!--
+			  Security override: pin every Tomcat artifact the Spring Boot 4.1 BOM manages up to the
+			  patched ${tomcat.version} (11.0.24). Declared BEFORE spring-boot-dependencies so these
+			  win over the Boot BOM's vulnerable 11.0.22 (CVE-2026-55276/-53434/-59083/-59084/-53404).
+			  Tomcat has no published BOM, so each managed artifact is pinned explicitly. See the
+			  tomcat.version property in stubborn-build/pom.xml. Remove once Boot ships >= 11.0.24.
+			-->
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-core</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-el</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-jasper</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-websocket</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-annotations-api</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jdbc</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jsp-api</artifactId>
+				<version>${tomcat.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
