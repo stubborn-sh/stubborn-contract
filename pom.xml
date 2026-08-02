@@ -111,6 +111,19 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!--
+			  Security override: pull every io.netty artifact up to the patched ${netty.version}
+			  (4.2.16.Final). Imported BEFORE spring-boot-dependencies so the netty-bom entries win
+			  over the Boot BOM's vulnerable 4.2.15.Final for the whole reactor. See the CVE list on
+			  the netty.version property in stubborn-build/pom.xml. Remove once Boot ships >= 4.2.16.
+			-->
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-bom</artifactId>
+				<version>${netty.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -648,6 +661,18 @@
 				<groupId>com.ibm.icu</groupId>
 				<artifactId>icu4j</artifactId>
 				<version>${icu4j.version}</version>
+			</dependency>
+			<!--
+			  CVE-2025-67030 (CVSS 8.8): stubborn-contract-stub-runner embeds Maven (maven-embedder
+			  3.9.16) to resolve stubs and pulls plexus-utils transitively. The Spring Boot 4.1 BOM
+			  downgrades plexus-utils to the vulnerable 3.6.0; pin the patched 3.6.1 (the version
+			  maven-embedder 3.9.16 itself declares). Directly declared here so it beats the imported
+			  Boot BOM. Remove once the managing BOM ships >= 3.6.1.
+			-->
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>${plexus-utils.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

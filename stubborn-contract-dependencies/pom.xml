@@ -22,6 +22,21 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<!--
+			  Security override: import netty-bom at the patched ${netty.version} (4.2.16.Final) so
+			  consumers importing this BOM get every io.netty artifact off the vulnerable 4.2.15.Final
+			  managed by the Spring Boot 4.1 BOM (netty:netty CVE-2026-56820, -55851, -56745, -56817,
+			  -56819, -44891, -55833, -55831, -56816). As with the Jetty pins below, this relies on
+			  consumers importing stubborn-contract-dependencies ahead of spring-boot-dependencies.
+			  Remove once the Spring Boot BOM ships >= 4.2.16.Final.
+			-->
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-bom</artifactId>
+				<version>${netty.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-contract-wiremock</artifactId>
@@ -300,6 +315,17 @@
 				<groupId>com.ibm.icu</groupId>
 				<artifactId>icu4j</artifactId>
 				<version>${icu4j.version}</version>
+			</dependency>
+			<!--
+			  CVE-2025-67030 (CVSS 8.8): stubborn-contract-stub-runner embeds Maven and pulls
+			  plexus-utils transitively; the Spring Boot 4.1 BOM downgrades it to the vulnerable
+			  3.6.0. Pin the patched 3.6.1 here too so consumers importing this BOM get the safe
+			  version in their own dependencyManagement. Remove once a managing BOM ships >= 3.6.1.
+			-->
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>${plexus-utils.version}</version>
 			</dependency>
 			<!-- Spring Boot 4 split modules (needed for RestClient / TestRestTemplate) -->
 			<dependency>

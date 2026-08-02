@@ -117,6 +117,25 @@
 		<jetty.version>12.0.37</jetty.version>
 		<httpcore5.version>5.4.3</httpcore5.version>
 		<icu4j.version>78.3</icu4j.version>
+		<!--
+		  Netty is managed by the Spring Boot 4.1 BOM at 4.2.15.Final, which carries a batch of
+		  DoS / OCSP-bypass CVEs matched against the netty:netty CPE (CVE-2026-56820 [9.1],
+		  CVE-2026-55851 [8.7], CVE-2026-56745 [8.7], CVE-2026-56817 [8.3], CVE-2026-56819 [7.5],
+		  CVE-2026-44891 [7.5], CVE-2026-55833 [7.5], CVE-2026-55831 [7.5], CVE-2026-56816 [7.5]).
+		  All are fixed in 4.2.16.Final (same 4.2.x line). Realigned reactor-wide by importing
+		  io.netty:netty-bom:${netty.version} ahead of spring-boot-dependencies (see root pom /
+		  consumer BOM). Remove once the Spring Boot BOM ships >= 4.2.16.Final.
+		-->
+		<netty.version>4.2.16.Final</netty.version>
+		<!--
+		  CVE-2025-67030 (CVSS 8.8): Directory Traversal in plexus-utils Expand.extractFile.
+		  maven-embedder 3.9.16 (used by stubborn-contract-stub-runner to resolve stubs) pulls
+		  plexus-utils transitively; the Spring Boot 4.1 BOM *downgrades* it to the vulnerable
+		  3.6.0. Pin the patched 3.6.1 (the version maven-embedder 3.9.16 itself declares, so
+		  fully API-compatible with the Maven 3.9 stack). The stubborn-contract-maven-plugin
+		  module keeps its own local plexus-utils.version (4.0.x) for its Groovy tooling needs.
+		-->
+		<plexus-utils.version>3.6.1</plexus-utils.version>
 
 		<!--
 		  Core module gate: set to false in Spring-agnostic core modules to ban
