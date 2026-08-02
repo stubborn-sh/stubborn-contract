@@ -19,17 +19,18 @@ package sh.stubborn.contract.verifier.builder;
 /**
  * Formatting-free description of the structured portion of a test method's
  * {@code // then:} block: the response status-code assertion followed by the response
- * header assertions, each a standalone {@code ;}-terminated statement.
+ * header assertions and the response cookie assertions (per cookie, a null-check then a
+ * value assertion), each a standalone {@code ;}-terminated statement.
  *
  * <p>
- * The response body assertions (the {@code // and:} block — JSON/XML/matcher checks) and
- * response cookie assertions are <em>not</em> part of this model; they remain captured
- * verbatim from the legacy generator. Built by {@link ResponseModelBuilder} only for the
- * eligible subset of HTTP contracts (already request-eligible, no response cookies, and
- * no template entry in the structured then lines); otherwise the whole {@code // then:}
- * block is captured verbatim and this model is {@code null}.
+ * The response body assertions (the {@code // and:} block — JSON/XML/matcher checks) are
+ * <em>not</em> part of this model; they remain captured verbatim from the legacy
+ * generator. Built by {@link ResponseModelBuilder} only for the eligible subset of HTTP
+ * contracts (already request-eligible and no template entry in the structured then
+ * lines); otherwise the whole {@code // then:} block is captured verbatim and this model
+ * is {@code null}.
  *
- * @param thenBlock the status-code and header assertion statements
+ * @param thenBlock the status-code, header and cookie assertion statements
  * @author Marcin Grzejszczak
  */
 record ResponseModel(StatementList thenBlock) {
