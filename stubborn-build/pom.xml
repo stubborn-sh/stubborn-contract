@@ -69,19 +69,6 @@
 
 		<!-- Kotlin (for stubborn-extras/spec-kotlin) -->
 		<kotlin.version>2.2.21</kotlin.version>
-		<!--
-		  CVE-2026-53914 (CVSS 9.8): unsafe deserialization in the Kotlin binaries, fixed on the
-		  Kotlin 2.4.20 line. The OpenRewrite recipes in stubborn-migration drag in the whole
-		  Kotlin runtime (stdlib, reflect, compiler-embeddable, script-runtime, daemon-embeddable)
-		  at a vulnerable 2.3.21 transitively via rewrite-gradle -> rewrite-kotlin, and it is not
-		  otherwise managed. Pinned to the 2.4.20 fix line in dependencyManagement. 2.4.20 GA is
-		  not yet on Maven Central (latest stable 2.4.10 is still below the fix), so we pin to the
-		  highest published 2.4.20 build; bump to 2.4.20 GA once released. Kept separate from
-		  kotlin.version (the compiler plugin) so the OpenRewrite runtime moves independently of
-		  the Kotlin DSL compiler.
-		-->
-		<kotlin-stdlib.version>2.4.20-Beta2</kotlin-stdlib.version>
-
 		<!-- Test dependencies -->
 		<archunit.version>1.4.2</archunit.version>
 

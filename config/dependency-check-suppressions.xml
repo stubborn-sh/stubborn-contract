@@ -2,21 +2,21 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
 	<!--
 	  CVE-2026-53914 (CVSS 9.8) — JetBrains Kotlin unsafe deserialization, fixed on the Kotlin
-	  2.4.20 line. Kotlin reaches this build only as build-time / DSL tooling:
-	    * stubborn-migration pulls it transitively via OpenRewrite (rewrite-gradle -> rewrite-kotlin);
-	      that module is pinned to the 2.4.20 fix line in its own dependencyManagement.
-	    * stubborn-extras (the Kotlin contract DSL) gets Kotlin from the Spring Boot 4.1 BOM
-	      (2.3.21) plus explicit kotlin-scripting-* pins (2.2.21). Those cannot be realigned to
-	      the fix line without moving the whole module to a Kotlin 2.4.20 compiler, and 2.4.20 is
-	      not yet released to Maven Central as GA (only 2.4.20-Beta2 is published; the stable line
-	      tops out at 2.4.10, still below the fix).
-	  This suppression covers the Kotlin coordinates for which no GA fix can currently be pinned.
-	  REMOVE IT and align every org.jetbrains.kotlin artifact to >= 2.4.20 once 2.4.20 GA ships.
+	  2.4.20 line. After removing the unused rewrite-gradle dependency from stubborn-migration
+	  (it pulled rewrite-kotlin + the whole Kotlin runtime for no functional benefit — the
+	  migrate-from-scc recipe is Maven/Java only), the ONLY remaining Kotlin in the reactor is in
+	  stubborn-extras (the Kotlin contract DSL). It gets Kotlin from the Spring Boot 4.1 BOM
+	  (2.3.21) plus explicit kotlin-scripting-* pins (2.2.21) — these are the module's own language
+	  runtime and cannot be realigned to the fix line without moving the whole module to a Kotlin
+	  2.4.20 compiler, and 2.4.20 is not yet on Maven Central as GA (only 2.4.20-Beta2 is published;
+	  the stable line tops out at 2.4.10, still below the fix). We do not ship a pre-release compiler.
+	  This suppression therefore covers only stubborn-extras' Kotlin, for which no GA fix can yet be
+	  pinned. REMOVE IT and align every org.jetbrains.kotlin artifact to >= 2.4.20 once 2.4.20 GA ships.
 	-->
 	<suppress>
 		<notes><![CDATA[
-			Kotlin 2.4.20 (the fix) is not yet GA on Maven Central; build-time/DSL tooling only.
-			Remove once the reactor can be pinned to Kotlin 2.4.20 GA.
+			stubborn-extras Kotlin DSL runtime only; Kotlin 2.4.20 (the fix) is not yet GA on Maven
+			Central. Remove once stubborn-extras can be pinned to Kotlin 2.4.20 GA.
 		]]></notes>
 		<packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/.*$</packageUrl>
 		<cve>CVE-2026-53914</cve>
