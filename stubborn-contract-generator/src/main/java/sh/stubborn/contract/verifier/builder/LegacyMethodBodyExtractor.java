@@ -60,4 +60,21 @@ final class LegacyMethodBodyExtractor {
 		return bb.toString().lines().collect(Collectors.toList());
 	}
 
+	/**
+	 * Captures only the verbatim {@code // then:} block for a single contract, used when
+	 * the request portion is emitted from the structured {@link RequestModel} and only
+	 * the response assertions are still taken from the legacy pipeline.
+	 * @param meta the class-level metadata (shared across all contracts of the class)
+	 * @param contract the contract whose {@code then} block to render
+	 * @return the {@code then} block lines, verbatim (may contain {@code ;},
+	 * {@code // then:}/{@code // and:} labels and blank lines)
+	 */
+	List<String> responseBodyLines(GeneratedClassMetaData meta, SingleContractMetadata contract) {
+		BlockBuilder bb = new BlockBuilder("\t");
+		bb.setupLineEnding(";").setupLabelPrefix("// ");
+		SingleMethodBuilder smb = new JavaTestGenerator().singleMethodBuilder(bb, meta);
+		smb.buildThenOnly(contract);
+		return bb.toString().lines().collect(Collectors.toList());
+	}
+
 }

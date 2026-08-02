@@ -22,6 +22,7 @@ import java.util.List;
 
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
+import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
@@ -56,6 +57,8 @@ class ModelBuilder {
 
 	private final LegacyMethodBodyExtractor bodyExtractor = new LegacyMethodBodyExtractor();
 
+	private final RequestModelBuilder requestModelBuilder = new RequestModelBuilder();
+
 	TestClassModel build(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, SingleTestGenerator.GeneratedClassData generatedClassData) {
 		TestFramework framework = properties.getTestFramework();
@@ -75,9 +78,10 @@ class ModelBuilder {
 					AnnotationModel.member(JUNIT_JUPITER_TEST_METHOD_ORDER, "value", "MethodOrderer.MethodName.class"));
 		}
 
+		TestMode mode = properties.getTestMode();
 		List<TestMethodModel> methods = new ArrayList<>();
 		for (SingleContractMetadata scm : meta.toSingleContractMetadata()) {
-			methods.add(methodModel(scm, framework, meta));
+			methods.add(methodModel(scm, framework, meta, mode));
 		}
 
 		List<String> imports = importDeclarations(properties, listOfFiles, includedDirectoryRelativePath,
@@ -88,7 +92,7 @@ class ModelBuilder {
 	}
 
 	private TestMethodModel methodModel(SingleContractMetadata scm, TestFramework framework,
-			GeneratedClassMetaData meta) {
+			GeneratedClassMetaData meta, TestMode mode) {
 		List<AnnotationModel> annotations = new ArrayList<>();
 		boolean ignored = isIgnored(scm);
 		if (framework == TestFramework.TESTNG) {
@@ -102,8 +106,13 @@ class ModelBuilder {
 				annotations.add(AnnotationModel.marker(JUNIT_JUPITER_DISABLED));
 			}
 		}
-		List<String> bodyLines = this.bodyExtractor.bodyLines(meta, scm);
-		return new TestMethodModel(this.nameProvider.methodName(scm), annotations, bodyLines);
+		// When the request portion is eligible for the structured path, emit it from the
+		// model and capture only the verbatim // then: block; otherwise fall back to the
+		// whole body verbatim from the legacy generator.
+		RequestModel request = this.requestModelBuilder.build(scm, framework, meta, mode);
+		List<String> bodyLines = (request != null) ? this.bodyExtractor.responseBodyLines(meta, scm)
+				: this.bodyExtractor.bodyLines(meta, scm);
+		return new TestMethodModel(this.nameProvider.methodName(scm), annotations, bodyLines, request);
 	}
 
 	// Mirrors JUnit5IgnoreMethodAnnotation#accept: a contract is treated as ignored when

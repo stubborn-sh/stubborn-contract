@@ -58,13 +58,35 @@ class MockMvcHeadersGiven implements Given {
 	}
 
 	private String string(Header header) {
+		return headerLine(header);
+	}
+
+	private boolean ofAbsentType(Header header) {
+		return isAbsent(header);
+	}
+
+	/**
+	 * The {@code .header(name, value)} continuation line for a single request header, in
+	 * the exact form the legacy MockMvc/Explicit builders emit. Reused by
+	 * {@link RequestModelBuilder} so the structured request path stays byte-identical to
+	 * the legacy output.
+	 * @param header the request header
+	 * @return the {@code .header(...)} line (no statement terminator)
+	 */
+	static String headerLine(Header header) {
 		return ".header(" + ContentHelper.getTestSideForNonBodyValue(header.getName()) + ", "
 				+ ContentHelper.getTestSideForNonBodyValue(
 						MapConverter.getTestSideValuesForNonBody(Objects.requireNonNull(header.getServerValue())))
 				+ ")";
 	}
 
-	private boolean ofAbsentType(Header header) {
+	/**
+	 * Whether the header is an {@code ABSENT} matching strategy (skipped on the request
+	 * side).
+	 * @param header the request header
+	 * @return {@code true} if the header should be skipped
+	 */
+	static boolean isAbsent(Header header) {
 		return header.getServerValue() instanceof MatchingStrategy
 				&& MatchingStrategy.Type.ABSENT.equals(((MatchingStrategy) header.getServerValue()).getType());
 	}
