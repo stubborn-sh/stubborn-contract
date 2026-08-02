@@ -244,39 +244,6 @@ final class SingleMethodBuilder {
 		return this.blockBuilder;
 	}
 
-	/**
-	 * Escape hatch for the model-based generator: writes only the {@code // and:}
-	 * response body block of a single method (no signature, annotations, braces, givens,
-	 * whens, or the {@code // then:} status/header assertions), applying the method
-	 * post-processors. Used by {@link LegacyMethodBodyExtractor} when the request portion
-	 * and the {@code // then:} status/header assertions are emitted from the structured
-	 * {@link RequestModel}/{@link ResponseModel} and only the response body assertions
-	 * are still taken from the legacy pipeline. When the response has no body this yields
-	 * an empty tail.
-	 * @param metaData the contract to render
-	 * @return the block builder
-	 */
-	BlockBuilder buildResponseBodyOnly(SingleContractMetadata metaData) {
-		if (shouldStopProcessing(metaData)) {
-			return this.blockBuilder;
-		}
-		GenericHttpBodyThen bodyThen = new GenericHttpBodyThen(this.blockBuilder, this.generatedClassMetaData,
-				RestAssuredBodyParser.INSTANCE, ComparisonBuilder.JAVA_HTTP_INSTANCE);
-		if (bodyThen.accept(metaData)) {
-			// GenericHttpBodyThen opens by closing the enclosing // then: block; prime a
-			// balanced open block with a terminated placeholder statement so that opening
-			// step has something to close. The placeholder (and the // then: transition
-			// noise) is stripped by LegacyMethodBodyExtractor, which keeps only the
-			// // and: block onward.
-			this.blockBuilder.addIndentation().appendWithLabelPrefix("then:").addEmptyLine().startBlock();
-			this.blockBuilder.addLineWithEnding("// placeholder");
-			bodyThen.apply(metaData);
-			this.blockBuilder.addEndingIfNotPresent();
-		}
-		this.methodPostProcessors.stream().filter((m) -> m.accept(metaData)).forEach((m) -> m.apply(metaData));
-		return this.blockBuilder;
-	}
-
 	private boolean shouldStopProcessing(SingleContractMetadata metaData) {
 		List<MethodPreProcessor> matchingPreProcessors = this.methodPreProcessors.stream()
 			.filter((m) -> m.accept(metaData))

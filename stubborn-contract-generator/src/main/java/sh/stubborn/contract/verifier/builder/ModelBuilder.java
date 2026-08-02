@@ -57,6 +57,8 @@ class ModelBuilder {
 
 	private final LegacyMethodBodyExtractor bodyExtractor = new LegacyMethodBodyExtractor();
 
+	private final ResponseBodyLineProducer responseBodyLineProducer = new ResponseBodyLineProducer();
+
 	private final RequestModelBuilder requestModelBuilder = new RequestModelBuilder();
 
 	private final ResponseModelBuilder responseModelBuilder = new ResponseModelBuilder();
@@ -117,7 +119,7 @@ class ModelBuilder {
 		ResponseModel response = (request != null) ? this.responseModelBuilder.build(scm, framework, meta, mode) : null;
 		List<String> bodyLines;
 		if (response != null) {
-			bodyLines = this.bodyExtractor.responseBodyAssertionLines(meta, scm);
+			bodyLines = this.responseBodyLineProducer.andBlockLines(meta, scm);
 		}
 		else if (request != null) {
 			bodyLines = this.bodyExtractor.responseBodyLines(meta, scm);
