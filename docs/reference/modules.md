@@ -85,7 +85,7 @@ Depends on core plus `spring-web` / `spring-messaging` only — no Spring Boot.
 | Module | Purpose |
 |--------|---------|
 | `stubborn-contract-verifier-spring` | Messaging abstractions: `ContractVerifierMessage`, `MessageVerifierSender` / `MessageVerifierReceiver`. |
-| `stubborn-contract-stub-runner-boot` | Spring Framework stub-runner integration. |
+| `stubborn-contract-stub-runner-app` | Spring Framework stub-runner integration. |
 | `stubborn-wiremock-spring` | Spring MVC / RestTemplate / REST Docs WireMock helpers (`WireMockRestServiceServer`, `WireMockRestDocs`, `WireMockWebTestClient`). |
 
 ## Spring Boot tier (`-spring-boot`)

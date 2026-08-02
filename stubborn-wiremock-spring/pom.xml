@@ -13,6 +13,26 @@
 	<packaging>jar</packaging>
 	<name>Stubborn WireMock Spring</name>
 	<description>Spring-dependent WireMock utilities: RestServiceServer, REST Docs integration, ResourcesFileSource</description>
+	<repositories>
+		<!--
+			The com.example.github WireMock test-fixture stubs below (github-webhook,
+			github-analytics) are legacy Spring Cloud Contract demo stubs that were only ever
+			published to repo.spring.io/milestone, never to Maven Central. Rather than depend on
+			that external milestone repository just for two test fixtures, they are vendored into
+			this module-local file repository so the build stays self-contained.
+		-->
+		<repository>
+			<id>wiremock-spring-vendored-stubs</id>
+			<name>Vendored WireMock test-fixture stubs</name>
+			<url>file://${project.basedir}/local-repo</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>

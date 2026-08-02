@@ -113,7 +113,7 @@
 		<module>stubborn-contract-tools</module>
 		<module>stubborn-extras</module>
 		<module>stubborn-migration</module>
-		<module>stubborn-contract-stub-runner-boot</module>
+		<module>stubborn-contract-stub-runner-app</module>
 		<module>stubborn-messaging-kafka</module>
 		<module>stubborn-jsonassert</module>
 		<module>stubborn-xmlassert</module>
@@ -911,14 +911,6 @@
 						<enabled>false</enabled>
 					</releases>
 				</repository>
-				<repository>
-					<id>spring-milestones</id>
-					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
@@ -931,14 +923,6 @@
 					<releases>
 						<enabled>false</enabled>
 					</releases>
-				</pluginRepository>
-				<pluginRepository>
-					<id>spring-milestones</id>
-					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>
@@ -1002,13 +986,13 @@
 						<artifactId>central-publishing-maven-plugin</artifactId>
 						<configuration>
 							<excludeArtifacts>
-								<artifactId>stubborn-contract-stub-runner-boot</artifactId>
+								<artifactId>stubborn-contract-stub-runner-app</artifactId>
 								<artifactId>stubborn-contract-docker-parent</artifactId>
 								<artifactId>stubborn-contract-specs</artifactId>
 								<artifactId>stubborn-contract-tests</artifactId>
 								<artifactId>stubborn-contract-tests-support</artifactId>
-								<artifactId>stubborn-contract-stub-runner-boot-zookeeper</artifactId>
-								<artifactId>stubborn-contract-stub-runner-boot-eureka</artifactId>
+								<artifactId>stubborn-contract-stub-runner-app-zookeeper</artifactId>
+								<artifactId>stubborn-contract-stub-runner-app-eureka</artifactId>
 								<artifactId>stubborn-contract-sample-jms</artifactId>
 								<artifactId>stubborn-contract-stub-runner-kafka</artifactId>
 								<artifactId>stubborn-sample-amqp</artifactId>

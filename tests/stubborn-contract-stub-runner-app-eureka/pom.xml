@@ -9,10 +9,10 @@
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-contract-stub-runner-boot-zookeeper</artifactId>
+	<artifactId>stubborn-contract-stub-runner-app-eureka</artifactId>
 	<packaging>jar</packaging>
-	<name>Stubborn Contract Stub Runner Boot Zookeeper</name>
-	<description>Stubborn Contract Stub Runner Boot Zookeeper</description>
+	<name>Stubborn Contract Stub Runner App Eureka</name>
+	<description>Stubborn Contract Stub Runner App Eureka</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
@@ -24,24 +24,19 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-test-support</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -54,13 +49,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.curator</groupId>
-			<artifactId>curator-test</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-restclient</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
