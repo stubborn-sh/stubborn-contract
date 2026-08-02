@@ -22,4 +22,24 @@
 		<packageUrl regex="true">^pkg:maven/org\.jetbrains\.kotlin/.*$</packageUrl>
 		<cve>CVE-2026-53914</cve>
 	</suppress>
+	<!--
+	  FALSE POSITIVE: org.apache.camel:camel-kafka is the Camel *Kafka component* (the Camel
+	  connector for Kafka), NOT Apache Kafka itself. dependency-check auto-generates the CPE
+	  cpe:2.3:a:apache:kafka for it because of the "apache" + "kafka" tokens, so every
+	  apache:kafka broker CVE gets matched against camel-kafka's Camel version number (4.21.0),
+	  which is not even a real Apache Kafka release. None of the Apache Kafka broker/client CVEs
+	  apply to this artifact. Suppress ONLY the apache:kafka CPE, scoped to the camel-kafka
+	  packageUrl, so genuine apache:camel CVEs on this artifact are still evaluated (they are
+	  handled by keeping camel.version current) and real Apache Kafka dependencies elsewhere in
+	  the reactor are unaffected. This is a structural mismatch, not version-dependent - keep.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			camel-kafka is the Apache Camel Kafka *component*, not Apache Kafka. The apache:kafka
+			CPE is a mis-generated match on the "apache"/"kafka" name tokens; camel-kafka's version
+			(4.21.0) is a Camel version, not a Kafka version, so no Apache Kafka CVE applies.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.apache\.camel/camel-kafka@.*$</packageUrl>
+		<cpe>cpe:/a:apache:kafka</cpe>
+	</suppress>
 </suppressions>

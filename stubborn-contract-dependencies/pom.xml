@@ -254,6 +254,33 @@
 				<artifactId>jetty-http2-hpack</artifactId>
 				<version>${jetty.version}</version>
 			</dependency>
+			<!--
+			  wiremock-jetty12:3.13.2 declares the Jakarta EE 10 servlet layer
+			  (org.eclipse.jetty.ee10:jetty-ee10-*) and org.eclipse.jetty:jetty-ee at 12.0.30,
+			  which the core jetty.version pins above do not reach. Pin them to ${jetty.version}
+			  (12.0.37) here as well so consumers importing this BOM get the CVE-patched 12.0.x
+			  EE artifacts (CVE-2026-2332, CVE-2026-5795, CVE-2026-1605, CVE-2026-10051).
+			-->
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-servlet</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-servlets</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-webapp</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-ee</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-jsonassert</artifactId>
