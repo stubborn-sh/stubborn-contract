@@ -189,6 +189,18 @@ class TestGenerationGoldenMasterTests {
 					body([id: 1])
 				}
 			}
+			""", "http_file_body", """
+			sh.stubborn.contract.spec.Contract.make {
+				request {
+					method 'PUT'
+					url '/foo'
+					headers { contentType(applicationJson()) }
+					body(file('request.json'))
+				}
+				response {
+					status OK()
+				}
+			}
 			""");
 
 	@TempDir
@@ -235,6 +247,10 @@ class TestGenerationGoldenMasterTests {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(framework);
 		properties.setTestMode(mode);
+		// Needed by contracts whose body reads a file (body(file('request.json'))): the
+		// generator writes the referenced fixture into these dirs as a side effect.
+		properties.setGeneratedTestSourcesDir(this.tmp);
+		properties.setGeneratedTestResourcesDir(this.tmp);
 
 		ContractMetadata contract = new ContractMetadata(contractFile.toPath(), true, 1, 2,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), contractFile));
