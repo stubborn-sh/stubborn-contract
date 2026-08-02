@@ -12,6 +12,7 @@ tags:
   - migration
 recipeList:
   - sh.stubborn.contract.migration.UpdateMavenDependencies
+  - sh.stubborn.contract.migration.UpdateGradleDependencies
   - sh.stubborn.contract.migration.RenameJavaPackages
   - sh.stubborn.contract.migration.DropJUnit4Support
 
@@ -76,6 +77,69 @@ recipeList:
       oldArtifactId: spring-cloud-contract-maven-plugin
       newGroupId: sh.stubborn
       newArtifactId: stubborn-contract-maven-plugin
+
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: sh.stubborn.contract.migration.UpdateGradleDependencies
+displayName: Update Spring Cloud Contract Gradle coordinates to Stubborn Contract
+description: >-
+  Replaces org.springframework.cloud:spring-cloud-contract-* dependencies with
+  sh.stubborn:stubborn-* equivalents in Gradle build scripts (Groovy and Kotlin DSL),
+  migrates the spring-cloud-contract-dependencies BOM, and swaps the Spring Cloud
+  Contract Gradle plugin id for the Stubborn Contract one.
+tags:
+  - spring-cloud-contract
+  - stubborn-contract
+  - gradle
+recipeList:
+  - org.openrewrite.gradle.ChangeDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-contract-verifier
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-contract-verifier
+  - org.openrewrite.gradle.ChangeDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-contract-stub-runner
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-contract-stub-runner
+  - org.openrewrite.gradle.ChangeDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-starter-contract-verifier
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-starter-contract-verifier
+  - org.openrewrite.gradle.ChangeDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-starter-contract-stub-runner
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-starter-contract-stub-runner
+  - org.openrewrite.gradle.ChangeDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-contract-wiremock
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-contract-wiremock
+  - org.openrewrite.gradle.ChangeDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-contract-spec-java
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-contract-spec-java
+  - org.openrewrite.gradle.ChangeDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-contract-spec-groovy
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-contract-spec-groovy
+  - org.openrewrite.gradle.ChangeDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-contract-spec-kotlin
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-spec-kotlin
+  - org.openrewrite.gradle.ChangeManagedDependency:
+      oldGroupId: org.springframework.cloud
+      oldArtifactId: spring-cloud-contract-dependencies
+      newGroupId: sh.stubborn
+      newArtifactId: stubborn-contract-dependencies
+  - org.openrewrite.gradle.plugins.ChangePlugin:
+      pluginId: org.springframework.cloud.contract
+      newPluginId: sh.stubborn.contract
 
 ---
 type: specs.openrewrite.org/v1beta/recipe
