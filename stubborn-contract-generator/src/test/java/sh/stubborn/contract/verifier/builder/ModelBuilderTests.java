@@ -296,10 +296,17 @@ class ModelBuilderTests {
 	}
 
 	@Test
-	void request_model_is_not_built_for_a_file_body_contract() throws IOException {
+	void request_model_is_built_for_a_file_body_contract() throws IOException {
 		RequestModel model = requestModelFor(FILE_BODY_CONTRACT);
 
-		assertThat(model).as("file-based request body is deferred and must fall back to verbatim").isNull();
+		assertThat(model).as("file-based request body must now flow through the structured path").isNotNull();
+		// the .body(...) line is the LAST continuation of the given chain and reads the
+		// referenced file (e.g. new String(fileToBytes(this,
+		// "..._request_request.json")))
+		assertThat(model.given().continuations()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING)
+			.startsWith(".body(")
+			.contains("fileToBytes(this,");
+		assertThat(model.given().render()).last(org.assertj.core.api.InstanceOfAssertFactories.STRING).endsWith(");");
 	}
 
 	private RequestModel requestModelFor(String contractDsl) throws IOException {
@@ -314,6 +321,10 @@ class ModelBuilderTests {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.JUNIT5);
 		properties.setTestMode(TestMode.MOCKMVC);
+		// A file-based body materialises the referenced file next to the generated test,
+		// which the BodyReader mirrors into the generated test sources/resources dirs.
+		properties.setGeneratedTestSourcesDir(this.tmpDir.toFile());
+		properties.setGeneratedTestResourcesDir(this.tmpDir.toFile());
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
 				file.toPath());
 		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, contracts, "com/example", data);

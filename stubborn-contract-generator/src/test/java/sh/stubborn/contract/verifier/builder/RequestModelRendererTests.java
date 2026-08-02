@@ -87,6 +87,32 @@ class RequestModelRendererTests {
 	}
 
 	@Test
+	void renders_mockmvc_request_model_with_file_body() {
+		RequestModel request = new RequestModel(
+				new FluentStatement("MockMvcRequestSpecification request = given()",
+						List.of(".header(\"Content-Type\", \"application/json\")",
+								".body(new String(fileToBytes(this, \"validate_contract_request_request.json\")))")),
+				new FluentStatement("ResponseOptions response = given().spec(request)", List.of(".put(\"/foo\")")));
+		TestClassModel model = new TestClassModel("com.example", "ContractTest", null, false, List.of(),
+				List.of(new TestMethodModel("validate_contract",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")),
+						List.of("// then:", "assertThat(response.statusCode()).isEqualTo(200);"), request)),
+				List.of());
+
+		List<String> lines = bodyLines(this.renderer.render(model));
+
+		// given: head + header (unterminated) + file body (the body, being last, carries
+		// the ;)
+		assertThat(lines).containsSubsequence("// given:", "MockMvcRequestSpecification request = given()",
+				".header(\"Content-Type\", \"application/json\")",
+				".body(new String(fileToBytes(this, \"validate_contract_request_request.json\")));", "// when:",
+				"ResponseOptions response = given().spec(request)", ".put(\"/foo\");");
+		// the header line must NOT be terminated (only the trailing file-body line is)
+		assertThat(lines).doesNotContain(".header(\"Content-Type\", \"application/json\");")
+			.doesNotContain(".body(new String(fileToBytes(this, \"validate_contract_request_request.json\")))");
+	}
+
+	@Test
 	void renders_explicit_request_model_heads() {
 		RequestModel request = new RequestModel(
 				new FluentStatement("RequestSpecification request = given()", List.of(".header(\"X-Trace\", \"abc\")")),

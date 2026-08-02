@@ -22,7 +22,6 @@ import java.util.List;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.Cookie;
 import sh.stubborn.contract.spec.internal.Cookies;
-import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.Headers;
 import sh.stubborn.contract.spec.internal.QueryParameter;
@@ -49,10 +48,10 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
  * <li>HTTP contract</li>
  * <li>{@link TestMode} is {@link TestMode#MOCKMVC} or {@link TestMode#EXPLICIT}</li>
  * <li>{@link TestFramework} is not {@link TestFramework#SPOCK}</li>
- * <li>the request body is a plain body or an {@code ExecutionProperty} (a file-based
- * {@code FromFileProperty} body is deferred to a later slice); cookies, query parameters
- * and multipart parts are emitted structurally, and an async/delayed response is emitted
- * structurally in the {@code // when:} chain</li>
+ * <li>the request body is a plain body, an {@code ExecutionProperty} or a file-based
+ * {@code FromFileProperty} body; cookies, query parameters and multipart parts are
+ * emitted structurally, and an async/delayed response is emitted structurally in the
+ * {@code // when:} chain</li>
  * <li>the request chain carries no template entry</li>
  * </ul>
  *
@@ -127,20 +126,10 @@ final class RequestModelBuilder {
 		if (request == null) {
 			return false;
 		}
-		if (isFileBody(request)) {
-			// A plain body or an ExecutionProperty body is handled by the structured
-			// path;
-			// a file-based request body (FromFileProperty) is deferred to a later slice.
-			return false;
-		}
 		if (noUrl(request)) {
 			return false;
 		}
 		return true;
-	}
-
-	private boolean isFileBody(Request request) {
-		return request.getBody() != null && request.getBody().getServerValue() instanceof FromFileProperty;
 	}
 
 	private boolean noUrl(Request request) {
