@@ -50,9 +50,9 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
  * <li>{@link TestMode} is {@link TestMode#MOCKMVC} or {@link TestMode#EXPLICIT}</li>
  * <li>{@link TestFramework} is not {@link TestFramework#SPOCK}</li>
  * <li>the request body is a plain body or an {@code ExecutionProperty} (a file-based
- * {@code FromFileProperty} body is deferred to a later slice), and the request has no
- * multipart (cookies and query parameters are emitted structurally)</li>
- * <li>the response is neither async nor delayed</li>
+ * {@code FromFileProperty} body is deferred to a later slice); cookies, query parameters
+ * and multipart parts are emitted structurally, and an async/delayed response is emitted
+ * structurally in the {@code // when:} chain</li>
  * <li>the request chain carries no template entry</li>
  * </ul>
  *
@@ -83,21 +83,28 @@ final class RequestModelBuilder {
 		}
 		// The given chain follows the legacy RestAssuredGiven order: head, headers,
 		// cookies, body, multipart. Headers and cookies are intermediate continuations;
-		// the
-		// body line (when present) is the LAST continuation, so it — not a header or
-		// cookie
-		// — receives the trailing `;` (placed by FluentStatement.render, never by hand).
+		// the body and multipart lines (when present) are the trailing continuations, so
+		// the LAST of them — never a header or cookie — receives the trailing `;` (placed
+		// by FluentStatement.render, never by hand).
 		List<String> givenLines = new ArrayList<>(headerLines(request));
 		givenLines.addAll(cookieLines(request));
 		if (request.getBody() != null) {
 			givenLines.add(MockMvcBodyGiven.bodyLine(contract, meta, RestAssuredBodyParser.INSTANCE));
 		}
+		if (request.getMultipart() != null) {
+			givenLines.addAll(JavaMultipartGiven.multipartLines(contract, meta, RestAssuredBodyParser.INSTANCE));
+		}
 		FluentStatement given = new FluentStatement(givenHead(mode), givenLines);
 		// The when chain follows the legacy RestAssuredWhen order: queryParam, async,
-		// url.
-		// Query params are intermediate continuations; the url line is always last, so it
-		// carries the trailing `;`.
+		// url. Query params and the async line are intermediate continuations; the url
+		// line is always last, so it carries the trailing `;`.
 		List<String> whenLines = new ArrayList<>(queryParamLines(request));
+		// The legacy async When is a MockMvcAcceptor, so the `.when().async()` line is
+		// emitted only in MockMvc mode (Explicit mode omits it entirely).
+		Response response = contract.getContract().getResponse();
+		if (mode == TestMode.MOCKMVC && response != null && (response.getAsync() || response.getDelay() != null)) {
+			whenLines.add(MockMvcAsyncWhen.asyncLine(response));
+		}
 		whenLines.add(MockMvcUrlWhen.urlLine(request, RestAssuredBodyParser.INSTANCE));
 		FluentStatement whenBlock = new FluentStatement(responseHead(mode), whenLines);
 		if (containsTemplateEntry(given) || containsTemplateEntry(whenBlock)) {
@@ -126,14 +133,7 @@ final class RequestModelBuilder {
 			// a file-based request body (FromFileProperty) is deferred to a later slice.
 			return false;
 		}
-		if (request.getMultipart() != null) {
-			return false;
-		}
 		if (noUrl(request)) {
-			return false;
-		}
-		Response response = contract.getContract().getResponse();
-		if (response != null && (response.getAsync() || response.getDelay() != null)) {
 			return false;
 		}
 		return true;

@@ -1,0 +1,38 @@
+package com.example;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.response.Response;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static io.restassured.RestAssured.*;
+
+@SuppressWarnings("rawtypes")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
+
+	@Test
+	@Disabled
+	public void validate_contract() throws Exception {
+		// given:
+			RequestSpecification request = given()
+					.header("Content-Type", "multipart/form-data")
+					.param("formParameter", "formValue")
+					.multiPart("file", "filename.csv", "file content".getBytes());
+
+
+		// when:
+			Response response = given().spec(request)
+					.put("/multipart");
+
+		// then:
+			assertThat(response.statusCode()).isEqualTo(200);
+	}
+
+}
+
