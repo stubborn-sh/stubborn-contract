@@ -26,6 +26,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
+import sh.stubborn.contract.verifier.config.FieldInjection;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
@@ -149,6 +150,44 @@ class ModelBasedTestGeneratorTests {
 		// for byte.
 		assertThat(legacy).contains("@Autowired HttpVerifier httpVerifier");
 		assertThat(modelBased).contains("@Autowired HttpVerifier httpVerifier").isEqualTo(legacy);
+	}
+
+	@Test
+	void jakarta_field_injection_swaps_the_annotation_and_import() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setTestMode(TestMode.CUSTOM);
+		properties.setFieldInjection(FieldInjection.JAKARTA);
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
+
+		assertThat(modelBased).contains("@Inject HttpVerifier httpVerifier")
+			.contains("import jakarta.inject.Inject;")
+			.doesNotContain("@Autowired")
+			.doesNotContain("org.springframework.beans.factory.annotation.Autowired");
+	}
+
+	@Test
+	void none_field_injection_drops_the_annotation_and_import() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setTestMode(TestMode.CUSTOM);
+		properties.setFieldInjection(FieldInjection.NONE);
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
+
+		// The collaborator is declared bare; the base class is expected to provide it.
+		assertThat(modelBased).contains("HttpVerifier httpVerifier;")
+			.doesNotContain("@Autowired")
+			.doesNotContain("@Inject")
+			.doesNotContain("org.springframework.beans.factory.annotation.Autowired")
+			.doesNotContain("jakarta.inject.Inject");
 	}
 
 	@Test

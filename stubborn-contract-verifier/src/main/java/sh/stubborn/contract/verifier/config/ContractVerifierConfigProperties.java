@@ -46,6 +46,14 @@ public class ContractVerifierConfigProperties {
 	private TestMode testMode = TestMode.MOCKMVC;
 
 	/**
+	 * How the generated tests' collaborator fields (messaging collaborators, CUSTOM-mode
+	 * HttpVerifier) are injected. Defaults to Spring's {@code @Autowired} for backward
+	 * compatibility; switch to {@code jakarta.inject.Inject} or drop the annotation for
+	 * non-Spring containers.
+	 */
+	private FieldInjection fieldInjection = FieldInjection.SPRING;
+
+	/**
 	 * Base package for generated tests.
 	 */
 	private @Nullable String basePackageForTests;
@@ -198,6 +206,14 @@ public class ContractVerifierConfigProperties {
 
 	public void setTestMode(TestMode testMode) {
 		this.testMode = testMode;
+	}
+
+	public FieldInjection getFieldInjection() {
+		return this.fieldInjection;
+	}
+
+	public void setFieldInjection(FieldInjection fieldInjection) {
+		this.fieldInjection = fieldInjection;
 	}
 
 	public @Nullable String getBasePackageForTests() {

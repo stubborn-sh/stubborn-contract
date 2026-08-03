@@ -24,9 +24,8 @@ class CustomModeImports implements Imports, CustomModeAcceptor {
 
 	private final GeneratedClassMetaData generatedClassMetaData;
 
-	private static final String[] IMPORTS = { "org.springframework.beans.factory.annotation.Autowired",
-			"sh.stubborn.contract.verifier.http.HttpVerifier", "sh.stubborn.contract.verifier.http.Request",
-			"sh.stubborn.contract.verifier.http.Response;" };
+	private static final String[] IMPORTS = { "sh.stubborn.contract.verifier.http.HttpVerifier",
+			"sh.stubborn.contract.verifier.http.Request", "sh.stubborn.contract.verifier.http.Response;" };
 
 	CustomModeImports(BlockBuilder blockBuilder, GeneratedClassMetaData generatedClassMetaData) {
 		this.blockBuilder = blockBuilder;
@@ -35,6 +34,12 @@ class CustomModeImports implements Imports, CustomModeAcceptor {
 
 	@Override
 	public Imports call() {
+		// The injection annotation's import (Spring @Autowired by default, or
+		// jakarta.inject.Inject, or none) leads the block, keeping the legacy ordering.
+		String annotationImport = this.generatedClassMetaData.configProperties.getFieldInjection().annotationImport();
+		if (annotationImport != null) {
+			this.blockBuilder.addLineWithEnding("import " + annotationImport);
+		}
 		Arrays.stream(IMPORTS).forEach((s) -> this.blockBuilder.addLineWithEnding("import " + s));
 		return this;
 	}

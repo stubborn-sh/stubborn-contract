@@ -26,8 +26,8 @@ class MessagingFields implements Field {
 
 	private final GeneratedClassMetaData generatedClassMetaData;
 
-	private static final String[] FIELDS = { "@Autowired ContractVerifierMessaging contractVerifierMessaging",
-			"@Autowired ContractVerifierObjectMapper contractVerifierObjectMapper" };
+	private static final String[] FIELDS = { "ContractVerifierMessaging contractVerifierMessaging",
+			"ContractVerifierObjectMapper contractVerifierObjectMapper" };
 
 	MessagingFields(BlockBuilder blockBuilder, GeneratedClassMetaData generatedClassMetaData) {
 		this.blockBuilder = blockBuilder;
@@ -36,7 +36,8 @@ class MessagingFields implements Field {
 
 	@Override
 	public Field call() {
-		Arrays.stream(FIELDS).forEach(this.blockBuilder::addLineWithEnding);
+		String prefix = this.generatedClassMetaData.configProperties.getFieldInjection().annotationPrefix();
+		Arrays.stream(FIELDS).forEach((field) -> this.blockBuilder.addLineWithEnding(prefix + field));
 		return this;
 	}
 
