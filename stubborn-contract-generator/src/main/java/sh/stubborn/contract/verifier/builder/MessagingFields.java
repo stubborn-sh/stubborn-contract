@@ -36,7 +36,9 @@ class MessagingFields implements Field {
 
 	@Override
 	public Field call() {
-		String prefix = this.generatedClassMetaData.configProperties.getFieldInjection().annotationPrefix();
+		String prefix = this.generatedClassMetaData.configProperties.getFieldInjection()
+			.resolve(this.generatedClassMetaData.configProperties.getTestMode())
+			.annotationPrefix();
 		Arrays.stream(FIELDS).forEach((field) -> this.blockBuilder.addLineWithEnding(prefix + field));
 		return this;
 	}

@@ -47,11 +47,12 @@ public class ContractVerifierConfigProperties {
 
 	/**
 	 * How the generated tests' collaborator fields (messaging collaborators, CUSTOM-mode
-	 * HttpVerifier) are injected. Defaults to Spring's {@code @Autowired} for backward
-	 * compatibility; switch to {@code jakarta.inject.Inject} or drop the annotation for
-	 * non-Spring containers.
+	 * HttpVerifier) are injected. Defaults to {@code AUTO}: Spring's {@code @Autowired}
+	 * for the Spring-based {@code MOCKMVC}/{@code WEBTESTCLIENT} modes,
+	 * {@code jakarta.inject}'s {@code @Inject} for the rest. Pin an explicit style, or
+	 * drop the annotation, via the other {@link FieldInjection} values.
 	 */
-	private FieldInjection fieldInjection = FieldInjection.SPRING;
+	private FieldInjection fieldInjection = FieldInjection.AUTO;
 
 	/**
 	 * Base package for generated tests.

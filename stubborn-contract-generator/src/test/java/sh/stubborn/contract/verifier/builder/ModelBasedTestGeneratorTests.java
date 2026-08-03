@@ -145,11 +145,11 @@ class ModelBasedTestGeneratorTests {
 		String legacy = new JavaTestGenerator().buildClass(properties, contracts, "some/path", data);
 		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
 
-		// CUSTOM mode declares an @Autowired HttpVerifier collaborator; the model path
-		// captures it from the legacy CustomModeFields visitor and must reproduce it byte
-		// for byte.
-		assertThat(legacy).contains("@Autowired HttpVerifier httpVerifier");
-		assertThat(modelBased).contains("@Autowired HttpVerifier httpVerifier").isEqualTo(legacy);
+		// CUSTOM is not a Spring-based mode, so the AUTO default injects the HttpVerifier
+		// collaborator with jakarta.inject's @Inject; the model path captures it from the
+		// legacy CustomModeFields visitor and must reproduce it byte for byte.
+		assertThat(legacy).contains("@Inject HttpVerifier httpVerifier");
+		assertThat(modelBased).contains("@Inject HttpVerifier httpVerifier").isEqualTo(legacy);
 	}
 
 	@Test

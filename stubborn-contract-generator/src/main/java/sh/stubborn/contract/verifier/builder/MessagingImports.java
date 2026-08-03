@@ -40,7 +40,9 @@ class MessagingImports implements Imports {
 	public Imports call() {
 		// The injection annotation's import (Spring @Autowired by default, or
 		// jakarta.inject.Inject, or none) leads the block, keeping the legacy ordering.
-		String annotationImport = this.generatedClassMetaData.configProperties.getFieldInjection().annotationImport();
+		String annotationImport = this.generatedClassMetaData.configProperties.getFieldInjection()
+			.resolve(this.generatedClassMetaData.configProperties.getTestMode())
+			.annotationImport();
 		if (annotationImport != null) {
 			this.blockBuilder.addLineWithEnding("import " + annotationImport);
 		}

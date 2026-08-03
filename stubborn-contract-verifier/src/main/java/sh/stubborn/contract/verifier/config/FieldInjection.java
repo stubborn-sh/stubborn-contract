@@ -24,20 +24,27 @@ import org.jspecify.annotations.Nullable;
  * CUSTOM-mode {@code HttpVerifier}) injected.
  *
  * <p>
- * The verifier core is Spring-free, but by default the generated tests are annotated with
- * Spring's {@code @Autowired} for backward compatibility with existing SCC test
- * configurations. Consumers on another dependency-injection stack (e.g. Micronaut, or any
- * container that understands {@code jakarta.inject}) can switch the annotation, or drop
- * it entirely and wire the collaborators through the test's base class.
+ * The verifier core is Spring-free. By default the annotation is chosen from the
+ * {@link TestMode}: the Spring-based HTTP modes ({@code MOCKMVC}, {@code WEBTESTCLIENT})
+ * are already tied to Spring, so their collaborators keep Spring's {@code @Autowired};
+ * every other mode gets the portable {@code jakarta.inject.Inject} (which Spring also
+ * understands). Consumers can still pin a specific style, or drop the annotation entirely
+ * and wire the collaborators through the test's base class.
  *
  * @author Marcin Grzejszczak
  */
 public enum FieldInjection {
 
 	/**
+	 * Choose the annotation from the {@link TestMode}: {@link #SPRING} for the
+	 * Spring-based {@code MOCKMVC}/{@code WEBTESTCLIENT} modes, {@link #JAKARTA} for the
+	 * rest. The default.
+	 */
+	AUTO(null, null),
+
+	/**
 	 * Annotate injected fields with Spring's
-	 * {@code org.springframework.beans.factory.annotation.Autowired}. The default, for
-	 * backward compatibility.
+	 * {@code org.springframework.beans.factory.annotation.Autowired}.
 	 */
 	SPRING("Autowired", "org.springframework.beans.factory.annotation.Autowired"),
 
@@ -61,6 +68,21 @@ public enum FieldInjection {
 	FieldInjection(@Nullable String annotationSimpleName, @Nullable String annotationImport) {
 		this.annotationSimpleName = annotationSimpleName;
 		this.annotationImport = annotationImport;
+	}
+
+	/**
+	 * Resolves {@link #AUTO} against the test mode; a mode-independent value resolves to
+	 * itself. The Spring-based HTTP modes ({@code MOCKMVC}, {@code WEBTESTCLIENT})
+	 * resolve to {@link #SPRING}, every other mode to {@link #JAKARTA}.
+	 * @param testMode the test mode the class is generated for
+	 * @return the concrete injection style to emit ({@link #SPRING}, {@link #JAKARTA} or
+	 * {@link #NONE})
+	 */
+	public FieldInjection resolve(TestMode testMode) {
+		if (this != AUTO) {
+			return this;
+		}
+		return (testMode == TestMode.MOCKMVC || testMode == TestMode.WEBTESTCLIENT) ? SPRING : JAKARTA;
 	}
 
 	/**
