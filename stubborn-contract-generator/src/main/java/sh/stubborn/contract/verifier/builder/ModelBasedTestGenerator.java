@@ -17,9 +17,12 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
 
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
+import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 
 /**
@@ -36,9 +39,9 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  * the model, the escape hatch shrinks until the legacy delegate can be removed.
  *
  * <p>
- * Selected only when the {@code stubborn.contract.verifier.model-based-generator} system
- * property is {@code true} (see {@code TestGenerator}); the default remains the legacy
- * generator, so this is inert until explicitly opted into.
+ * This is now the default generator (see {@code TestGenerator}); set the
+ * {@code stubborn.contract.verifier.model-based-generator} system property to
+ * {@code false} to fall back to the legacy generator.
  *
  * @author Marcin Grzejszczak
  */
@@ -61,16 +64,45 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 		this.javaRenderer = javaRenderer;
 	}
 
+	/**
+	 * Test modes whose Java scaffold is fully produced by the model path. The other modes
+	 * (JAX-RS client, WebTestClient, CUSTOM) declare class-level fields — e.g. the
+	 * {@code WebTarget} for JAX-RS — through the legacy {@code ClassBodyBuilder} field
+	 * hooks that the JavaPoet scaffold does not model, so they stay on the legacy
+	 * generator until a later migration phase ports them.
+	 */
+	private static final Set<TestMode> MIGRATED_MODES = EnumSet.of(TestMode.MOCKMVC, TestMode.EXPLICIT);
+
 	@Override
 	public String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData) {
-		if (properties.getTestFramework() == TestFramework.SPOCK) {
-			// Spock cannot be modelled by JavaPoet; stays on the legacy generator.
+		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, listOfFiles, includedDirectoryRelativePath,
+				generatedClassData);
+		if (!modellable(properties, meta)) {
+			// Spock, the not-yet-migrated Java modes (JAX-RS, WebTestClient, CUSTOM) and
+			// messaging classes cannot be modelled by JavaPoet yet; they stay
+			// byte-identical on the legacy generator.
 			return this.delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath, generatedClassData);
 		}
 		TestClassModel model = this.modelBuilder.build(properties, listOfFiles, includedDirectoryRelativePath,
 				generatedClassData);
 		return this.javaRenderer.render(model);
+	}
+
+	/**
+	 * Whether the model + JavaPoet path can fully produce this class. Only the migrated
+	 * HTTP surface qualifies: a non-Spock framework, a migrated HTTP {@link TestMode}
+	 * (MockMvc/EXPLICIT), and a class whose contracts are all HTTP. Messaging classes
+	 * reference messaging collaborators ({@code contractVerifierMessaging},
+	 * {@code contractVerifierObjectMapper}) that only the legacy scaffold declares, so
+	 * they stay on the legacy generator.
+	 * @param properties the plugin configuration
+	 * @param meta the class-level metadata for the contracts of this class
+	 * @return {@code true} if the class should be rendered by the model path
+	 */
+	private static boolean modellable(ContractVerifierConfigProperties properties, GeneratedClassMetaData meta) {
+		return properties.getTestFramework() != TestFramework.SPOCK && MIGRATED_MODES.contains(properties.getTestMode())
+				&& meta.isAnyHttp() && !meta.isAnyMessaging();
 	}
 
 }

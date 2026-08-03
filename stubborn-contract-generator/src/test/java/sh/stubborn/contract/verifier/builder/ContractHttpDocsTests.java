@@ -52,7 +52,7 @@ class ContractHttpDocsTests {
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
-		return new JavaTestGenerator() {
+		SingleTestGenerator legacy = new JavaTestGenerator() {
 			@Override
 			ClassBodyBuilder classBodyBuilder(BlockBuilder builder, GeneratedClassMetaData metaData,
 					SingleMethodBuilder methodBuilder) {
@@ -69,7 +69,9 @@ class ContractHttpDocsTests {
 					}
 				});
 			}
-		}.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
+		};
+		return GeneratorUnderTest.wrap(legacy)
+			.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {
