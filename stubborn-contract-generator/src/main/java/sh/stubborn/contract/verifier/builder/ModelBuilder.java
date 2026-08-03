@@ -66,12 +66,23 @@ class ModelBuilder {
 
 	private final ResponseModelBuilder responseModelBuilder = new ResponseModelBuilder();
 
-	TestClassModel build(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
-			String includedDirectoryRelativePath, SingleTestGenerator.GeneratedClassData generatedClassData) {
+	TestClassModel build(SingleTestGenerator delegate, ContractVerifierConfigProperties properties,
+			Collection<ContractMetadata> listOfFiles, String includedDirectoryRelativePath,
+			SingleTestGenerator.GeneratedClassData generatedClassData) {
 		TestFramework framework = properties.getTestFramework();
 		boolean spock = framework == TestFramework.SPOCK;
 
 		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, listOfFiles, includedDirectoryRelativePath,
+				generatedClassData);
+
+		// Render the legacy class once through the delegate the model path is wrapping,
+		// and
+		// scrape both the import block and the class-level field block from it. Using the
+		// wrapped delegate (not a fresh JavaTestGenerator) makes the capture faithful to
+		// any
+		// classBodyBuilder override the delegate carries — e.g. the WebTarget field the
+		// JAX-RS tests inject, which no production Field visitor declares.
+		String legacySource = delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath,
 				generatedClassData);
 
 		List<AnnotationModel> classAnnotations = new ArrayList<>();
@@ -91,8 +102,7 @@ class ModelBuilder {
 			methods.add(methodModel(scm, framework, meta, mode));
 		}
 
-		List<String> imports = importDeclarations(properties, listOfFiles, includedDirectoryRelativePath,
-				generatedClassData);
+		List<String> imports = importDeclarations(legacySource);
 
 		// Resolve the base class exactly as the legacy generator does: base-class
 		// mappings
@@ -104,10 +114,12 @@ class ModelBuilder {
 				properties.getPackageWithBaseClasses(), properties.getBaseClassForTests(),
 				includedDirectoryRelativePath);
 
-		// Class-level fields (messaging collaborators, CUSTOM-mode httpVerifier) that the
-		// legacy generator emits before the methods. Empty for the plain MockMvc/EXPLICIT
-		// HTTP shapes.
-		List<String> fields = this.fieldExtractor.fieldLines(meta);
+		// Class-level fields (messaging collaborators, CUSTOM-mode httpVerifier, the
+		// JAX-RS
+		// WebTarget) that the legacy generator emits before the methods. Empty for the
+		// plain
+		// MockMvc/EXPLICIT/WebTestClient HTTP shapes.
+		List<String> fields = this.fieldExtractor.fieldLines(legacySource);
 
 		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData), baseClass,
 				spock, classAnnotations, fields, methods, imports);
@@ -180,14 +192,11 @@ class ModelBuilder {
 	}
 
 	// Captures the legacy generator's class-level import set (both `import` and `import
-	// static`), in order, so the renderer can merge it with JavaPoet's own imports.
-	private List<String> importDeclarations(ContractVerifierConfigProperties properties,
-			Collection<ContractMetadata> listOfFiles, String includedDirectoryRelativePath,
-			SingleTestGenerator.GeneratedClassData generatedClassData) {
-		String legacy = new JavaTestGenerator().buildClass(properties, listOfFiles, includedDirectoryRelativePath,
-				generatedClassData);
+	// static`), in order, from the already-rendered legacy source, so the renderer can
+	// merge it with JavaPoet's own imports.
+	private List<String> importDeclarations(String legacySource) {
 		List<String> imports = new ArrayList<>();
-		for (String line : legacy.lines().toList()) {
+		for (String line : legacySource.lines().toList()) {
 			String trimmed = line.trim();
 			if (trimmed.startsWith("import ")) {
 				imports.add(trimmed);

@@ -167,6 +167,47 @@ class ModelBasedTestGeneratorTests {
 	}
 
 	@Test
+	void jaxrs_client_field_injected_on_the_delegate_is_captured_by_the_model_path() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setTestMode(TestMode.JAXRSCLIENT);
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		// JAX-RS gets its WebTarget from the base class in production; the tests supply
+		// one
+		// through a classBodyBuilder override on the delegate instead. The model path
+		// must
+		// reproduce whatever the delegate emits, including that injected field.
+		JavaTestGenerator delegate = new JavaTestGenerator() {
+			@Override
+			ClassBodyBuilder classBodyBuilder(BlockBuilder builder, GeneratedClassMetaData metaData,
+					SingleMethodBuilder methodBuilder) {
+				return super.classBodyBuilder(builder, metaData, methodBuilder).field(new Field() {
+					@Override
+					public boolean accept() {
+						return metaData.configProperties.getTestMode() == TestMode.JAXRSCLIENT;
+					}
+
+					@Override
+					public Field call() {
+						builder.addLine("WebTarget webTarget");
+						return this;
+					}
+				});
+			}
+		};
+
+		String legacy = delegate.buildClass(properties, contracts, "some/path", data);
+		String modelBased = new ModelBasedTestGenerator(delegate, new ModelBuilder(), new JavaPoetTestRenderer())
+			.buildClass(properties, contracts, "some/path", data);
+
+		assertThat(legacy).contains("WebTarget webTarget;");
+		assertThat(modelBased).contains("WebTarget webTarget;").isEqualTo(legacy);
+	}
+
+	@Test
 	void uses_the_provided_delegate_for_spock() throws IOException {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.SPOCK);

@@ -134,7 +134,11 @@ class JavaPoetTestRenderer {
 				List<String> insert = new ArrayList<>();
 				for (String field : fields) {
 					String trimmed = field.trim();
-					insert.add("\t" + (trimmed.endsWith(";") ? trimmed : trimmed + ";"));
+					// Interior blank lines (between distinct legacy Field visitor groups)
+					// are
+					// carried through verbatim; declarations are re-indented and
+					// terminated.
+					insert.add(trimmed.isEmpty() ? "" : "\t" + (trimmed.endsWith(";") ? trimmed : trimmed + ";"));
 				}
 				// Legacy always puts one blank line before the first method. Add it
 				// unless

@@ -65,39 +65,37 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 	}
 
 	/**
-	 * Test modes whose Java scaffold is fully produced by the model path. CUSTOM declares
-	 * a class-level {@code @Autowired HttpVerifier httpVerifier} field, which the model
-	 * path captures from the legacy {@code CustomModeFields} visitor (see
-	 * {@link LegacyClassFieldExtractor}). The remaining modes (JAX-RS client,
-	 * WebTestClient) declare class-level fields — e.g. the {@code WebTarget} for JAX-RS —
-	 * through legacy {@code ClassBodyBuilder} field hooks that the model does not yet
-	 * capture, so they stay on the legacy generator until a later migration phase ports
-	 * them.
+	 * Test modes whose Java scaffold is fully produced by the model path — now every Java
+	 * target. The class-level fields the non-MockMvc shapes declare (the messaging
+	 * collaborators, the CUSTOM-mode {@code httpVerifier}, the JAX-RS {@code WebTarget})
+	 * are captured from the legacy generator's own output by
+	 * {@link LegacyClassFieldExtractor}, so no mode needs bespoke field handling. Only
+	 * Spock — which JavaPoet cannot render — still delegates to the legacy generator
+	 * (gated separately in {@link #modellable}).
 	 */
 	private static final Set<TestMode> MIGRATED_MODES = EnumSet.of(TestMode.MOCKMVC, TestMode.EXPLICIT, TestMode.CUSTOM,
-			TestMode.WEBTESTCLIENT);
+			TestMode.WEBTESTCLIENT, TestMode.JAXRSCLIENT);
 
 	@Override
 	public String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData) {
 		if (!modellable(properties)) {
-			// Spock and the not-yet-migrated Java modes (JAX-RS, WebTestClient) cannot be
-			// modelled by JavaPoet yet; they stay byte-identical on the legacy generator.
+			// Spock cannot be modelled by JavaPoet; it stays byte-identical on the legacy
+			// generator.
 			return this.delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath, generatedClassData);
 		}
-		TestClassModel model = this.modelBuilder.build(properties, listOfFiles, includedDirectoryRelativePath,
-				generatedClassData);
+		TestClassModel model = this.modelBuilder.build(this.delegate, properties, listOfFiles,
+				includedDirectoryRelativePath, generatedClassData);
 		return this.javaRenderer.render(model);
 	}
 
 	/**
-	 * Whether the model + JavaPoet path can fully produce this class. A non-Spock
-	 * framework on a migrated {@link TestMode} (MockMvc/EXPLICIT/CUSTOM) qualifies; this
-	 * covers the HTTP shapes, messaging classes and CUSTOM mode, whose class-level
-	 * collaborators ({@code contractVerifierMessaging},
-	 * {@code contractVerifierObjectMapper}, {@code httpVerifier}) are captured as model
-	 * fields. The JAX-RS and WebTestClient modes still need their own field handling, so
-	 * they stay on the legacy generator.
+	 * Whether the model + JavaPoet path can fully produce this class. Every Java target
+	 * on a migrated {@link TestMode} qualifies — the class-level collaborators
+	 * ({@code contractVerifierMessaging}, {@code contractVerifierObjectMapper},
+	 * {@code httpVerifier}, {@code webTarget}) are captured as model fields from the
+	 * legacy output. Only Spock, which JavaPoet cannot render, stays on the legacy
+	 * generator.
 	 * @param properties the plugin configuration
 	 * @return {@code true} if the class should be rendered by the model path
 	 */
