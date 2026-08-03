@@ -92,8 +92,18 @@ class ModelBuilder {
 		List<String> imports = importDeclarations(properties, listOfFiles, includedDirectoryRelativePath,
 				generatedClassData);
 
-		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData),
-				properties.getBaseClassForTests(), spock, classAnnotations, methods, imports);
+		// Resolve the base class exactly as the legacy generator does: base-class
+		// mappings
+		// and the packageWithBaseClasses convention, not only the explicit
+		// baseClassForTests
+		// property. Missing this dropped the "extends <Base>" clause for convention-based
+		// base classes, so the generated test never inherited the MockMvc setup.
+		String baseClass = new BaseClassProvider().retrieveBaseClass(properties.getBaseClassMappings(),
+				properties.getPackageWithBaseClasses(), properties.getBaseClassForTests(),
+				includedDirectoryRelativePath);
+
+		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData), baseClass,
+				spock, classAnnotations, methods, imports);
 	}
 
 	/**

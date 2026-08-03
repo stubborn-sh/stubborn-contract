@@ -98,6 +98,38 @@ class ModelBasedTestGeneratorTests {
 	}
 
 	@Test
+	void extends_base_class_resolved_from_the_package_convention() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setPackageWithBaseClasses("com.example.base");
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		String legacy = new JavaTestGenerator().buildClass(properties, contracts, "some/path", data);
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
+
+		// packageWithBaseClasses + "some/path" resolves to com.example.base.SomePathBase;
+		// both generators must extend it so the generated test inherits the base setup.
+		assertThat(legacy).contains("extends SomePathBase");
+		assertThat(modelBased).contains("extends SomePathBase");
+	}
+
+	@Test
+	void extends_base_class_resolved_from_base_class_for_tests() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setBaseClassForTests("com.example.MyBaseClass");
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
+
+		assertThat(modelBased).contains("extends MyBaseClass");
+	}
+
+	@Test
 	void uses_the_provided_delegate_for_spock() throws IOException {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.SPOCK);
