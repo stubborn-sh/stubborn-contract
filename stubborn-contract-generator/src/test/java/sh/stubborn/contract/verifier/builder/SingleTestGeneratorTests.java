@@ -147,16 +147,6 @@ class SingleTestGeneratorTests {
 		this.tmp.mkdirs();
 		File classpath = new File(SingleTestGeneratorTests.class.getResource("/classpath/").toURI());
 		FileSystemUtils.copyRecursively(classpath, this.tmp);
-		java.net.URI resource = (SingleTestGeneratorTests.class.getResource("/request.json") != null)
-				? SingleTestGeneratorTests.class.getResource("/request.json").toURI() : null;
-		if (resource != null) {
-			new File(resource).delete();
-		}
-		resource = (SingleTestGeneratorTests.class.getResource("/response.json") != null)
-				? SingleTestGeneratorTests.class.getResource("/response.json").toURI() : null;
-		if (resource != null) {
-			new File(resource).delete();
-		}
 	}
 
 	private static void writeContract(File file) throws IOException {
