@@ -74,8 +74,8 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 	 * capture, so they stay on the legacy generator until a later migration phase ports
 	 * them.
 	 */
-	private static final Set<TestMode> MIGRATED_MODES = EnumSet.of(TestMode.MOCKMVC, TestMode.EXPLICIT,
-			TestMode.CUSTOM);
+	private static final Set<TestMode> MIGRATED_MODES = EnumSet.of(TestMode.MOCKMVC, TestMode.EXPLICIT, TestMode.CUSTOM,
+			TestMode.WEBTESTCLIENT);
 
 	@Override
 	public String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,

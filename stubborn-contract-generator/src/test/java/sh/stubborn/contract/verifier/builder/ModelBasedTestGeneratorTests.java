@@ -150,6 +150,23 @@ class ModelBasedTestGeneratorTests {
 	}
 
 	@Test
+	void web_test_client_mode_matches_legacy_via_model_path() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setTestMode(TestMode.WEBTESTCLIENT);
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		String legacy = new JavaTestGenerator().buildClass(properties, contracts, "some/path", data);
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
+
+		// WebTestClient declares no class-level fields; the model path must reproduce the
+		// legacy output byte for byte.
+		assertThat(modelBased).isEqualTo(legacy);
+	}
+
+	@Test
 	void uses_the_provided_delegate_for_spock() throws IOException {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.SPOCK);
