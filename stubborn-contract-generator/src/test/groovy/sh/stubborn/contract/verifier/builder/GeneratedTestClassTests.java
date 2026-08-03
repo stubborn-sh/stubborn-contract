@@ -147,7 +147,7 @@ public class GeneratedTestClassTests {
 	@Test
 	public void should_work_for_junit5_mockmvc_json_non_binary() {
 		// given
-		JavaTestGenerator generator = new JavaTestGenerator();
+		SingleTestGenerator generator = new ModelBasedTestGenerator();
 		ContractVerifierConfigProperties configProperties = new ContractVerifierConfigProperties();
 		configProperties.setTestFramework(TestFramework.JUNIT5);
 		Collection<ContractMetadata> contracts = Collections.singletonList(

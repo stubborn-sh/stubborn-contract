@@ -16,50 +16,48 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.util.List;
+
 /**
- * Test-only selector that lets the shared body-builder suites run under either generator
- * so their assertions act as a cross-generator parity harness. A test hands its legacy
- * {@link JavaTestGenerator} (often an anonymous subclass with test-specific field hooks)
- * to {@link #wrap(SingleTestGenerator)}; depending on the
- * {@code stubborn.contract.verifier.model-based-generator} system property the call
- * either returns that legacy generator unchanged or wraps it as the delegate of a
- * {@link ModelBasedTestGenerator}. Wrapping preserves the caller's delegate so the
- * not-yet-migrated shapes (Spock, JAX-RS, WebTestClient, messaging) still route through
- * the caller's customized legacy generator, while the migrated Java HTTP path is rendered
- * by JavaPoet.
+ * Test-only helper that runs the shared body-builder suites through the model-based
+ * generator. The legacy string-builder scaffold has been removed, so every suite now
+ * builds its class via {@link ModelBasedTestGenerator}; byte-parity with the historical
+ * legacy output is guarded by the committed golden snapshots (see
+ * {@link TestGenerationGoldenMasterTests}).
  *
  * <p>
- * The module's surefire configuration runs the test phase twice — once with the property
- * {@code false} (legacy) and once {@code true} (model) — so every assertion in these
- * suites is checked against both generators. The default when the property is unset
- * mirrors production: the model generator.
+ * A suite that used to inject extra class-level fields through a
+ * {@code JavaTestGenerator#classBodyBuilder} override (e.g. the JAX-RS {@code WebTarget})
+ * passes those field declarations to
+ * {@link #wrapWithExtraFields(SingleTestGenerator, List)} instead; the model path emits
+ * them via {@link ClassScaffoldProducer}.
  *
  * @author Marcin Grzejszczak
  */
 final class GeneratorUnderTest {
 
-	static final String PROPERTY = "stubborn.contract.verifier.model-based-generator";
-
 	private GeneratorUnderTest() {
 	}
 
-	static boolean modelBased() {
-		return !"false".equalsIgnoreCase(System.getProperty(PROPERTY, "true"));
+	/**
+	 * Runs the caller's generator through the model path.
+	 * @param legacy the method-body engine the model path delegates to
+	 * @return a {@link ModelBasedTestGenerator} over the given delegate
+	 */
+	static SingleTestGenerator wrap(SingleTestGenerator legacy) {
+		return new ModelBasedTestGenerator(legacy, new ModelBuilder(), new JavaPoetTestRenderer());
 	}
 
 	/**
-	 * Wraps the caller's legacy generator so it runs under the generator selected by the
-	 * {@link #PROPERTY} system property.
-	 * @param legacy the legacy generator the test would otherwise call directly (may be
-	 * an anonymous subclass carrying test-specific field hooks)
-	 * @return the same instance for the legacy pass, or a {@link ModelBasedTestGenerator}
-	 * delegating to it for the model pass
+	 * Runs the caller's generator through the model path, injecting extra class-level
+	 * field declarations.
+	 * @param legacy the method-body engine the model path delegates to
+	 * @param extraFieldLines the additional class-level field declarations to emit (e.g.
+	 * {@code WebTarget webTarget} for the JAX-RS cases)
+	 * @return a {@link ModelBasedTestGenerator} over the given delegate
 	 */
-	static SingleTestGenerator wrap(SingleTestGenerator legacy) {
-		if (!modelBased()) {
-			return legacy;
-		}
-		return new ModelBasedTestGenerator(legacy, new ModelBuilder(), new JavaPoetTestRenderer());
+	static SingleTestGenerator wrapWithExtraFields(SingleTestGenerator legacy, List<String> extraFieldLines) {
+		return new ModelBasedTestGenerator(legacy, new ModelBuilder(), new JavaPoetTestRenderer(), extraFieldLines);
 	}
 
 }

@@ -254,7 +254,7 @@ class TestGenerationGoldenMasterTests {
 
 		ContractMetadata contract = new ContractMetadata(contractFile.toPath(), true, 1, 2,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), contractFile));
-		return new JavaTestGenerator().buildClass(properties, List.of(contract), "com/example",
+		return new ModelBasedTestGenerator().buildClass(properties, List.of(contract), "com/example",
 				new SingleTestGenerator.GeneratedClassData("ContractTest", "com.example", contractFile.toPath()));
 	}
 

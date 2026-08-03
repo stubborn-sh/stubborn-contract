@@ -182,7 +182,7 @@ class SingleTestGeneratorTests {
 		properties.setTestMode(mode);
 		ContractMetadata contract = new ContractMetadata(this.file.toPath(), true, 1, 2,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), this.file));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));
@@ -287,7 +287,7 @@ class SingleTestGeneratorTests {
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), f1));
 		ContractMetadata contract2 = new ContractMetadata(f2.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), f2));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract, contract2), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", f1.toPath()));
@@ -317,7 +317,7 @@ class SingleTestGeneratorTests {
 		properties.setTestFramework(testFramework);
 		ContractMetadata contract = new ContractMetadata(this.file.toPath(), true, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), this.file));
-		SingleTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));
@@ -352,7 +352,7 @@ class SingleTestGeneratorTests {
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), this.file));
 		ContractMetadata contract2 = new ContractMetadata(secondFile.toPath(), true, 1, 2,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract, contract2), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));
@@ -384,7 +384,7 @@ class SingleTestGeneratorTests {
 		properties.setTestFramework(testFramework);
 		ContractMetadata contract2 = new ContractMetadata(secondFile.toPath(), true, 1, 2,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), this.file));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract2), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));
@@ -418,7 +418,7 @@ class SingleTestGeneratorTests {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(testFramework);
 		properties.setIgnoredFiles(List.of(fileToIgnore.getName()));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contractToCheck, contractToIgnore), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));
@@ -464,7 +464,7 @@ class SingleTestGeneratorTests {
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), firstFile));
 		ContractMetadata secondContract = new ContractMetadata(secondFile.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(secondContract, firstContract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", secondFile.toPath()));
@@ -503,7 +503,7 @@ class SingleTestGeneratorTests {
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), firstFile));
 		ContractMetadata secondContract = new ContractMetadata(secondFile.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(secondContract, firstContract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", secondFile.toPath()));
@@ -542,7 +542,7 @@ class SingleTestGeneratorTests {
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), firstFile));
 		ContractMetadata secondContract = new ContractMetadata(secondFile.toPath(), true, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(secondContract, firstContract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", secondFile.toPath()));
@@ -581,7 +581,7 @@ class SingleTestGeneratorTests {
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), firstFile));
 		ContractMetadata secondContract = new ContractMetadata(secondFile.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(secondContract, firstContract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", secondFile.toPath()));
@@ -620,7 +620,7 @@ class SingleTestGeneratorTests {
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), firstFile));
 		ContractMetadata secondContract = new ContractMetadata(secondFile.toPath(), true, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(secondContract, firstContract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", secondFile.toPath()));
@@ -663,7 +663,7 @@ class SingleTestGeneratorTests {
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), firstFile));
 		ContractMetadata secondContract = new ContractMetadata(secondFile.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(secondContract, firstContract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", secondFile.toPath()));
@@ -698,7 +698,7 @@ class SingleTestGeneratorTests {
 		properties.setBaseClassForTests("test.ContextPathTestingBaseClass");
 		ContractMetadata contract = new ContractMetadata(this.file.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), this.file));
-		SingleTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));
@@ -725,7 +725,7 @@ class SingleTestGeneratorTests {
 		properties.setTestFramework(testFramework);
 		ContractMetadata contract = new ContractMetadata(secondFile.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));
@@ -753,7 +753,7 @@ class SingleTestGeneratorTests {
 		properties.setTestFramework(testFramework);
 		ContractMetadata contract = new ContractMetadata(secondFile.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));
@@ -781,7 +781,7 @@ class SingleTestGeneratorTests {
 		properties.setTestFramework(testFramework);
 		ContractMetadata contract = new ContractMetadata(secondFile.toPath(), false, 1, null,
 				ContractVerifierDslConverter.convertAsCollection(new File("/"), secondFile));
-		JavaTestGenerator testGenerator = new JavaTestGenerator();
+		SingleTestGenerator testGenerator = new ModelBasedTestGenerator();
 
 		String clazz = testGenerator.buildClass(properties, List.of(contract), "com/foo",
 				new SingleTestGenerator.GeneratedClassData("test", "test", this.file.toPath()));

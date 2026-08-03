@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
@@ -54,31 +55,40 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 
 	private final SpockTestRenderer spockRenderer;
 
+	private final List<String> extraFieldLines;
+
 	public ModelBasedTestGenerator() {
-		this(new JavaTestGenerator(), new ModelBuilder(), new JavaPoetTestRenderer(), new SpockTestRenderer());
+		this(new JavaTestGenerator(), new ModelBuilder(), new JavaPoetTestRenderer(), new SpockTestRenderer(),
+				List.of());
 	}
 
 	ModelBasedTestGenerator(SingleTestGenerator delegate, ModelBuilder modelBuilder,
 			JavaPoetTestRenderer javaRenderer) {
-		this(delegate, modelBuilder, javaRenderer, new SpockTestRenderer());
+		this(delegate, modelBuilder, javaRenderer, new SpockTestRenderer(), List.of());
 	}
 
 	ModelBasedTestGenerator(SingleTestGenerator delegate, ModelBuilder modelBuilder, JavaPoetTestRenderer javaRenderer,
-			SpockTestRenderer spockRenderer) {
+			List<String> extraFieldLines) {
+		this(delegate, modelBuilder, javaRenderer, new SpockTestRenderer(), extraFieldLines);
+	}
+
+	ModelBasedTestGenerator(SingleTestGenerator delegate, ModelBuilder modelBuilder, JavaPoetTestRenderer javaRenderer,
+			SpockTestRenderer spockRenderer, List<String> extraFieldLines) {
 		this.delegate = delegate;
 		this.modelBuilder = modelBuilder;
 		this.javaRenderer = javaRenderer;
 		this.spockRenderer = spockRenderer;
+		this.extraFieldLines = extraFieldLines;
 	}
 
 	/**
 	 * Test modes whose scaffold is fully produced by the model path — every mode. The
 	 * class-level fields the non-MockMvc shapes declare (the messaging collaborators, the
-	 * CUSTOM-mode {@code httpVerifier}, the JAX-RS {@code WebTarget}) are captured from
-	 * the legacy generator's own output by {@link LegacyClassFieldExtractor}, so no mode
-	 * needs bespoke field handling. Both the Java targets (via
-	 * {@link JavaPoetTestRenderer}) and the Groovy/Spock target (via
-	 * {@link SpockTestRenderer}) are rendered from the model.
+	 * CUSTOM-mode {@code httpVerifier}, the JAX-RS {@code WebTarget}) are produced from
+	 * the same {@link Field} visitors by {@link ClassScaffoldProducer}, so no mode needs
+	 * bespoke field handling. Both the Java targets (via {@link JavaPoetTestRenderer})
+	 * and the Groovy/Spock target (via {@link SpockTestRenderer}) are rendered from the
+	 * model.
 	 */
 	private static final Set<TestMode> MIGRATED_MODES = EnumSet.of(TestMode.MOCKMVC, TestMode.EXPLICIT, TestMode.CUSTOM,
 			TestMode.WEBTESTCLIENT, TestMode.JAXRSCLIENT);
@@ -89,8 +99,8 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 		if (!modellable(properties)) {
 			return this.delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath, generatedClassData);
 		}
-		TestClassModel model = this.modelBuilder.build(this.delegate, properties, listOfFiles,
-				includedDirectoryRelativePath, generatedClassData);
+		TestClassModel model = this.modelBuilder.build(properties, listOfFiles, includedDirectoryRelativePath,
+				generatedClassData, this.extraFieldLines);
 		// Java targets render through JavaPoet; Groovy/Spock through the Handlebars
 		// templates, since JavaPoet cannot emit Groovy.
 		return model.spock() ? this.spockRenderer.render(model) : this.javaRenderer.render(model);
