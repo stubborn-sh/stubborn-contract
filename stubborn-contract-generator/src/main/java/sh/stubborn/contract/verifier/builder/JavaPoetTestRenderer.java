@@ -108,28 +108,41 @@ class JavaPoetTestRenderer {
 
 	/**
 	 * Inserts the captured class-level field declarations immediately after the class
-	 * opening brace, before the first method. JavaPoet's typed {@code FieldSpec} model
-	 * does not fit these annotated, framework-typed fields cleanly, so — as with the
-	 * verbatim method bodies — they are captured from the legacy generator and spliced
-	 * into the rendered source. Their imports are already part of the merged import set.
+	 * opening brace and guarantees the single blank line the legacy generator always
+	 * places before the first method.
+	 *
+	 * <p>
+	 * JavaPoet's typed {@code FieldSpec} model does not fit these annotated,
+	 * framework-typed fields cleanly, so — as with the verbatim method bodies — they are
+	 * captured from the legacy generator and spliced into the rendered source; their
+	 * imports are already part of the merged import set. The legacy layout is {@code {
+	 * <fields> <blank> <methods> }}, where the field block may be empty (the plain
+	 * MockMvc/EXPLICIT/WebTestClient HTTP shapes) but the blank line before the first
+	 * method is always present. JavaPoet emits the first method directly after the brace
+	 * with no blank, so this restores it whether or not there are fields, keeping the
+	 * output byte-faithful to legacy.
 	 * @param rendered the rendered (import-merged) source
 	 * @param fields the field declaration lines, or empty
-	 * @return the source with the fields inserted, or the input unchanged when there are
-	 * none
+	 * @return the source with the fields (and the leading blank line) inserted
 	 */
 	private String injectFields(String rendered, List<String> fields) {
-		if (fields.isEmpty()) {
-			return rendered;
-		}
 		List<String> lines = new ArrayList<>(rendered.lines().toList());
 		for (int i = 0; i < lines.size(); i++) {
 			if (lines.get(i).stripTrailing().matches("^(public\\s+)?(final\\s+)?class\\s+\\w+.*\\{$")) {
+				boolean bodyEmpty = i + 1 >= lines.size() || lines.get(i + 1).strip().equals("}");
+				boolean nextAlreadyBlank = i + 1 < lines.size() && lines.get(i + 1).isBlank();
 				List<String> insert = new ArrayList<>();
 				for (String field : fields) {
 					String trimmed = field.trim();
 					insert.add("\t" + (trimmed.endsWith(";") ? trimmed : trimmed + ";"));
 				}
-				insert.add("");
+				// Legacy always puts one blank line before the first method. Add it
+				// unless
+				// the body is empty, or there are no fields and JavaPoet already left a
+				// blank there (which would otherwise double it).
+				if (!bodyEmpty && !(fields.isEmpty() && nextAlreadyBlank)) {
+					insert.add("");
+				}
 				lines.addAll(i + 1, insert);
 				break;
 			}
