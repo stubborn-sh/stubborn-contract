@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
+import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
@@ -127,6 +128,25 @@ class ModelBasedTestGeneratorTests {
 		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
 
 		assertThat(modelBased).contains("extends MyBaseClass");
+	}
+
+	@Test
+	void custom_mode_renders_http_verifier_field_via_model_path() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		properties.setTestMode(TestMode.CUSTOM);
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		String legacy = new JavaTestGenerator().buildClass(properties, contracts, "some/path", data);
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
+
+		// CUSTOM mode declares an @Autowired HttpVerifier collaborator; the model path
+		// captures it from the legacy CustomModeFields visitor and must reproduce it byte
+		// for byte.
+		assertThat(legacy).contains("@Autowired HttpVerifier httpVerifier");
+		assertThat(modelBased).contains("@Autowired HttpVerifier httpVerifier").isEqualTo(legacy);
 	}
 
 	@Test

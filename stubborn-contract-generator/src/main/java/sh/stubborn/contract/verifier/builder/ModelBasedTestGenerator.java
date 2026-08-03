@@ -65,21 +65,24 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 	}
 
 	/**
-	 * Test modes whose Java scaffold is fully produced by the model path. The other modes
-	 * (JAX-RS client, WebTestClient, CUSTOM) declare class-level fields — e.g. the
-	 * {@code WebTarget} for JAX-RS — through the legacy {@code ClassBodyBuilder} field
-	 * hooks that the JavaPoet scaffold does not model, so they stay on the legacy
-	 * generator until a later migration phase ports them.
+	 * Test modes whose Java scaffold is fully produced by the model path. CUSTOM declares
+	 * a class-level {@code @Autowired HttpVerifier httpVerifier} field, which the model
+	 * path captures from the legacy {@code CustomModeFields} visitor (see
+	 * {@link LegacyClassFieldExtractor}). The remaining modes (JAX-RS client,
+	 * WebTestClient) declare class-level fields — e.g. the {@code WebTarget} for JAX-RS —
+	 * through legacy {@code ClassBodyBuilder} field hooks that the model does not yet
+	 * capture, so they stay on the legacy generator until a later migration phase ports
+	 * them.
 	 */
-	private static final Set<TestMode> MIGRATED_MODES = EnumSet.of(TestMode.MOCKMVC, TestMode.EXPLICIT);
+	private static final Set<TestMode> MIGRATED_MODES = EnumSet.of(TestMode.MOCKMVC, TestMode.EXPLICIT,
+			TestMode.CUSTOM);
 
 	@Override
 	public String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData) {
 		if (!modellable(properties)) {
-			// Spock and the not-yet-migrated Java modes (JAX-RS, WebTestClient, CUSTOM)
-			// cannot be modelled by JavaPoet yet; they stay byte-identical on the legacy
-			// generator.
+			// Spock and the not-yet-migrated Java modes (JAX-RS, WebTestClient) cannot be
+			// modelled by JavaPoet yet; they stay byte-identical on the legacy generator.
 			return this.delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath, generatedClassData);
 		}
 		TestClassModel model = this.modelBuilder.build(properties, listOfFiles, includedDirectoryRelativePath,
@@ -89,11 +92,12 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 
 	/**
 	 * Whether the model + JavaPoet path can fully produce this class. A non-Spock
-	 * framework on a migrated {@link TestMode} (MockMvc/EXPLICIT) qualifies; this now
-	 * covers both the HTTP shapes and messaging classes, whose class-level collaborators
-	 * ({@code contractVerifierMessaging}, {@code contractVerifierObjectMapper}) are
-	 * captured as model fields. The JAX-RS, WebTestClient and CUSTOM modes still need
-	 * their own field and when/then handling, so they stay on the legacy generator.
+	 * framework on a migrated {@link TestMode} (MockMvc/EXPLICIT/CUSTOM) qualifies; this
+	 * covers the HTTP shapes, messaging classes and CUSTOM mode, whose class-level
+	 * collaborators ({@code contractVerifierMessaging},
+	 * {@code contractVerifierObjectMapper}, {@code httpVerifier}) are captured as model
+	 * fields. The JAX-RS and WebTestClient modes still need their own field handling, so
+	 * they stay on the legacy generator.
 	 * @param properties the plugin configuration
 	 * @return {@code true} if the class should be rendered by the model path
 	 */
