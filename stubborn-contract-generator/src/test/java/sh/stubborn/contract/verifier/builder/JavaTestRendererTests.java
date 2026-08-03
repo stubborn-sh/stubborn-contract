@@ -24,14 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 /**
- * Unit tests for {@link JavaPoetTestRenderer} — proves a {@link TestClassModel} renders
- * to structurally-correct Java through the Handlebars templates.
+ * Unit tests for {@link JavaTestRenderer} — proves a {@link TestClassModel} renders to
+ * structurally-correct Java through the Handlebars templates.
  *
  * @author Marcin Grzejszczak
  */
-class JavaPoetTestRendererTests {
+class JavaTestRendererTests {
 
-	private final JavaPoetTestRenderer renderer = new JavaPoetTestRenderer();
+	private final JavaTestRenderer renderer = new JavaTestRenderer();
 
 	@Test
 	void renders_class_scaffold_from_model() {

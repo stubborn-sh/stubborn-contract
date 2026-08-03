@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Unit tests for {@link ModelBuilder} — proves the config + contracts → model mapping
  * populates the class scaffold and that the resulting model renders through
- * {@link JavaPoetTestRenderer}.
+ * {@link JavaTestRenderer}.
  *
  * @author Marcin Grzejszczak
  */
@@ -190,7 +190,7 @@ class ModelBuilderTests {
 		assertThat(model.importDeclarations()).isNotEmpty();
 
 		// the model renders to a structurally-correct Java class
-		String rendered = new JavaPoetTestRenderer().render(model);
+		String rendered = new JavaTestRenderer().render(model);
 		assertThat(rendered).contains("public class FooTest extends BazBar {").contains("public void " + method.name());
 	}
 

@@ -24,10 +24,10 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
 /**
  * Provides the method-body engine for the model-based generator. The class scaffold
  * (package, imports, annotations, fields, signatures) is produced by the model path
- * ({@link ModelBuilder} + {@link ClassScaffoldProducer} + {@link JavaPoetTestRenderer});
- * this class retains only
- * {@link #singleMethodBuilder(BlockBuilder, GeneratedClassMetaData) singleMethodBuilder},
- * which drives the Given/When/Then producers to emit a single method's body.
+ * ({@link ModelBuilder} + {@link ClassScaffoldProducer} + {@link JavaTestRenderer}); this
+ * class retains only {@link #singleMethodBuilder(BlockBuilder, GeneratedClassMetaData)
+ * singleMethodBuilder}, which drives the Given/When/Then producers to emit a single
+ * method's body.
  *
  * @author Marcin Grzejszczak
  * @since 1.1.0

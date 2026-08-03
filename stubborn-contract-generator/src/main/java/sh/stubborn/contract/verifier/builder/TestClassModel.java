@@ -27,8 +27,8 @@ import org.jspecify.annotations.Nullable;
  * This is the pure-data seam introduced by the test-generation migration (see
  * {@code proposals/test-generation-migration.md}). It carries the <em>decisions</em>
  * (package, class name, base class, class-level annotations, methods) with no
- * indentation, braces, or language tokens; a renderer ({@code JavaPoetTestRenderer} for
- * Java targets, a Handlebars renderer for Spock in a later phase) turns it into source.
+ * indentation, braces, or language tokens; a renderer ({@code JavaTestRenderer} for Java
+ * targets, a Handlebars renderer for Spock in a later phase) turns it into source.
  *
  * <p>
  * In Phase 1 the model is populated for the class scaffold only and is not yet on the
@@ -40,7 +40,8 @@ import org.jspecify.annotations.Nullable;
  * @param baseClass fully-qualified (or simple) name of the base class to extend, or
  * {@code null} when the test has no explicit base class
  * @param spock {@code true} when the target language is Groovy/Spock (rendered by the
- * Handlebars renderer), {@code false} for the Java targets (rendered by JavaPoet)
+ * Handlebars renderer), {@code false} for the Java targets (rendered by
+ * {@link JavaTestRenderer})
  * @param classAnnotations class-level annotations, in declaration order
  * @param fields class-level field declaration lines (e.g. the messaging or CUSTOM-mode
  * collaborators), captured verbatim from the legacy generator and rendered before the

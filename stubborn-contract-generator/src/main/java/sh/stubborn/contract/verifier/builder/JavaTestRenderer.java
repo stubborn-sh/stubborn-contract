@@ -55,11 +55,11 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Marcin Grzejszczak
  */
-class JavaPoetTestRenderer {
+class JavaTestRenderer {
 
 	private final Template template;
 
-	JavaPoetTestRenderer() {
+	JavaTestRenderer() {
 		Handlebars handlebars = new Handlebars(new ClassPathTemplateLoader("/templates/java", ".hbs"));
 		try {
 			this.template = handlebars.compile("class");
@@ -79,7 +79,7 @@ class JavaPoetTestRenderer {
 	String render(TestClassModel model) {
 		if (model.spock()) {
 			throw new IllegalArgumentException(
-					"JavaPoetTestRenderer renders Java targets only; Spock is rendered by the SpockTestRenderer");
+					"JavaTestRenderer renders Java targets only; Spock is rendered by the SpockTestRenderer");
 		}
 		Map<String, Object> context = new LinkedHashMap<>();
 		context.put("packageName", model.packageName());
@@ -139,8 +139,8 @@ class JavaPoetTestRenderer {
 	/**
 	 * Renders the class-level field block: each declaration indented one tab and
 	 * {@code ;}-terminated, interior blank lines (between distinct legacy field groups)
-	 * preserved. Empty when the class declares no fields. Mirrors the legacy per-line
-	 * termination the JavaPoet renderer applied when injecting fields.
+	 * preserved. Empty when the class declares no fields. Reproduces the legacy per-line
+	 * termination applied when the field block was spliced in.
 	 * @param fieldLines the captured field lines (empty strings mark interior blanks)
 	 * @return the formatted field block, or an empty string
 	 */
