@@ -207,10 +207,12 @@ class ModelBuilderTests {
 				data);
 
 		assertThat(model.spock()).isTrue();
-		assertThat(model.classAnnotations()).isEmpty();
+		// Spock carries @SuppressWarnings (like every framework) but no JUnit/TestNG
+		// scaffold; a non-ignored contract has no method annotation (Spock has no @Test).
+		assertThat(model.classAnnotations()).extracting(AnnotationModel::type)
+			.containsExactly("java.lang.SuppressWarnings");
 		assertThat(model.methods()).hasSize(1);
-		assertThat(model.methods().get(0).annotations()).extracting(AnnotationModel::type)
-			.containsExactly("org.junit.jupiter.api.Test");
+		assertThat(model.methods().get(0).annotations()).isEmpty();
 	}
 
 	@Test

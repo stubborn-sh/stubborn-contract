@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.builder;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 
 /**
@@ -51,13 +52,40 @@ final class LegacyMethodBodyExtractor {
 	 * and blank lines), without the method signature, annotations or braces
 	 */
 	List<String> bodyLines(GeneratedClassMetaData meta, SingleContractMetadata contract) {
-		BlockBuilder bb = new BlockBuilder("\t");
-		// Java targets: JavaClassMetaData sets these; the extractor bypasses
-		// GeneratedTestClassBuilder.build() so they must be set manually here.
-		bb.setupLineEnding(";").setupLabelPrefix("// ");
+		BlockBuilder bb = blockBuilder(meta);
 		SingleMethodBuilder smb = new JavaTestGenerator().singleMethodBuilder(bb, meta);
 		smb.buildSingleMethodBody(contract);
 		return bb.toString().lines().collect(Collectors.toList());
+	}
+
+	/**
+	 * A fresh {@link BlockBuilder} configured for the target language. The extractor
+	 * bypasses {@code GeneratedTestClassBuilder.build()}, so the line-ending and label
+	 * prefix the class-metadata visitors would set must be applied manually here: the
+	 * Java targets ({@code JavaClassMetaData}) use a {@code ;} line ending and
+	 * {@code // } label prefix, while Groovy/Spock ({@code GroovyClassMetaData}) leaves
+	 * both empty — bare {@code given:}/{@code when:} labels and no semicolons. Without
+	 * this the Spock body would be rendered with Java punctuation.
+	 * @param meta the class-level metadata (carries the target framework)
+	 * @return the configured block builder
+	 */
+	private BlockBuilder blockBuilder(GeneratedClassMetaData meta) {
+		BlockBuilder bb = new BlockBuilder("\t");
+		if (meta.configProperties.getTestFramework() == TestFramework.SPOCK) {
+			// Emit the Groovy body at its absolute depth — the two enclosing levels
+			// (class
+			// body + method body). Indenting at the block level (not per physical line)
+			// keeps multi-line string literals' embedded newlines flush-left, exactly as
+			// the
+			// legacy full pipeline nests them; a naive per-line indent would wrongly push
+			// the
+			// string continuations right.
+			bb.indent();
+		}
+		else {
+			bb.setupLineEnding(";").setupLabelPrefix("// ");
+		}
+		return bb;
 	}
 
 	/**
@@ -70,8 +98,7 @@ final class LegacyMethodBodyExtractor {
 	 * {@code // then:}/{@code // and:} labels and blank lines)
 	 */
 	List<String> responseBodyLines(GeneratedClassMetaData meta, SingleContractMetadata contract) {
-		BlockBuilder bb = new BlockBuilder("\t");
-		bb.setupLineEnding(";").setupLabelPrefix("// ");
+		BlockBuilder bb = blockBuilder(meta);
 		SingleMethodBuilder smb = new JavaTestGenerator().singleMethodBuilder(bb, meta);
 		smb.buildThenOnly(contract);
 		return bb.toString().lines().collect(Collectors.toList());

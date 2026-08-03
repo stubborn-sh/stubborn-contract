@@ -34,16 +34,19 @@ import java.util.regex.Pattern;
  * JAX-RS tests inject, which no production {@code Field} visitor declares.
  *
  * <p>
- * The legacy Java layout is {@code { <fields> <blank> <methods> }}: the field block
- * (which may be empty) sits immediately after the class' opening brace and a single blank
- * line separates it from the first method. Every field declaration ends with a {@code ;},
- * so the field block is the run of {@code ;}-terminated lines before the first method —
- * possibly with blank lines <em>between</em> them, because
- * {@link ClassBodyBuilder#visit(java.util.List) visit} emits a blank line between
- * distinct {@link Field} visitors (e.g. the messaging collaborators and an injected
- * {@code WebTarget} when a class mixes both). Those interior blanks are kept verbatim so
- * the injected block reproduces the legacy layout byte for byte; only the trailing blank
- * that separates the fields from the first method is dropped.
+ * The legacy layout is: fields, a blank line, then methods. The field block (which may be
+ * empty) sits immediately after the class' opening brace and a single blank line
+ * separates it from the first method. The block runs until the first <em>method</em> —
+ * detected as a test-method annotation ({@code @Test}/{@code @Disabled}/{@code @Ignore})
+ * or a method signature (a line containing an open parenthesis and ending in an opening
+ * brace). Using that boundary rather than a trailing {@code ;} means the same parse works
+ * for the Groovy targets, whose field declarations carry no semicolon. Blank lines
+ * <em>between</em> fields are possible, because
+ * {@link ClassBodyBuilder#visit(java.util.List) visit} emits one between distinct
+ * {@link Field} visitors (e.g. the messaging collaborators and an injected
+ * {@code WebTarget} when a class mixes both); those interior blanks are kept verbatim so
+ * the injected block reproduces the legacy layout byte for byte. Only the trailing blank
+ * separating the fields from the first method is dropped.
  *
  * @author Marcin Grzejszczak
  */
@@ -74,11 +77,10 @@ final class LegacyClassFieldExtractor {
 		List<String> region = new ArrayList<>();
 		for (int i = classLine + 1; i < lines.size(); i++) {
 			String stripped = lines.get(i).strip();
-			// The first non-blank line that is not a field declaration (fields end with
-			// ';')
-			// begins the first method and closes the field block; a stray closing brace
-			// guards the degenerate field-less, method-less class.
-			if (stripped.equals("}") || (!stripped.isEmpty() && !stripped.endsWith(";"))) {
+			// The first method (its annotation or signature) closes the field block; a
+			// stray
+			// closing brace guards the degenerate field-less, method-less class.
+			if (stripped.equals("}") || isMethodStart(stripped)) {
 				break;
 			}
 			region.add(stripped);
@@ -91,6 +93,24 @@ final class LegacyClassFieldExtractor {
 			end--;
 		}
 		return List.copyOf(region.subList(0, end));
+	}
+
+	/**
+	 * Whether a stripped line begins the first method, closing the field block. That is a
+	 * test-method annotation ({@code @Test}/{@code @Disabled}/{@code @Ignore}, including
+	 * {@code @Test(...)}) or a method signature — a line that opens a brace after a
+	 * parameter list. Field declarations never match either.
+	 * @param stripped the indentation-stripped line
+	 * @return {@code true} if the line starts the first method
+	 */
+	private static boolean isMethodStart(String stripped) {
+		if (stripped.isEmpty()) {
+			return false;
+		}
+		if (stripped.equals("@Ignore") || stripped.equals("@Disabled") || stripped.startsWith("@Test")) {
+			return true;
+		}
+		return stripped.endsWith("{") && stripped.contains("(");
 	}
 
 }
