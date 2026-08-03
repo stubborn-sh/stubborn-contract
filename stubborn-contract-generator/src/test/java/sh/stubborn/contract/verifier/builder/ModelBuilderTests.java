@@ -167,7 +167,8 @@ class ModelBuilderTests {
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
 				new File("/tmp").toPath());
 
-		TestClassModel model = this.modelBuilder.build(properties, contracts, "com/example", data);
+		TestClassModel model = this.modelBuilder.build(new JavaTestGenerator(), properties, contracts, "com/example",
+				data);
 
 		assertThat(model.packageName()).isEqualTo("test");
 		assertThat(model.className()).isEqualTo("FooTest");
@@ -202,7 +203,8 @@ class ModelBuilderTests {
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooSpec", "test",
 				new File("/tmp").toPath());
 
-		TestClassModel model = this.modelBuilder.build(properties, contracts, "com/example", data);
+		TestClassModel model = this.modelBuilder.build(new JavaTestGenerator(), properties, contracts, "com/example",
+				data);
 
 		assertThat(model.spock()).isTrue();
 		assertThat(model.classAnnotations()).isEmpty();
@@ -219,7 +221,8 @@ class ModelBuilderTests {
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
 				new File("/tmp").toPath());
 
-		TestClassModel model = this.modelBuilder.build(properties, contracts, "com/example", data);
+		TestClassModel model = this.modelBuilder.build(new JavaTestGenerator(), properties, contracts, "com/example",
+				data);
 
 		AnnotationModel testAnnotation = model.methods().get(0).annotations().get(0);
 		assertThat(testAnnotation.type()).isEqualTo("org.testng.annotations.Test");
@@ -234,7 +237,8 @@ class ModelBuilderTests {
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest", "test",
 				new File("/tmp").toPath());
 
-		TestClassModel model = this.modelBuilder.build(properties, contracts, "com/example", data);
+		TestClassModel model = this.modelBuilder.build(new JavaTestGenerator(), properties, contracts, "com/example",
+				data);
 
 		AnnotationModel testAnnotation = model.methods().get(0).annotations().get(0);
 		assertThat(model.methods().get(0).annotations()).hasSize(1);
