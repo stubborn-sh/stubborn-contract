@@ -63,25 +63,9 @@ class YamlMockMvcMethodBodyBuilderTests implements WireMockStubVerifier {
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
-		SingleTestGenerator legacy = new JavaTestGenerator() {
-			@Override
-			ClassBodyBuilder classBodyBuilder(BlockBuilder builder, GeneratedClassMetaData metaData,
-					SingleMethodBuilder methodBuilder) {
-				return super.classBodyBuilder(builder, metaData, methodBuilder).field(new Field() {
-					@Override
-					public boolean accept() {
-						return metaData.configProperties.getTestMode() == TestMode.JAXRSCLIENT;
-					}
-
-					@Override
-					public Field call() {
-						builder.addLine("WebTarget webTarget");
-						return this;
-					}
-				});
-			}
-		};
-		return GeneratorUnderTest.wrap(legacy)
+		List<String> extraFields = (this.properties.getTestMode() == TestMode.JAXRSCLIENT)
+				? List.of("WebTarget webTarget") : List.of();
+		return GeneratorUnderTest.wrapWithExtraFields(new JavaTestGenerator(), extraFields)
 			.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
 	}
 

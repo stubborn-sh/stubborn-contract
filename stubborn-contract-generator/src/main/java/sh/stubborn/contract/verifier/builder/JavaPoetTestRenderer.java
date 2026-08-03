@@ -79,8 +79,44 @@ class JavaPoetTestRenderer {
 			.indent("\t")
 			.build()
 			.toString();
-		return ensureBlankLineBeforeClassClose(
+		String merged = ensureBlankLineBeforeClassClose(
 				injectFields(mergeImports(rendered, model.importDeclarations()), model.fields()));
+		return unqualifyImportedAnnotations(merged, model.importDeclarations());
+	}
+
+	/**
+	 * Restores the simple name of any annotation JavaPoet fully-qualified because its
+	 * simple name collides with the generated class name (e.g. a class named {@code Test}
+	 * makes JavaPoet emit {@code @org.junit.jupiter.api.Test}). The legacy generator
+	 * always used the simple name — the import disambiguates, and the class name is not
+	 * an annotation type, so {@code @Test} still resolves unambiguously — so this keeps
+	 * the output byte-identical to legacy. It only rewrites {@code @<fqn>} occurrences
+	 * whose {@code import <fqn>;} is present; the common (non-colliding) case leaves the
+	 * source untouched.
+	 * @param source the rendered source
+	 * @param importDeclarations the model's import lines (both regular and static)
+	 * @return the source with imported annotation references reduced to their simple
+	 * names
+	 */
+	private String unqualifyImportedAnnotations(String source, List<String> importDeclarations) {
+		String result = source;
+		for (String importLine : importDeclarations) {
+			String trimmed = importLine.trim();
+			if (!trimmed.startsWith("import ") || trimmed.startsWith("import static ")) {
+				continue;
+			}
+			String fqn = trimmed.substring("import ".length()).trim();
+			if (fqn.endsWith(";")) {
+				fqn = fqn.substring(0, fqn.length() - 1).trim();
+			}
+			int lastDot = fqn.lastIndexOf('.');
+			if (lastDot < 0) {
+				continue;
+			}
+			String simpleName = fqn.substring(lastDot + 1);
+			result = result.replace("@" + fqn, "@" + simpleName);
+		}
+		return result;
 	}
 
 	/**
@@ -245,6 +281,13 @@ class JavaPoetTestRenderer {
 			emitLine(builder, "// given:");
 			emitFluentChain(builder, request.given().render());
 			emitLine(builder, "");
+			// Legacy (RestAssuredGiven#indentedBodyBlock) emits a second blank line after
+			// the given block when it is empty (head only) or built from a multipart
+			// request; the remaining given shapes get a single blank. Match it so the
+			// structured output stays byte-identical to the legacy generator.
+			if (givenNeedsExtraBlank(request.given())) {
+				emitLine(builder, "");
+			}
 			emitLine(builder, "// when:");
 			emitFluentChain(builder, request.whenBlock().render());
 			emitLine(builder, "");
@@ -252,15 +295,15 @@ class JavaPoetTestRenderer {
 		ResponseModel response = method.response();
 		if (response != null) {
 			// Structured response path: emit the // then: status/header assertions from
-			// the model, then fall through to the verbatim // and: body block carried on
-			// bodyLines (the existing !body.isBlank() guard handles an empty tail).
+			// the model. The blank line separating them from the verbatim // and: body
+			// block is emitted below, only when such a body follows — legacy omits it
+			// when the then block is the method's last content.
 			emitLine(builder, "// then:");
 			for (String line : response.thenBlock().render()) {
 				// Each assertion sits one level below the // then: label, as the legacy
 				// GenericHttpThen block does.
 				emitLine(builder, "\t" + line);
 			}
-			emitLine(builder, "");
 		}
 		// Emit the (remaining) body verbatim as a $L argument (never inline into the
 		// format
@@ -269,9 +312,32 @@ class JavaPoetTestRenderer {
 		// lines.
 		String body = String.join("\n", method.bodyLines());
 		if (!body.isBlank()) {
+			// Separate the verbatim // and: body block from the structured // then:
+			// assertions that precede it.
+			if (response != null) {
+				emitLine(builder, "");
+			}
 			builder.addCode("$L\n", body);
 		}
 		return builder.build();
+	}
+
+	/**
+	 * Whether the {@code // given:} block is followed by two blank lines rather than one.
+	 * Mirrors the legacy {@code RestAssuredGiven}/{@code BodyMethodVisitor} layout: an
+	 * empty given (only the {@code given()} head, no continuations) and a multipart given
+	 * both emit an extra trailing blank line before the {@code // when:} block; every
+	 * other given shape emits a single blank.
+	 * @param given the rendered given chain
+	 * @return {@code true} if a second blank line must follow the given block
+	 */
+	private boolean givenNeedsExtraBlank(FluentStatement given) {
+		if (given.continuations().isEmpty()) {
+			return true;
+		}
+		return given.continuations()
+			.stream()
+			.anyMatch((line) -> line.trim().startsWith(".multiPart(") || line.trim().startsWith(".param("));
 	}
 
 	private void emitLine(MethodSpec.Builder builder, String line) {

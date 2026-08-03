@@ -34,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.ContractVerifierException;
-import sh.stubborn.contract.verifier.builder.JavaTestGenerator;
 import sh.stubborn.contract.verifier.builder.ModelBasedTestGenerator;
 import sh.stubborn.contract.verifier.builder.SingleTestGenerator;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
@@ -89,7 +88,10 @@ public class TestGenerator {
 		List<SingleTestGenerator> factories = new ArrayList<>();
 		ServiceLoader.load(SingleTestGenerator.class).forEach(factories::add);
 		if (factories.isEmpty()) {
-			return new JavaTestGenerator();
+			// The legacy string-builder scaffold has been removed; the model generator is
+			// byte-identical, so it is the fallback when no custom generator is
+			// registered.
+			return new ModelBasedTestGenerator();
 		}
 		return factories.get(0);
 	}

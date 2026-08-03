@@ -62,32 +62,28 @@ class ModelBuilder {
 
 	private final LegacyMethodBodyExtractor bodyExtractor = new LegacyMethodBodyExtractor();
 
-	private final LegacyClassFieldExtractor fieldExtractor = new LegacyClassFieldExtractor();
-
 	private final ResponseBodyLineProducer responseBodyLineProducer = new ResponseBodyLineProducer();
 
 	private final RequestModelBuilder requestModelBuilder = new RequestModelBuilder();
 
 	private final ResponseModelBuilder responseModelBuilder = new ResponseModelBuilder();
 
-	TestClassModel build(SingleTestGenerator delegate, ContractVerifierConfigProperties properties,
-			Collection<ContractMetadata> listOfFiles, String includedDirectoryRelativePath,
-			SingleTestGenerator.GeneratedClassData generatedClassData) {
+	TestClassModel build(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
+			String includedDirectoryRelativePath, SingleTestGenerator.GeneratedClassData generatedClassData,
+			List<String> extraFieldLines) {
 		TestFramework framework = properties.getTestFramework();
 		boolean spock = framework == TestFramework.SPOCK;
 
 		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, listOfFiles, includedDirectoryRelativePath,
 				generatedClassData);
 
-		// Render the legacy class once through the delegate the model path is wrapping,
-		// and
-		// scrape both the import block and the class-level field block from it. Using the
-		// wrapped delegate (not a fresh JavaTestGenerator) makes the capture faithful to
-		// any
-		// classBodyBuilder override the delegate carries — e.g. the WebTarget field the
-		// JAX-RS tests inject, which no production Field visitor declares.
-		String legacySource = delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath,
-				generatedClassData);
+		// Produce the import block and the class-level field block directly from the
+		// visitor producers, in the same order and with the same per-framework setup the
+		// legacy scaffold used, so the model path stays byte-identical. The
+		// extraFieldLines (empty in production) let a caller inject additional fields —
+		// e.g. the WebTarget the JAX-RS tests supply, which no production Field visitor
+		// declares.
+		ClassScaffoldProducer scaffold = new ClassScaffoldProducer(meta, extraFieldLines);
 
 		List<AnnotationModel> classAnnotations = new ArrayList<>();
 		// SuppressWarningsClassAnnotation accepts unconditionally, for every framework
@@ -113,7 +109,7 @@ class ModelBuilder {
 			methods.add(methodModel(scm, framework, meta, mode));
 		}
 
-		List<String> imports = importDeclarations(legacySource);
+		List<String> imports = scaffold.importDeclarations();
 
 		// Resolve the base class exactly as the legacy generator does: base-class
 		// mappings
@@ -126,11 +122,9 @@ class ModelBuilder {
 				includedDirectoryRelativePath);
 
 		// Class-level fields (messaging collaborators, CUSTOM-mode httpVerifier, the
-		// JAX-RS
-		// WebTarget) that the legacy generator emits before the methods. Empty for the
-		// plain
+		// JAX-RS WebTarget) emitted before the methods. Empty for the plain
 		// MockMvc/EXPLICIT/WebTestClient HTTP shapes.
-		List<String> fields = this.fieldExtractor.fieldLines(legacySource);
+		List<String> fields = scaffold.fieldLines();
 
 		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData, spock),
 				baseClass, spock, classAnnotations, fields, methods, imports);
@@ -213,23 +207,6 @@ class ModelBuilder {
 	// Mirrors JUnit5OrderClassAnnotation#accept.
 	private boolean hasOrder(Collection<ContractMetadata> listOfFiles) {
 		return listOfFiles.stream().anyMatch((file) -> file.getOrder() != null);
-	}
-
-	// Captures the legacy generator's class-level import set (both `import` and `import
-	// static`), in order, from the already-rendered legacy source, so the renderer can
-	// merge it with JavaPoet's own imports.
-	private List<String> importDeclarations(String legacySource) {
-		List<String> imports = new ArrayList<>();
-		for (String line : legacySource.lines().toList()) {
-			String trimmed = line.trim();
-			if (trimmed.startsWith("import ")) {
-				imports.add(trimmed);
-			}
-			else if (trimmed.startsWith("class ") || trimmed.startsWith("public ") || trimmed.startsWith("@")) {
-				break;
-			}
-		}
-		return imports;
 	}
 
 }

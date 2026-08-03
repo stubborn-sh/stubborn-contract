@@ -22,70 +22,31 @@ import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 
 /**
- * Builds a single test for the given {@link ContractVerifierConfigProperties properties}.
+ * Provides the method-body engine for the model-based generator. The class scaffold
+ * (package, imports, annotations, fields, signatures) is produced by the model path
+ * ({@link ModelBuilder} + {@link ClassScaffoldProducer} + {@link JavaPoetTestRenderer});
+ * this class retains only
+ * {@link #singleMethodBuilder(BlockBuilder, GeneratedClassMetaData) singleMethodBuilder},
+ * which drives the Given/When/Then producers to emit a single method's body.
  *
  * @author Marcin Grzejszczak
  * @since 1.1.0
  */
 public class JavaTestGenerator implements SingleTestGenerator {
 
+	/**
+	 * @deprecated the legacy class scaffold has been removed; the model path
+	 * ({@link ModelBasedTestGenerator}) builds the class. This method is retained only so
+	 * the type keeps satisfying {@link SingleTestGenerator} while it serves as the
+	 * method-body engine; it always throws.
+	 */
 	@Override
+	@Deprecated
 	public String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData) {
-		BlockBuilder builder = new BlockBuilder("\t");
-		GeneratedClassMetaData metaData = new GeneratedClassMetaData(properties, listOfFiles,
-				includedDirectoryRelativePath, generatedClassData);
-		return classAsString(builder, metaData);
-	}
-
-	private String classAsString(BlockBuilder builder, GeneratedClassMetaData metaData) {
-		SingleMethodBuilder methodBuilder = singleMethodBuilder(builder, metaData);
-		ClassBodyBuilder bodyBuilder = classBodyBuilder(builder, metaData, methodBuilder);
-		GeneratedTestClass generatedTestClass = generatedTestClass(builder, metaData, bodyBuilder);
-		return generatedTestClass.asClassString();
-	}
-
-	GeneratedTestClass generatedTestClass(BlockBuilder builder, GeneratedClassMetaData metaData,
-			ClassBodyBuilder bodyBuilder) {
-		// @formatter:off
-		return GeneratedTestClassBuilder.builder(builder, metaData)
-				.classBodyBuilder(bodyBuilder)
-					.metaData()
-						.java()
-						.groovy()
-						.build()
-					.imports()
-						.defaultImports()
-						.userImports()
-						.customMode()
-						.json()
-						.jUnit5()
-						.testNG()
-						.spock()
-					.xml()
-					.messaging()
-					.restAssured()
-					.jaxRs()
-					.build()
-				.classAnnotations()
-					.defaultAnnotations()
-					.jUnit5()
-					.spock()
-					.build()
-				.build();
-		// @formatter:on
-	}
-
-	ClassBodyBuilder classBodyBuilder(BlockBuilder builder, GeneratedClassMetaData metaData,
-			SingleMethodBuilder methodBuilder) {
-		// @formatter:off
-		return ClassBodyBuilder.builder(builder, metaData)
-				.field()
-					.messaging()
-					.customMode()
-					.build()
-				.methodBuilder(methodBuilder);
-		// @formatter:on
+		throw new UnsupportedOperationException(
+				"The legacy class scaffold has been removed; use ModelBasedTestGenerator to build a class. "
+						+ "JavaTestGenerator now only provides the method-body engine via singleMethodBuilder(...).");
 	}
 
 	SingleMethodBuilder singleMethodBuilder(BlockBuilder builder, GeneratedClassMetaData metaData) {

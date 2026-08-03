@@ -203,25 +203,9 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 	}
 
 	private String singleTestGenerator(Collection<Contract> contractDsls) {
-		SingleTestGenerator legacy = new JavaTestGenerator() {
-			@Override
-			ClassBodyBuilder classBodyBuilder(BlockBuilder builder, GeneratedClassMetaData metaData,
-					SingleMethodBuilder methodBuilder) {
-				return super.classBodyBuilder(builder, metaData, methodBuilder).field(new Field() {
-					@Override
-					public boolean accept() {
-						return metaData.configProperties.getTestMode() == TestMode.JAXRSCLIENT;
-					}
-
-					@Override
-					public Field call() {
-						builder.addLine("WebTarget webTarget");
-						return this;
-					}
-				});
-			}
-		};
-		return GeneratorUnderTest.wrap(legacy)
+		List<String> extraFields = (this.configProperties.getTestMode() == TestMode.JAXRSCLIENT)
+				? List.of("WebTarget webTarget") : List.of();
+		return GeneratorUnderTest.wrapWithExtraFields(new JavaTestGenerator(), extraFields)
 			.buildClass(this.configProperties, Collections.singletonList(contractMetadata(contractDsls)), "foo",
 					GENERATED_CLASS_DATA);
 	}

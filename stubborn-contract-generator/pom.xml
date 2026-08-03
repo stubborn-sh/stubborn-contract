@@ -371,40 +371,6 @@
 				<configuration>
 					<testNGArtifactName>none:none</testNGArtifactName>
 				</configuration>
-				<executions>
-					<!--
-						Cross-generator parity. The default execution runs the whole suite
-						under the model-based (JavaPoet) generator, which is the production
-						default. This extra execution re-runs the test-generation suites under
-						the legacy string-builder generator, so their assertions are proven to
-						hold regardless of which generator is selected. The suites obtain their
-						generator through GeneratorUnderTest.wrap(...), which honours the
-						stubborn.contract.verifier.model-based-generator system property.
-					-->
-					<execution>
-						<id>legacy-generator-parity</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<systemPropertyVariables>
-								<stubborn.contract.verifier.model-based-generator>false</stubborn.contract.verifier.model-based-generator>
-							</systemPropertyVariables>
-							<includes>
-								<include>**/MethodBodyBuilderTests.java</include>
-								<include>**/YamlMockMvcMethodBodyBuilderTests.java</include>
-								<include>**/MockMvcMethodBodyBuilderWithMatchersTests.java</include>
-								<include>**/XmlMethodBodyBuilderTests.java</include>
-								<include>**/ContractHttpDocsTests.java</include>
-								<include>**/JaxRsClientMethodBuilderTests.java</include>
-								<include>**/MessagingMethodBodyBuilderTests.java</include>
-								<include>**/SpringTestMethodBodyBuildersTests.java</include>
-							</includes>
-							<reportsDirectory>${project.build.directory}/surefire-reports-legacy</reportsDirectory>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
