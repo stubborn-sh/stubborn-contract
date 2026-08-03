@@ -21,7 +21,6 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
-import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 
@@ -53,25 +52,33 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 
 	private final JavaPoetTestRenderer javaRenderer;
 
+	private final SpockTestRenderer spockRenderer;
+
 	public ModelBasedTestGenerator() {
-		this(new JavaTestGenerator(), new ModelBuilder(), new JavaPoetTestRenderer());
+		this(new JavaTestGenerator(), new ModelBuilder(), new JavaPoetTestRenderer(), new SpockTestRenderer());
 	}
 
 	ModelBasedTestGenerator(SingleTestGenerator delegate, ModelBuilder modelBuilder,
 			JavaPoetTestRenderer javaRenderer) {
+		this(delegate, modelBuilder, javaRenderer, new SpockTestRenderer());
+	}
+
+	ModelBasedTestGenerator(SingleTestGenerator delegate, ModelBuilder modelBuilder, JavaPoetTestRenderer javaRenderer,
+			SpockTestRenderer spockRenderer) {
 		this.delegate = delegate;
 		this.modelBuilder = modelBuilder;
 		this.javaRenderer = javaRenderer;
+		this.spockRenderer = spockRenderer;
 	}
 
 	/**
-	 * Test modes whose Java scaffold is fully produced by the model path — now every Java
-	 * target. The class-level fields the non-MockMvc shapes declare (the messaging
-	 * collaborators, the CUSTOM-mode {@code httpVerifier}, the JAX-RS {@code WebTarget})
-	 * are captured from the legacy generator's own output by
-	 * {@link LegacyClassFieldExtractor}, so no mode needs bespoke field handling. Only
-	 * Spock — which JavaPoet cannot render — still delegates to the legacy generator
-	 * (gated separately in {@link #modellable}).
+	 * Test modes whose scaffold is fully produced by the model path — every mode. The
+	 * class-level fields the non-MockMvc shapes declare (the messaging collaborators, the
+	 * CUSTOM-mode {@code httpVerifier}, the JAX-RS {@code WebTarget}) are captured from
+	 * the legacy generator's own output by {@link LegacyClassFieldExtractor}, so no mode
+	 * needs bespoke field handling. Both the Java targets (via
+	 * {@link JavaPoetTestRenderer}) and the Groovy/Spock target (via
+	 * {@link SpockTestRenderer}) are rendered from the model.
 	 */
 	private static final Set<TestMode> MIGRATED_MODES = EnumSet.of(TestMode.MOCKMVC, TestMode.EXPLICIT, TestMode.CUSTOM,
 			TestMode.WEBTESTCLIENT, TestMode.JAXRSCLIENT);
@@ -80,28 +87,27 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 	public String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData) {
 		if (!modellable(properties)) {
-			// Spock cannot be modelled by JavaPoet; it stays byte-identical on the legacy
-			// generator.
 			return this.delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath, generatedClassData);
 		}
 		TestClassModel model = this.modelBuilder.build(this.delegate, properties, listOfFiles,
 				includedDirectoryRelativePath, generatedClassData);
-		return this.javaRenderer.render(model);
+		// Java targets render through JavaPoet; Groovy/Spock through the Handlebars
+		// templates, since JavaPoet cannot emit Groovy.
+		return model.spock() ? this.spockRenderer.render(model) : this.javaRenderer.render(model);
 	}
 
 	/**
-	 * Whether the model + JavaPoet path can fully produce this class. Every Java target
-	 * on a migrated {@link TestMode} qualifies — the class-level collaborators
-	 * ({@code contractVerifierMessaging}, {@code contractVerifierObjectMapper},
-	 * {@code httpVerifier}, {@code webTarget}) are captured as model fields from the
-	 * legacy output. Only Spock, which JavaPoet cannot render, stays on the legacy
-	 * generator.
+	 * Whether the model path can fully produce this class. Every migrated
+	 * {@link TestMode} qualifies, for both the Java targets and Spock — the class-level
+	 * collaborators ({@code contractVerifierMessaging},
+	 * {@code contractVerifierObjectMapper}, {@code httpVerifier}, {@code webTarget}) are
+	 * captured as model fields from the legacy output, and the framework selects the
+	 * renderer.
 	 * @param properties the plugin configuration
 	 * @return {@code true} if the class should be rendered by the model path
 	 */
 	private static boolean modellable(ContractVerifierConfigProperties properties) {
-		return properties.getTestFramework() != TestFramework.SPOCK
-				&& MIGRATED_MODES.contains(properties.getTestMode());
+		return MIGRATED_MODES.contains(properties.getTestMode());
 	}
 
 }

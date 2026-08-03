@@ -54,6 +54,10 @@ class ModelBuilder {
 
 	private static final String TESTNG_TEST = "org.testng.annotations.Test";
 
+	private static final String SPOCK_STEPWISE = "spock.lang.Stepwise";
+
+	private static final String SPOCK_IGNORE = "spock.lang.Ignore";
+
 	private final NameProvider nameProvider = new NameProvider();
 
 	private final LegacyMethodBodyExtractor bodyExtractor = new LegacyMethodBodyExtractor();
@@ -86,14 +90,21 @@ class ModelBuilder {
 				generatedClassData);
 
 		List<AnnotationModel> classAnnotations = new ArrayList<>();
-		if (!spock) {
-			classAnnotations.add(new AnnotationModel("java.lang.SuppressWarnings", "\"rawtypes\""));
-		}
-		if (framework == TestFramework.JUNIT5 && hasOrder(listOfFiles)) {
-			// Mirrors JUnit5OrderClassAnnotation. Kept short so it matches the legacy
-			// output; the MethodOrderer import is supplied by the merged import set.
-			classAnnotations.add(
-					AnnotationModel.member(JUNIT_JUPITER_TEST_METHOD_ORDER, "value", "MethodOrderer.MethodName.class"));
+		// SuppressWarningsClassAnnotation accepts unconditionally, for every framework
+		// including Spock.
+		classAnnotations.add(new AnnotationModel("java.lang.SuppressWarnings", "\"rawtypes\""));
+		if (hasOrder(listOfFiles)) {
+			if (spock) {
+				// Mirrors SpockOrderClassAnnotation: @Stepwise is Spock's ordering
+				// mechanism.
+				classAnnotations.add(AnnotationModel.marker(SPOCK_STEPWISE));
+			}
+			else if (framework == TestFramework.JUNIT5) {
+				// Mirrors JUnit5OrderClassAnnotation. Kept short so it matches the legacy
+				// output; the MethodOrderer import is supplied by the merged import set.
+				classAnnotations.add(AnnotationModel.member(JUNIT_JUPITER_TEST_METHOD_ORDER, "value",
+						"MethodOrderer.MethodName.class"));
+			}
 		}
 
 		TestMode mode = properties.getTestMode();
@@ -121,33 +132,46 @@ class ModelBuilder {
 		// MockMvc/EXPLICIT/WebTestClient HTTP shapes.
 		List<String> fields = this.fieldExtractor.fieldLines(legacySource);
 
-		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData), baseClass,
-				spock, classAnnotations, fields, methods, imports);
+		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData, spock),
+				baseClass, spock, classAnnotations, fields, methods, imports);
 	}
 
 	/**
 	 * Normalizes the class name exactly as the legacy generator does (see
-	 * {@code DefaultClassMetadata#className} and {@code JavaClassMetaData#suffix}): the
-	 * provided name is capitalized and the configured test-name suffix ({@code Test} by
-	 * default) is appended unless already present. Keeping this identical to the legacy
-	 * rule makes the model path a faithful drop-in for any class name, not only the
-	 * already-normalized ones production feeds in.
+	 * {@code DefaultClassMetadata#className} and the {@code suffix()} of
+	 * {@code JavaClassMetaData}/{@code GroovyClassMetaData}): the provided name is
+	 * capitalized and the configured test-name suffix is appended unless already present.
+	 * The default suffix is {@code Test} for the Java targets and {@code Spec} for
+	 * Groovy/Spock. Keeping this identical to the legacy rule makes the model path a
+	 * faithful drop-in for any class name, not only the already-normalized ones
+	 * production feeds in.
 	 * @param properties the plugin configuration (carries the optional name suffix)
 	 * @param generatedClassData the generated-class descriptor carrying the raw name
+	 * @param spock {@code true} for the Groovy/Spock target
 	 * @return the normalized class name
 	 */
 	private static String className(ContractVerifierConfigProperties properties,
-			SingleTestGenerator.GeneratedClassData generatedClassData) {
+			SingleTestGenerator.GeneratedClassData generatedClassData, boolean spock) {
 		String capitalized = NamesUtil.capitalize(generatedClassData.className);
 		String nameSuffix = properties.getNameSuffixForTests();
-		String suffix = (nameSuffix != null && !nameSuffix.isBlank()) ? nameSuffix : "Test";
+		String suffix = (nameSuffix != null && !nameSuffix.isBlank()) ? nameSuffix : (spock ? "Spec" : "Test");
 		return capitalized.endsWith(suffix) ? capitalized : capitalized + suffix;
 	}
 
 	private TestMethodModel methodModel(SingleContractMetadata scm, TestFramework framework,
 			GeneratedClassMetaData meta, TestMode mode) {
-		List<AnnotationModel> annotations = new ArrayList<>();
 		boolean ignored = isIgnored(scm);
+		if (framework == TestFramework.SPOCK) {
+			// Spock has no @Test; an ignored/in-progress contract carries @Ignore
+			// (spock.lang), nothing otherwise (mirrors SpockIgnoreMethodAnnotation). The
+			// body is emitted verbatim from the legacy Groovy pipeline — the structured
+			// request/response model targets the Java idiom only.
+			List<AnnotationModel> spockAnnotations = ignored ? List.of(AnnotationModel.marker(SPOCK_IGNORE))
+					: List.of();
+			return new TestMethodModel(this.nameProvider.methodName(scm), spockAnnotations,
+					this.bodyExtractor.bodyLines(meta, scm), null, null);
+		}
+		List<AnnotationModel> annotations = new ArrayList<>();
 		if (framework == TestFramework.TESTNG) {
 			// TestNG disables via a named member on @Test, not a separate annotation.
 			annotations.add(ignored ? AnnotationModel.member(TESTNG_TEST, "enabled", "false")

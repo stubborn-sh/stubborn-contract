@@ -68,7 +68,7 @@ class ModelBasedTestGeneratorTests {
 	Path tmpDir;
 
 	@Test
-	void spock_delegates_output_identically_to_legacy_generator() throws IOException {
+	void spock_output_matches_legacy_byte_for_byte_via_model_path() throws IOException {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.SPOCK);
 		properties.setBaseClassForTests("com.example.BaseClass");
@@ -79,6 +79,8 @@ class ModelBasedTestGeneratorTests {
 		String legacy = new JavaTestGenerator().buildClass(properties, contracts, "some/path", data);
 		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
 
+		// Spock now renders through the Handlebars SpockTestRenderer, not the legacy
+		// delegate; the output must still be byte-identical to the legacy generator.
 		assertThat(modelBased).isEqualTo(legacy);
 	}
 
@@ -208,18 +210,22 @@ class ModelBasedTestGeneratorTests {
 	}
 
 	@Test
-	void uses_the_provided_delegate_for_spock() throws IOException {
+	void spock_renders_groovy_through_the_model_path() throws IOException {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.SPOCK);
 		Collection<ContractMetadata> contracts = contracts();
 		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
 				"com.example", new File("/tmp").toPath());
 
-		SingleTestGenerator delegate = (props, files, path, classData) -> "DELEGATED";
-		ModelBasedTestGenerator generator = new ModelBasedTestGenerator(delegate, new ModelBuilder(),
-				new JavaPoetTestRenderer());
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
 
-		assertThat(generator.buildClass(properties, contracts, "some/path", data)).isEqualTo("DELEGATED");
+		// Groovy/Spock scaffold: "Spec" suffix, extends Specification, def feature
+		// methods,
+		// no Java-only tokens.
+		assertThat(modelBased).contains("class FooTestSpec extends Specification {")
+			.contains("def validate_")
+			.doesNotContain("public void")
+			.doesNotContain("@Test");
 	}
 
 	private Collection<ContractMetadata> contracts() throws IOException {
