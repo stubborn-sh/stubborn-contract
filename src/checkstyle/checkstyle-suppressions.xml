@@ -52,6 +52,8 @@
 	<suppress files=".*FooAvro.*" checks=".*"/>
 	<!-- gmavenplus-generated Groovy Java stubs — never lint machine-generated sources -->
 	<suppress files=".*[/\\](generated-sources|generated-test-sources)[/\\].*" checks=".*"/>
+	<!-- Cross-generator parity test helper (not a test class despite living in the test tree) -->
+	<suppress files=".*GeneratorUnderTest.*" checks="SpringTestFileName"/>
 	<!-- Pre-existing violations in verifier module — tab indented, builder-pattern classes -->
 	<suppress files=".*verifier/builder/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|NoWhitespaceAfter|DesignForExtension|FinalClass|JavadocStyle|HideUtilityClassConstructor)"/>
 	<suppress files=".*verifier/assertion/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>

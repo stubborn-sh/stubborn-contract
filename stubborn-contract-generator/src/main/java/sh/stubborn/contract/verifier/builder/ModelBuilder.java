@@ -25,6 +25,7 @@ import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
+import sh.stubborn.contract.verifier.util.NamesUtil;
 
 /**
  * Walks the plugin configuration and parsed contracts into a {@link TestClassModel}.
@@ -91,8 +92,37 @@ class ModelBuilder {
 		List<String> imports = importDeclarations(properties, listOfFiles, includedDirectoryRelativePath,
 				generatedClassData);
 
-		return new TestClassModel(generatedClassData.classPackage, generatedClassData.className,
-				properties.getBaseClassForTests(), spock, classAnnotations, methods, imports);
+		// Resolve the base class exactly as the legacy generator does: base-class
+		// mappings
+		// and the packageWithBaseClasses convention, not only the explicit
+		// baseClassForTests
+		// property. Missing this dropped the "extends <Base>" clause for convention-based
+		// base classes, so the generated test never inherited the MockMvc setup.
+		String baseClass = new BaseClassProvider().retrieveBaseClass(properties.getBaseClassMappings(),
+				properties.getPackageWithBaseClasses(), properties.getBaseClassForTests(),
+				includedDirectoryRelativePath);
+
+		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData), baseClass,
+				spock, classAnnotations, methods, imports);
+	}
+
+	/**
+	 * Normalizes the class name exactly as the legacy generator does (see
+	 * {@code DefaultClassMetadata#className} and {@code JavaClassMetaData#suffix}): the
+	 * provided name is capitalized and the configured test-name suffix ({@code Test} by
+	 * default) is appended unless already present. Keeping this identical to the legacy
+	 * rule makes the model path a faithful drop-in for any class name, not only the
+	 * already-normalized ones production feeds in.
+	 * @param properties the plugin configuration (carries the optional name suffix)
+	 * @param generatedClassData the generated-class descriptor carrying the raw name
+	 * @return the normalized class name
+	 */
+	private static String className(ContractVerifierConfigProperties properties,
+			SingleTestGenerator.GeneratedClassData generatedClassData) {
+		String capitalized = NamesUtil.capitalize(generatedClassData.className);
+		String nameSuffix = properties.getNameSuffixForTests();
+		String suffix = (nameSuffix != null && !nameSuffix.isBlank()) ? nameSuffix : "Test";
+		return capitalized.endsWith(suffix) ? capitalized : capitalized + suffix;
 	}
 
 	private TestMethodModel methodModel(SingleContractMetadata scm, TestFramework framework,

@@ -71,17 +71,21 @@ public class TestGenerator {
 	}
 
 	/**
-	 * System property that opts into the model + typed-renderer test generator
-	 * ({@link ModelBasedTestGenerator}) introduced by the test-generation migration. Off
-	 * by default, so the legacy generator remains in charge until the phased cutover.
+	 * System property selecting the test generator. The model + typed-renderer generator
+	 * ({@link ModelBasedTestGenerator}, JavaPoet-backed) is now the default; set this
+	 * property to {@code false} to fall back to the legacy string-builder generator. The
+	 * model generator itself keeps Spock and the not-yet-migrated shapes (WebTestClient,
+	 * JAX-RS, messaging, URL-less contracts) on byte-identical legacy output, so the flip
+	 * only changes the Java MockMvc/EXPLICIT HTTP path.
 	 */
 	private static final String MODEL_BASED_GENERATOR_PROPERTY = "stubborn.contract.verifier.model-based-generator";
 
 	private static SingleTestGenerator singleTestGenerator() {
-		if (Boolean.getBoolean(MODEL_BASED_GENERATOR_PROPERTY)) {
-			log.info("Using the model-based (JavaPoet) test generator [{}=true]", MODEL_BASED_GENERATOR_PROPERTY);
+		if (!"false".equalsIgnoreCase(System.getProperty(MODEL_BASED_GENERATOR_PROPERTY, "true"))) {
+			log.info("Using the model-based (JavaPoet) test generator [{} != false]", MODEL_BASED_GENERATOR_PROPERTY);
 			return new ModelBasedTestGenerator();
 		}
+		log.info("Using the legacy test generator [{} = false]", MODEL_BASED_GENERATOR_PROPERTY);
 		List<SingleTestGenerator> factories = new ArrayList<>();
 		ServiceLoader.load(SingleTestGenerator.class).forEach(factories::add);
 		if (factories.isEmpty()) {

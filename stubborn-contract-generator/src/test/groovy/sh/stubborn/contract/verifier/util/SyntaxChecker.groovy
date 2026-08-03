@@ -206,20 +206,31 @@ private void test(String test) {
 				Collections.singletonList(javaFile)
 		)
 
-		boolean success = task.call()
-		if (!success) {
-			StringBuilder errorMsg = new StringBuilder("Compilation failed:")
-			for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-				errorMsg.append("\nLine ").append(diagnostic.getLineNumber())
-						.append(": ").append(diagnostic.getMessage(null))
-			}
-			throw new IllegalStateException(errorMsg.toString())
-		}
-
 		try {
-			return classLoader.loadClass(fqnClassName)
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException("Failed to load compiled class", e)
+			boolean success = task.call()
+			if (!success) {
+				StringBuilder errorMsg = new StringBuilder("Compilation failed:")
+				for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+					errorMsg.append("\nLine ").append(diagnostic.getLineNumber())
+							.append(": ").append(diagnostic.getMessage(null))
+				}
+				throw new IllegalStateException(errorMsg.toString())
+			}
+
+			try {
+				return classLoader.loadClass(fqnClassName)
+			} catch (ClassNotFoundException e) {
+				throw new IllegalStateException("Failed to load compiled class", e)
+			}
+		} finally {
+			// The JDK file manager opens the whole compile classpath; leaving it open on
+			// every compile exhausts the process file-descriptor limit across a large
+			// generate-and-compile suite. Close it so descriptors are released each call.
+			try {
+				fileManager.close()
+			}
+			catch (IOException ignored) {
+			}
 		}
 	}
 

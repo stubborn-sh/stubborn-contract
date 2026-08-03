@@ -185,6 +185,9 @@ public class BlockBuilder {
 	}
 
 	public BlockBuilder addAtTheEndIfEndsWithAChar(String toAdd) {
+		if (this.builder.length() == 0) {
+			return this;
+		}
 		char lastChar = this.builder.charAt(this.builder.length() - 1);
 		if (Character.isLetter(lastChar)) {
 			this.builder.append(toAdd);
@@ -198,6 +201,13 @@ public class BlockBuilder {
 	 * @return updated BlockBuilder
 	 */
 	public BlockBuilder addAtTheEnd(String toAdd) {
+		if (this.builder.length() == 0) {
+			// Nothing has been emitted yet, so there is no line to terminate. The real
+			// generation pipeline always primes the buffer (method signature/indentation)
+			// before this runs; the model path's LegacyMethodBodyExtractor drives a fresh
+			// buffer, where a leading addEndingIfNotPresent() would otherwise index -1.
+			return this;
+		}
 		String lastChar = String.valueOf(this.builder.charAt(this.builder.length() - 1));
 		String secondLastChar = (this.builder.length() >= 2)
 				? String.valueOf(this.builder.charAt(this.builder.length() - 2)) : "";

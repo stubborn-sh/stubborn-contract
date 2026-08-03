@@ -58,8 +58,8 @@ class MessagingMethodBodyBuilderTests {
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
-		return new JavaTestGenerator().buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo",
-				this.generatedClassData);
+		return GeneratorUnderTest.wrap(new JavaTestGenerator())
+			.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
 	}
 
 	private Contract contractFromGroovy(String groovyDsl) {

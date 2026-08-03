@@ -99,7 +99,7 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 	}
 
 	private String singleTestGenerator(Contract contractDsl) {
-		return new JavaTestGenerator() {
+		SingleTestGenerator legacy = new JavaTestGenerator() {
 			@Override
 			public ClassBodyBuilder classBodyBuilder(BlockBuilder builder, GeneratedClassMetaData metaData,
 					SingleMethodBuilder methodBuilder) {
@@ -116,7 +116,9 @@ class JaxRsClientMethodBuilderTests implements WireMockStubVerifier {
 					}
 				});
 			}
-		}.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
+		};
+		return GeneratorUnderTest.wrap(legacy)
+			.buildClass(this.properties, List.of(contractMetadata(contractDsl)), "foo", this.generatedClassData);
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {

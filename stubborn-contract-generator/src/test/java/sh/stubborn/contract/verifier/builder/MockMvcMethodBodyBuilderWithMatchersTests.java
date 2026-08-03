@@ -53,7 +53,7 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 
 	private String singleTestGenerator(Contract contractDsl) {
 		ContractVerifierConfigProperties props = this.properties;
-		return new JavaTestGenerator() {
+		SingleTestGenerator legacy = new JavaTestGenerator() {
 			@Override
 			ClassBodyBuilder classBodyBuilder(BlockBuilder builder, GeneratedClassMetaData metaData,
 					SingleMethodBuilder methodBuilder) {
@@ -70,7 +70,9 @@ class MockMvcMethodBodyBuilderWithMatchersTests implements WireMockStubVerifier 
 					}
 				});
 			}
-		}.buildClass(props, List.of(contractMetadata(contractDsl)), "foo", GENERATED_CLASS_DATA);
+		};
+		return GeneratorUnderTest.wrap(legacy)
+			.buildClass(props, List.of(contractMetadata(contractDsl)), "foo", GENERATED_CLASS_DATA);
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {
