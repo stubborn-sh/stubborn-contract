@@ -102,6 +102,24 @@ class ModelBasedTestGeneratorTests {
 	}
 
 	@Test
+	void mockmvc_structured_request_matches_legacy_byte_for_byte() throws IOException {
+		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
+		properties.setTestFramework(TestFramework.JUNIT5);
+		Collection<ContractMetadata> contracts = contracts();
+		SingleTestGenerator.GeneratedClassData data = new SingleTestGenerator.GeneratedClassData("FooTest",
+				"com.example", new File("/tmp").toPath());
+
+		String legacy = new JavaTestGenerator().buildClass(properties, contracts, "some/path", data);
+		String modelBased = new ModelBasedTestGenerator().buildClass(properties, contracts, "some/path", data);
+
+		// This contract (headers + body, no matchers) is eligible for the structured
+		// request/response path; its // given:/// when:/// then: chains must be indented
+		// byte-for-byte like the legacy generator (chain head one level below the label,
+		// continuations two further levels), not rendered flat.
+		assertThat(modelBased).isEqualTo(legacy);
+	}
+
+	@Test
 	void extends_base_class_resolved_from_the_package_convention() throws IOException {
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.JUNIT5);

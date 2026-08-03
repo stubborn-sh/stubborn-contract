@@ -243,14 +243,10 @@ class JavaPoetTestRenderer {
 			// a
 			// $L argument so $, { and } stay literal.
 			emitLine(builder, "// given:");
-			for (String line : request.given().render()) {
-				emitLine(builder, line);
-			}
+			emitFluentChain(builder, request.given().render());
 			emitLine(builder, "");
 			emitLine(builder, "// when:");
-			for (String line : request.whenBlock().render()) {
-				emitLine(builder, line);
-			}
+			emitFluentChain(builder, request.whenBlock().render());
 			emitLine(builder, "");
 		}
 		ResponseModel response = method.response();
@@ -260,7 +256,9 @@ class JavaPoetTestRenderer {
 			// bodyLines (the existing !body.isBlank() guard handles an empty tail).
 			emitLine(builder, "// then:");
 			for (String line : response.thenBlock().render()) {
-				emitLine(builder, line);
+				// Each assertion sits one level below the // then: label, as the legacy
+				// GenericHttpThen block does.
+				emitLine(builder, "\t" + line);
 			}
 			emitLine(builder, "");
 		}
@@ -278,6 +276,22 @@ class JavaPoetTestRenderer {
 
 	private void emitLine(MethodSpec.Builder builder, String line) {
 		builder.addCode("$L\n", line);
+	}
+
+	/**
+	 * Emits a fluent request chain ({@code // given:} / {@code // when:}) at the legacy
+	 * indentation: the chain head sits one level below the label, and each
+	 * {@code .xxx(...)} continuation two further levels below the head (JavaPoet already
+	 * applies the two enclosing method levels). Mirrors the legacy
+	 * {@code RestAssuredGiven}/{@code RestAssuredWhen} layout so the structured output is
+	 * byte-identical to the verbatim fallback.
+	 * @param builder the method being assembled
+	 * @param lines the rendered chain, head first
+	 */
+	private void emitFluentChain(MethodSpec.Builder builder, List<String> lines) {
+		for (int i = 0; i < lines.size(); i++) {
+			emitLine(builder, ((i == 0) ? "\t" : "\t\t\t") + lines.get(i));
+		}
 	}
 
 	private AnnotationSpec toAnnotationSpec(AnnotationModel annotation) {
