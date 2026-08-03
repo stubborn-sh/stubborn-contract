@@ -24,7 +24,7 @@ class CustomModeFields implements Field, CustomModeAcceptor {
 
 	private final GeneratedClassMetaData generatedClassMetaData;
 
-	private static final String[] FIELDS = { "@Autowired HttpVerifier httpVerifier" };
+	private static final String[] FIELDS = { "HttpVerifier httpVerifier" };
 
 	CustomModeFields(BlockBuilder blockBuilder, GeneratedClassMetaData generatedClassMetaData) {
 		this.blockBuilder = blockBuilder;
@@ -33,7 +33,10 @@ class CustomModeFields implements Field, CustomModeAcceptor {
 
 	@Override
 	public Field call() {
-		Arrays.stream(FIELDS).forEach(this.blockBuilder::addLineWithEnding);
+		String prefix = this.generatedClassMetaData.configProperties.getFieldInjection()
+			.resolve(this.generatedClassMetaData.configProperties.getTestMode())
+			.annotationPrefix();
+		Arrays.stream(FIELDS).forEach((field) -> this.blockBuilder.addLineWithEnding(prefix + field));
 		return this;
 	}
 

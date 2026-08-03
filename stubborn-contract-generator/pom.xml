@@ -176,6 +176,13 @@
 			<artifactId>archunit-junit5</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Compile-checking generated CUSTOM/non-Spring-mode tests, which inject their
+			collaborators with jakarta.inject's @Inject (the AUTO default for those modes). -->
+		<dependency>
+			<groupId>jakarta.inject</groupId>
+			<artifactId>jakarta.inject-api</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

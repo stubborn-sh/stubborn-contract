@@ -26,7 +26,7 @@ class MessagingImports implements Imports {
 
 	private final GeneratedClassMetaData generatedClassMetaData;
 
-	private static final String[] IMPORTS = { "org.springframework.beans.factory.annotation.Autowired",
+	private static final String[] IMPORTS = {
 			"sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper",
 			"sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage",
 			"sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging" };
@@ -38,6 +38,14 @@ class MessagingImports implements Imports {
 
 	@Override
 	public Imports call() {
+		// The injection annotation's import (Spring @Autowired by default, or
+		// jakarta.inject.Inject, or none) leads the block, keeping the legacy ordering.
+		String annotationImport = this.generatedClassMetaData.configProperties.getFieldInjection()
+			.resolve(this.generatedClassMetaData.configProperties.getTestMode())
+			.annotationImport();
+		if (annotationImport != null) {
+			this.blockBuilder.addLineWithEnding("import " + annotationImport);
+		}
 		Arrays.stream(IMPORTS).forEach((s) -> this.blockBuilder.addLineWithEnding("import " + s));
 		return this;
 	}
