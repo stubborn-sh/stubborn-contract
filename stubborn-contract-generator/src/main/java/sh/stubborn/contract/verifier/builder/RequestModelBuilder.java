@@ -46,7 +46,9 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
  * method body verbatim from the legacy generator:
  * <ul>
  * <li>HTTP contract</li>
- * <li>{@link TestMode} is {@link TestMode#MOCKMVC} or {@link TestMode#EXPLICIT}</li>
+ * <li>{@link TestMode} is {@link TestMode#MOCKMVC}, {@link TestMode#EXPLICIT} or
+ * {@link TestMode#WEBTESTCLIENT} (they share the RestAssured request producers, differing
+ * only in the given/when head types)</li>
  * <li>{@link TestFramework} is not {@link TestFramework#SPOCK}</li>
  * <li>the request body is a plain body, an {@code ExecutionProperty} or a file-based
  * {@code FromFileProperty} body; cookies, query parameters and multipart parts are
@@ -116,7 +118,7 @@ final class RequestModelBuilder {
 		if (framework == TestFramework.SPOCK) {
 			return false;
 		}
-		if (mode != TestMode.MOCKMVC && mode != TestMode.EXPLICIT) {
+		if (mode != TestMode.MOCKMVC && mode != TestMode.EXPLICIT && mode != TestMode.WEBTESTCLIENT) {
 			return false;
 		}
 		if (!contract.isHttp()) {
@@ -144,13 +146,19 @@ final class RequestModelBuilder {
 	}
 
 	private String givenHead(TestMode mode) {
-		return (mode == TestMode.MOCKMVC) ? "MockMvcRequestSpecification request = given()"
-				: "RequestSpecification request = given()";
+		return switch (mode) {
+			case MOCKMVC -> "MockMvcRequestSpecification request = given()";
+			case WEBTESTCLIENT -> "WebTestClientRequestSpecification request = given()";
+			default -> "RequestSpecification request = given()";
+		};
 	}
 
 	private String responseHead(TestMode mode) {
-		return (mode == TestMode.MOCKMVC) ? "ResponseOptions response = given().spec(request)"
-				: "Response response = given().spec(request)";
+		return switch (mode) {
+			case MOCKMVC -> "ResponseOptions response = given().spec(request)";
+			case WEBTESTCLIENT -> "WebTestClientResponse response = given().spec(request)";
+			default -> "Response response = given().spec(request)";
+		};
 	}
 
 	private List<String> headerLines(Request request) {
