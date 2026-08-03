@@ -58,6 +58,8 @@ class ModelBuilder {
 
 	private final LegacyMethodBodyExtractor bodyExtractor = new LegacyMethodBodyExtractor();
 
+	private final LegacyClassFieldExtractor fieldExtractor = new LegacyClassFieldExtractor();
+
 	private final ResponseBodyLineProducer responseBodyLineProducer = new ResponseBodyLineProducer();
 
 	private final RequestModelBuilder requestModelBuilder = new RequestModelBuilder();
@@ -102,8 +104,13 @@ class ModelBuilder {
 				properties.getPackageWithBaseClasses(), properties.getBaseClassForTests(),
 				includedDirectoryRelativePath);
 
+		// Class-level fields (messaging collaborators, CUSTOM-mode httpVerifier) that the
+		// legacy generator emits before the methods. Empty for the plain MockMvc/EXPLICIT
+		// HTTP shapes.
+		List<String> fields = this.fieldExtractor.fieldLines(meta);
+
 		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData), baseClass,
-				spock, classAnnotations, methods, imports);
+				spock, classAnnotations, fields, methods, imports);
 	}
 
 	/**

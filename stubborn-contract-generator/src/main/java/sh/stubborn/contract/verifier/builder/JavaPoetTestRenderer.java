@@ -79,7 +79,63 @@ class JavaPoetTestRenderer {
 			.indent("\t")
 			.build()
 			.toString();
-		return mergeImports(rendered, model.importDeclarations());
+		return ensureBlankLineBeforeClassClose(
+				injectFields(mergeImports(rendered, model.importDeclarations()), model.fields()));
+	}
+
+	/**
+	 * Emits a blank line between the last member and the class' closing brace, matching
+	 * the legacy generator's layout. JavaPoet closes the class immediately after the
+	 * final method; the legacy string builders leave a trailing blank line, so
+	 * replicating it keeps the model output byte-faithful to legacy.
+	 * @param source the rendered source
+	 * @return the source with a blank line before the class' closing brace
+	 */
+	private String ensureBlankLineBeforeClassClose(String source) {
+		List<String> lines = new ArrayList<>(source.lines().toList());
+		for (int i = lines.size() - 1; i >= 0; i--) {
+			// The class' closing brace is the only unindented "}".
+			if (lines.get(i).equals("}")) {
+				if (i > 0 && !lines.get(i - 1).isBlank()) {
+					lines.add(i, "");
+				}
+				break;
+			}
+		}
+		String joined = String.join("\n", lines);
+		return source.endsWith("\n") ? joined + "\n" : joined;
+	}
+
+	/**
+	 * Inserts the captured class-level field declarations immediately after the class
+	 * opening brace, before the first method. JavaPoet's typed {@code FieldSpec} model
+	 * does not fit these annotated, framework-typed fields cleanly, so — as with the
+	 * verbatim method bodies — they are captured from the legacy generator and spliced
+	 * into the rendered source. Their imports are already part of the merged import set.
+	 * @param rendered the rendered (import-merged) source
+	 * @param fields the field declaration lines, or empty
+	 * @return the source with the fields inserted, or the input unchanged when there are
+	 * none
+	 */
+	private String injectFields(String rendered, List<String> fields) {
+		if (fields.isEmpty()) {
+			return rendered;
+		}
+		List<String> lines = new ArrayList<>(rendered.lines().toList());
+		for (int i = 0; i < lines.size(); i++) {
+			if (lines.get(i).stripTrailing().matches("^(public\\s+)?(final\\s+)?class\\s+\\w+.*\\{$")) {
+				List<String> insert = new ArrayList<>();
+				for (String field : fields) {
+					String trimmed = field.trim();
+					insert.add("\t" + (trimmed.endsWith(";") ? trimmed : trimmed + ";"));
+				}
+				insert.add("");
+				lines.addAll(i + 1, insert);
+				break;
+			}
+		}
+		String joined = String.join("\n", lines);
+		return rendered.endsWith("\n") ? joined + "\n" : joined;
 	}
 
 	/**
@@ -94,7 +150,7 @@ class JavaPoetTestRenderer {
 	private String mergeImports(String rendered, List<String> extraImports) {
 		List<String> lines = rendered.lines().toList();
 		String packageLine = "";
-		Set<String> imports = new LinkedHashSet<>();
+		List<String> javaPoetImports = new ArrayList<>();
 		List<String> remainder = new ArrayList<>();
 		boolean inRemainder = false;
 		for (String line : lines) {
@@ -107,7 +163,7 @@ class JavaPoetTestRenderer {
 				packageLine = line;
 			}
 			else if (trimmed.startsWith("import ")) {
-				imports.add(trimmed);
+				javaPoetImports.add(trimmed);
 			}
 			else if (trimmed.isEmpty()) {
 				// skip blank lines between package/imports
@@ -117,16 +173,35 @@ class JavaPoetTestRenderer {
 				remainder.add(line);
 			}
 		}
+		// The legacy import set is authoritative for ordering (it is a superset of the
+		// scaffold imports JavaPoet emits); append any JavaPoet-only import last.
+		Set<String> ordered = new LinkedHashSet<>();
 		for (String extra : extraImports) {
 			String trimmed = extra.trim();
 			if (!trimmed.isEmpty()) {
-				imports.add(trimmed);
+				ordered.add(trimmed);
 			}
+		}
+		ordered.addAll(javaPoetImports);
+		// Group regular and static imports into separate blocks, as the legacy generator
+		// does, preserving order within each block.
+		List<String> regular = new ArrayList<>();
+		List<String> statics = new ArrayList<>();
+		for (String imp : ordered) {
+			(imp.startsWith("import static ") ? statics : regular).add(imp);
 		}
 		StringBuilder sb = new StringBuilder();
 		sb.append(packageLine).append('\n').append('\n');
-		for (String imp : imports) {
+		for (String imp : regular) {
 			sb.append(imp).append('\n');
+		}
+		if (!statics.isEmpty()) {
+			if (!regular.isEmpty()) {
+				sb.append('\n');
+			}
+			for (String imp : statics) {
+				sb.append(imp).append('\n');
+			}
 		}
 		sb.append('\n');
 		sb.append(String.join("\n", remainder));

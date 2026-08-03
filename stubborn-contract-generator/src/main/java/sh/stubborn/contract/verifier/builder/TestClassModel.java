@@ -42,6 +42,9 @@ import org.jspecify.annotations.Nullable;
  * @param spock {@code true} when the target language is Groovy/Spock (rendered by the
  * Handlebars renderer), {@code false} for the Java targets (rendered by JavaPoet)
  * @param classAnnotations class-level annotations, in declaration order
+ * @param fields class-level field declaration lines (e.g. the messaging or CUSTOM-mode
+ * collaborators), captured verbatim from the legacy generator and rendered before the
+ * methods; empty for the MockMvc/EXPLICIT HTTP shapes
  * @param methods the test methods, in declaration order
  * @param importDeclarations the full {@code import ...;} lines (including
  * {@code import static ...;}) the generated class needs, captured from the legacy
@@ -49,12 +52,30 @@ import org.jspecify.annotations.Nullable;
  * @author Marcin Grzejszczak
  */
 record TestClassModel(String packageName, String className, @Nullable String baseClass, boolean spock,
-		List<AnnotationModel> classAnnotations, List<TestMethodModel> methods, List<String> importDeclarations) {
+		List<AnnotationModel> classAnnotations, List<String> fields, List<TestMethodModel> methods,
+		List<String> importDeclarations) {
 
 	TestClassModel {
 		classAnnotations = List.copyOf(classAnnotations);
+		fields = List.copyOf(fields);
 		methods = List.copyOf(methods);
 		importDeclarations = List.copyOf(importDeclarations);
+	}
+
+	/**
+	 * Convenience constructor for classes with no class-level fields (the
+	 * MockMvc/EXPLICIT HTTP shapes).
+	 * @param packageName the package the test class is declared in
+	 * @param className the simple name of the generated test class
+	 * @param baseClass the base class to extend, or {@code null}
+	 * @param spock {@code true} for Groovy/Spock targets
+	 * @param classAnnotations class-level annotations, in declaration order
+	 * @param methods the test methods, in declaration order
+	 * @param importDeclarations the {@code import ...;} lines the class needs
+	 */
+	TestClassModel(String packageName, String className, @Nullable String baseClass, boolean spock,
+			List<AnnotationModel> classAnnotations, List<TestMethodModel> methods, List<String> importDeclarations) {
+		this(packageName, className, baseClass, spock, classAnnotations, List.of(), methods, importDeclarations);
 	}
 
 }
