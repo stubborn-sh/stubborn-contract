@@ -24,8 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 /**
- * Unit tests for {@link JavaPoetTestRenderer} — proves the JavaPoet dependency is wired
- * in and that a {@link TestClassModel} renders to structurally-correct Java.
+ * Unit tests for {@link JavaPoetTestRenderer} — proves a {@link TestClassModel} renders
+ * to structurally-correct Java through the Handlebars templates.
  *
  * @author Marcin Grzejszczak
  */
@@ -36,17 +36,18 @@ class JavaPoetTestRendererTests {
 	@Test
 	void renders_class_scaffold_from_model() {
 		TestClassModel model = new TestClassModel("com.example", "FooTest", "com.example.base.BaseClass", false,
-				List.of(new AnnotationModel("java.lang.SuppressWarnings", "\"rawtypes\"")), List.of(
-						new TestMethodModel("validate_foo",
-								List.of(AnnotationModel.marker("org.junit.jupiter.api.Test"),
-										AnnotationModel.marker("org.junit.jupiter.api.Disabled")),
-								List.of())),
-				List.of());
+				List.of(new AnnotationModel("java.lang.SuppressWarnings", "\"rawtypes\"")),
+				List.of(new TestMethodModel("validate_foo",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test"),
+								AnnotationModel.marker("org.junit.jupiter.api.Disabled")),
+						List.of())),
+				List.of("import org.junit.jupiter.api.Test;", "import org.junit.jupiter.api.Disabled;"));
 
 		String rendered = this.renderer.render(model);
 
+		// Imports come solely from the model's import list; the renderer no longer infers
+		// them from referenced types (the base class is emitted by its simple name).
 		assertThat(rendered).contains("package com.example;")
-			.contains("import com.example.base.BaseClass;")
 			.contains("import org.junit.jupiter.api.Test;")
 			.contains("import org.junit.jupiter.api.Disabled;")
 			.contains("@SuppressWarnings(\"rawtypes\")")
@@ -112,11 +113,11 @@ class JavaPoetTestRendererTests {
 	}
 
 	@Test
-	void merges_legacy_imports_with_javapoet_imports() {
+	void renders_the_model_import_block_grouping_static_imports() {
 		TestClassModel model = new TestClassModel("com.example", "MergeTest", null, false, List.of(),
 				List.of(new TestMethodModel("validate_it",
 						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")), List.of())),
-				List.of("import com.jayway.jsonpath.JsonPath;",
+				List.of("import org.junit.jupiter.api.Test;", "import com.jayway.jsonpath.JsonPath;",
 						"import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;"));
 
 		String rendered = this.renderer.render(model);

@@ -16,318 +16,244 @@
 
 package sh.stubborn.contract.verifier.builder;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import javax.lang.model.element.Modifier;
-
-import com.palantir.javapoet.AnnotationSpec;
-import com.palantir.javapoet.ClassName;
-import com.palantir.javapoet.JavaFile;
-import com.palantir.javapoet.MethodSpec;
-import com.palantir.javapoet.TypeSpec;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Renders the Java targets (JUnit 5 / TestNG / JUnit 4) of a {@link TestClassModel} into
- * source using <a href="https://github.com/palantir/javapoet">JavaPoet</a>.
+ * source using <a href="https://github.com/jknack/handlebars.java">Handlebars</a>
+ * templates ({@code templates/java/class.hbs} and its {@code method.hbs} partial).
  *
  * <p>
- * JavaPoet models the Java language with typed {@code TypeSpec}/{@code MethodSpec}
- * builders, so braces, imports, indentation, and escaping are correct by construction —
- * the exact class of whitespace/brace bug the migration exists to remove. Groovy/Spock is
- * the one target JavaPoet cannot model and is rendered by a Handlebars renderer instead
- * (added in a later phase).
+ * This is the sibling of {@link SpockTestRenderer}: both drive the same
+ * {@link TestClassModel} through a fixed template that carries the invariant layout —
+ * {@code package}/{@code import} lines, the class declaration, the field block and the
+ * method framing — while the variable parts (imports, annotations, fields, method bodies)
+ * are prepared here and spliced in. The Java template differs from the Spock one in three
+ * ways: the base class is emitted conditionally ({@code extends} only when a base class
+ * exists), field declarations are {@code ;}-terminated, and each method carries several
+ * annotations ({@code @Test}, {@code @Disabled}, {@code @Test(enabled = false)}) rather
+ * than Spock's single optional {@code @Ignore}.
  *
  * <p>
- * Phase 2 scope: the full class scaffold (package, class declaration, base class, class-
- * and method-level annotations, method signatures) plus each method's body emitted
- * verbatim from {@link TestMethodModel#bodyLines()} (captured from the legacy generator).
- * After JavaPoet renders the scaffold, the legacy import set carried on the model is
- * merged into JavaPoet's own imports so body-referenced types resolve.
+ * The method body is assembled here from the structured {@link RequestModel}/
+ * {@link ResponseModel} (the {@code // given:}/{@code // when:}/{@code // then:} blocks)
+ * at absolute indentation, followed by the verbatim {@code // and:} tail captured from
+ * the legacy generator. Because the template controls the layout and annotations are
+ * emitted by their simple name, the legacy post-processing passes (import merging, field
+ * injection, trailing blank-line insertion and annotation unqualification) are no longer
+ * needed.
  *
  * @author Marcin Grzejszczak
  */
 class JavaPoetTestRenderer {
 
+	private final Template template;
+
+	JavaPoetTestRenderer() {
+		Handlebars handlebars = new Handlebars(new ClassPathTemplateLoader("/templates/java", ".hbs"));
+		try {
+			this.template = handlebars.compile("class");
+		}
+		catch (IOException ex) {
+			throw new UncheckedIOException("Failed to load the Java templates", ex);
+		}
+	}
+
 	/**
 	 * Renders the given model into Java source.
 	 * @param model the class model; {@link TestClassModel#spock()} must be {@code false}
 	 * @return the generated Java source
-	 * @throws IllegalArgumentException if the model targets Spock, which JavaPoet cannot
-	 * render
+	 * @throws IllegalArgumentException if the model targets Spock, which this renderer
+	 * cannot render
 	 */
 	String render(TestClassModel model) {
 		if (model.spock()) {
 			throw new IllegalArgumentException(
-					"JavaPoetTestRenderer renders Java targets only; Spock is rendered by the Handlebars renderer");
+					"JavaPoetTestRenderer renders Java targets only; Spock is rendered by the SpockTestRenderer");
 		}
-		TypeSpec.Builder type = TypeSpec.classBuilder(model.className()).addModifiers(Modifier.PUBLIC);
-		String baseClass = model.baseClass();
-		if (baseClass != null && !baseClass.isBlank()) {
-			type.superclass(ClassName.bestGuess(baseClass.trim()));
+		Map<String, Object> context = new LinkedHashMap<>();
+		context.put("packageName", model.packageName());
+		context.put("imports", imports(model.importDeclarations()));
+		context.put("classAnnotations", classAnnotations(model.classAnnotations()));
+		context.put("className", model.className());
+		context.put("baseClass", baseClass(model.baseClass()));
+		context.put("fields", fields(model.fields()));
+		context.put("methods", methods(model.methods()));
+		try {
+			return this.template.apply(context);
 		}
-		for (AnnotationModel annotation : model.classAnnotations()) {
-			type.addAnnotation(toAnnotationSpec(annotation));
+		catch (IOException ex) {
+			throw new UncheckedIOException("Failed to render the Java test class", ex);
 		}
-		for (TestMethodModel method : model.methods()) {
-			type.addMethod(toMethodSpec(method));
-		}
-		String rendered = JavaFile.builder(model.packageName(), type.build())
-			.skipJavaLangImports(true)
-			.indent("\t")
-			.build()
-			.toString();
-		String merged = ensureBlankLineBeforeClassClose(
-				injectFields(mergeImports(rendered, model.importDeclarations()), model.fields()));
-		return unqualifyImportedAnnotations(merged, model.importDeclarations());
 	}
 
 	/**
-	 * Restores the simple name of any annotation JavaPoet fully-qualified because its
-	 * simple name collides with the generated class name (e.g. a class named {@code Test}
-	 * makes JavaPoet emit {@code @org.junit.jupiter.api.Test}). The legacy generator
-	 * always used the simple name — the import disambiguates, and the class name is not
-	 * an annotation type, so {@code @Test} still resolves unambiguously — so this keeps
-	 * the output byte-identical to legacy. It only rewrites {@code @<fqn>} occurrences
-	 * whose {@code import <fqn>;} is present; the common (non-colliding) case leaves the
-	 * source untouched.
-	 * @param source the rendered source
-	 * @param importDeclarations the model's import lines (both regular and static)
-	 * @return the source with imported annotation references reduced to their simple
-	 * names
+	 * Groups the captured legacy import lines into a regular block and a static block
+	 * separated by one blank line, preserving order within each — exactly as the legacy
+	 * generator lays them out. The model's import list is authoritative and already
+	 * carries the Java {@code ;} terminators.
+	 * @param importDeclarations the captured {@code import …;} lines, in order
+	 * @return the formatted import section, without a trailing newline
 	 */
-	private String unqualifyImportedAnnotations(String source, List<String> importDeclarations) {
-		String result = source;
-		for (String importLine : importDeclarations) {
-			String trimmed = importLine.trim();
-			if (!trimmed.startsWith("import ") || trimmed.startsWith("import static ")) {
-				continue;
-			}
-			String fqn = trimmed.substring("import ".length()).trim();
-			if (fqn.endsWith(";")) {
-				fqn = fqn.substring(0, fqn.length() - 1).trim();
-			}
-			int lastDot = fqn.lastIndexOf('.');
-			if (lastDot < 0) {
-				continue;
-			}
-			String simpleName = fqn.substring(lastDot + 1);
-			result = result.replace("@" + fqn, "@" + simpleName);
-		}
-		return result;
-	}
-
-	/**
-	 * Emits a blank line between the last member and the class' closing brace, matching
-	 * the legacy generator's layout. JavaPoet closes the class immediately after the
-	 * final method; the legacy string builders leave a trailing blank line, so
-	 * replicating it keeps the model output byte-faithful to legacy.
-	 * @param source the rendered source
-	 * @return the source with a blank line before the class' closing brace
-	 */
-	private String ensureBlankLineBeforeClassClose(String source) {
-		List<String> lines = new ArrayList<>(source.lines().toList());
-		for (int i = lines.size() - 1; i >= 0; i--) {
-			// The class' closing brace is the only unindented "}".
-			if (lines.get(i).equals("}")) {
-				if (i > 0 && !lines.get(i - 1).isBlank()) {
-					lines.add(i, "");
-				}
-				break;
-			}
-		}
-		String joined = String.join("\n", lines);
-		return source.endsWith("\n") ? joined + "\n" : joined;
-	}
-
-	/**
-	 * Inserts the captured class-level field declarations immediately after the class
-	 * opening brace and guarantees the single blank line the legacy generator always
-	 * places before the first method.
-	 *
-	 * <p>
-	 * JavaPoet's typed {@code FieldSpec} model does not fit these annotated,
-	 * framework-typed fields cleanly, so — as with the verbatim method bodies — they are
-	 * captured from the legacy generator and spliced into the rendered source; their
-	 * imports are already part of the merged import set. The legacy layout is {@code {
-	 * <fields> <blank> <methods> }}, where the field block may be empty (the plain
-	 * MockMvc/EXPLICIT/WebTestClient HTTP shapes) but the blank line before the first
-	 * method is always present. JavaPoet emits the first method directly after the brace
-	 * with no blank, so this restores it whether or not there are fields, keeping the
-	 * output byte-faithful to legacy.
-	 * @param rendered the rendered (import-merged) source
-	 * @param fields the field declaration lines, or empty
-	 * @return the source with the fields (and the leading blank line) inserted
-	 */
-	private String injectFields(String rendered, List<String> fields) {
-		List<String> lines = new ArrayList<>(rendered.lines().toList());
-		for (int i = 0; i < lines.size(); i++) {
-			if (lines.get(i).stripTrailing().matches("^(public\\s+)?(final\\s+)?class\\s+\\w+.*\\{$")) {
-				boolean bodyEmpty = i + 1 >= lines.size() || lines.get(i + 1).strip().equals("}");
-				boolean nextAlreadyBlank = i + 1 < lines.size() && lines.get(i + 1).isBlank();
-				List<String> insert = new ArrayList<>();
-				for (String field : fields) {
-					String trimmed = field.trim();
-					// Interior blank lines (between distinct legacy Field visitor groups)
-					// are
-					// carried through verbatim; declarations are re-indented and
-					// terminated.
-					insert.add(trimmed.isEmpty() ? "" : "\t" + (trimmed.endsWith(";") ? trimmed : trimmed + ";"));
-				}
-				// Legacy always puts one blank line before the first method. Add it
-				// unless
-				// the body is empty, or there are no fields and JavaPoet already left a
-				// blank there (which would otherwise double it).
-				if (!bodyEmpty && !(fields.isEmpty() && nextAlreadyBlank)) {
-					insert.add("");
-				}
-				lines.addAll(i + 1, insert);
-				break;
-			}
-		}
-		String joined = String.join("\n", lines);
-		return rendered.endsWith("\n") ? joined + "\n" : joined;
-	}
-
-	/**
-	 * Merges JavaPoet's own emitted imports with the legacy import set carried on the
-	 * model, de-duplicating by exact text. JavaPoet only imports the types it references
-	 * in the scaffold (annotations, base class); the verbatim method bodies reference
-	 * types JavaPoet never sees, so their imports must come from the legacy set.
-	 * @param rendered the JavaPoet output
-	 * @param extraImports the legacy {@code import ...;} lines to fold in
-	 * @return the source with a single merged import block
-	 */
-	private String mergeImports(String rendered, List<String> extraImports) {
-		List<String> lines = rendered.lines().toList();
-		String packageLine = "";
-		List<String> javaPoetImports = new ArrayList<>();
-		List<String> remainder = new ArrayList<>();
-		boolean inRemainder = false;
-		for (String line : lines) {
-			String trimmed = line.trim();
-			if (inRemainder) {
-				remainder.add(line);
-				continue;
-			}
-			if (trimmed.startsWith("package ")) {
-				packageLine = line;
-			}
-			else if (trimmed.startsWith("import ")) {
-				javaPoetImports.add(trimmed);
-			}
-			else if (trimmed.isEmpty()) {
-				// skip blank lines between package/imports
-			}
-			else {
-				inRemainder = true;
-				remainder.add(line);
-			}
-		}
-		// The legacy import set is authoritative for ordering (it is a superset of the
-		// scaffold imports JavaPoet emits); append any JavaPoet-only import last.
-		Set<String> ordered = new LinkedHashSet<>();
-		for (String extra : extraImports) {
-			String trimmed = extra.trim();
-			if (!trimmed.isEmpty()) {
-				ordered.add(trimmed);
-			}
-		}
-		ordered.addAll(javaPoetImports);
-		// Group regular and static imports into separate blocks, as the legacy generator
-		// does, preserving order within each block.
+	private String imports(List<String> importDeclarations) {
 		List<String> regular = new ArrayList<>();
 		List<String> statics = new ArrayList<>();
-		for (String imp : ordered) {
-			(imp.startsWith("import static ") ? statics : regular).add(imp);
+		for (String line : importDeclarations) {
+			(line.startsWith("import static ") ? statics : regular).add(line);
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(packageLine).append('\n').append('\n');
-		for (String imp : regular) {
-			sb.append(imp).append('\n');
-		}
+		sb.append(String.join("\n", regular));
 		if (!statics.isEmpty()) {
 			if (!regular.isEmpty()) {
-				sb.append('\n');
+				sb.append("\n\n");
 			}
-			for (String imp : statics) {
-				sb.append(imp).append('\n');
-			}
+			sb.append(String.join("\n", statics));
 		}
-		sb.append('\n');
-		sb.append(String.join("\n", remainder));
-		if (!remainder.isEmpty()) {
+		return sb.toString();
+	}
+
+	/**
+	 * Renders the class-level annotations, one per line each terminated by a newline, so
+	 * the {@code class} declaration follows immediately in the template.
+	 * @param annotations the class annotations, in order
+	 * @return the formatted annotation lines
+	 */
+	private String classAnnotations(List<AnnotationModel> annotations) {
+		StringBuilder sb = new StringBuilder();
+		for (AnnotationModel annotation : annotations) {
+			sb.append(annotation(annotation)).append('\n');
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Renders the class-level field block: each declaration indented one tab and
+	 * {@code ;}-terminated, interior blank lines (between distinct legacy field groups)
+	 * preserved. Empty when the class declares no fields. Mirrors the legacy per-line
+	 * termination the JavaPoet renderer applied when injecting fields.
+	 * @param fieldLines the captured field lines (empty strings mark interior blanks)
+	 * @return the formatted field block, or an empty string
+	 */
+	private String fields(List<String> fieldLines) {
+		StringBuilder sb = new StringBuilder();
+		for (String field : fieldLines) {
+			String trimmed = field.trim();
+			if (!trimmed.isEmpty()) {
+				sb.append('\t').append(trimmed.endsWith(";") ? trimmed : trimmed + ";");
+			}
 			sb.append('\n');
 		}
 		return sb.toString();
 	}
 
-	private MethodSpec toMethodSpec(TestMethodModel method) {
-		MethodSpec.Builder builder = MethodSpec.methodBuilder(method.name())
-			.addModifiers(Modifier.PUBLIC)
-			.returns(void.class)
-			.addException(Exception.class);
-		for (AnnotationModel annotation : method.annotations()) {
-			builder.addAnnotation(toAnnotationSpec(annotation));
+	private List<Map<String, Object>> methods(List<TestMethodModel> methodModels) {
+		List<Map<String, Object>> methods = new ArrayList<>();
+		for (TestMethodModel method : methodModels) {
+			Map<String, Object> map = new LinkedHashMap<>();
+			List<String> annotations = new ArrayList<>();
+			for (AnnotationModel annotation : method.annotations()) {
+				annotations.add(annotation(annotation));
+			}
+			map.put("annotations", annotations);
+			map.put("name", method.name());
+			map.put("body", body(method));
+			methods.add(map);
 		}
+		return methods;
+	}
+
+	/**
+	 * Assembles a method body at absolute indentation, each line terminated by a newline
+	 * so the template can place the method's closing brace on the following line. The
+	 * structured {@code // given:}/{@code // when:} request chains and {@code // then:}
+	 * response assertions carry baked-in indentation (label two tabs, chain head three,
+	 * continuations five, then-statements three); the verbatim tail (the {@code // and:}
+	 * response-body block, or the whole legacy body when the request is not structured)
+	 * is captured at method-relative depth and shifted to its absolute position by the
+	 * two-tab method base.
+	 * @param method the method model
+	 * @return the assembled body
+	 */
+	private String body(TestMethodModel method) {
+		List<String> lines = new ArrayList<>();
 		RequestModel request = method.request();
 		if (request != null) {
-			// Structured request path: emit the // given: and // when: chains from the
-			// model, then the verbatim // then: block. Each line goes through addCode as
-			// a
-			// $L argument so $, { and } stay literal.
-			emitLine(builder, "// given:");
-			emitFluentChain(builder, request.given().render());
-			emitLine(builder, "");
+			lines.add("\t\t// given:");
+			appendFluentChain(lines, request.given().render());
+			lines.add("");
 			// Legacy (RestAssuredGiven#indentedBodyBlock) emits a second blank line after
-			// the given block when it is empty (head only) or built from a multipart
-			// request; the remaining given shapes get a single blank. Match it so the
-			// structured output stays byte-identical to the legacy generator.
+			// the given block when it is empty (head only) or built from a
+			// multipart/param
+			// request; the remaining given shapes get a single blank.
 			if (givenNeedsExtraBlank(request.given())) {
-				emitLine(builder, "");
+				lines.add("");
 			}
-			emitLine(builder, "// when:");
-			emitFluentChain(builder, request.whenBlock().render());
-			emitLine(builder, "");
+			lines.add("\t\t// when:");
+			appendFluentChain(lines, request.whenBlock().render());
+			lines.add("");
 		}
 		ResponseModel response = method.response();
 		if (response != null) {
-			// Structured response path: emit the // then: status/header assertions from
-			// the model. The blank line separating them from the verbatim // and: body
-			// block is emitted below, only when such a body follows — legacy omits it
-			// when the then block is the method's last content.
-			emitLine(builder, "// then:");
+			lines.add("\t\t// then:");
 			for (String line : response.thenBlock().render()) {
 				// Each assertion sits one level below the // then: label, as the legacy
 				// GenericHttpThen block does.
-				emitLine(builder, "\t" + line);
+				lines.add("\t\t\t" + line);
 			}
 		}
-		// Emit the (remaining) body verbatim as a $L argument (never inline into the
-		// format
-		// string) so $, { and } in template/JSON bodies stay literal. addStatement is
-		// avoided: it appends a stray ; and mangles multi-line bodies, comments and blank
-		// lines.
-		String body = String.join("\n", method.bodyLines());
-		if (!body.isBlank()) {
+		// Emit the (remaining) body verbatim. It is captured at the method-relative depth
+		// the legacy string builders produce (no method base), so the two enclosing
+		// method
+		// levels are added here — matching what the legacy JavaPoet renderer did when it
+		// emitted the body inside the generated method.
+		String verbatim = String.join("\n", method.bodyLines());
+		if (!verbatim.isBlank()) {
 			// Separate the verbatim // and: body block from the structured // then:
 			// assertions that precede it.
 			if (response != null) {
-				emitLine(builder, "");
+				lines.add("");
 			}
-			builder.addCode("$L\n", body);
+			for (String line : method.bodyLines()) {
+				lines.add(line.isEmpty() ? "" : "\t\t" + line);
+			}
 		}
-		return builder.build();
+		StringBuilder sb = new StringBuilder();
+		for (String line : lines) {
+			sb.append(line).append('\n');
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Appends a fluent request chain ({@code // given:} / {@code // when:}) at the legacy
+	 * indentation: the chain head sits one level below the label (three tabs) and each
+	 * {@code .xxx(...)} continuation two further levels below the head (five tabs).
+	 * Mirrors the legacy {@code RestAssuredGiven}/{@code RestAssuredWhen} layout.
+	 * @param lines the body being assembled
+	 * @param chain the rendered chain, head first
+	 */
+	private void appendFluentChain(List<String> lines, List<String> chain) {
+		for (int i = 0; i < chain.size(); i++) {
+			lines.add(((i == 0) ? "\t\t\t" : "\t\t\t\t\t") + chain.get(i));
+		}
 	}
 
 	/**
 	 * Whether the {@code // given:} block is followed by two blank lines rather than one.
 	 * Mirrors the legacy {@code RestAssuredGiven}/{@code BodyMethodVisitor} layout: an
-	 * empty given (only the {@code given()} head, no continuations) and a multipart given
-	 * both emit an extra trailing blank line before the {@code // when:} block; every
-	 * other given shape emits a single blank.
+	 * empty given (only the {@code given()} head, no continuations) and a multipart/param
+	 * given both emit an extra trailing blank line before the {@code // when:} block;
+	 * every other given shape emits a single blank.
 	 * @param given the rendered given chain
 	 * @return {@code true} if a second blank line must follow the given block
 	 */
@@ -340,41 +266,28 @@ class JavaPoetTestRenderer {
 			.anyMatch((line) -> line.trim().startsWith(".multiPart(") || line.trim().startsWith(".param("));
 	}
 
-	private void emitLine(MethodSpec.Builder builder, String line) {
-		builder.addCode("$L\n", line);
-	}
-
-	/**
-	 * Emits a fluent request chain ({@code // given:} / {@code // when:}) at the legacy
-	 * indentation: the chain head sits one level below the label, and each
-	 * {@code .xxx(...)} continuation two further levels below the head (JavaPoet already
-	 * applies the two enclosing method levels). Mirrors the legacy
-	 * {@code RestAssuredGiven}/{@code RestAssuredWhen} layout so the structured output is
-	 * byte-identical to the verbatim fallback.
-	 * @param builder the method being assembled
-	 * @param lines the rendered chain, head first
-	 */
-	private void emitFluentChain(MethodSpec.Builder builder, List<String> lines) {
-		for (int i = 0; i < lines.size(); i++) {
-			emitLine(builder, ((i == 0) ? "\t" : "\t\t\t") + lines.get(i));
+	private @Nullable String baseClass(@Nullable String baseClass) {
+		if (baseClass == null || baseClass.isBlank()) {
+			return null;
 		}
+		return simpleName(baseClass.trim());
 	}
 
-	private AnnotationSpec toAnnotationSpec(AnnotationModel annotation) {
-		AnnotationSpec.Builder builder = AnnotationSpec.builder(ClassName.bestGuess(annotation.type()));
+	private String annotation(AnnotationModel annotation) {
+		String simple = simpleName(annotation.type());
 		String member = annotation.memberCode();
-		if (member != null && !member.isBlank()) {
-			if ("value".equals(annotation.memberName())) {
-				builder.addMember("value", "$L", member);
-			}
-			else {
-				// A named member (e.g. enabled = false) is emitted as a single value
-				// member so JavaPoet keeps it inline (@Test(enabled = false)) rather than
-				// spreading it over three lines.
-				builder.addMember("value", "$L", annotation.memberName() + " = " + member);
-			}
+		if (member == null || member.isBlank()) {
+			return "@" + simple;
 		}
-		return builder.build();
+		if ("value".equals(annotation.memberName())) {
+			return "@" + simple + "(" + member + ")";
+		}
+		return "@" + simple + "(" + annotation.memberName() + " = " + member + ")";
+	}
+
+	private String simpleName(String type) {
+		int lastDot = type.lastIndexOf('.');
+		return (lastDot >= 0) ? type.substring(lastDot + 1) : type;
 	}
 
 }
