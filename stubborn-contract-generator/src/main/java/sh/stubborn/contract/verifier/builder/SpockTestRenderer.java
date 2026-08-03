@@ -33,14 +33,14 @@ import org.jspecify.annotations.Nullable;
  * <a href="https://github.com/jknack/handlebars.java">Handlebars</a> templates.
  *
  * <p>
- * JavaPoet models the Java language and cannot emit Groovy, so Spock is rendered from
- * template files instead ({@code templates/spock/spec.hbs} and its {@code method.hbs}
- * partial). The templates carry the fixed Groovy layout — {@code package}/{@code import}
- * lines without semicolons, {@code class … extends Specification}, {@code def …()}
- * feature methods, bare {@code given:}/{@code when:} labels — while the variable parts
- * (imports, class/method annotations, fields, method bodies) are prepared here and
- * spliced in. The method bodies are captured verbatim from the legacy Groovy pipeline, as
- * with the Java targets.
+ * The Java targets render through the sibling {@link JavaTestRenderer}; this renders the
+ * Groovy/Spock target from its own template files ({@code templates/spock/spec.hbs} and
+ * its {@code method.hbs} partial). The templates carry the fixed Groovy layout —
+ * {@code package}/{@code import} lines without semicolons,
+ * {@code class … extends Specification}, {@code def …()} feature methods, bare
+ * {@code given:}/{@code when:} labels — while the variable parts (imports, class/method
+ * annotations, fields, method bodies) are prepared here and spliced in. The method bodies
+ * are captured verbatim from the legacy Groovy pipeline, as with the Java targets.
  *
  * @author Marcin Grzejszczak
  */

@@ -45,7 +45,7 @@ final class GeneratorUnderTest {
 	 * @return a {@link ModelBasedTestGenerator} over the given delegate
 	 */
 	static SingleTestGenerator wrap(SingleTestGenerator legacy) {
-		return new ModelBasedTestGenerator(legacy, new ModelBuilder(), new JavaPoetTestRenderer());
+		return new ModelBasedTestGenerator(legacy, new ModelBuilder(), new JavaTestRenderer());
 	}
 
 	/**
@@ -57,7 +57,7 @@ final class GeneratorUnderTest {
 	 * @return a {@link ModelBasedTestGenerator} over the given delegate
 	 */
 	static SingleTestGenerator wrapWithExtraFields(SingleTestGenerator legacy, List<String> extraFieldLines) {
-		return new ModelBasedTestGenerator(legacy, new ModelBuilder(), new JavaPoetTestRenderer(), extraFieldLines);
+		return new ModelBasedTestGenerator(legacy, new ModelBuilder(), new JavaTestRenderer(), extraFieldLines);
 	}
 
 }

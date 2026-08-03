@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {@link JavaPoetTestRenderer} rendering a {@link TestMethodModel} that
+ * Unit tests for {@link JavaTestRenderer} rendering a {@link TestMethodModel} that
  * carries a structured {@link RequestModel} — proves the
  * {@code // given:}/{@code // when:} chains are emitted from the model with the correct
  * {@code ;} placement, and the verbatim {@code // then:} block follows.
@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class RequestModelRendererTests {
 
-	private final JavaPoetTestRenderer renderer = new JavaPoetTestRenderer();
+	private final JavaTestRenderer renderer = new JavaTestRenderer();
 
 	@Test
 	void renders_mockmvc_request_model_with_header_and_url() {

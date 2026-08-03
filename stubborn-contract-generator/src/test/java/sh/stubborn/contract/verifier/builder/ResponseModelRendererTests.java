@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {@link JavaPoetTestRenderer} rendering a {@link TestMethodModel} that
+ * Unit tests for {@link JavaTestRenderer} rendering a {@link TestMethodModel} that
  * carries a structured {@link ResponseModel} — proves the {@code // then:} status/header
  * assertions are emitted from the model, each terminated with a single {@code ;}, and the
  * verbatim {@code // and:} body block (carried on {@code bodyLines}) follows.
@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class ResponseModelRendererTests {
 
-	private final JavaPoetTestRenderer renderer = new JavaPoetTestRenderer();
+	private final JavaTestRenderer renderer = new JavaTestRenderer();
 
 	@Test
 	void renders_structured_then_status_and_headers_then_verbatim_and_body() {

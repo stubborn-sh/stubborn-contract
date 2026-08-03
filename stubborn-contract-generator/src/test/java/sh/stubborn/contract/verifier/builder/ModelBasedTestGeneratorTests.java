@@ -235,7 +235,7 @@ class ModelBasedTestGeneratorTests {
 		// through the model-side extra-field hook instead. The model path emits the
 		// injected field via ClassScaffoldProducer.
 		String modelBased = new ModelBasedTestGenerator(new JavaTestGenerator(), new ModelBuilder(),
-				new JavaPoetTestRenderer(), List.of("WebTarget webTarget"))
+				new JavaTestRenderer(), List.of("WebTarget webTarget"))
 			.buildClass(properties, contracts, "some/path", data);
 
 		assertThat(modelBased).contains("WebTarget webTarget;");

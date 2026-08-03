@@ -28,11 +28,11 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
  *
  * <p>
  * During the test-generation migration the class scaffold (package, imports, annotations,
- * signatures) is produced from the {@link TestClassModel} by
- * {@link JavaPoetTestRenderer}, while each method's body is still generated verbatim by
- * the legacy string builders. This extractor bridges the two: it wires the legacy
- * {@link SingleMethodBuilder} for one contract and returns the emitted body lines so the
- * renderer can drop them into the JavaPoet-produced method.
+ * signatures) is produced from the {@link TestClassModel} by {@link JavaTestRenderer},
+ * while each method's body is still generated verbatim by the legacy string builders.
+ * This extractor bridges the two: it wires the legacy {@link SingleMethodBuilder} for one
+ * contract and returns the emitted body lines so the renderer can drop them into the
+ * generated method.
  *
  * <p>
  * A <em>fresh</em> {@link BlockBuilder} per contract is required because
