@@ -76,12 +76,10 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 	@Override
 	public String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData) {
-		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, listOfFiles, includedDirectoryRelativePath,
-				generatedClassData);
-		if (!modellable(properties, meta)) {
-			// Spock, the not-yet-migrated Java modes (JAX-RS, WebTestClient, CUSTOM) and
-			// messaging classes cannot be modelled by JavaPoet yet; they stay
-			// byte-identical on the legacy generator.
+		if (!modellable(properties)) {
+			// Spock and the not-yet-migrated Java modes (JAX-RS, WebTestClient, CUSTOM)
+			// cannot be modelled by JavaPoet yet; they stay byte-identical on the legacy
+			// generator.
 			return this.delegate.buildClass(properties, listOfFiles, includedDirectoryRelativePath, generatedClassData);
 		}
 		TestClassModel model = this.modelBuilder.build(properties, listOfFiles, includedDirectoryRelativePath,
@@ -90,19 +88,18 @@ public class ModelBasedTestGenerator implements SingleTestGenerator {
 	}
 
 	/**
-	 * Whether the model + JavaPoet path can fully produce this class. Only the migrated
-	 * HTTP surface qualifies: a non-Spock framework, a migrated HTTP {@link TestMode}
-	 * (MockMvc/EXPLICIT), and a class whose contracts are all HTTP. Messaging classes
-	 * reference messaging collaborators ({@code contractVerifierMessaging},
-	 * {@code contractVerifierObjectMapper}) that only the legacy scaffold declares, so
-	 * they stay on the legacy generator.
+	 * Whether the model + JavaPoet path can fully produce this class. A non-Spock
+	 * framework on a migrated {@link TestMode} (MockMvc/EXPLICIT) qualifies; this now
+	 * covers both the HTTP shapes and messaging classes, whose class-level collaborators
+	 * ({@code contractVerifierMessaging}, {@code contractVerifierObjectMapper}) are
+	 * captured as model fields. The JAX-RS, WebTestClient and CUSTOM modes still need
+	 * their own field and when/then handling, so they stay on the legacy generator.
 	 * @param properties the plugin configuration
-	 * @param meta the class-level metadata for the contracts of this class
 	 * @return {@code true} if the class should be rendered by the model path
 	 */
-	private static boolean modellable(ContractVerifierConfigProperties properties, GeneratedClassMetaData meta) {
-		return properties.getTestFramework() != TestFramework.SPOCK && MIGRATED_MODES.contains(properties.getTestMode())
-				&& meta.isAnyHttp() && !meta.isAnyMessaging();
+	private static boolean modellable(ContractVerifierConfigProperties properties) {
+		return properties.getTestFramework() != TestFramework.SPOCK
+				&& MIGRATED_MODES.contains(properties.getTestMode());
 	}
 
 }

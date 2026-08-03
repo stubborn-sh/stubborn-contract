@@ -127,6 +127,23 @@ class JavaPoetTestRendererTests {
 	}
 
 	@Test
+	void renders_class_level_fields_before_methods() {
+		TestClassModel model = new TestClassModel("com.example", "MsgTest", null, false, List.of(),
+				List.of("@Autowired ContractVerifierMessaging contractVerifierMessaging;",
+						"@Autowired ContractVerifierObjectMapper contractVerifierObjectMapper;"),
+				List.of(new TestMethodModel("validate_it",
+						List.of(AnnotationModel.marker("org.junit.jupiter.api.Test")), List.of())),
+				List.of());
+
+		String rendered = this.renderer.render(model);
+
+		assertThat(rendered).contains("\t@Autowired ContractVerifierMessaging contractVerifierMessaging;")
+			.contains("\t@Autowired ContractVerifierObjectMapper contractVerifierObjectMapper;");
+		// fields are declared before the first method
+		assertThat(rendered.indexOf("contractVerifierMessaging")).isLessThan(rendered.indexOf("validate_it"));
+	}
+
+	@Test
 	void rejects_spock_model() {
 		TestClassModel spockModel = new TestClassModel("com.example", "FooSpec", null, true, List.of(), List.of(),
 				List.of());
