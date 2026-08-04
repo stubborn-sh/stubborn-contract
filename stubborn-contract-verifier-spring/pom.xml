@@ -9,7 +9,7 @@
 	</properties>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-parent</artifactId>
+		<artifactId>stubborn-contract-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>

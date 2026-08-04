@@ -1041,7 +1041,7 @@ Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to displa
     </dependency>
     <dependency>
       <groupId>sh.stubborn</groupId>
-      <artifactId>stubborn-jsonassert</artifactId>
+      <artifactId>stubborn-contract-jsonassert</artifactId>
       <type>jar</type>
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
