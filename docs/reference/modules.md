@@ -57,7 +57,7 @@ added on top, never a hard requirement of the engine.
 | `stubborn-contract-spec-java` | Java DSL for writing contracts (`Contract.make { … }` equivalents in Java). |
 | `stubborn-contract-spec-groovy` | Groovy DSL for writing contracts. |
 | `stubborn-contract-verifier` | **Runtime / shared library** of the verifier — the contract model, converters, matchers and stub-generation logic reused at both build time and test time. |
-| `stubborn-contract-generator` | **Build-time test generator.** Renders the actual test source for each contract and carries the [JavaPoet](https://github.com/palantir/javapoet) dependency (`com.palantir.javapoet:javapoet`). |
+| `stubborn-contract-generator` | **Build-time test generator.** Renders the actual test source for each contract from [Handlebars](https://github.com/jknack/handlebars.java) templates (`com.github.jknack:handlebars`) — JUnit/JVM tests by default, Spock via a dedicated renderer. |
 | `stubborn-contract-stub-runner` | Stub runner core — downloads, unpacks and serves stubs. |
 | `stubborn-contract-wiremock` | WireMock integration core (no Spring). Registers the custom matchers. |
 | `stubborn-contract-converters` | Contract format converters (YAML ⇄ Java ⇄ Groovy). Lives under `stubborn-contract-tools/`. |
@@ -69,14 +69,15 @@ source. Those two concerns are now separate modules:
 
 - **`stubborn-contract-verifier`** is the runtime and shared library. It is on the compile
   classpath of downstream Spring modules and is checked by `revapi` for binary compatibility.
-  It does **not** carry JavaPoet.
+  It does **not** carry the Handlebars test-rendering engine.
 - **`stubborn-contract-generator`** is the build-time test generator. It depends on
-  `stubborn-contract-verifier` and adds JavaPoet (`JavaPoetTestRenderer`) plus the messaging
-  code generators. It is invoked by the Maven / Gradle plugins during the build and is not
-  something a consumer application depends on at runtime.
+  `stubborn-contract-verifier` and adds the Handlebars rendering engine (`JavaTestRenderer`
+  for JUnit/JVM tests, `SpockTestRenderer` for Spock) plus the messaging code generators. It
+  is invoked by the Maven / Gradle plugins during the build and is not something a consumer
+  application depends on at runtime.
 
-This keeps the heavyweight code-generation dependency out of the runtime classpath while still
-letting the plugins generate tests.
+This keeps the code-generation dependency out of the runtime classpath while still letting the
+plugins generate tests.
 
 ## Spring Framework tier (`-spring`)
 
