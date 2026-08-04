@@ -1,0 +1,36 @@
+package com.example;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static javax.ws.rs.client.Entity.*;
+
+@SuppressWarnings("rawtypes")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
+
+	@Test
+	@Disabled
+	public void validate_contract() throws Exception {
+
+		// when:
+			Response response = webTarget
+							.path("/resp/exec")
+							.request()
+							.build("GET")
+							.invoke();
+
+		// then:
+			assertThat(response.getStatus()).isEqualTo(200);
+			response.getHeaderString("X-Exec").length();
+	}
+
+}
+
