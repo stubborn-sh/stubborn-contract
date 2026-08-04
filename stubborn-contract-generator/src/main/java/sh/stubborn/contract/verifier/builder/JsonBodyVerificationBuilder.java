@@ -29,7 +29,6 @@ import java.util.function.Function;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import groovy.json.JsonOutput;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractTemplate;
@@ -43,6 +42,7 @@ import sh.stubborn.contract.verifier.template.TestSideRequestTemplateModel;
 import sh.stubborn.contract.verifier.util.JsonPaths;
 import sh.stubborn.contract.verifier.util.JsonToJsonPathsConverter;
 import sh.stubborn.contract.verifier.util.MapConverter;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * @author Marcin Grzejszczak
@@ -281,7 +281,7 @@ class JsonBodyVerificationBuilder implements BodyMethodGeneration, ClassVerifier
 		}
 		catch (PathNotFoundException ex) {
 			throw new IllegalStateException("Entry for the provided JSON path <" + path
-					+ "> doesn't exist in the body <" + JsonOutput.toJson(body) + ">", ex);
+					+ "> doesn't exist in the body <" + new JsonMapper().writeValueAsString(body) + ">", ex);
 		}
 	}
 

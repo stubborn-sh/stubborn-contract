@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.util;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import groovy.json.JsonOutput;
 import groovy.json.StringEscapeUtils;
 import groovy.lang.GString;
 import org.jspecify.annotations.Nullable;
@@ -27,6 +26,7 @@ import sh.stubborn.contract.spec.internal.CanBeDynamic;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.RegexProperty;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Class that constructs a String from a body. The body can be a GString or a map.
@@ -47,7 +47,7 @@ public final class BodyExtractor {
 	 */
 	public static String extractTestValueFrom(@Nullable Object body) {
 		Object bodyValue = extractServerValueFromBody(body);
-		String json = JsonOutput.toJson(bodyValue);
+		String json = new JsonMapper().writeValueAsString(bodyValue);
 		json = StringEscapeUtils.unescapeJavaScript(json);
 		return trimRepeatedQuotes(json);
 	}
@@ -60,7 +60,7 @@ public final class BodyExtractor {
 	 */
 	public static String extractStubValueFrom(@Nullable Object body) {
 		Object bodyValue = extractClientValueFromBody(body);
-		String json = JsonOutput.toJson(bodyValue);
+		String json = new JsonMapper().writeValueAsString(bodyValue);
 		json = StringEscapeUtils.unescapeJavaScript(json);
 		return trimRepeatedQuotes(json);
 	}

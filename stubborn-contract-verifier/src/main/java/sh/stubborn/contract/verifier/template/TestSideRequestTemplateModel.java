@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import groovy.json.JsonOutput;
 import groovy.lang.GString;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.Nullable;
@@ -39,6 +38,7 @@ import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.spec.internal.Url;
 import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.MapConverter;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Representation of the request side to be used for response templating in the generated
@@ -195,7 +195,7 @@ public final class TestSideRequestTemplateModel {
 		else if (bodyValue instanceof FromFileProperty) {
 			return null;
 		}
-		return (bodyValue != null) ? new JsonOutput().toJson(bodyValue) : null;
+		return (bodyValue != null) ? new JsonMapper().writeValueAsString(bodyValue) : null;
 	}
 
 	private static Object extractServerValueFromBody(Object bodyValue) {
