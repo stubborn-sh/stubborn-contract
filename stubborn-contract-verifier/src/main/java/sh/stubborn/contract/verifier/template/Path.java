@@ -19,9 +19,6 @@ package sh.stubborn.contract.verifier.template;
 import java.util.ArrayList;
 import java.util.List;
 
-import groovy.transform.CompileStatic;
-
-@CompileStatic
 class Path extends ArrayList<String> {
 
 	Path(List<String> list) {

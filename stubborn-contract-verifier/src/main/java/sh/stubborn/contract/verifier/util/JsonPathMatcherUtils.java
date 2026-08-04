@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import groovy.json.JsonOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
@@ -35,6 +34,7 @@ import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.MatchingType;
 import sh.stubborn.contract.spec.internal.RegexProperty;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Utility class for JSON path matching operations including path cleanup, comparison
@@ -305,8 +305,8 @@ public final class JsonPathMatcherUtils {
 			return propertyName + " == " + wrappedValue;
 		}
 		catch (PathNotFoundException ex) {
-			throw new IllegalStateException(
-					"Value [" + bodyMatcher.path() + "] not found in JSON [" + JsonOutput.toJson(body) + "]", ex);
+			throw new IllegalStateException("Value [" + bodyMatcher.path() + "] not found in JSON ["
+					+ new JsonMapper().writeValueAsString(body) + "]", ex);
 		}
 	}
 

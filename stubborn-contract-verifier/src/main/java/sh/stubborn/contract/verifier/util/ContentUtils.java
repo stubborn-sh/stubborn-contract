@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 
 import groovy.json.JsonException;
-import groovy.json.JsonOutput;
 import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
 import groovy.lang.GString;
@@ -48,6 +47,7 @@ import sh.stubborn.contract.spec.internal.MatchingStrategy;
 import sh.stubborn.contract.spec.internal.NamedProperty;
 import sh.stubborn.contract.spec.internal.OptionalProperty;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * A utility class that can operate on a message body basing on the provided Content Type.
@@ -213,7 +213,7 @@ public class ContentUtils {
 			if (log.isDebugEnabled()) {
 				log.debug("No content type passed, will try to guess the type of payload");
 			}
-			return getClientContentType(JsonOutput.toJson(bodyAsValue));
+			return getClientContentType(new JsonMapper().writeValueAsString(bodyAsValue));
 		}
 		catch (Exception ignored) {
 			if (log.isTraceEnabled()) {
@@ -233,7 +233,7 @@ public class ContentUtils {
 
 	public static ContentType getClientContentType(Map bodyAsValue) {
 		try {
-			JsonOutput.toJson(bodyAsValue);
+			new JsonMapper().writeValueAsString(bodyAsValue);
 			return ContentType.JSON;
 		}
 		catch (Exception ignore) {
@@ -243,7 +243,7 @@ public class ContentUtils {
 
 	public static ContentType getClientContentType(List bodyAsValue) {
 		try {
-			JsonOutput.toJson(bodyAsValue);
+			new JsonMapper().writeValueAsString(bodyAsValue);
 			return ContentType.JSON;
 		}
 		catch (Exception ignore) {
