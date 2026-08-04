@@ -169,6 +169,12 @@
 		  src/main. Set to true only in modules that legitimately ship a Groovy DSL.
 		-->
 		<stubborn.no-groovy.skip>false</stubborn.no-groovy.skip>
+		<!--
+		  Groovy-transform-free gate: fails the build if any Java main source imports
+		  groovy.transform.* (no-op annotations on Java files). Opt in per module by
+		  setting this to false.
+		-->
+		<stubborn.no-groovy-transform.skip>true</stubborn.no-groovy-transform.skip>
 	</properties>
 
 	<dependencyManagement>
@@ -578,6 +584,35 @@
 Groovy source is not allowed in production code (src/main). Convert it to Java, or set stubborn.no-groovy.skip=true in a module that ships a Groovy DSL.
 Offending files:
 ${stubborn.groovy.production.sources}
+								</fail>
+							</target>
+						</configuration>
+					</execution>
+					<!--
+					  Bans groovy.transform.* imports (e.g. @CompileStatic) in Java main
+					  sources. Those annotations only affect the Groovy compiler and are
+					  no-ops on Java files, so they add needless Groovy coupling. Opt-in
+					  per module by setting stubborn.no-groovy-transform.skip=false.
+					-->
+					<execution>
+						<id>ban-groovy-transform-in-production</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<skip>${stubborn.no-groovy-transform.skip}</skip>
+							<target>
+								<pathconvert property="stubborn.groovy.transform.imports" setonempty="false">
+									<fileset dir="${project.basedir}" erroronmissingdir="false">
+										<include name="src/main/java/**/*.java"/>
+										<containsregexp expression="import\s+groovy\.transform\."/>
+									</fileset>
+								</pathconvert>
+								<fail if="stubborn.groovy.transform.imports">
+groovy.transform.* imports are not allowed in Java production code (src/main/java). They only affect the Groovy compiler and are no-ops on Java sources.
+Offending files:
+${stubborn.groovy.transform.imports}
 								</fail>
 							</target>
 						</configuration>
