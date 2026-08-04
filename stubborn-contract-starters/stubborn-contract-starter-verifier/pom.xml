@@ -30,6 +30,13 @@
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-jsonassert</artifactId>
 		</dependency>
+		<!-- Generated CUSTOM / non-Spring-mode tests inject their collaborators with
+			jakarta.inject's @Inject (the AUTO default for those modes), so consumers using
+			this starter get the API on their test classpath without declaring it themselves. -->
+		<dependency>
+			<groupId>jakarta.inject</groupId>
+			<artifactId>jakarta.inject-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
