@@ -6,7 +6,7 @@ In this section, we publish a `mgrzejszczak/stubborn-contract` Docker image that
 The `EXPLICIT` mode means that the tests generated from contracts send real requests and not mocked ones.
 :::
 
-We also publish a `mgrzejszczak/stubborn-stub-runner` Docker image that starts the standalone version of Stub Runner.
+We also publish a `mgrzejszczak/stubborn-contract-stub-runner` Docker image that starts the standalone version of Stub Runner.
 
 ::: tip Prerequisites
 - Docker 20 or later is required.
@@ -63,7 +63,7 @@ You can provide a customized `gradle.build` to be run in the container by mounti
 
 ```bash
 # Check https://hub.docker.com/r/mgrzejszczak/stubborn-contract for the latest version tag
-$ docker run -v <absolute-path-of-your-custom-file>:/spring-cloud-contract/build.gradle mgrzejszczak/stubborn-contract:4.1.0-SNAPSHOT
+$ docker run -v <absolute-path-of-your-custom-file>:/spring-cloud-contract/build.gradle mgrzejszczak/stubborn-contract:latest
 ```
 
 ### Example of Usage via HTTP
@@ -97,7 +97,7 @@ $ nohup node app &
 
 # Prepare environment variables
 # Check https://hub.docker.com/r/mgrzejszczak/stubborn-contract for latest
-$ SC_CONTRACT_DOCKER_VERSION="4.1.0"
+$ SC_CONTRACT_DOCKER_VERSION="latest"
 $ APP_IP="192.168.0.100"
 $ APP_PORT="3000"
 $ ARTIFACTORY_PORT="8081"
@@ -254,7 +254,7 @@ set -x
 
 CURRENT_DIR="$( pwd )"
 
-export SC_CONTRACT_DOCKER_VERSION="${SC_CONTRACT_DOCKER_VERSION:-4.0.1-SNAPSHOT}"
+export SC_CONTRACT_DOCKER_VERSION="${SC_CONTRACT_DOCKER_VERSION:-latest}"
 export APP_IP="$( ./whats_my_ip.sh )"
 export APP_PORT="${APP_PORT:-8000}"
 export APPLICATION_BASE_URL="http://${APP_IP}:${APP_PORT}"
@@ -299,7 +299,10 @@ yes | docker-compose kill
 
 ## Running Stubs on the Consumer Side
 
-We publish a `mgrzejszczak/stubborn-stub-runner` Docker image that starts the standalone version of Stub Runner.
+There are two ways to run the standalone version of Stub Runner:
+
+- **Docker image** — we publish a `mgrzejszczak/stubborn-contract-stub-runner` image (on release tags and `latest`) that starts the standalone Stub Runner. This section covers that image.
+- **Executable Spring Boot jar** — the `stubborn-contract-stub-runner-app` module is repackaged by the `spring-boot-maven-plugin` into a runnable fat jar. Build it from source and launch it with `java -jar stubborn-contract-stub-runner-app-<version>.jar <options>`. See [Using the Stub Runner Boot Application](./stub-runner-spring-boot) for the jar options.
 
 ### Security
 
@@ -320,7 +323,7 @@ We want to use the stubs created in the Docker producer step. Assume that we wan
 
 ```bash
 # Check https://hub.docker.com/r/mgrzejszczak/stubborn-contract for latest
-$ SC_CONTRACT_DOCKER_VERSION="4.1.0"
+$ SC_CONTRACT_DOCKER_VERSION="latest"
 # The IP at which the app is running and Docker container can reach it
 $ APP_IP="192.168.0.100"
 # Stub Runner port and stub coordinates (variable names must match the ${…} references below)
@@ -335,7 +338,7 @@ $ docker run  --rm \
     -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_STUBS_MODE=REMOTE" \
     -p "${STUBRUNNER_PORT}:${STUBRUNNER_PORT}" \
     -p "9876:9876" \
-    mgrzejszczak/stubborn-stub-runner:"${SC_CONTRACT_DOCKER_VERSION}"
+    mgrzejszczak/stubborn-contract-stub-runner:"${SC_CONTRACT_DOCKER_VERSION}"
 ```
 
 When the preceding commands run:
@@ -458,7 +461,7 @@ $ docker run \
     -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_STUBS_MODE=REMOTE" \ # (5)
     -v "${HOME}/.m2/:/home/scc/.m2:rw" \ # (6)
     -p 8750:8750 \ # (7)
-    mgrzejszczak/stubborn-stub-runner:4.1.0-SNAPSHOT # (8)
+    mgrzejszczak/stubborn-contract-stub-runner:latest # (8)
 ```
 
 // (1) We're injecting the address of RabbitMQ via Apache Camel's Spring Boot Auto-Configuration

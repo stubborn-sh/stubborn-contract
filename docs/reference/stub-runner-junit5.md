@@ -125,7 +125,15 @@ int port = stubFinder.findStubUrl("sh.stubborn", "order-service").getPort();
 
 ### Classpath mode example
 
-Package stubs in the producer repo under `src/main/resources/stubborn-stubs/` and depend on the producer artifact in test scope:
+With `stubsMode = CLASSPATH`, stubs are resolved from the test classpath — not from a hand-placed directory. `ClasspathStubProvider` looks them up by coordinates under any of these roots:
+
+```
+META-INF/<group.id>/<artifactId>/<version>/...
+contracts/<group.id>/<artifactId>/<version>/...
+mappings/<group.id>/<artifactId>/<version>/...
+```
+
+In practice you put the producer's **stub jar** (the `stubs` classifier artifact, which already lays out `META-INF/<group.id>/<artifactId>/<version>/`) on the test classpath and reference it by coordinates:
 
 ```java
 @AutoConfigureStubRunner(
