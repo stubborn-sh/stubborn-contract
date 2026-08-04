@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-build</artifactId>
+		<artifactId>stubborn-contract-build</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
-		<relativePath>../stubborn-build/pom.xml</relativePath>
+		<relativePath>../stubborn-contract-build/pom.xml</relativePath>
 	</parent>
 	<groupId>sh.stubborn</groupId>
 	<artifactId>stubborn-contract-dependencies</artifactId>
@@ -104,17 +104,17 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-wiremock-spring</artifactId>
+				<artifactId>stubborn-contract-wiremock-spring</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-wiremock-spring-boot</artifactId>
+				<artifactId>stubborn-contract-wiremock-spring-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-migration</artifactId>
+				<artifactId>stubborn-contract-migration</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -134,7 +134,7 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-spec-kotlin</artifactId>
+				<artifactId>stubborn-contract-spec-kotlin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -189,17 +189,17 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-contract-verifier</artifactId>
+				<artifactId>stubborn-contract-starter-verifier</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-contract-stub-runner</artifactId>
+				<artifactId>stubborn-contract-starter-stub-runner</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
+				<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -358,16 +358,16 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-jsonassert</artifactId>
+				<artifactId>stubborn-contract-jsonassert</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-xmlassert</artifactId>
+				<artifactId>stubborn-contract-xmlassert</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!--
-			  CVE-2025-5222 (CVSS 7.0): stubborn-xmlassert pulls icu4j 4.6 transitively via the
+			  CVE-2025-5222 (CVSS 7.0): stubborn-contract-xmlassert pulls icu4j 4.6 transitively via the
 			  Eclipse WST xpath2 processor. Pin it here too so consumers importing this BOM get the
 			  safe version in their own dependencyManagement (which beats a parent BOM).
 			-->

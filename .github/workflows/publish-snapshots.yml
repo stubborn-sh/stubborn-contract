@@ -36,8 +36,8 @@ jobs:
           fi
           echo "Publishing snapshot: $VERSION"
 
-      - name: Build stubborn-build parent
-        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
 
       - name: Install BOM (stubborn-contract-dependencies)
         run: |
@@ -65,8 +65,8 @@ jobs:
           server-username: CENTRAL_USERNAME
           server-password: CENTRAL_PASSWORD
 
-      - name: Build stubborn-build parent
-        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
 
       - name: Install BOM (stubborn-contract-dependencies)
         run: |
@@ -76,8 +76,8 @@ jobs:
       - name: Build & install (skip tests — already tested in test job)
         run: ./mvnw clean install -DskipTests --no-transfer-progress
 
-      - name: Deploy stubborn-build to Maven Central
-        run: ./mvnw deploy -Ppublish -DskipTests --no-transfer-progress -f stubborn-build/pom.xml
+      - name: Deploy stubborn-contract-build to Maven Central
+        run: ./mvnw deploy -Ppublish -DskipTests --no-transfer-progress -f stubborn-contract-build/pom.xml
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}

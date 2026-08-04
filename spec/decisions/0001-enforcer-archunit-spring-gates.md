@@ -22,7 +22,7 @@ Two complementary gates run on every core module:
 
 ### 1. Maven Enforcer — dependency-level gate
 
-The `ban-spring-in-core` execution is declared in `stubborn-build`'s
+The `ban-spring-in-core` execution is declared in `stubborn-contract-build`'s
 `pluginManagement`. By default it is skipped (`stubborn.no-spring.skip=true`).
 Any module that wants enforcement opts in by setting the property to `false`:
 
@@ -61,8 +61,8 @@ Both gates are additive. Enforcer catches obvious POM mistakes early
 
 | Module | Status |
 |---|---|
-| `stubborn-jsonassert` | Enforcer ✓, ArchUnit ✓ |
-| `stubborn-xmlassert` | Enforcer ✓, ArchUnit ✓ |
+| `stubborn-contract-jsonassert` | Enforcer ✓, ArchUnit ✓ |
+| `stubborn-contract-xmlassert` | Enforcer ✓, ArchUnit ✓ |
 
 Remaining core modules (`stubborn-contract-verifier`, `stubborn-contract-stub-runner`,
 `stubborn-contract-spec-java`, `stubborn-contract-converters`) will have gates enabled in

@@ -51,7 +51,7 @@
 		<!-- tag::dependencies[] -->
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-verifier</artifactId>
+			<artifactId>stubborn-contract-starter-verifier</artifactId>
 			<version>${it-plugin.version}</version>
 			<scope>test</scope>
 		</dependency>

@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
+			<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

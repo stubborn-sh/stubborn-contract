@@ -6,7 +6,7 @@
 
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-parent</artifactId>
+		<artifactId>stubborn-contract-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
@@ -18,9 +18,9 @@
 	<description>Stubborn Contract Starters</description>
 
 	<modules>
-		<module>stubborn-starter-contract-stub-runner</module>
-		<module>stubborn-starter-contract-stub-runner-jetty</module>
-		<module>stubborn-starter-contract-verifier</module>
+		<module>stubborn-contract-starter-stub-runner</module>
+		<module>stubborn-contract-starter-stub-runner-jetty</module>
+		<module>stubborn-contract-starter-verifier</module>
 	</modules>
 
 	<build>

@@ -48,7 +48,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-verifier</artifactId>
+			<artifactId>stubborn-contract-starter-verifier</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -85,7 +85,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-kotlin</artifactId>
+			<artifactId>stubborn-contract-spec-kotlin</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -110,12 +110,12 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-stub-runner</artifactId>
+			<artifactId>stubborn-contract-starter-stub-runner</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
+			<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

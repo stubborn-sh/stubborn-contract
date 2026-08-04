@@ -6,13 +6,13 @@
 
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-build</artifactId>
+		<artifactId>stubborn-contract-build</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
-		<relativePath>stubborn-build/pom.xml</relativePath>
+		<relativePath>stubborn-contract-build/pom.xml</relativePath>
 	</parent>
 
 	<groupId>sh.stubborn</groupId>
-	<artifactId>stubborn-parent</artifactId>
+	<artifactId>stubborn-contract-parent</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1.0-SNAPSHOT</version>
 
@@ -96,8 +96,8 @@
 		<!-- TODO: temporarily disable -->
 		<!--<module>docker</module>-->
 		<module>stubborn-contract-wiremock</module>
-		<module>stubborn-wiremock-spring</module>
-		<module>stubborn-wiremock-spring-boot</module>
+		<module>stubborn-contract-wiremock-spring</module>
+		<module>stubborn-contract-wiremock-spring-boot</module>
 		<module>stubborn-contract-verifier</module>
 		<module>stubborn-contract-generator</module>
 		<module>docs</module>
@@ -110,12 +110,12 @@
 		<module>stubborn-contract-stub-runner-spring-cloud</module>
 		<module>stubborn-contract-starters</module>
 		<module>stubborn-contract-tools</module>
-		<module>stubborn-extras</module>
-		<module>stubborn-migration</module>
+		<module>stubborn-contract-extras</module>
+		<module>stubborn-contract-migration</module>
 		<module>stubborn-contract-stub-runner-app</module>
-		<module>stubborn-messaging-kafka</module>
-		<module>stubborn-jsonassert</module>
-		<module>stubborn-xmlassert</module>
+		<module>stubborn-contract-messaging-kafka</module>
+		<module>stubborn-contract-jsonassert</module>
+		<module>stubborn-contract-xmlassert</module>
 		<module>tests</module>
 	</modules>
 
@@ -125,7 +125,7 @@
 			  Security override: pull every io.netty artifact up to the patched ${netty.version}
 			  (4.2.16.Final). Imported BEFORE spring-boot-dependencies so the netty-bom entries win
 			  over the Boot BOM's vulnerable 4.2.15.Final for the whole reactor. See the CVE list on
-			  the netty.version property in stubborn-build/pom.xml. Remove once Boot ships >= 4.2.16.
+			  the netty.version property in stubborn-contract-build/pom.xml. Remove once Boot ships >= 4.2.16.
 			-->
 			<dependency>
 				<groupId>io.netty</groupId>
@@ -152,7 +152,7 @@
 			  patched ${tomcat.version} (11.0.24). Declared BEFORE spring-boot-dependencies so these
 			  win over the Boot BOM's vulnerable 11.0.22 (CVE-2026-55276/-53434/-59083/-59084/-53404).
 			  Tomcat has no published BOM, so each managed artifact is pinned explicitly. See the
-			  tomcat.version property in stubborn-build/pom.xml. Remove once Boot ships >= 11.0.24.
+			  tomcat.version property in stubborn-contract-build/pom.xml. Remove once Boot ships >= 11.0.24.
 			-->
 			<dependency>
 				<groupId>org.apache.tomcat.embed</groupId>
@@ -195,7 +195,7 @@
 			  including spring-cloud-zookeeper-dependencies which manages the vulnerable 3.9.3) so it
 			  wins reactor-wide over CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5). zookeeper and
 			  zookeeper-jute are versioned together. See the zookeeper.version property in
-			  stubborn-build/pom.xml. Remove once spring-cloud-zookeeper ships >= 3.9.4.
+			  stubborn-contract-build/pom.xml. Remove once spring-cloud-zookeeper ships >= 3.9.4.
 			-->
 			<dependency>
 				<groupId>org.apache.zookeeper</groupId>
@@ -731,8 +731,8 @@
 			</dependency>
 			<!--
 			  CVE-2025-5222 (CVSS 7.0): icu4j 4.6 is a deep transitive of the Eclipse WST xpath2
-			  processor used by stubborn-xmlassert. Pin to a current release (also mirrored in the
-			  consumer BOM so users of stubborn-xmlassert get the safe version). Only modules that
+			  processor used by stubborn-contract-xmlassert. Pin to a current release (also mirrored in the
+			  consumer BOM so users of stubborn-contract-xmlassert get the safe version). Only modules that
 			  transitively use icu4j are affected, so a reactor-wide pin is safe here.
 			-->
 			<dependency>
@@ -968,7 +968,7 @@
 		</profile>
 		<!--
 		  Publishing profile — activated in CI for both snapshot and release deployment.
-		  Inherits central-publishing-maven-plugin config from stubborn-build parent.
+		  Inherits central-publishing-maven-plugin config from stubborn-contract-build parent.
 		  For releases combine with -Prelease (activates GPG signing).
 		-->
 		<profile>

@@ -2,7 +2,7 @@ name: Security
 
 # Runs the OWASP dependency-check `security` Maven profile (see the root pom.xml
 # `security` profile and the dependency-check-maven plugin managed in
-# stubborn-build/pom.xml). Fails the build on any dependency with a CVSS >= 7.
+# stubborn-contract-build/pom.xml). Fails the build on any dependency with a CVSS >= 7.
 #
 # Coverage (the authoritative scan; it no longer runs per pull_request — the
 # ~50-minute NVD scan was not sustainable on every PR, so it now runs post-merge
@@ -53,8 +53,8 @@ jobs:
           restore-keys: |
             dependency-check-data-${{ runner.os }}-
 
-      - name: Build stubborn-build parent
-        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
 
       - name: Install BOM (stubborn-contract-dependencies)
         run: |

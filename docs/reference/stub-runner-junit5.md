@@ -30,13 +30,13 @@ sequenceDiagram
 ```xml [Maven]
 <dependency>
   <groupId>sh.stubborn</groupId>
-  <artifactId>stubborn-starter-contract-stub-runner</artifactId>
+  <artifactId>stubborn-contract-starter-stub-runner</artifactId>
   <scope>test</scope>
 </dependency>
 ```
 
 ```groovy [Gradle]
-testImplementation 'sh.stubborn:stubborn-starter-contract-stub-runner'
+testImplementation 'sh.stubborn:stubborn-contract-starter-stub-runner'
 ```
 
 :::

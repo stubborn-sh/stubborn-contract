@@ -51,8 +51,8 @@ added on top, never a hard requirement of the engine.
 
 | Module | Purpose |
 |--------|---------|
-| `stubborn-jsonassert` | Fluent JSON assertion helpers used by generated tests. |
-| `stubborn-xmlassert` | XML assertion helpers (built on XmlUnit). |
+| `stubborn-contract-jsonassert` | Fluent JSON assertion helpers used by generated tests. |
+| `stubborn-contract-xmlassert` | XML assertion helpers (built on XmlUnit). |
 | `stubborn-contract-spec` | Aggregator for the contract specification API. |
 | `stubborn-contract-spec-java` | Java DSL for writing contracts (`Contract.make { … }` equivalents in Java). |
 | `stubborn-contract-spec-groovy` | Groovy DSL for writing contracts. |
@@ -86,7 +86,7 @@ Depends on core plus `spring-web` / `spring-messaging` only — no Spring Boot.
 |--------|---------|
 | `stubborn-contract-verifier-spring` | Messaging abstractions: `ContractVerifierMessage`, `MessageVerifierSender` / `MessageVerifierReceiver`. |
 | `stubborn-contract-stub-runner-app` | Spring Framework stub-runner integration. |
-| `stubborn-wiremock-spring` | Spring MVC / RestTemplate / REST Docs WireMock helpers (`WireMockRestServiceServer`, `WireMockRestDocs`, `WireMockWebTestClient`). |
+| `stubborn-contract-wiremock-spring` | Spring MVC / RestTemplate / REST Docs WireMock helpers (`WireMockRestServiceServer`, `WireMockRestDocs`, `WireMockWebTestClient`). |
 
 ## Spring Boot tier (`-spring-boot`)
 
@@ -96,7 +96,7 @@ Adds `spring-boot-autoconfigure` and the concrete messaging backends.
 |--------|---------|
 | `stubborn-contract-verifier-spring-boot` | `@AutoConfigureMessageVerifier` and all messaging backends — `integration`, `jms`, `camel`, `avro` (plus a `noop` backend). |
 | `stubborn-contract-stub-runner-spring-boot` | `@AutoConfigureStubRunner`, port injection, stub-runner auto-configuration. |
-| `stubborn-wiremock-spring-boot` | Spring Boot WireMock auto-configuration (`WireMockRestTemplateConfiguration`). |
+| `stubborn-contract-wiremock-spring-boot` | Spring Boot WireMock auto-configuration (`WireMockRestTemplateConfiguration`). |
 
 ## Spring Cloud tier (`-spring-cloud`)
 
@@ -110,11 +110,11 @@ Adds `spring-boot-autoconfigure` and the concrete messaging backends.
 | Module | Purpose |
 |--------|---------|
 | `stubborn-contract-dependencies` | Consumer **BOM** — import once, get consistent versions of every `sh.stubborn:*` artifact and the managed third-party versions. |
-| `stubborn-contract-starters` | Convenience starters: `stubborn-starter-contract-verifier`, `stubborn-starter-contract-stub-runner`. |
+| `stubborn-contract-starters` | Convenience starters: `stubborn-contract-starter-verifier`, `stubborn-contract-starter-stub-runner`. |
 | `stubborn-contract-tools` | Houses `stubborn-contract-maven-plugin` and `stubborn-contract-converters`. |
-| `stubborn-extras` | Kotlin DSL (`stubborn-spec-kotlin`) and the Gradle plugins (`stubborn-contract-gradle-plugin`, id `sh.stubborn.contract`; `stubborn-contract-gradle-portal-plugin`). Designed to be extractable to a separate repo. |
-| `stubborn-migration` | [OpenRewrite recipes](../migration/from-spring-cloud-contract) for migrating from Spring Cloud Contract. |
-| `stubborn-messaging-kafka` | Kafka messaging support (`sh.stubborn.messaging.kafka`). |
+| `stubborn-contract-extras` | Kotlin DSL (`stubborn-contract-spec-kotlin`) and the Gradle plugins (`stubborn-contract-gradle-plugin`, id `sh.stubborn.contract`; `stubborn-contract-gradle-portal-plugin`). Designed to be extractable to a separate repo. |
+| `stubborn-contract-migration` | [OpenRewrite recipes](../migration/from-spring-cloud-contract) for migrating from Spring Cloud Contract. |
+| `stubborn-contract-messaging-kafka` | Kafka messaging support (`sh.stubborn.messaging.kafka`). |
 
 ## Module boundary rules
 
@@ -136,7 +136,7 @@ Breaking changes to `public` / `protected` methods, constructors or types in the
 require an explicit `revapi` justification in the module's `pom.xml`:
 
 `stubborn-contract-verifier`, `stubborn-contract-stub-runner`, `stubborn-contract-wiremock`,
-`stubborn-contract-converters`, `stubborn-jsonassert`, `stubborn-xmlassert`.
+`stubborn-contract-converters`, `stubborn-contract-jsonassert`, `stubborn-contract-xmlassert`.
 
 Modules with a `-spring`, `-spring-boot` or `-spring-cloud` suffix are **not** under `revapi`
 and may evolve more freely.

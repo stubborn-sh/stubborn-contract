@@ -46,8 +46,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build stubborn-build parent
-        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
 
       - name: Install BOM
         run: |

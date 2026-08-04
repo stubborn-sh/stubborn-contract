@@ -33,7 +33,7 @@ dependencies {
     // example with adding Spock core and Spock Spring
     testImplementation "org.spockframework:spock-core:${spockVersion}"
     testImplementation "org.spockframework:spock-spring:${spockVersion}"
-    testImplementation 'sh.stubborn:stubborn-starter-contract-verifier'
+    testImplementation 'sh.stubborn:stubborn-contract-starter-verifier'
 }
 ```
 
@@ -71,7 +71,7 @@ dependencies {
     testImplementation "org.apache.groovy:groovy-all:${groovyVersion}"
     testImplementation "org.spockframework:spock-core:${spockVersion}"
     testImplementation "org.spockframework:spock-spring:${spockVersion}"
-    testImplementation 'sh.stubborn:stubborn-starter-contract-verifier'
+    testImplementation 'sh.stubborn:stubborn-contract-starter-verifier'
 }
 ```
 
@@ -102,7 +102,7 @@ dependencies {
     testImplementation "org.apache.groovy:groovy-all:${groovyVersion}"
     testImplementation "org.spockframework:spock-core:${spockVersion}"
     testImplementation "org.spockframework:spock-spring:${spockVersion}"
-    testImplementation 'sh.stubborn:stubborn-starter-contract-verifier'
+    testImplementation 'sh.stubborn:stubborn-contract-starter-verifier'
 }
 ```
 

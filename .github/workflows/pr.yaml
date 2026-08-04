@@ -27,8 +27,8 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: maven
 
-      - name: Build stubborn-build parent
-        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
 
       - name: Install BOM (stubborn-contract-dependencies)
         run: |
