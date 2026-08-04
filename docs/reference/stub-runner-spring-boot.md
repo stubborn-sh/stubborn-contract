@@ -7,7 +7,7 @@ As of `4.1.6`, the executable (fat) JAR artifact for Stub Runner Boot is **not p
 
 - **Spring Boot tests (recommended):** annotate your test class with `@AutoConfigureStubRunner` — no separate process required. See [Stub Runner for JUnit 5](./stub-runner-junit5) for details.
 - **Docker image (recommended for smoke/integration environments):** use the [Docker Stub Runner Boot image](./docker), which is the preferred runtime alternative.
-- **Build from source:** clone [the repository](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-stub-runner-boot) and build the fat JAR yourself with `./mvnw package -pl stubborn-stub-runner-boot`.
+- **Executable Spring Boot jar (build from source):** clone [the repository](https://github.com/stubborn-sh/stubborn-contract) and build the runnable jar from the `stubborn-contract-stub-runner-app` module (repackaged by the `spring-boot-maven-plugin`) with `./mvnw package -pl stubborn-contract-stub-runner-app -am`. Run it with `java -jar stubborn-contract-stub-runner-app-<version>.jar <options>`.
 :::
 
 Stubborn Contract Stub Runner Boot is a Spring Boot application that exposes REST endpoints to trigger the messaging labels and to access WireMock servers.
@@ -36,15 +36,17 @@ Then annotate a class with `@EnableStubRunnerServer`, build a fat jar, and it is
 
 ## Stub Runner Server Fat Jar
 
-::: warning Not Available in Current Release
-The pre-built standalone JAR is not published to Maven Central as of `4.1.6`. The command below is preserved for when publishing resumes. In the meantime, build from source or use the Docker image.
+::: warning Pre-built Standalone JAR Not Published
+No pre-built standalone JAR is published to Maven Central in the current release. Build the executable jar yourself from the `stubborn-contract-stub-runner-app` module, or use the [Docker image](./docker).
 :::
 
-You can download a standalone JAR from Maven by running the following commands:
+The `stubborn-contract-stub-runner-app` module is repackaged by the `spring-boot-maven-plugin` into an executable Spring Boot jar. Build it from source and run it:
 
 ```bash
-$ wget -O stub-runner.jar 'https://search.maven.org/remotecontent?filepath=sh/stubborn/stubborn-stub-runner-boot/2.0.1.RELEASE/stubborn-stub-runner-boot-2.0.1.RELEASE.jar'
-$ java -jar stub-runner.jar --spring.cloud.contract.stubrunner.ids=... --spring.cloud.contract.stubrunner.repositoryRoot=...
+$ ./mvnw package -pl stubborn-contract-stub-runner-app -am
+$ java -jar stubborn-contract-stub-runner-app/target/stubborn-contract-stub-runner-app-<version>.jar \
+    --spring.cloud.contract.stubrunner.ids=... \
+    --spring.cloud.contract.stubrunner.repositoryRoot=...
 ```
 
 ## Spring Cloud CLI

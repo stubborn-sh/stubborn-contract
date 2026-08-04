@@ -43,7 +43,7 @@ coordinates, Spring Boot 4.x support, and a modular layout. Add the BOM to your
     <dependencies>
         <dependency>
             <groupId>sh.stubborn</groupId>
-            <artifactId>stubborn-dependencies</artifactId>
+            <artifactId>stubborn-contract-dependencies</artifactId>
             <version>0.1.0-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
@@ -54,10 +54,10 @@ coordinates, Spring Boot 4.x support, and a modular layout. Add the BOM to your
 
 The BOM manages compatible versions of Spring Cloud Stream, REST-Assured, and the
 Spring Boot split modules (`spring-boot-restclient`) so you only need the single
-`stubborn-dependencies` version in your project.
+`stubborn-contract-dependencies` version in your project.
 
 See the https://stubborn.sh/transition-guide[Transition Guide] and
-link:docs/migration-from-spring-cloud-contract.md[Migration Guide] for details on moving
+link:docs/migration/from-spring-cloud-contract.md[Migration Guide] for details on moving
 from Spring Cloud Contract.
 
 [[project-page]]

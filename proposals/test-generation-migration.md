@@ -1,5 +1,13 @@
 # Test-generation migration: string builders → JavaPoet model + typed renderers
 
+> [!IMPORTANT]
+> **HISTORICAL / SUPERSEDED design record.** This document captures the design as it
+> was proposed and does **not** describe the final outcome. The actual generator
+> renders tests via **Handlebars** templates — `JavaTestRenderer` for the JUnit/JVM
+> targets and `SpockTestRenderer` for Spock. JavaPoet was trialed during the migration
+> and later **removed**. The body below is preserved unchanged for historical context;
+> read it as the original proposal, not as the current architecture.
+
 Status: **in progress** (model path implemented and flag-gated; legacy remains the
 default). This document is the design reference cited from the code
 (`ModelBasedTestGenerator`, `TestClassModel`, `TestGenerationGoldenMasterTests`).

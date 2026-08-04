@@ -122,7 +122,7 @@ buildscript {
 }
 
 dependencies {
-    // you can exclude rest-assured from stubborn-verifier
+    // you can exclude rest-assured from stubborn-contract-verifier
     testCompile "com.jayway.restassured:rest-assured:2.5.0"
     testCompile "com.jayway.restassured:spring-mock-mvc:2.5.0"
 }

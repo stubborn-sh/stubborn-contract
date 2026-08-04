@@ -1,6 +1,0 @@
-[[contract-customization]]
-= Stubborn Contract customization
-
-include::partial$_attributes.adoc[]
-
-In this section, we describe how to customize various parts of Stubborn Contract.
