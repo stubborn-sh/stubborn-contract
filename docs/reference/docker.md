@@ -26,7 +26,7 @@ Since non-JVM projects can use the Docker image, it is good to explain the basic
 
 ## Generating Tests on the Producer Side
 
-The image searches for contracts under the `/contracts` folder. The output from running the tests is available in the `/spring-cloud-contract/build` folder (useful for debugging purposes).
+The image searches for contracts under the `/contracts` folder. The output from running the tests is available in the `/stubborn-contract/build` folder (useful for debugging purposes).
 
 You can mount your contracts and pass the environment variables. The image then:
 
@@ -63,7 +63,7 @@ You can provide a customized `gradle.build` to be run in the container by mounti
 
 ```bash
 # Check https://hub.docker.com/r/mgrzejszczak/stubborn-contract for the latest version tag
-$ docker run -v <absolute-path-of-your-custom-file>:/spring-cloud-contract/build.gradle mgrzejszczak/stubborn-contract:latest
+$ docker run -v <absolute-path-of-your-custom-file>:/stubborn-contract/build.gradle mgrzejszczak/stubborn-contract:latest
 ```
 
 ### Example of Usage via HTTP
@@ -115,7 +115,7 @@ $ docker run  --rm \
   -e "REPO_WITH_BINARIES_URL=${ARTIFACTORY_URL}" \
   -e "PROJECT_VERSION=${PROJECT_VERSION}" \
   -v "${CURRENT_DIR}/contracts/:/contracts:ro" \
-  -v "${CURRENT_DIR}/node_modules/spring-cloud-contract/output:/spring-cloud-contract-output/" \
+  -v "${CURRENT_DIR}/node_modules/spring-cloud-contract/output:/stubborn-contract-output/" \
   mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 # Kill app
@@ -289,7 +289,7 @@ docker run  --rm \
     -e "EXTERNAL_CONTRACTS_ARTIFACT_ID=${PROJECT_NAME}" \
     -e "EXTERNAL_CONTRACTS_GROUP_ID=${PROJECT_GROUP}" \
     -e "EXTERNAL_CONTRACTS_VERSION=${PROJECT_VERSION}" \
-    -v "${CURRENT_DIR}/build/spring-cloud-contract/output:/spring-cloud-contract-output/" \
+    -v "${CURRENT_DIR}/build/spring-cloud-contract/output:/stubborn-contract-output/" \
     mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 kill $APP_PID
@@ -435,7 +435,7 @@ docker run  --rm \
     -e "EXTERNAL_CONTRACTS_ARTIFACT_ID=application" \
     -e "EXTERNAL_CONTRACTS_GROUP_ID=group" \
     -e "EXTERNAL_CONTRACTS_VERSION=0.0.1-SNAPSHOT" \
-    -v "${CURRENT_DIR}/build/spring-cloud-contract/output:/spring-cloud-contract-output/" \
+    -v "${CURRENT_DIR}/build/spring-cloud-contract/output:/stubborn-contract-output/" \
     mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 # Teardown

@@ -57,8 +57,8 @@ if (isReleaseToCentral) {
 	apply plugin: 'com.gradle.plugin-publish'
 
 	gradlePlugin {
-		website = 'https://github.com/spring-cloud/spring-cloud-contract'
-		vcsUrl = 'https://github.com/spring-cloud/spring-cloud-contract'
+		website = 'https://github.com/stubborn-sh/stubborn-contract'
+		vcsUrl = 'https://github.com/stubborn-sh/stubborn-contract'
 
 		plugins {
 			springCloudContractPlugin {
