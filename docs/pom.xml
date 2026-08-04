@@ -15,11 +15,6 @@
 	<name>Stubborn Contract Docs</name>
 	<description>Stubborn Contract Reference Documentation</description>
 	<properties>
-		<asciidoctor-maven-plugin.version>2.2.6</asciidoctor-maven-plugin.version>
-		<asciidoctorj.version>2.5.13</asciidoctorj.version>
-		<asciidoctorj-pdf.version>2.3.17</asciidoctorj-pdf.version>
-		<docs.sourceDir>${project.basedir}/modules/ROOT/pages</docs.sourceDir>
-		<docs.outputDir>${project.build.directory}/generated-docs</docs.outputDir>
 		<!-- Don't deploy docs jar to Maven Central -->
 		<maven-deploy-plugin-default.phase>none</maven-deploy-plugin-default.phase>
 		<maven.install.skip>true</maven.install.skip>
@@ -31,74 +26,5 @@
 			<artifactId>stubborn-contract-verifier</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-yaml</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.module</groupId>
-			<artifactId>jackson-module-jsonSchema</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>${asciidoctor-maven-plugin.version}</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.asciidoctor</groupId>
-						<artifactId>asciidoctorj</artifactId>
-						<version>${asciidoctorj.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.asciidoctor</groupId>
-						<artifactId>asciidoctorj-pdf</artifactId>
-						<version>${asciidoctorj-pdf.version}</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<sourceDirectory>${docs.sourceDir}</sourceDirectory>
-					<sourceDocumentName>index.adoc</sourceDocumentName>
-					<outputDirectory>${docs.outputDir}</outputDirectory>
-					<attributes>
-						<project-version>${project.version}</project-version>
-						<project-name>Stubborn Contract</project-name>
-						<project-full-name>Stubborn Contract</project-full-name>
-						<allow-uri-read>true</allow-uri-read>
-						<source-highlighter>rouge</source-highlighter>
-						<icons>font</icons>
-						<toc>left</toc>
-						<toclevels>3</toclevels>
-						<sectanchors>true</sectanchors>
-						<idprefix/>
-						<idseparator>-</idseparator>
-					</attributes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>generate-html</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>html5</backend>
-							<outputFile>index.html</outputFile>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 </project>
