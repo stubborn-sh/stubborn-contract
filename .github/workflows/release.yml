@@ -53,13 +53,13 @@ jobs:
         run: |
           ./mvnw versions:set -DnewVersion=${{ inputs.version }} \
             -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress
-          # also bump stubborn-build (not a reactor module)
+          # also bump stubborn-contract-build (not a reactor module)
           ./mvnw versions:set -DnewVersion=${{ inputs.version }} \
             -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress \
-            -f stubborn-build/pom.xml
+            -f stubborn-contract-build/pom.xml
 
-      - name: Build stubborn-build parent
-        run: ./mvnw install -f stubborn-build/pom.xml -DskipTests --no-transfer-progress
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
 
       - name: Install BOM (stubborn-contract-dependencies)
         run: |
@@ -69,8 +69,8 @@ jobs:
       - name: Build & test
         run: ./mvnw clean install --no-transfer-progress
 
-      - name: Deploy stubborn-build to Maven Central
-        run: ./mvnw deploy -Ppublish,release -DskipTests --no-transfer-progress -f stubborn-build/pom.xml
+      - name: Deploy stubborn-contract-build to Maven Central
+        run: ./mvnw deploy -Ppublish,release -DskipTests --no-transfer-progress -f stubborn-contract-build/pom.xml
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
@@ -106,7 +106,7 @@ jobs:
             -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress
           ./mvnw versions:set -DnewVersion=${{ inputs.next-snapshot }} \
             -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress \
-            -f stubborn-build/pom.xml
+            -f stubborn-contract-build/pom.xml
           git add -A
           git commit -m "Back to ${{ inputs.next-snapshot }}"
           git push origin main

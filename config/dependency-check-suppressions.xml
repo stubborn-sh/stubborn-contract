@@ -21,9 +21,9 @@
 	<!--
 	  CVE-2026-53914 (CVSS 9.8) — JetBrains Kotlin unsafe deserialization, fixed on the Kotlin
 	  2.4.20 line. Kotlin reaches this build only as build-time / DSL tooling, in two modules:
-	    * stubborn-migration pulls it transitively via OpenRewrite (rewrite-gradle -> rewrite-kotlin).
+	    * stubborn-contract-migration pulls it transitively via OpenRewrite (rewrite-gradle -> rewrite-kotlin).
 	      rewrite-gradle is retained for the planned Gradle build-script migration recipes.
-	    * stubborn-extras (the Kotlin contract DSL) gets Kotlin from the Spring Boot 4.1 BOM (2.3.21)
+	    * stubborn-contract-extras (the Kotlin contract DSL) gets Kotlin from the Spring Boot 4.1 BOM (2.3.21)
 	      plus explicit kotlin-scripting-* pins (2.2.21) — its own language runtime.
 	  Neither can be realigned to the fix line today: Kotlin 2.4.20 is not yet on Maven Central as GA
 	  (only 2.4.20-Beta2 is published; the stable line tops out at 2.4.10, still below the fix), and we
@@ -33,7 +33,7 @@
 	-->
 	<suppress>
 		<notes><![CDATA[
-			Build-time/DSL Kotlin only (stubborn-migration via OpenRewrite; stubborn-extras Kotlin DSL).
+			Build-time/DSL Kotlin only (stubborn-contract-migration via OpenRewrite; stubborn-contract-extras Kotlin DSL).
 			Kotlin 2.4.20 (the fix) is not yet GA on Maven Central. Remove once every
 			org.jetbrains.kotlin artifact can be pinned to >= 2.4.20 GA.
 		]]></notes>

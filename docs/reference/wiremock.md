@@ -7,8 +7,8 @@ generated stub. The WireMock support is split across three modules, one per
 | Module | Tier | What it gives you |
 |--------|------|-------------------|
 | `stubborn-contract-wiremock` | Core (zero Spring) | WireMock integration core; the custom request matchers that back generated stubs. |
-| `stubborn-wiremock-spring` | `-spring` | Spring MVC / RestTemplate / WebTestClient helpers and REST Docs snippet generation. |
-| `stubborn-wiremock-spring-boot` | `-spring-boot` | Spring Boot configuration (`WireMockRestTemplateConfiguration`). |
+| `stubborn-contract-wiremock-spring` | `-spring` | Spring MVC / RestTemplate / WebTestClient helpers and REST Docs snippet generation. |
+| `stubborn-contract-wiremock-spring-boot` | `-spring-boot` | Spring Boot configuration (`WireMockRestTemplateConfiguration`). |
 
 All three inherit their version from the [BOM](../getting-started/installation), so declare
 them without a `<version>`.
@@ -27,7 +27,7 @@ Because both matchers are registered simultaneously, **existing SCC 5.x stubs ru
 alongside new Stubborn stubs. There is nothing to migrate in your stub JARs. See the
 [migration guide](../migration/from-spring-cloud-contract).
 
-## Spring helpers (`stubborn-wiremock-spring`)
+## Spring helpers (`stubborn-contract-wiremock-spring`)
 
 The `-spring` module provides helpers under `sh.stubborn.contract.wiremock` for wiring a
 WireMock server into Spring-based tests, including:
@@ -41,7 +41,7 @@ WireMock server into Spring-based tests, including:
 These are the same helpers that shipped in `spring-cloud-contract-wiremock`, re-homed under the
 `sh.stubborn.contract.wiremock` package. When migrating, update the import prefix only.
 
-## Spring Boot configuration (`stubborn-wiremock-spring-boot`)
+## Spring Boot configuration (`stubborn-contract-wiremock-spring-boot`)
 
 The `-spring-boot` module adds `WireMockRestTemplateConfiguration` for Spring Boot tests that
 need a `RestTemplate` pre-wired against WireMock.

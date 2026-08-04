@@ -88,7 +88,7 @@ For Kafka contracts, add the Kafka messaging verifier to your producer test:
 ```xml
 <dependency>
   <groupId>sh.stubborn</groupId>
-  <artifactId>stubborn-starter-contract-verifier</artifactId>
+  <artifactId>stubborn-contract-starter-verifier</artifactId>
   <scope>test</scope>
 </dependency>
 ```
@@ -162,7 +162,7 @@ are auto-configured by `@AutoConfigureMessageVerifier` in
 | Apache Camel | `stubborn-contract-verifier-spring-boot` (`camel`) |
 | Apache Avro payloads | `stubborn-contract-verifier-spring-boot` (`avro`) |
 | Spring Cloud Stream | `stubborn-contract-verifier-spring-cloud` |
-| Kafka | `stubborn-messaging-kafka` |
+| Kafka | `stubborn-contract-messaging-kafka` |
 
 `@AutoConfigureMessageVerifier` picks the backend present on the classpath, so in most projects
 you add the relevant Spring Boot messaging starter and Stubborn wires the rest. See

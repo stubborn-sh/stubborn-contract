@@ -58,7 +58,7 @@ Add the starter and the Maven plugin to the producer service:
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-verifier</artifactId>
+			<artifactId>stubborn-contract-starter-verifier</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -115,7 +115,7 @@ Annotate your test with `@AutoConfigureStubRunner`, pointing at the producer stu
 == Kotlin contracts
 
 Stubborn Contract supports contracts written in Kotlin via the
-`sh.stubborn:stubborn-spec-kotlin` module.
+`sh.stubborn:stubborn-contract-spec-kotlin` module.
 
 **Recommended format: `.kt` compiled contracts.**
 

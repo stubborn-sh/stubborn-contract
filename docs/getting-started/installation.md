@@ -70,21 +70,21 @@ Two starters cover the two sides of contract testing. They inherit their version
 
 | Starter | Use it on the… | Pulls in |
 |---------|----------------|----------|
-| `sh.stubborn:stubborn-starter-contract-verifier` | **Producer** side | verifier + REST Assured + generated-test support |
-| `sh.stubborn:stubborn-starter-contract-stub-runner` | **Consumer** side | stub runner + `@AutoConfigureStubRunner` |
+| `sh.stubborn:stubborn-contract-starter-verifier` | **Producer** side | verifier + REST Assured + generated-test support |
+| `sh.stubborn:stubborn-contract-starter-stub-runner` | **Consumer** side | stub runner + `@AutoConfigureStubRunner` |
 
 ```xml
 <!-- Producer -->
 <dependency>
     <groupId>sh.stubborn</groupId>
-    <artifactId>stubborn-starter-contract-verifier</artifactId>
+    <artifactId>stubborn-contract-starter-verifier</artifactId>
     <scope>test</scope>
 </dependency>
 
 <!-- Consumer -->
 <dependency>
     <groupId>sh.stubborn</groupId>
-    <artifactId>stubborn-starter-contract-stub-runner</artifactId>
+    <artifactId>stubborn-contract-starter-stub-runner</artifactId>
     <scope>test</scope>
 </dependency>
 ```

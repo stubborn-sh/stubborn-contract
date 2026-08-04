@@ -29,7 +29,7 @@ The dependency and `@EnableStubRunnerServer` approach below apply when building 
 To use the Stub Runner Server, add the following dependency:
 
 ```groovy
-testImplementation "sh.stubborn:stubborn-starter-contract-stub-runner"
+testImplementation "sh.stubborn:stubborn-contract-starter-stub-runner"
 ```
 
 Then annotate a class with `@EnableStubRunnerServer`, build a fat jar, and it is ready to work.

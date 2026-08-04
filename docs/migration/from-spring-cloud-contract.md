@@ -25,7 +25,7 @@ The fastest path is to run the OpenRewrite recipe that automates steps 1–4 bel
 
 ```bash
 ./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run \
-  -Drewrite.recipeArtifactCoordinates=sh.stubborn:stubborn-migration:LATEST \
+  -Drewrite.recipeArtifactCoordinates=sh.stubborn:stubborn-contract-migration:LATEST \
   -Drewrite.activeRecipes=sh.stubborn.contract.migration.MigrateFromSpringCloudContract
 ```
 
@@ -42,13 +42,13 @@ After running, verify the changes and complete any remaining manual steps below.
 
 | Spring Cloud Contract | Stubborn Contract |
 |-----------------------|-------------------|
-| `org.springframework.cloud:spring-cloud-starter-contract-verifier` | `sh.stubborn:stubborn-starter-contract-verifier` |
-| `org.springframework.cloud:spring-cloud-starter-contract-stub-runner` | `sh.stubborn:stubborn-starter-contract-stub-runner` |
+| `org.springframework.cloud:spring-cloud-starter-contract-verifier` | `sh.stubborn:stubborn-contract-starter-verifier` |
+| `org.springframework.cloud:spring-cloud-starter-contract-stub-runner` | `sh.stubborn:stubborn-contract-starter-stub-runner` |
 | `org.springframework.cloud:spring-cloud-contract-verifier` | `sh.stubborn:stubborn-contract-verifier` |
 | `org.springframework.cloud:spring-cloud-contract-wiremock` | `sh.stubborn:stubborn-contract-wiremock` |
 | `org.springframework.cloud:spring-cloud-contract-spec-java` | `sh.stubborn:stubborn-contract-spec-java` |
 | `org.springframework.cloud:spring-cloud-contract-spec-groovy` | `sh.stubborn:stubborn-contract-spec-groovy` |
-| `org.springframework.cloud:spring-cloud-contract-spec-kotlin` | `sh.stubborn:stubborn-spec-kotlin` |
+| `org.springframework.cloud:spring-cloud-contract-spec-kotlin` | `sh.stubborn:stubborn-contract-spec-kotlin` |
 | `org.springframework.cloud:spring-cloud-contract-converters` | `sh.stubborn:stubborn-contract-converters` |
 | `org.springframework.cloud:spring-cloud-contract-stub-runner` | `sh.stubborn:stubborn-contract-stub-runner` |
 
