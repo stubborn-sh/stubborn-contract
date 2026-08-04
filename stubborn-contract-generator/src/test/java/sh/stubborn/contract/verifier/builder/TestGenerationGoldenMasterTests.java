@@ -208,17 +208,27 @@ class TestGenerationGoldenMasterTests {
 
 	static Stream<Arguments> corpus() {
 		// One row per (contract, framework, mode). MOCKMVC covers the common HTTP path
-		// for
-		// each supported framework/language; EXPLICIT exercises the RestAssured
-		// standalone
-		// variant.
+		// for each supported framework/language; EXPLICIT exercises the RestAssured
+		// standalone variant; WEBTESTCLIENT, CUSTOM and JAXRSCLIENT pin the byte layout
+		// of
+		// the remaining test modes (their class scaffold — WebTestClient response types,
+		// the CUSTOM HttpVerifier field, the JAX-RS invoker chain — differs from the
+		// RestAssured shapes).
 		return CONTRACTS.keySet()
 			.stream()
 			.sorted()
 			.flatMap((name) -> Stream.of(Arguments.of(name, TestFramework.JUNIT5, TestMode.MOCKMVC),
 					Arguments.of(name, TestFramework.JUNIT5, TestMode.EXPLICIT),
+					Arguments.of(name, TestFramework.JUNIT5, TestMode.WEBTESTCLIENT),
+					Arguments.of(name, TestFramework.JUNIT5, TestMode.CUSTOM),
+					Arguments.of(name, TestFramework.JUNIT5, TestMode.JAXRSCLIENT),
 					Arguments.of(name, TestFramework.TESTNG, TestMode.MOCKMVC),
-					Arguments.of(name, TestFramework.SPOCK, TestMode.MOCKMVC)));
+					Arguments.of(name, TestFramework.SPOCK, TestMode.MOCKMVC)))
+			// CUSTOM mode does not support multipart requests (CustomMultipartGiven
+			// throws
+			// "Multipart is not yet supported"), so that one combination is not
+			// generable.
+			.filter((args) -> !("http_multipart".equals(args.get()[0]) && args.get()[2] == TestMode.CUSTOM));
 	}
 
 	@ParameterizedTest(name = "{0} [{1}/{2}]")
