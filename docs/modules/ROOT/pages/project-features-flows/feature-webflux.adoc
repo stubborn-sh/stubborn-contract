@@ -11,8 +11,8 @@ configure WebTestClient as the test mode:
 .Maven
 ----
 <plugin>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>stubborn-maven-plugin</artifactId>
+    <groupId>sh.stubborn</groupId>
+    <artifactId>stubborn-contract-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>

@@ -12,7 +12,7 @@ NOTE: Since 3.0.0, the Gradle plugin will also look at the legacy
 directory `src/test/resources/contracts` for migration purposes. When contracts are found in this directory, a warning
 will be logged during your build.
 
-You need to explicitly pass the `spring-cloud-contract-spec-kotlin` dependency to your project plugin setup.
+You need to explicitly pass the `stubborn-contract-spec-kotlin` dependency to your project plugin setup.
 The following example (in both Maven and Gradle) shows how to do so:
 
 ====
@@ -20,8 +20,8 @@ The following example (in both Maven and Gradle) shows how to do so:
 .Maven
 ----
 <plugin>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>stubborn-maven-plugin</artifactId>
+    <groupId>sh.stubborn</groupId>
+    <artifactId>stubborn-contract-maven-plugin</artifactId>
     <version>${spring-cloud-contract.version}</version>
     <extensions>true</extensions>
     <configuration>
@@ -29,8 +29,8 @@ The following example (in both Maven and Gradle) shows how to do so:
     </configuration>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-contract-spec-kotlin</artifactId>
+            <groupId>sh.stubborn</groupId>
+            <artifactId>stubborn-contract-spec-kotlin</artifactId>
             <version>${spring-cloud-contract.version}</version>
         </dependency>
     </dependencies>
@@ -39,8 +39,8 @@ The following example (in both Maven and Gradle) shows how to do so:
 <dependencies>
         <!-- Remember to add this for the DSL support in the IDE and on the consumer side -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-contract-spec-kotlin</artifactId>
+            <groupId>sh.stubborn</groupId>
+            <artifactId>stubborn-contract-spec-kotlin</artifactId>
             <scope>test</scope>
         </dependency>
 </dependencies>
@@ -54,7 +54,7 @@ buildscript {
         // ...
     }
 	dependencies {
-		classpath "org.springframework.cloud:stubborn-gradle-plugin:$\{scContractVersion}"
+		classpath "sh.stubborn:stubborn-contract-gradle-plugin:$\{scContractVersion}"
 	}
 }
 
@@ -62,7 +62,7 @@ dependencies {
     // ...
 
     // Remember to add this for the DSL support in the IDE and on the consumer side
-    testImplementation "org.springframework.cloud:spring-cloud-contract-spec-kotlin"
+    testImplementation "sh.stubborn:stubborn-contract-spec-kotlin"
     // Kotlin versions are very particular down to the patch version. The <kotlin_version> needs to be the same as you have imported for your project.
     testImplementation "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:<kotlin_version>"
 }

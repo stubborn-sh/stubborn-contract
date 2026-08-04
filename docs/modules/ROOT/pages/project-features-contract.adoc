@@ -45,7 +45,7 @@ include::{verifier_root_path}/src/test/resources/kotlin/contract_rest.kts[tags=c
 You can compile contracts to stubs mapping by using the following standalone Maven command:
 
 ----
-mvn org.springframework.cloud:stubborn-maven-plugin:convert
+mvn sh.stubborn:stubborn-contract-maven-plugin:convert
 ----
 ====
 

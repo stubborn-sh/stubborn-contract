@@ -50,8 +50,8 @@ portion of the file:
 [source,xml,indent=0]
 ----
 <plugin>
-	<groupId>org.springframework.cloud</groupId>
-	<artifactId>stubborn-maven-plugin</artifactId>
+	<groupId>sh.stubborn</groupId>
+	<artifactId>stubborn-contract-maven-plugin</artifactId>
 	<version>${spring-cloud-contract.version}</version>
 	<extensions>true</extensions>
 </plugin>
@@ -77,8 +77,8 @@ The following example, from `pom.xml`, shows how to specify the base test class:
 <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>stubborn-maven-plugin</artifactId>
+                <groupId>sh.stubborn</groupId>
+                <artifactId>stubborn-contract-maven-plugin</artifactId>
                 <version>2.1.2.RELEASE</version>
                 <extensions>true</extensions>
                 <configuration>
@@ -93,7 +93,7 @@ The following example, from `pom.xml`, shows how to specify the base test class:
     </build>
 ----
 <1> The `baseClassForTests` element lets you specify your base test class. It must be a child
-of a `configuration` element within `stubborn-maven-plugin`.
+of a `configuration` element within `stubborn-contract-maven-plugin`.
 
 Once the implementation and the test base class are in place, the tests pass, and both the
 application and the stub artifacts are built and installed in the local Maven repository.

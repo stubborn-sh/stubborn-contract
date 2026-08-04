@@ -200,7 +200,7 @@ Once you run those commands, you should you see something like the following con
 
 [source,bash,indent=0]
 ----
-[INFO] --- stubborn-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
+[INFO] --- stubborn-contract-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
 [INFO] Building jar: /some/path/http-server/target/http-server-0.0.1-SNAPSHOT-stubs.jar
 [INFO]
 [INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ http-server ---

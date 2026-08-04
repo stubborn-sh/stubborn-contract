@@ -20,7 +20,7 @@ principles as we go.
 [[getting-started-bom]]
 == BOM — one version to rule them all
 
-Import the `stubborn-dependencies` BOM in your `pom.xml`. This single import pins
+Import the `stubborn-contract-dependencies` BOM in your `pom.xml`. This single import pins
 compatible versions of the Stubborn artifacts, Spring Cloud Stream, REST-Assured, and
 the Spring Boot 4.x split modules (`spring-boot-restclient`, `spring-boot-http-client`).
 
@@ -39,7 +39,7 @@ the Spring Boot 4.x split modules (`spring-boot-restclient`, `spring-boot-http-c
 		<dependencies>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-dependencies</artifactId>
+				<artifactId>stubborn-contract-dependencies</artifactId>
 				<version>0.1.0-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -67,7 +67,7 @@ Add the starter and the Maven plugin to the producer service:
 		<plugins>
 			<plugin>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-maven-plugin</artifactId>
+				<artifactId>stubborn-contract-maven-plugin</artifactId>
 				<version>0.1.0-SNAPSHOT</version>
 				<extensions>true</extensions>
 				<configuration>

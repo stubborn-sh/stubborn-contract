@@ -47,8 +47,8 @@ portion of the file:
 [source,xml,indent=0]
 ----
 <plugin>
-	<groupId>org.springframework.cloud</groupId>
-	<artifactId>stubborn-maven-plugin</artifactId>
+	<groupId>sh.stubborn</groupId>
+	<artifactId>stubborn-contract-maven-plugin</artifactId>
 	<version>${spring-cloud-contract.version}</version>
 	<extensions>true</extensions>
 </plugin>
@@ -276,8 +276,8 @@ The following example, from `pom.xml`, shows how to specify the base test class:
 <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>stubborn-maven-plugin</artifactId>
+                <groupId>sh.stubborn</groupId>
+                <artifactId>stubborn-contract-maven-plugin</artifactId>
                 <version>2.1.2.RELEASE</version>
                 <extensions>true</extensions>
                 <configuration>
@@ -292,7 +292,7 @@ The following example, from `pom.xml`, shows how to specify the base test class:
     </build>
 ----
 <1> The `baseClassForTests` element lets you specify your base test class. It must be a child
-of a `configuration` element within `stubborn-maven-plugin`.
+of a `configuration` element within `stubborn-contract-maven-plugin`.
 
 The following example shows a minimal (but functional) base test class:
 
@@ -394,7 +394,7 @@ the following example shows:
 
 [source,bash,indent=0]
 ----
- [INFO] --- stubborn-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
+ [INFO] --- stubborn-contract-maven-plugin:1.0.0.BUILD-SNAPSHOT:generateStubs (default-generateStubs) @ http-server ---
  [INFO] Building jar: /some/path/http-server/target/http-server-0.0.1-SNAPSHOT-stubs.jar
  [INFO]
  [INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ http-server ---

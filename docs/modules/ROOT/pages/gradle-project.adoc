@@ -31,7 +31,7 @@ plugins {
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:stubborn-dependencies:$\{GAVerifierVersion}"
+		mavenBom "sh.stubborn:stubborn-contract-dependencies:$\{GAVerifierVersion}"
 	}
 }
 
@@ -57,7 +57,7 @@ pluginManagement {
         // to pick from local .m2
         mavenLocal()
         // for snapshots
-        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
         // for GA versions
         gradlePluginPortal()
     }
@@ -71,7 +71,7 @@ plugins {
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:stubborn-dependencies:$\{verifierVersion}"
+		mavenBom "sh.stubborn:stubborn-contract-dependencies:$\{verifierVersion}"
 	}
 }
 
@@ -95,9 +95,9 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:$\{springboot_version}"
-		classpath "org.springframework.cloud:stubborn-gradle-plugin:$\{verifier_version}"
+		classpath "sh.stubborn:stubborn-contract-gradle-plugin:$\{verifier_version}"
         // here you can also pass additional dependencies such as Kotlin spec e.g.:
-        // classpath "org.springframework.cloud:spring-cloud-contract-spec-kotlin:$\{verifier_version}"
+        // classpath "sh.stubborn:stubborn-contract-spec-kotlin:$\{verifier_version}"
 	}
 }
 
@@ -106,7 +106,7 @@ apply plugin: 'sh.stubborn.contract'
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.cloud:stubborn-dependencies:$\{verifier_version}"
+		mavenBom "sh.stubborn:stubborn-contract-dependencies:$\{verifier_version}"
 	}
 }
 
@@ -133,13 +133,13 @@ buildscript {
 	}
 	dependencies {
 		classpath "org.springframework.boot:spring-boot-gradle-plugin:$\{springboot_version}"
-		classpath "org.springframework.cloud:stubborn-gradle-plugin:$\{verifier_version}"
+		classpath "sh.stubborn:stubborn-contract-gradle-plugin:$\{verifier_version}"
 	}
 }
 
 dependencies {
     // all dependencies
-    // you can exclude rest-assured from stubborn-verifier
+    // you can exclude rest-assured from stubborn-contract-verifier
     testCompile "com.jayway.restassured:rest-assured:2.5.0"
     testCompile "com.jayway.restassured:spring-mock-mvc:2.5.0"
 }

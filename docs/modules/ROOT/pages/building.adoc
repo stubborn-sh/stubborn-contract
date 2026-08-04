@@ -56,14 +56,14 @@ The following listing shows the Stubborn Contract folder structure:
 ├── samples
 ├── scripts
 ├── specs
-├── stubborn-dependencies
+├── stubborn-contract-dependencies
 ├── spring-cloud-contract-shade
-├── stubborn-starters
-├── stubborn-stub-runner
+├── stubborn-contract-starters
+├── stubborn-contract-stub-runner
 ├── stubborn-stub-runner-boot
 ├── spring-cloud-contract-tools
-├── stubborn-verifier
-├── stubborn-wiremock
+├── stubborn-contract-verifier
+├── stubborn-contract-wiremock
 └── tests
 ```
 
@@ -73,15 +73,15 @@ The following list describes each of the top-level folders in the project struct
 - `docker`: Folder contains docker images
 - `scripts`: Contains scripts to build and test `Stubborn Contract` with Maven, Gradle
 - `specs`: Contains specifications for the Contract DSL.
-- `stubborn-dependencies`: Contains Stubborn Contract BOM
+- `stubborn-contract-dependencies`: Contains Stubborn Contract BOM
 - `spring-cloud-contract-shade`: Shaded dependencies used by the plugins
-- `stubborn-starters`: Contains Stubborn Contract Starters
+- `stubborn-contract-starters`: Contains Stubborn Contract Starters
 - `spring-cloud-contract-spec`: Contains specification modules (contains concept of a Contract)
-- `stubborn-stub-runner`: Contains Stub Runner related modules
+- `stubborn-contract-stub-runner`: Contains Stub Runner related modules
 - `stubborn-stub-runner-boot`: Contains Stub Runner Boot app
 - `spring-cloud-contract-tools`: Gradle and Maven plugin for `Stubborn Contract Verifier`
-- `stubborn-verifier`: Core of the `Stubborn Contract Verifier` functionality
-- `stubborn-wiremock`: All WireMock related functionality
+- `stubborn-contract-verifier`: Core of the `Stubborn Contract Verifier` functionality
+- `stubborn-contract-wiremock`: All WireMock related functionality
 - `tests`: Integration tests for different messaging technologies
 
 [[commands]]

@@ -84,8 +84,8 @@ Maven::
 [source,xml,indent=0,role="primary"]
 ----
 <plugin>
-	<groupId>org.springframework.cloud</groupId>
-	<artifactId>stubborn-maven-plugin</artifactId>
+	<groupId>sh.stubborn</groupId>
+	<artifactId>stubborn-contract-maven-plugin</artifactId>
 	<version>${spring-cloud-contract.version}</version>
 	<extensions>true</extensions>
 	<configuration>

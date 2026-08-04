@@ -12,7 +12,7 @@ To add the Stubborn Contract BOM, include the following section in your `pom.xml
 ----
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-dependencies</artifactId>
+				<artifactId>stubborn-contract-dependencies</artifactId>
 				<version>${stubborn-contract.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -29,7 +29,7 @@ Next, add the `Stubborn Contract Verifier` Maven plugin, as follows:
 ----
 			<plugin>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-maven-plugin</artifactId>
+				<artifactId>stubborn-contract-maven-plugin</artifactId>
 				<version>${stubborn-contract.version}</version>
 				<extensions>true</extensions>
 				<configuration>
@@ -65,7 +65,7 @@ Sometimes, regardless of the picked IDE, you can see that the `target/generated-
 [[maven-rest-assured]]
 == Maven and REST Assured
 
-The `stubborn-dependencies` BOM manages `io.rest-assured:rest-assured:6.0.0` so you
+The `stubborn-contract-dependencies` BOM manages `io.rest-assured:rest-assured:6.0.0` so you
 do not need to specify the version in your project. Add the dependency without a
 `<version>`:
 
@@ -146,7 +146,7 @@ If you want to run stubs from Maven, call the `run` goal with the stubs to run a
 
 [source,bash,indent=0]
 ====
-mvn sh.stubborn:stubborn-maven-plugin:run \
+mvn sh.stubborn:stubborn-contract-maven-plugin:run \
 -Dspring.cloud.contract.verifier.stubs="com.acme:service-name"
 ====
 
@@ -160,7 +160,7 @@ definition or the `execution` definition, as follows:
 ----
 <plugin>
     <groupId>sh.stubborn</groupId>
-    <artifactId>stubborn-maven-plugin</artifactId>
+    <artifactId>stubborn-contract-maven-plugin</artifactId>
     <executions>
         <execution>
             <goals>
@@ -436,7 +436,7 @@ goal. The following example shows how to do so:
 ----
 <plugin>
     <groupId>sh.stubborn</groupId>
-    <artifactId>stubborn-maven-plugin</artifactId>
+    <artifactId>stubborn-contract-maven-plugin</artifactId>
     <version>${stubborn-contract.version}</version>
     <extensions>true</extensions>
     <configuration>
@@ -479,7 +479,7 @@ or an environment variable. For instance, you could specify a concrete branch to
 ----
 <plugin>
     <groupId>sh.stubborn</groupId>
-    <artifactId>stubborn-maven-plugin</artifactId>
+    <artifactId>stubborn-contract-maven-plugin</artifactId>
     <version>${stubborn-contract.version}</version>
     <extensions>true</extensions>
     <configuration>
@@ -556,7 +556,7 @@ To fix this issue, provide the following section in your `pom.xml`:
                              <pluginExecution>
                                 <pluginExecutionFilter>
                                     <groupId>sh.stubborn</groupId>
-                                    <artifactId>stubborn-maven-plugin</artifactId>
+                                    <artifactId>stubborn-contract-maven-plugin</artifactId>
                                     <versionRange>[1.0,)</versionRange>
                                     <goals>
                                         <goal>convert</goal>
