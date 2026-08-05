@@ -37,7 +37,7 @@ include::{root_folder}/src/test/projects/complex-configuration/src/test/contract
 
 === Project source code
 
-https://github.com/spring-cloud/spring-cloud-contract/tree/main/spring-cloud-contract-tools/stubborn-maven-plugin/src/test/projects/complex-configuration
+https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-contract-tools/stubborn-contract-maven-plugin/src/test/projects/complex-configuration
 
 === More samples
 
