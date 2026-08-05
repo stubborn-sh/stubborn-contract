@@ -31,17 +31,17 @@ jobs:
 
       - name: Check project version is SNAPSHOT
         id: version
+        # The Release workflow pushes a transient non-SNAPSHOT "Release x.y.z" commit to main
+        # before restoring the next SNAPSHOT. On that commit a snapshot publish is a no-op, so we
+        # record the result as an output and SKIP the publish job (below) rather than failing red.
+        # SNAPSHOT detection is extracted to scripts/release/is-snapshot.sh (unit-tested via test/bats).
         run: |
-          # The Release workflow pushes a transient non-SNAPSHOT "Release x.y.z" commit to main
-          # before restoring the next SNAPSHOT. On that commit a snapshot publish is a no-op, so we
-          # record the result as an output and SKIP the publish job (below) rather than failing red.
-          VERSION=$(grep -m1 '<version>' pom.xml | sed 's/.*<version>\(.*\)<\/version>.*/\1/')
-          if [[ "$VERSION" == *-SNAPSHOT ]]; then
-            echo "is_snapshot=true" >> "$GITHUB_OUTPUT"
-            echo "Project version $VERSION is a SNAPSHOT — snapshot publish will run."
+          IS_SNAPSHOT=$(scripts/release/is-snapshot.sh)
+          echo "is_snapshot=$IS_SNAPSHOT" >> "$GITHUB_OUTPUT"
+          if [ "$IS_SNAPSHOT" = "true" ]; then
+            echo "Project version is a SNAPSHOT — snapshot publish will run."
           else
-            echo "is_snapshot=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Project version $VERSION is not a SNAPSHOT (likely the transient release commit) — skipping snapshot publish."
+            echo "::notice::Project version is not a SNAPSHOT (likely the transient release commit) — skipping snapshot publish."
           fi
 
       - name: Build stubborn-contract-build parent
