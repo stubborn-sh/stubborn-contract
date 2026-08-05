@@ -25,17 +25,11 @@
 
 	<properties>
 		<spring-boot.version>4.1.0</spring-boot.version>
-		<!-- Align it also in Docker image under [docker/stubborn-contract-docker/project/gradle.properties] -->
 		<!--
-		  Bumped 4.16.0 -> 4.21.0 (latest 4.x) to clear the batch of apache:camel CVEs that
-		  dependency-check matches against camel-core / camel-kafka at 4.16.0 (e.g. CVE-2026-46454,
-		  CVE-2026-47323, CVE-2026-53913, CVE-2026-48204, ...). Most affect components we do not use
-		  (camel-keycloak, camel-cxf, ...) but share the apache:camel CPE, so a version bump off the
-		  affected range is the cleanest fix. Camel is optional/opt-in here (see camel-core/-kafka
-		  <optional>true</optional> in stubborn-contract-verifier) and our usage is limited to a few
-		  stable core APIs (CamelContext, Message, DefaultMessage), so the blast radius is low.
+		  NOTE: camel.version now lives in the build parent (stubborn-contract-build/pom.xml) so the
+		  Docker image module can inherit it and Maven-filter camelVersion into gradle.properties.
+		  It is still consumed here via ${camel.version} through parent inheritance.
 		-->
-		<camel.version>4.21.0</camel.version>
 		<jsch-agent.version>0.0.9</jsch-agent.version>
 		<spring-cloud-zookeeper.version>5.0.2</spring-cloud-zookeeper.version>
 		<spring-cloud-stream.version>5.0.2</spring-cloud-stream.version>

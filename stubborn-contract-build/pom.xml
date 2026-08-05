@@ -125,6 +125,19 @@
 		<httpcore5.version>5.4.3</httpcore5.version>
 		<icu4j.version>78.3</icu4j.version>
 		<!--
+		  Defined here (the common build parent) rather than the reactor root so the Docker
+		  image module (docker/stubborn-contract-docker, whose parent chain resolves up to this
+		  build parent) inherits it and can Maven-filter camelVersion into its gradle.properties.
+		  Bumped 4.16.0 -> 4.21.0 (latest 4.x) to clear the batch of apache:camel CVEs that
+		  dependency-check matches against camel-core / camel-kafka at 4.16.0 (e.g. CVE-2026-46454,
+		  CVE-2026-47323, CVE-2026-53913, CVE-2026-48204, ...). Most affect components we do not use
+		  (camel-keycloak, camel-cxf, ...) but share the apache:camel CPE, so a version bump off the
+		  affected range is the cleanest fix. Camel is optional/opt-in here (see camel-core/-kafka
+		  <optional>true</optional> in stubborn-contract-verifier) and our usage is limited to a few
+		  stable core APIs (CamelContext, Message, DefaultMessage), so the blast radius is low.
+		-->
+		<camel.version>4.21.0</camel.version>
+		<!--
 		  Netty is managed by the Spring Boot 4.1 BOM at 4.2.15.Final, which carries a batch of
 		  DoS / OCSP-bypass CVEs matched against the netty:netty CPE (CVE-2026-56820 [9.1],
 		  CVE-2026-55851 [8.7], CVE-2026-56745 [8.7], CVE-2026-56817 [8.3], CVE-2026-56819 [7.5],
