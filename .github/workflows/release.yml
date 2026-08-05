@@ -10,6 +10,11 @@ on:
         description: 'Next SNAPSHOT version (e.g. 0.2.0-SNAPSHOT)'
         required: true
         default: '0.2.0-SNAPSHOT'
+      dryRun:
+        description: 'Staged dry-run: deploy to Central Portal (validated/pending, never auto-published) but skip tag / GitHub release / next-snapshot commit.'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -50,13 +55,21 @@ jobs:
           fi
 
       - name: Set release version
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
         run: |
-          ./mvnw versions:set -DnewVersion=${{ inputs.version }} \
+          ./mvnw versions:set -DnewVersion=${RELEASE_VERSION} \
             -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress
           # also bump stubborn-contract-build (not a reactor module)
-          ./mvnw versions:set -DnewVersion=${{ inputs.version }} \
+          ./mvnw versions:set -DnewVersion=${RELEASE_VERSION} \
             -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress \
             -f stubborn-contract-build/pom.xml
+          # Finalize the reactor root <parent> ref -> stubborn-contract-build:${RELEASE_VERSION}.
+          # versions:set above does NOT rewrite the root pom's <parent><version>, so without this
+          # the tagged build would resolve a stale 0.1.0-SNAPSHOT parent (non-reproducible).
+          ./mvnw -N versions:update-parent \
+            -DparentVersion="[${RELEASE_VERSION}]" -DallowSnapshots=false -DforceUpdate=true \
+            -DgenerateBackupPoms=false --no-transfer-progress
 
       - name: Build stubborn-contract-build parent
         run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
@@ -69,21 +82,37 @@ jobs:
       - name: Build & test
         run: ./mvnw clean install --no-transfer-progress
 
+      - name: Fail if any SNAPSHOT version remains
+        run: |
+          # Guard: every tracked pom.xml must be fully finalized before we deploy to the
+          # immutable Central Portal. Excludes .flattened-pom.xml (build-generated). Fails the
+          # job if any -SNAPSHOT survived the version-set step (e.g. a missed parent ref).
+          remaining=$(git ls-files '*pom.xml' ':!:*.flattened-pom.xml' \
+            | xargs grep -l -- '-SNAPSHOT' 2>/dev/null || true)
+          if [ -n "$remaining" ]; then
+            echo "::error::SNAPSHOT versions still present in tracked poms after version-set:"
+            echo "$remaining"
+            git ls-files '*pom.xml' ':!:*.flattened-pom.xml' | xargs grep -n -- '-SNAPSHOT' || true
+            exit 1
+          fi
+          echo "No -SNAPSHOT versions remain in tracked poms."
+
       - name: Deploy stubborn-contract-build to Maven Central
-        run: ./mvnw deploy -Ppublish,release -DskipTests --no-transfer-progress -f stubborn-contract-build/pom.xml
+        run: ./mvnw deploy -Ppublish,release -DskipTests -Dcentral.autoPublish=false --no-transfer-progress -f stubborn-contract-build/pom.xml
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Deploy all modules to Maven Central
-        run: ./mvnw deploy -Ppublish,release -DskipTests --no-transfer-progress
+        run: ./mvnw deploy -Ppublish,release -DskipTests -Dcentral.autoPublish=false --no-transfer-progress
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Tag release & push
+        if: ${{ !inputs.dryRun }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -93,6 +122,7 @@ jobs:
           git push origin main "v${{ inputs.version }}"
 
       - name: Create GitHub Release
+        if: ${{ !inputs.dryRun }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -101,6 +131,7 @@ jobs:
             --generate-notes
 
       - name: Set next SNAPSHOT version
+        if: ${{ !inputs.dryRun }}
         run: |
           ./mvnw versions:set -DnewVersion=${{ inputs.next-snapshot }} \
             -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress
