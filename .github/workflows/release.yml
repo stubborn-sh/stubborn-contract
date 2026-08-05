@@ -64,12 +64,16 @@ jobs:
           ./mvnw versions:set -DnewVersion=${RELEASE_VERSION} \
             -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress \
             -f stubborn-contract-build/pom.xml
-          # Finalize the reactor root <parent> ref -> stubborn-contract-build:${RELEASE_VERSION}.
-          # versions:set above does NOT rewrite the root pom's <parent><version>, so without this
-          # the tagged build would resolve a stale 0.1.0-SNAPSHOT parent (non-reproducible).
-          ./mvnw -N versions:update-parent \
-            -DparentVersion="[${RELEASE_VERSION}]" -DallowSnapshots=false -DforceUpdate=true \
-            -DgenerateBackupPoms=false --no-transfer-progress
+          # Finalize the <parent> refs that point at stubborn-contract-build. That parent lives
+          # OUTSIDE the reactor, so neither versions:set above rewrites those refs, and they would
+          # otherwise stay 0.1.0-SNAPSHOT — making the tagged build resolve a stale snapshot parent
+          # (non-reproducible) and the Install-BOM step fail once only the release parent exists.
+          # versions:update-parent needs to read/resolve the not-yet-installed parent + imported
+          # BOMs first (it fails here), so edit the single <parent> block in each pom directly.
+          # These are the only two poms whose parent is stubborn-contract-build (root + the BOM).
+          for p in pom.xml stubborn-contract-dependencies/pom.xml; do
+            sed -i -E "/<parent>/,/<\/parent>/ s#<version>[^<]*</version>#<version>${RELEASE_VERSION}</version>#" "$p"
+          done
           # Pin the Docker image's verifierVersion to the released verifier so the tagged
           # image builds against the release, not a snapshot.
           DOCKER_PROPS="docker/stubborn-contract-docker/project/gradle.properties"
@@ -90,18 +94,28 @@ jobs:
 
       - name: Fail if any SNAPSHOT version remains
         run: |
-          # Guard: every tracked pom.xml must be fully finalized before we deploy to the
-          # immutable Central Portal. Excludes .flattened-pom.xml (build-generated). Fails the
-          # job if any -SNAPSHOT survived the version-set step (e.g. a missed parent ref).
-          remaining=$(git ls-files '*pom.xml' ':!:*.flattened-pom.xml' \
+          # Guard: every RELEASE-reactor pom.xml must be fully finalized before we deploy to the
+          # immutable Central Portal. Fails the job if any -SNAPSHOT survived version-set (e.g. a
+          # missed parent ref). Exclusions:
+          #   *.flattened-pom.xml          build-generated
+          #   */src/test/*                 Maven-plugin test-fixture projects that carry intentional
+          #                                fixed sample versions (0.1.BUILD-SNAPSHOT, etc.) and are
+          #                                never published
+          #   docker/                      the docker Maven tree is commented out of the reactor and
+          #                                is never built here; the released image is versioned via
+          #                                docker/.../gradle.properties (verifierVersion, bumped above)
+          remaining=$(git ls-files '*pom.xml' \
+            ':!:*.flattened-pom.xml' \
+            ':!:*/src/test/*' \
+            ':!:docker' \
             | xargs grep -l -- '-SNAPSHOT' 2>/dev/null || true)
           if [ -n "$remaining" ]; then
-            echo "::error::SNAPSHOT versions still present in tracked poms after version-set:"
+            echo "::error::SNAPSHOT versions still present in release-reactor poms after version-set:"
             echo "$remaining"
-            git ls-files '*pom.xml' ':!:*.flattened-pom.xml' | xargs grep -n -- '-SNAPSHOT' || true
+            echo "$remaining" | xargs grep -n -- '-SNAPSHOT' || true
             exit 1
           fi
-          echo "No -SNAPSHOT versions remain in tracked poms."
+          echo "No -SNAPSHOT versions remain in release-reactor poms."
 
       - name: Deploy stubborn-contract-build to Maven Central
         run: ./mvnw deploy -Ppublish,release -DskipTests -Dcentral.autoPublish=false --no-transfer-progress -f stubborn-contract-build/pom.xml
