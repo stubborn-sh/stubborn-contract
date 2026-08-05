@@ -981,6 +981,7 @@
 						<configuration>
 							<excludeArtifacts>
 								<artifactId>stubborn-contract-stub-runner-app</artifactId>
+								<artifactId>stubborn-contract-docs</artifactId>
 								<artifactId>stubborn-contract-docker-parent</artifactId>
 								<artifactId>stubborn-contract-specs</artifactId>
 								<artifactId>stubborn-contract-tests</artifactId>

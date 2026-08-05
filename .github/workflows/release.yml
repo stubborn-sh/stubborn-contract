@@ -70,6 +70,12 @@ jobs:
           ./mvnw -N versions:update-parent \
             -DparentVersion="[${RELEASE_VERSION}]" -DallowSnapshots=false -DforceUpdate=true \
             -DgenerateBackupPoms=false --no-transfer-progress
+          # Pin the Docker image's verifierVersion to the released verifier so the tagged
+          # image builds against the release, not a snapshot.
+          DOCKER_PROPS="docker/stubborn-contract-docker/project/gradle.properties"
+          sed -i -E "s/^verifierVersion=.*/verifierVersion=${RELEASE_VERSION}/" "$DOCKER_PROPS"
+          grep -q "^verifierVersion=${RELEASE_VERSION}$" "$DOCKER_PROPS" \
+            || { echo "::error::Failed to set verifierVersion in $DOCKER_PROPS"; exit 1; }
 
       - name: Build stubborn-contract-build parent
         run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
