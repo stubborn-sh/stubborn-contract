@@ -106,6 +106,10 @@
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-stub-runner-app</artifactId>
+			<!-- Not managed by the stubborn-contract-dependencies BOM (it is a repackaged
+			     executable, excluded from Central publishing), so pin the reactor version
+			     explicitly. This module bakes the standalone stub-runner app into the image. -->
+			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
