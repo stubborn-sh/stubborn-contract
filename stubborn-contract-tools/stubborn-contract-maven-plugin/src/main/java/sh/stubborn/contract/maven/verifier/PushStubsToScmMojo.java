@@ -38,6 +38,7 @@ import org.springframework.util.StringUtils;
  * @author Marcin Grzejszczak
  */
 @Mojo(name = "pushStubsToScm")
+@SuppressWarnings("NullAway.Init")
 public class PushStubsToScmMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${project.build.directory}", readonly = true, required = true)

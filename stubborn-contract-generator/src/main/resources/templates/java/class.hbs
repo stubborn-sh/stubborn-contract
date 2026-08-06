@@ -1,0 +1,10 @@
+package {{packageName}};
+
+{{{imports}}}
+
+{{{classAnnotations}}}public class {{className}}{{#if baseClass}} extends {{baseClass}}{{/if}} {
+{{{fields}}}
+{{#each methods}}{{> method}}
+
+{{/each~}}
+}

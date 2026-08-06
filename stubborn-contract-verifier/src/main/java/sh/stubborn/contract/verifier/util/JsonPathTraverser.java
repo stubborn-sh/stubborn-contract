@@ -215,8 +215,8 @@ class JsonPathTraverser {
 		}
 		if (key.isIteratingOverArray() && isListOfLists(list)) {
 			boolean allPrimitive = list.stream()
-				.filter(item -> item instanceof List)
-				.allMatch(item -> listContainsOnlyPrimitives((List<?>) item));
+				.filter((item) -> item instanceof List)
+				.allMatch((item) -> listContainsOnlyPrimitives((List<?>) item));
 			return allPrimitive ? key.iterationPassingArray() : key.array();
 		}
 		if (key.isIteratingOverArray()) {

@@ -47,14 +47,15 @@ class ContractFileScannerTests {
 
 	@BeforeEach
 	void setup() throws Exception {
-		tmpFolder = new File(tmp.toFile(), "contracts");
-		tmpFolder.mkdirs();
+		this.tmpFolder = new File(this.tmp.toFile(), "contracts");
+		this.tmpFolder.mkdirs();
 	}
 
 	@Test
 	void should_find_contract_files() throws Exception {
-		FileSystemUtils.copyRecursively(new File(getClass().getResource("/directory/with/stubs").toURI()), tmpFolder);
-		File baseDir = tmpFolder;
+		FileSystemUtils.copyRecursively(new File(getClass().getResource("/directory/with/stubs").toURI()),
+				this.tmpFolder);
+		File baseDir = this.tmpFolder;
 		Set<String> excluded = Set.of("package/**");
 		Set<String> ignored = Set.of("other/different/**");
 		ContractFileScanner scanner = new ContractFileScanner(baseDir, excluded, ignored, Set.of(), null);
@@ -88,22 +89,22 @@ class ContractFileScannerTests {
 		List<ContractMetadata> firstEntry = contracts.values().iterator().next();
 		assertThat(firstEntry).hasSize(3);
 		assertThat(firstEntry.stream()
-			.filter(m -> m.getPath().getFileName().toString().startsWith("01"))
+			.filter((m) -> m.getPath().getFileName().toString().startsWith("01"))
 			.findFirst()
 			.orElseThrow()
 			.getGroupSize()).isEqualTo(3);
 		assertThat(firstEntry.stream()
-			.filter(m -> m.getPath().getFileName().toString().startsWith("01"))
+			.filter((m) -> m.getPath().getFileName().toString().startsWith("01"))
 			.findFirst()
 			.orElseThrow()
 			.getOrder()).isEqualTo(0);
 		assertThat(firstEntry.stream()
-			.filter(m -> m.getPath().getFileName().toString().startsWith("02"))
+			.filter((m) -> m.getPath().getFileName().toString().startsWith("02"))
 			.findFirst()
 			.orElseThrow()
 			.getOrder()).isEqualTo(1);
 		assertThat(firstEntry.stream()
-			.filter(m -> m.getPath().getFileName().toString().startsWith("03"))
+			.filter((m) -> m.getPath().getFileName().toString().startsWith("03"))
 			.findFirst()
 			.orElseThrow()
 			.getOrder()).isEqualTo(2);
@@ -155,7 +156,7 @@ class ContractFileScannerTests {
 							String line = reader.readLine();
 							return line != null && line.startsWith("custom_format: 1.0");
 						}
-						catch (Exception e) {
+						catch (Exception ex) {
 							return false;
 						}
 					}
@@ -175,38 +176,38 @@ class ContractFileScannerTests {
 		Map<Path, List<ContractMetadata>> result = scanner.findContractsRecursively();
 		assertThat(result.keySet()).hasSize(1);
 		assertThat(result.entrySet())
-			.allMatch(e -> e.getValue().stream().anyMatch(m -> m.getConvertedContract() != null));
+			.allMatch((e) -> e.getValue().stream().anyMatch((m) -> m.getConvertedContract() != null));
 	}
 
 	@Test
 	void should_find_contracts_for_include_pattern() throws Exception {
 		FileSystemUtils.copyRecursively(new File(getClass().getResource("/directory/with/common-messaging").toURI()),
-				tmpFolder);
-		File baseDir = tmpFolder;
+				this.tmpFolder);
+		File baseDir = this.tmpFolder;
 		Set<String> included = Set.of("social-service/**", "**/coupon-collected/**/*V1*");
 		ContractFileScanner scanner = new ContractFileScanner(baseDir, Set.of(), Set.of(), included, null);
 		Map<Path, List<ContractMetadata>> result = scanner.findContractsRecursively();
 		assertThat(result.keySet()).hasSize(3);
 		List<ContractMetadata> allContracts = result.values().stream().flatMap(Collection::stream).toList();
 		assertThat(allContracts.stream()
-			.filter(m -> "couponCollectedEventV1.groovy".equals(m.getPath().getFileName().toString()))
+			.filter((m) -> "couponCollectedEventV1.groovy".equals(m.getPath().getFileName().toString()))
 			.findFirst()
 			.orElseThrow()
 			.getGroupSize()).isEqualTo(2);
 		assertThat(allContracts.stream()
-			.filter(m -> m.getConvertedContract() != null
-					&& m.getConvertedContract().stream().anyMatch(c -> "couponCollectedV1".equals(c.getLabel())))
+			.filter((m) -> m.getConvertedContract() != null
+					&& m.getConvertedContract().stream().anyMatch((c) -> "couponCollectedV1".equals(c.getLabel())))
 			.findFirst()).isPresent();
 		assertThat(allContracts.stream()
-			.filter(m -> "couponCollectedEventV2.groovy".equals(m.getPath().getFileName().toString()))
+			.filter((m) -> "couponCollectedEventV2.groovy".equals(m.getPath().getFileName().toString()))
 			.toList()).isEmpty();
 		assertThat(allContracts.stream()
-			.filter(m -> "shouldUpdateUserInfo.groovy".equals(m.getPath().getFileName().toString()))
+			.filter((m) -> "shouldUpdateUserInfo.groovy".equals(m.getPath().getFileName().toString()))
 			.findFirst()
 			.orElseThrow()
 			.getGroupSize()).isEqualTo(1);
 		assertThat(allContracts.stream()
-			.filter(m -> "shouldReturnEmptyFriendsWhenGetFriends.groovy".equals(m.getPath().getFileName().toString()))
+			.filter((m) -> "shouldReturnEmptyFriendsWhenGetFriends.groovy".equals(m.getPath().getFileName().toString()))
 			.findFirst()
 			.orElseThrow()
 			.getGroupSize()).isEqualTo(1);

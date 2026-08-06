@@ -51,7 +51,7 @@ class ConvertMojoIntegrationTests extends AbstractMojoIntegrationTests {
 		then(Files.exists(stubsRoot)).isTrue();
 		List<Path> stubs;
 		try (Stream<Path> paths = Files.walk(stubsRoot)) {
-			stubs = paths.filter(path -> path.toString().endsWith(".json")).toList();
+			stubs = paths.filter((path) -> path.toString().endsWith(".json")).toList();
 		}
 		then(stubs).isNotEmpty();
 		String stubContents = Files.readString(stubs.get(0));

@@ -21,16 +21,18 @@ import java.util.function.Consumer;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.util.ValidateUtils;
 
 /**
  * Represents a URL that may contain query parameters.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class Url extends DslProperty {
 
-	private QueryParameters queryParameters;
+	private @Nullable QueryParameters queryParameters;
 
 	public Url(DslProperty prop) {
 		super(prop.getClientValue(), prop.getServerValue());
@@ -47,8 +49,8 @@ public class Url extends DslProperty {
 		return DslPropertyConverter.INSTANCE.testSide(url);
 	}
 
-	public QueryParameters getQueryParameters() {
-		return queryParameters;
+	public @Nullable QueryParameters getQueryParameters() {
+		return this.queryParameters;
 	}
 
 	public void setQueryParameters(QueryParameters queryParameters) {
@@ -67,17 +69,17 @@ public class Url extends DslProperty {
 			return false;
 		}
 		Url url = (Url) o;
-		return Objects.equals(queryParameters, url.queryParameters);
+		return Objects.equals(this.queryParameters, url.queryParameters);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), queryParameters);
+		return Objects.hash(super.hashCode(), this.queryParameters);
 	}
 
 	@Override
 	public String toString() {
-		return "Url{" + "\nqueryParameters=" + queryParameters + "} \n" + super.toString();
+		return "Url{" + "\nqueryParameters=" + this.queryParameters + "} \n" + super.toString();
 	}
 
 	/**

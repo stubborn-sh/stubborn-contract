@@ -34,6 +34,7 @@ import java.lang.annotation.Target;
 public @interface StubRunnerPort {
 
 	/**
+	 * Notation of the stub whose port should be injected.
 	 * @return the {@code artifactid} or {@code groupid:artifactid} notation of the
 	 * started stub.
 	 */

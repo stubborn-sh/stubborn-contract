@@ -22,6 +22,7 @@ import java.util.Objects;
 /**
  * Represents a property that will become an executable method in the generated tests.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class ExecutionProperty implements Serializable {
@@ -41,16 +42,11 @@ public class ExecutionProperty implements Serializable {
 	 * @return string with inserted value
 	 */
 	public String insertValue(String valueToInsert) {
-		return executionCommand.replace(PLACEHOLDER_VALUE, valueToInsert);
-	}
-
-	@Override
-	public String toString() {
-		return executionCommand;
+		return this.executionCommand.replace(PLACEHOLDER_VALUE, valueToInsert);
 	}
 
 	public final String getExecutionCommand() {
-		return executionCommand;
+		return this.executionCommand;
 	}
 
 	@Override
@@ -62,12 +58,17 @@ public class ExecutionProperty implements Serializable {
 			return false;
 		}
 		ExecutionProperty that = (ExecutionProperty) o;
-		return Objects.equals(executionCommand, that.executionCommand);
+		return Objects.equals(this.executionCommand, that.executionCommand);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(executionCommand);
+		return Objects.hash(this.executionCommand);
+	}
+
+	@Override
+	public String toString() {
+		return this.executionCommand;
 	}
 
 }

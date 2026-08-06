@@ -19,6 +19,10 @@ package sh.stubborn.contract.stubrunner.spring.cloud;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.stubrunner.StubFinder;
+import sh.stubborn.contract.stubrunner.StubsMode;
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,10 +36,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-import sh.stubborn.contract.stubrunner.StubFinder;
-import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
-import sh.stubborn.contract.stubrunner.StubsMode;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = StubRunnerSpringCloudAutoConfigurationTests.Config.class,

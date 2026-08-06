@@ -27,6 +27,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * Camel route configuration for the book messaging sample.
+ *
  * @author Marcin Grzejszczak
  */
 @Configuration(proxyBeanMethods = false)

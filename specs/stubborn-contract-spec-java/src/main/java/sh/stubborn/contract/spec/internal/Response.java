@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.util.RegexpUtils;
@@ -39,19 +40,19 @@ public class Response extends Common implements RegexCreatingProperty<ServerDslP
 
 	private static final Logger log = LoggerFactory.getLogger(Response.class);
 
-	private DslProperty status;
+	private @Nullable DslProperty status;
 
-	private DslProperty delay;
+	private @Nullable DslProperty delay;
 
-	private Headers headers;
+	private @Nullable Headers headers;
 
-	private Cookies cookies;
+	private @Nullable Cookies cookies;
 
-	private Body body;
+	private @Nullable Body body;
 
 	private boolean async;
 
-	private ResponseBodyMatchers bodyMatchers;
+	private @Nullable ResponseBodyMatchers bodyMatchers;
 
 	private ServerPatternValueDslProperty property = new ServerPatternValueDslProperty();
 
@@ -67,7 +68,7 @@ public class Response extends Common implements RegexCreatingProperty<ServerDslP
 
 	/**
 	 * Allows to set the HTTP status.
-	 * @param status HTTP status
+	 * @param status the HTTP status
 	 */
 	public void status(int status) {
 		this.status = toDslProperty(status);
@@ -75,7 +76,7 @@ public class Response extends Common implements RegexCreatingProperty<ServerDslP
 
 	/**
 	 * Allows to set the HTTP status.
-	 * @param status HTTP status
+	 * @param status the HTTP status
 	 */
 	public void status(DslProperty status) {
 		this.status = toDslProperty(status);
@@ -128,7 +129,7 @@ public class Response extends Common implements RegexCreatingProperty<ServerDslP
 	}
 
 	@Override
-	public void assertThatSidesMatch(Object stubSide, Object testSide) {
+	public void assertThatSidesMatch(@Nullable Object stubSide, @Nullable Object testSide) {
 		if (stubSide instanceof OptionalProperty) {
 			throw new IllegalStateException("Optional can be used only in the test side of the response!");
 		}
@@ -238,176 +239,176 @@ public class Response extends Common implements RegexCreatingProperty<ServerDslP
 	}
 
 	public ServerPatternValueDslProperty getProperty() {
-		return property;
+		return this.property;
 	}
 
 	public void setProperty(ServerPatternValueDslProperty property) {
 		this.property = property;
 	}
 
-	public DslProperty getStatus() {
-		return status;
+	public @Nullable DslProperty getStatus() {
+		return this.status;
 	}
 
-	public void setStatus(DslProperty status) {
+	public void setStatus(@Nullable DslProperty status) {
 		this.status = status;
 	}
 
-	public DslProperty getDelay() {
-		return delay;
+	public @Nullable DslProperty getDelay() {
+		return this.delay;
 	}
 
-	public void setDelay(DslProperty delay) {
+	public void setDelay(@Nullable DslProperty delay) {
 		this.delay = delay;
 	}
 
-	public Headers getHeaders() {
-		return headers;
+	public @Nullable Headers getHeaders() {
+		return this.headers;
 	}
 
-	public void setHeaders(Headers headers) {
+	public void setHeaders(@Nullable Headers headers) {
 		this.headers = headers;
 	}
 
-	public Cookies getCookies() {
-		return cookies;
+	public @Nullable Cookies getCookies() {
+		return this.cookies;
 	}
 
-	public void setCookies(Cookies cookies) {
+	public void setCookies(@Nullable Cookies cookies) {
 		this.cookies = cookies;
 	}
 
-	public Body getBody() {
-		return body;
+	public @Nullable Body getBody() {
+		return this.body;
 	}
 
-	public void setBody(Body body) {
+	public void setBody(@Nullable Body body) {
 		this.body = body;
 	}
 
 	public boolean getAsync() {
-		return async;
+		return this.async;
 	}
 
 	public boolean isAsync() {
-		return async;
+		return this.async;
 	}
 
 	public void setAsync(boolean async) {
 		this.async = async;
 	}
 
-	public ResponseBodyMatchers getBodyMatchers() {
-		return bodyMatchers;
+	public @Nullable ResponseBodyMatchers getBodyMatchers() {
+		return this.bodyMatchers;
 	}
 
-	public void setBodyMatchers(ResponseBodyMatchers bodyMatchers) {
+	public void setBodyMatchers(@Nullable ResponseBodyMatchers bodyMatchers) {
 		this.bodyMatchers = bodyMatchers;
 	}
 
 	@Override
 	public ServerDslProperty anyAlphaUnicode() {
-		return property.anyAlphaUnicode();
+		return this.property.anyAlphaUnicode();
 	}
 
 	@Override
 	public ServerDslProperty anyAlphaNumeric() {
-		return property.anyAlphaNumeric();
+		return this.property.anyAlphaNumeric();
 	}
 
 	@Override
 	public ServerDslProperty anyNumber() {
-		return property.anyNumber();
+		return this.property.anyNumber();
 	}
 
 	@Override
 	public ServerDslProperty anyInteger() {
-		return property.anyInteger();
+		return this.property.anyInteger();
 	}
 
 	@Override
 	public ServerDslProperty anyPositiveInt() {
-		return property.anyPositiveInt();
+		return this.property.anyPositiveInt();
 	}
 
 	@Override
 	public ServerDslProperty anyDouble() {
-		return property.anyDouble();
+		return this.property.anyDouble();
 	}
 
 	@Override
 	public ServerDslProperty anyHex() {
-		return property.anyHex();
+		return this.property.anyHex();
 	}
 
 	@Override
 	public ServerDslProperty aBoolean() {
-		return property.aBoolean();
+		return this.property.aBoolean();
 	}
 
 	@Override
 	public ServerDslProperty anyIpAddress() {
-		return property.anyIpAddress();
+		return this.property.anyIpAddress();
 	}
 
 	@Override
 	public ServerDslProperty anyHostname() {
-		return property.anyHostname();
+		return this.property.anyHostname();
 	}
 
 	@Override
 	public ServerDslProperty anyEmail() {
-		return property.anyEmail();
+		return this.property.anyEmail();
 	}
 
 	@Override
 	public ServerDslProperty anyUrl() {
-		return property.anyUrl();
+		return this.property.anyUrl();
 	}
 
 	@Override
 	public ServerDslProperty anyHttpsUrl() {
-		return property.anyHttpsUrl();
+		return this.property.anyHttpsUrl();
 	}
 
 	@Override
 	public ServerDslProperty anyUuid() {
-		return property.anyUuid();
+		return this.property.anyUuid();
 	}
 
 	@Override
 	public ServerDslProperty anyDate() {
-		return property.anyDate();
+		return this.property.anyDate();
 	}
 
 	@Override
 	public ServerDslProperty anyDateTime() {
-		return property.anyDateTime();
+		return this.property.anyDateTime();
 	}
 
 	@Override
 	public ServerDslProperty anyTime() {
-		return property.anyTime();
+		return this.property.anyTime();
 	}
 
 	@Override
 	public ServerDslProperty anyIso8601WithOffset() {
-		return property.anyIso8601WithOffset();
+		return this.property.anyIso8601WithOffset();
 	}
 
 	@Override
 	public ServerDslProperty anyNonBlankString() {
-		return property.anyNonBlankString();
+		return this.property.anyNonBlankString();
 	}
 
 	@Override
 	public ServerDslProperty anyNonEmptyString() {
-		return property.anyNonEmptyString();
+		return this.property.anyNonEmptyString();
 	}
 
 	@Override
 	public ServerDslProperty anyOf(String... values) {
-		return property.anyOf(values);
+		return this.property.anyOf(values);
 	}
 
 	public int CONTINUE() {
@@ -659,22 +660,23 @@ public class Response extends Common implements RegexCreatingProperty<ServerDslP
 			return false;
 		}
 		Response response = (Response) o;
-		return async == response.async && Objects.equals(status, response.status)
-				&& Objects.equals(delay, response.delay) && Objects.equals(headers, response.headers)
-				&& Objects.equals(cookies, response.cookies) && Objects.equals(body, response.body)
-				&& Objects.equals(bodyMatchers, response.bodyMatchers);
+		return this.async == response.async && Objects.equals(this.status, response.status)
+				&& Objects.equals(this.delay, response.delay) && Objects.equals(this.headers, response.headers)
+				&& Objects.equals(this.cookies, response.cookies) && Objects.equals(this.body, response.body)
+				&& Objects.equals(this.bodyMatchers, response.bodyMatchers);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(status, delay, headers, cookies, body, async, bodyMatchers);
+		return Objects.hash(this.status, this.delay, this.headers, this.cookies, this.body, this.async,
+				this.bodyMatchers);
 	}
 
 	@Override
 	public String toString() {
-		return "Response{" + "\nstatus=" + status + ", \n\tdelay=" + delay + ", \n\theaders=" + headers
-				+ ", \n\tcookies=" + cookies + ", \n\tbody=" + body + ", \n\tasync=" + async + ", \n\tbodyMatchers="
-				+ bodyMatchers + '}';
+		return "Response{" + "\nstatus=" + this.status + ", \n\tdelay=" + this.delay + ", \n\theaders=" + this.headers
+				+ ", \n\tcookies=" + this.cookies + ", \n\tbody=" + this.body + ", \n\tasync=" + this.async
+				+ ", \n\tbodyMatchers=" + this.bodyMatchers + '}';
 	}
 
 	/**
@@ -780,7 +782,7 @@ public class Response extends Common implements RegexCreatingProperty<ServerDslP
 	private static final class ServerPatternValueDslProperty extends PatternValueDslProperty<ServerDslProperty> {
 
 		@Override
-		protected ServerDslProperty createProperty(Pattern pattern, Object generatedValue) {
+		protected ServerDslProperty createProperty(Pattern pattern, @Nullable Object generatedValue) {
 			return new ServerDslProperty(pattern, generatedValue);
 		}
 

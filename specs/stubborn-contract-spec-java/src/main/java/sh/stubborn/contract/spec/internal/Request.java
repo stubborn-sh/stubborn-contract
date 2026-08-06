@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.util.RegexpUtils;
@@ -41,21 +42,21 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 
 	private ClientPatternValueDslProperty property = new ClientPatternValueDslProperty();
 
-	private DslProperty method;
+	private @Nullable DslProperty method;
 
-	private Url url;
+	private @Nullable Url url;
 
-	private UrlPath urlPath;
+	private @Nullable UrlPath urlPath;
 
-	private Headers headers;
+	private @Nullable Headers headers;
 
-	private Cookies cookies;
+	private @Nullable Cookies cookies;
 
-	private Body body;
+	private @Nullable Body body;
 
-	private Multipart multipart;
+	private @Nullable Multipart multipart;
 
-	private BodyMatchers bodyMatchers;
+	private @Nullable BodyMatchers bodyMatchers;
 
 	public Request() {
 	}
@@ -72,7 +73,7 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 
 	/**
 	 * Name of the HTTP method.
-	 * @param method HTTP method name
+	 * @param method the HTTP method name
 	 */
 	public void method(String method) {
 		this.method = toDslProperty(method);
@@ -80,42 +81,47 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 
 	/**
 	 * Name of the HTTP method.
-	 * @param method HTTP method name
+	 * @param method the HTTP method name
 	 */
 	public void method(DslProperty method) {
 		this.method = toDslProperty(method);
 	}
 
 	/**
-	 * @param url URL to which the request will be sent
+	 * Sets the URL of the request.
+	 * @param url the URL to which the request will be sent
 	 */
 	public void url(Object url) {
 		this.url = new Url(url);
 	}
 
 	/**
-	 * @param url URL to which the request will be sent
+	 * Sets the URL of the request.
+	 * @param url the URL to which the request will be sent
 	 */
 	public void url(DslProperty url) {
 		this.url = new Url(url);
 	}
 
 	/**
-	 * @param path URL to which the request will be sent
+	 * Sets the URL path of the request.
+	 * @param path the URL to which the request will be sent
 	 */
 	public void urlPath(String path) {
 		this.urlPath = new UrlPath(path);
 	}
 
 	/**
-	 * @param path URL to which the request will be sent
+	 * Sets the URL path of the request.
+	 * @param path the URL to which the request will be sent
 	 */
 	public void urlPath(Object path) {
 		this.urlPath = new UrlPath(path);
 	}
 
 	/**
-	 * @param path URL to which the request will be sent
+	 * Sets the URL path of the request.
+	 * @param path the URL to which the request will be sent
 	 */
 	public void urlPath(DslProperty path) {
 		this.urlPath = new UrlPath(path);
@@ -161,11 +167,11 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 		this.body = new Body(bodyAsValue);
 	}
 
-	public Body getBody() {
-		return body;
+	public @Nullable Body getBody() {
+		return this.body;
 	}
 
-	public void setBody(Body body) {
+	public void setBody(@Nullable Body body) {
 		this.body = body;
 	}
 
@@ -264,7 +270,7 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 	}
 
 	@Override
-	public void assertThatSidesMatch(Object stubSide, Object testSide) {
+	public void assertThatSidesMatch(@Nullable Object stubSide, @Nullable Object testSide) {
 		if (testSide instanceof OptionalProperty) {
 			throw new IllegalStateException("Optional can be used only for the stub side of the request!");
 		}
@@ -369,172 +375,172 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 	}
 
 	public ClientPatternValueDslProperty getProperty() {
-		return property;
+		return this.property;
 	}
 
 	public void setProperty(ClientPatternValueDslProperty property) {
 		this.property = property;
 	}
 
-	public DslProperty getMethod() {
-		return method;
+	public @Nullable DslProperty getMethod() {
+		return this.method;
 	}
 
-	public void setMethod(DslProperty method) {
+	public void setMethod(@Nullable DslProperty method) {
 		this.method = method;
 	}
 
-	public Url getUrl() {
-		return url;
+	public @Nullable Url getUrl() {
+		return this.url;
 	}
 
-	public void setUrl(Url url) {
+	public void setUrl(@Nullable Url url) {
 		this.url = url;
 	}
 
-	public UrlPath getUrlPath() {
-		return urlPath;
+	public @Nullable UrlPath getUrlPath() {
+		return this.urlPath;
 	}
 
-	public void setUrlPath(UrlPath urlPath) {
+	public void setUrlPath(@Nullable UrlPath urlPath) {
 		this.urlPath = urlPath;
 	}
 
-	public Headers getHeaders() {
-		return headers;
+	public @Nullable Headers getHeaders() {
+		return this.headers;
 	}
 
-	public void setHeaders(Headers headers) {
+	public void setHeaders(@Nullable Headers headers) {
 		this.headers = headers;
 	}
 
-	public Cookies getCookies() {
-		return cookies;
+	public @Nullable Cookies getCookies() {
+		return this.cookies;
 	}
 
-	public void setCookies(Cookies cookies) {
+	public void setCookies(@Nullable Cookies cookies) {
 		this.cookies = cookies;
 	}
 
-	public Multipart getMultipart() {
-		return multipart;
+	public @Nullable Multipart getMultipart() {
+		return this.multipart;
 	}
 
-	public void setMultipart(Multipart multipart) {
+	public void setMultipart(@Nullable Multipart multipart) {
 		this.multipart = multipart;
 	}
 
-	public BodyMatchers getBodyMatchers() {
-		return bodyMatchers;
+	public @Nullable BodyMatchers getBodyMatchers() {
+		return this.bodyMatchers;
 	}
 
-	public void setBodyMatchers(BodyMatchers bodyMatchers) {
+	public void setBodyMatchers(@Nullable BodyMatchers bodyMatchers) {
 		this.bodyMatchers = bodyMatchers;
 	}
 
 	@Override
 	public ClientDslProperty anyAlphaUnicode() {
-		return property.anyAlphaUnicode();
+		return this.property.anyAlphaUnicode();
 	}
 
 	@Override
 	public ClientDslProperty anyAlphaNumeric() {
-		return property.anyAlphaNumeric();
+		return this.property.anyAlphaNumeric();
 	}
 
 	@Override
 	public ClientDslProperty anyNumber() {
-		return property.anyNumber();
+		return this.property.anyNumber();
 	}
 
 	@Override
 	public ClientDslProperty anyInteger() {
-		return property.anyInteger();
+		return this.property.anyInteger();
 	}
 
 	@Override
 	public ClientDslProperty anyPositiveInt() {
-		return property.anyPositiveInt();
+		return this.property.anyPositiveInt();
 	}
 
 	@Override
 	public ClientDslProperty anyDouble() {
-		return property.anyDouble();
+		return this.property.anyDouble();
 	}
 
 	@Override
 	public ClientDslProperty anyHex() {
-		return property.anyHex();
+		return this.property.anyHex();
 	}
 
 	@Override
 	public ClientDslProperty aBoolean() {
-		return property.aBoolean();
+		return this.property.aBoolean();
 	}
 
 	@Override
 	public ClientDslProperty anyIpAddress() {
-		return property.anyIpAddress();
+		return this.property.anyIpAddress();
 	}
 
 	@Override
 	public ClientDslProperty anyHostname() {
-		return property.anyHostname();
+		return this.property.anyHostname();
 	}
 
 	@Override
 	public ClientDslProperty anyEmail() {
-		return property.anyEmail();
+		return this.property.anyEmail();
 	}
 
 	@Override
 	public ClientDslProperty anyUrl() {
-		return property.anyUrl();
+		return this.property.anyUrl();
 	}
 
 	@Override
 	public ClientDslProperty anyHttpsUrl() {
-		return property.anyHttpsUrl();
+		return this.property.anyHttpsUrl();
 	}
 
 	@Override
 	public ClientDslProperty anyUuid() {
-		return property.anyUuid();
+		return this.property.anyUuid();
 	}
 
 	@Override
 	public ClientDslProperty anyDate() {
-		return property.anyDate();
+		return this.property.anyDate();
 	}
 
 	@Override
 	public ClientDslProperty anyDateTime() {
-		return property.anyDateTime();
+		return this.property.anyDateTime();
 	}
 
 	@Override
 	public ClientDslProperty anyTime() {
-		return property.anyTime();
+		return this.property.anyTime();
 	}
 
 	@Override
 	public ClientDslProperty anyIso8601WithOffset() {
-		return property.anyIso8601WithOffset();
+		return this.property.anyIso8601WithOffset();
 	}
 
 	@Override
 	public ClientDslProperty anyNonBlankString() {
-		return property.anyNonBlankString();
+		return this.property.anyNonBlankString();
 	}
 
 	@Override
 	public ClientDslProperty anyNonEmptyString() {
-		return property.anyNonEmptyString();
+		return this.property.anyNonEmptyString();
 	}
 
 	@Override
 	public ClientDslProperty anyOf(String... values) {
-		return property.anyOf(values);
+		return this.property.anyOf(values);
 	}
 
 	public String GET() {
@@ -578,22 +584,24 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 			return false;
 		}
 		Request request = (Request) o;
-		return Objects.equals(method, request.method) && Objects.equals(url, request.url)
-				&& Objects.equals(urlPath, request.urlPath) && Objects.equals(headers, request.headers)
-				&& Objects.equals(cookies, request.cookies) && Objects.equals(body, request.body)
-				&& Objects.equals(multipart, request.multipart) && Objects.equals(bodyMatchers, request.bodyMatchers);
+		return Objects.equals(this.method, request.method) && Objects.equals(this.url, request.url)
+				&& Objects.equals(this.urlPath, request.urlPath) && Objects.equals(this.headers, request.headers)
+				&& Objects.equals(this.cookies, request.cookies) && Objects.equals(this.body, request.body)
+				&& Objects.equals(this.multipart, request.multipart)
+				&& Objects.equals(this.bodyMatchers, request.bodyMatchers);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(method, url, urlPath, headers, cookies, body, multipart, bodyMatchers);
+		return Objects.hash(this.method, this.url, this.urlPath, this.headers, this.cookies, this.body, this.multipart,
+				this.bodyMatchers);
 	}
 
 	@Override
 	public String toString() {
-		return "Request{" + "\nmethod=" + method + ", \n\turl=" + url + ", \n\turlPath=" + urlPath + ", \n\theaders="
-				+ headers + ", \n\tcookies=" + cookies + ", \n\tbody=" + body + ", \n\tmultipart=" + multipart
-				+ ", \n\tbodyMatchers=" + bodyMatchers + '}';
+		return "Request{" + "\nmethod=" + this.method + ", \n\turl=" + this.url + ", \n\turlPath=" + this.urlPath
+				+ ", \n\theaders=" + this.headers + ", \n\tcookies=" + this.cookies + ", \n\tbody=" + this.body
+				+ ", \n\tmultipart=" + this.multipart + ", \n\tbodyMatchers=" + this.bodyMatchers + '}';
 	}
 
 	/**
@@ -788,7 +796,7 @@ public class Request extends Common implements RegexCreatingProperty<ClientDslPr
 	private static final class ClientPatternValueDslProperty extends PatternValueDslProperty<ClientDslProperty> {
 
 		@Override
-		protected ClientDslProperty createProperty(Pattern pattern, Object generatedValue) {
+		protected ClientDslProperty createProperty(Pattern pattern, @Nullable Object generatedValue) {
 			return new ClientDslProperty(pattern, generatedValue);
 		}
 

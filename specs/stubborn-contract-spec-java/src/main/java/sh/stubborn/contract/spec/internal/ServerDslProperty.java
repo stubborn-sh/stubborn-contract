@@ -16,18 +16,21 @@
 
 package sh.stubborn.contract.spec.internal;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Represents a server side {@link DslProperty}.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class ServerDslProperty extends DslProperty {
 
-	public ServerDslProperty(Object singleValue) {
+	public ServerDslProperty(@Nullable Object singleValue) {
 		super(singleValue);
 	}
 
-	public ServerDslProperty(Object server, Object client) {
+	public ServerDslProperty(@Nullable Object server, @Nullable Object client) {
 		super(client, server);
 	}
 

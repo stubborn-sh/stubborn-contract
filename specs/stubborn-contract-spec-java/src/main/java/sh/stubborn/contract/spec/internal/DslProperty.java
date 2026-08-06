@@ -20,29 +20,34 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Represents an element of a DSL that can contain client or sever side values.
  *
+ * @param <T> the value type
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
-public class DslProperty<T> implements Serializable {
+public class DslProperty<T extends @Nullable Object> implements Serializable {
 
-	private final T clientValue;
+	private final @Nullable T clientValue;
 
-	private final T serverValue;
+	private final @Nullable T serverValue;
 
-	public DslProperty(T clientValue, T serverValue) {
+	public DslProperty(@Nullable T clientValue, @Nullable T serverValue) {
 		this.clientValue = clientValue;
 		this.serverValue = serverValue;
 	}
 
-	public DslProperty(T singleValue) {
+	public DslProperty(@Nullable T singleValue) {
 		this.clientValue = singleValue;
 		this.serverValue = singleValue;
 	}
 
 	public boolean isSingleValue() {
-		return this.clientValue.equals(this.serverValue) || (this.clientValue != null && this.serverValue == null)
+		return Objects.equals(this.clientValue, this.serverValue)
+				|| (this.clientValue != null && this.serverValue == null)
 				|| (this.serverValue != null && this.clientValue == null);
 	}
 
@@ -55,34 +60,34 @@ public class DslProperty<T> implements Serializable {
 			return false;
 		}
 		DslProperty<?> that = (DslProperty<?>) o;
-		Object thisClientValue = stringPatternIfPattern(clientValue);
+		Object thisClientValue = stringPatternIfPattern(this.clientValue);
 		Object thatClientValue = stringPatternIfPattern(that.clientValue);
-		Object thisServerValue = stringPatternIfPattern(serverValue);
+		Object thisServerValue = stringPatternIfPattern(this.serverValue);
 		Object thatServerValue = stringPatternIfPattern(that.serverValue);
 		return Objects.equals(thisClientValue, thatClientValue) && Objects.equals(thisServerValue, thatServerValue);
 	}
 
-	private Object stringPatternIfPattern(Object value) {
-		return value instanceof Pattern ? ((Pattern) value).pattern() : value;
+	private @Nullable Object stringPatternIfPattern(@Nullable Object value) {
+		return (value instanceof Pattern) ? ((Pattern) value).pattern() : value;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(stringPatternIfPattern(clientValue), stringPatternIfPattern(serverValue));
+		return Objects.hash(stringPatternIfPattern(this.clientValue), stringPatternIfPattern(this.serverValue));
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "{" + "\nclientValue=" + clientValue + ", \n\tserverValue=" + serverValue
-				+ '}';
+		return getClass().getSimpleName() + "{" + "\nclientValue=" + this.clientValue + ", \n\tserverValue="
+				+ this.serverValue + '}';
 	}
 
-	public final T getClientValue() {
-		return clientValue;
+	public final @Nullable T getClientValue() {
+		return this.clientValue;
 	}
 
-	public final T getServerValue() {
-		return serverValue;
+	public final @Nullable T getServerValue() {
+		return this.serverValue;
 	}
 
 }

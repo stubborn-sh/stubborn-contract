@@ -21,6 +21,8 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import sh.stubborn.contract.spec.internal.MatchingType;
 
 /**
+ * Converts an XPath body matcher into a WireMock string value pattern.
+ *
  * @author Olga Maciaszek-Sharma
  * @since 2.1.0
  */
@@ -30,7 +32,7 @@ final class XPathBodyMatcherToWireMockValuePatternConverter {
 		throw new IllegalStateException("Can't instantiate an utility class");
 	}
 
-	public static StringValuePattern mapToPattern(MatchingType type, String value) {
+	static StringValuePattern mapToPattern(MatchingType type, String value) {
 		if (type == MatchingType.EQUALITY) {
 			return WireMock.equalTo(value);
 		}

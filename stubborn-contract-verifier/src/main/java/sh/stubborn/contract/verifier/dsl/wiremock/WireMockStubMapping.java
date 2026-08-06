@@ -19,6 +19,8 @@ package sh.stubborn.contract.verifier.dsl.wiremock;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 /**
+ * Builds a WireMock {@link StubMapping} from a mapping definition.
+ *
  * @author Marcin Grzejszczak
  */
 public final class WireMockStubMapping {

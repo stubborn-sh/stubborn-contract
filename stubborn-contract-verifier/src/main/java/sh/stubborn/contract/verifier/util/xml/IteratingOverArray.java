@@ -25,11 +25,13 @@ package sh.stubborn.contract.verifier.util.xml;
 public interface IteratingOverArray {
 
 	/**
+	 * Whether iteration over an array is in progress.
 	 * @return {@code true} if is in progress of iterating over an array.
 	 */
 	boolean isIteratingOverArray();
 
 	/**
+	 * Whether the current element is a concrete value in an array.
 	 * @return {@code true} if current element is a particular value on which concrete
 	 * assertion will take place.
 	 */

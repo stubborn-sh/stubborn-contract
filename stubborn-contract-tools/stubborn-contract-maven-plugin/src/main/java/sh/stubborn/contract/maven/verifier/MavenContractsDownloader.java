@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.ContractDownloader;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 import sh.stubborn.contract.stubrunner.StubDownloader;
@@ -65,7 +66,7 @@ class MavenContractsDownloader {
 
 	private final String repositoryProxyHost;
 
-	private final Integer repositoryProxyPort;
+	private final @Nullable Integer repositoryProxyPort;
 
 	private final boolean deleteStubsAfterTest;
 
@@ -75,7 +76,7 @@ class MavenContractsDownloader {
 
 	MavenContractsDownloader(MavenProject project, Dependency contractDependency, String contractsPath,
 			String contractsRepositoryUrl, StubsMode stubsMode, Log log, String repositoryUsername,
-			String repositoryPassword, String repositoryProxyHost, Integer repositoryProxyPort,
+			String repositoryPassword, String repositoryProxyHost, @Nullable Integer repositoryProxyPort,
 			boolean deleteStubsAfterTest, Map<String, String> contractsProperties, boolean failOnNoContracts) {
 		this.project = project;
 		this.contractDependency = contractDependency;

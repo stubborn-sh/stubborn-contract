@@ -19,9 +19,11 @@ package sh.stubborn.contract.stubrunner.messaging.kafka;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 class BookReturned implements Serializable {
 
-	String bookName;
+	@Nullable String bookName;
 
 	BookReturned(String bookName) {
 		this.bookName = bookName;

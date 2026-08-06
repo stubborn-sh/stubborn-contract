@@ -28,7 +28,6 @@ import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.jms.ContractVerifierJmsConfiguration;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
@@ -42,6 +41,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
+ * Configuration that registers Apache Camel messaging beans for contract verification.
+ *
  * @author Marcin Grzejszczak
  */
 @Configuration(proxyBeanMethods = false)
@@ -63,7 +64,7 @@ public class ContractVerifierCamelConfiguration {
 			}
 
 			@Override
-			public <T> void send(T payload, Map<String, Object> headers, String destination,
+			public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 					@Nullable YamlContract contract) {
 				camelStubMessages.send(payload, headers, destination, contract);
 			}
@@ -77,13 +78,13 @@ public class ContractVerifierCamelConfiguration {
 		CamelStubMessages camelStubMessages = new CamelStubMessages(camelContext, producerTemplate, consumerTemplate);
 		return new MessageVerifierReceiver<>() {
 			@Override
-			public Message receive(String destination, long timeout, TimeUnit timeUnit,
+			public @Nullable Message receive(String destination, long timeout, TimeUnit timeUnit,
 					@Nullable YamlContract contract) {
 				return camelStubMessages.receive(destination, timeout, timeUnit, contract);
 			}
 
 			@Override
-			public Message receive(String destination, YamlContract contract) {
+			public @Nullable Message receive(String destination, @Nullable YamlContract contract) {
 				return camelStubMessages.receive(destination, contract);
 			}
 		};
@@ -94,22 +95,6 @@ public class ContractVerifierCamelConfiguration {
 	public ContractVerifierMessaging<Message> camelContractVerifierMessaging(MessageVerifierSender<Message> sender,
 			MessageVerifierReceiver<Message> receiver) {
 		return new ContractVerifierCamelHelper(sender, receiver);
-	}
-
-}
-
-class ContractVerifierCamelHelper extends ContractVerifierMessaging<Message> {
-
-	ContractVerifierCamelHelper(MessageVerifierSender<Message> sender, MessageVerifierReceiver<Message> receiver) {
-		super(sender, receiver);
-	}
-
-	@Override
-	protected ContractVerifierMessage convert(Message receive) {
-		if (receive == null) {
-			return null;
-		}
-		return new ContractVerifierMessage(receive.getBody(), receive.getHeaders());
 	}
 
 }

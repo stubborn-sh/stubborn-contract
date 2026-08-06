@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sh.stubborn.contract.stubrunner.StubsMode;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Stub downloader that picks stubs and contracts from the provided resource. If
@@ -52,7 +52,7 @@ public class ClasspathStubProvider implements StubDownloaderBuilder {
 	private static final Log log = LogFactory.getLog(ClasspathStubProvider.class);
 
 	@Override
-	public StubDownloader build(final StubRunnerOptions stubRunnerOptions) {
+	public @Nullable StubDownloader build(final StubRunnerOptions stubRunnerOptions) {
 		if (stubRunnerOptions.stubsMode != StubsMode.CLASSPATH) {
 			return null;
 		}

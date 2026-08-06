@@ -16,14 +16,15 @@
 
 package sh.stubborn.contract.stubrunner;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -31,8 +32,8 @@ import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class StubRunnerFactoryTests {
 
@@ -53,7 +54,7 @@ class StubRunnerFactoryTests {
 			""";
 
 	@TempDir
-	Path tempDir;
+	@Nullable Path tempDir;
 
 	private String stubs = "a:b,c:d";
 
@@ -67,7 +68,7 @@ class StubRunnerFactoryTests {
 	void setUp() throws Exception {
 		this.downloader = mock(StubDownloader.class);
 		this.stubRunnerOptions = new StubRunnerOptionsBuilder()
-			.withStubRepositoryRoot(this.tempDir.toFile().getAbsolutePath())
+			.withStubRepositoryRoot(Objects.requireNonNull(this.tempDir).toFile().getAbsolutePath())
 			.withStubs(this.stubs)
 			.build();
 		this.factory = new StubRunnerFactory(this.stubRunnerOptions, this.downloader, new NoOpStubMessages());
@@ -75,11 +76,13 @@ class StubRunnerFactoryTests {
 
 	@Test
 	void shouldDownloadStubDefinitionsManyTimes() throws Exception {
-		Files.createDirectory(this.tempDir.resolve("mappings"));
-		Files.writeString(this.tempDir.resolve("hello.json"), MAPPING);
-		when(this.downloader.downloadAndUnpackStubJar(any()))
-			.thenReturn(new AbstractMap.SimpleEntry<>(new StubConfiguration("a:b"), this.tempDir.toFile()))
-			.thenReturn(new AbstractMap.SimpleEntry<>(new StubConfiguration("c:d"), this.tempDir.toFile()));
+		Files.createDirectory(Objects.requireNonNull(this.tempDir).resolve("mappings"));
+		Files.writeString(Objects.requireNonNull(this.tempDir).resolve("hello.json"), MAPPING);
+		given(this.downloader.downloadAndUnpackStubJar(any()))
+			.willReturn(new AbstractMap.SimpleEntry<>(new StubConfiguration("a:b"),
+					Objects.requireNonNull(this.tempDir).toFile()))
+			.willReturn(new AbstractMap.SimpleEntry<>(new StubConfiguration("c:d"),
+					Objects.requireNonNull(this.tempDir).toFile()));
 
 		Collection<StubRunner> stubRunners = collectOnlyPresentValues(
 				this.factory.createStubsFromServiceConfiguration());
@@ -88,7 +91,7 @@ class StubRunnerFactoryTests {
 	}
 
 	private List<StubRunner> collectOnlyPresentValues(Collection<StubRunner> stubRunners) {
-		return stubRunners.stream().filter(r -> r != null).collect(Collectors.toList());
+		return stubRunners.stream().filter((r) -> r != null).collect(Collectors.toList());
 	}
 
 }

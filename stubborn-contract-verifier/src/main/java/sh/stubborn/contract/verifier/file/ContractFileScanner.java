@@ -21,25 +21,26 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
-
-import java.util.ServiceLoader;
 
 /**
  * Scans the provided file path for the DSLs. There's a possibility to provide inclusion
@@ -73,13 +74,13 @@ public class ContractFileScanner {
 
 	private final String includeMatcher;
 
-	public ContractFileScanner(File baseDir, Set<String> excluded, Set<String> ignored, Set<String> included,
-			String includeMatcher) {
+	public ContractFileScanner(File baseDir, @Nullable Set<String> excluded, @Nullable Set<String> ignored,
+			Set<String> included, String includeMatcher) {
 		this.baseDir = baseDir;
-		this.excludeMatchers = processPatterns(excluded != null ? excluded : Collections.emptySet());
-		this.ignoreMatchers = processPatterns(ignored != null ? ignored : Collections.emptySet());
-		this.includeMatchers = processPatterns(included != null ? included : Collections.emptySet());
-		this.includeMatcher = includeMatcher != null ? includeMatcher : "";
+		this.excludeMatchers = processPatterns((excluded != null) ? excluded : Collections.emptySet());
+		this.ignoreMatchers = processPatterns((ignored != null) ? ignored : Collections.emptySet());
+		this.includeMatchers = processPatterns((included != null) ? included : Collections.emptySet());
+		this.includeMatcher = (includeMatcher != null) ? includeMatcher : "";
 	}
 
 	private Set<PathMatcher> processPatterns(Set<String> patterns) {
@@ -98,13 +99,15 @@ public class ContractFileScanner {
 
 	public Map<Path, List<ContractMetadata>> findContractsRecursively() {
 		Map<Path, List<ContractMetadata>> result = new LinkedHashMap<>();
-		appendRecursively(baseDir, result);
+		appendRecursively(this.baseDir, result);
 		return result;
 	}
 
 	/**
 	 * We iterate over found contracts, filter out those that should be excluded and try
 	 * to convert via pluggable Contract Converters any possible contracts.
+	 * @param baseDir the base directory to scan
+	 * @param result the accumulated map of contracts per path
 	 */
 	private void appendRecursively(File baseDir, Map<Path, List<ContractMetadata>> result) {
 		List<ContractConverter> converters = convertersWithYml();
@@ -118,12 +121,12 @@ public class ContractFileScanner {
 		Arrays.sort(files);
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
-			boolean excluded = matchesPattern(file, excludeMatchers);
+			boolean excluded = matchesPattern(file, this.excludeMatchers);
 			if (!excluded) {
 				boolean contractFile = isContractFile(file);
-				boolean included = (includeMatcher == null || includeMatcher.isBlank())
-						|| file.getAbsolutePath().matches(includeMatcher);
-				included = !includeMatchers.isEmpty() ? matchesPattern(file, includeMatchers) : included;
+				boolean included = (this.includeMatcher == null || this.includeMatcher.isBlank())
+						|| file.getAbsolutePath().matches(this.includeMatcher);
+				included = !this.includeMatchers.isEmpty() ? matchesPattern(file, this.includeMatchers) : included;
 				if (contractFile && included) {
 					addContractToTestGeneration(result, files, file, i,
 							ContractVerifierDslConverter.convertAsCollection(baseDir, file));
@@ -183,7 +186,7 @@ public class ContractFileScanner {
 		}
 	}
 
-	private Collection<Contract> tryConvert(ContractConverter converter, File file) {
+	private @Nullable Collection<Contract> tryConvert(ContractConverter converter, File file) {
 		boolean accepted = converter.isAccepted(file);
 		if (!accepted) {
 			return null;
@@ -191,8 +194,8 @@ public class ContractFileScanner {
 		try {
 			return converter.convertFrom(file);
 		}
-		catch (Exception e) {
-			throw new IllegalStateException("Failed to convert file [" + file + "]", e);
+		catch (Exception ex) {
+			throw new IllegalStateException("Failed to convert file [" + file + "]", ex);
 		}
 	}
 
@@ -204,12 +207,12 @@ public class ContractFileScanner {
 			order = index;
 		}
 		Path parent = file.getParentFile().toPath();
-		ContractMetadata metadata = new ContractMetadata(path, matchesPattern(file, ignoreMatchers), files.length,
+		ContractMetadata metadata = new ContractMetadata(path, matchesPattern(file, this.ignoreMatchers), files.length,
 				order, convertedContract);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Creating a contract entry for path [" + path + "] and metadata [" + metadata + "]");
 		}
-		result.computeIfAbsent(parent, k -> new ArrayList<>()).add(metadata);
+		result.computeIfAbsent(parent, (k) -> new ArrayList<>()).add(metadata);
 	}
 
 	private boolean hasScenarioFilenamePattern(Path path) {
@@ -260,11 +263,11 @@ public class ContractFileScanner {
 
 	public static class Builder {
 
-		private File baseDir;
+		private @Nullable File baseDir;
 
-		private Set<String> excluded;
+		private @Nullable Set<String> excluded;
 
-		private Set<String> ignored;
+		private @Nullable Set<String> ignored;
 
 		private Set<String> included = Collections.emptySet();
 
@@ -296,8 +299,8 @@ public class ContractFileScanner {
 		}
 
 		public ContractFileScanner build() {
-			return new ContractFileScanner(this.baseDir, this.excluded, this.ignored, this.included,
-					this.includeMatcher);
+			return new ContractFileScanner(Objects.requireNonNull(this.baseDir, "baseDir is required"), this.excluded,
+					this.ignored, this.included, this.includeMatcher);
 		}
 
 	}

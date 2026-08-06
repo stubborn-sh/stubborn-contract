@@ -28,18 +28,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStub;
 import sh.stubborn.contract.verifier.util.ContractScanner;
 
-import java.util.ServiceLoader;
-
 /**
  * Wraps the folder with stub mappings.
+ *
+ * @author Marcin Grzejszczak
  */
 class StubRepository {
 
@@ -58,7 +60,7 @@ class StubRepository {
 	private final StubRunnerOptions options;
 
 	StubRepository(File repository, List<HttpServerStub> httpServerStubs, StubRunnerOptions options,
-			StubConfiguration stubConfiguration) {
+			@Nullable StubConfiguration stubConfiguration) {
 		if (!repository.isDirectory()) {
 			throw new IllegalArgumentException("Missing descriptor repository under path [" + repository + "]");
 		}
@@ -73,7 +75,7 @@ class StubRepository {
 		this.contracts = contracts();
 		if (options.isFailOnNoStubs() && this.stubs.isEmpty() && this.contracts.isEmpty()) {
 			throw new IllegalStateException("No stubs or contracts were found for ["
-					+ (stubConfiguration != null ? stubConfiguration.toColonSeparatedDependencyNotation() : null)
+					+ ((stubConfiguration != null) ? stubConfiguration.toColonSeparatedDependencyNotation() : null)
 					+ "] and the switch to fail on no stubs was set.");
 		}
 		if (log.isTraceEnabled()) {
@@ -85,19 +87,20 @@ class StubRepository {
 		this(repository, new ArrayList<>(), new StubRunnerOptionsBuilder().build(), null);
 	}
 
-	public File getPath() {
+	File getPath() {
 		return this.path;
 	}
 
-	public List<File> getStubs() {
+	List<File> getStubs() {
 		return this.stubs;
 	}
 
-	public Collection<Contract> getContracts() {
+	Collection<Contract> getContracts() {
 		return this.contracts;
 	}
 
 	/**
+	 * Returns the contracts found in the repository.
 	 * @return a list of contracts
 	 */
 	private Collection<Contract> contracts() {
@@ -105,6 +108,7 @@ class StubRepository {
 	}
 
 	/**
+	 * Returns the stubs found in the repository.
 	 * @return the list of stubs
 	 */
 	private List<File> stubs() {
@@ -129,8 +133,8 @@ class StubRepository {
 				}
 			});
 		}
-		catch (IOException e) {
-			log.warn("Exception occurred while trying to parse file", e);
+		catch (IOException ex) {
+			log.warn("Exception occurred while trying to parse file", ex);
 		}
 		return mappingDescriptors;
 	}

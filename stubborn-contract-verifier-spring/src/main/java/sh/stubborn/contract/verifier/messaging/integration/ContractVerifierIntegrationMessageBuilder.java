@@ -23,11 +23,13 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 
 /**
+ * Builds Spring Integration {@link Message} instances from payload and headers.
+ *
  * @author Marcin Grzejszczak
  */
 class ContractVerifierIntegrationMessageBuilder {
 
-	public <T> Message<T> create(T payload, Map<String, Object> headers) {
+	<T> Message<T> create(T payload, Map<String, Object> headers) {
 		return MessageBuilder.createMessage(payload, new MessageHeaders(headers));
 	}
 

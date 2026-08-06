@@ -29,10 +29,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.file.ContractFileScanner;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
@@ -42,6 +44,7 @@ import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
 /**
  * Recursively converts contracts into their stub representations.
  *
+ * @author Marcin Grzejszczak
  * @since 1.1.0
  */
 public class RecursiveFilesConverter {
@@ -61,13 +64,13 @@ public class RecursiveFilesConverter {
 	private final boolean excludeBuildFolders;
 
 	public RecursiveFilesConverter(File stubsOutputDir, File contractsDslDir, List<String> excludedFiles,
-			String includedContracts, boolean excludeBuildFolders, StubGeneratorProvider holder) {
+			String includedContracts, boolean excludeBuildFolders, @Nullable StubGeneratorProvider holder) {
 		this.outMappingsDir = stubsOutputDir;
 		this.contractsDslDir = contractsDslDir;
 		this.excludedFiles = excludedFiles;
 		this.includedContracts = includedContracts;
 		this.excludeBuildFolders = excludeBuildFolders;
-		this.holder = holder == null ? new StubGeneratorProvider() : holder;
+		this.holder = (holder != null) ? holder : new StubGeneratorProvider();
 	}
 
 	public RecursiveFilesConverter(File stubsOutputDir, File contractsDslDir, List<String> excludedFiles,
@@ -77,11 +80,11 @@ public class RecursiveFilesConverter {
 
 	public void processFiles() {
 		ContractFileScanner scanner = ContractFileScanner.builder()
-			.baseDir(contractsDslDir)
-			.excluded(new HashSet<>(excludedFiles))
+			.baseDir(this.contractsDslDir)
+			.excluded(new HashSet<>(this.excludedFiles))
 			.ignored(new HashSet<>())
 			.included(new HashSet<>())
-			.includeMatcher(includedContracts)
+			.includeMatcher(this.includedContracts)
 			.build();
 		Map<Path, List<ContractMetadata>> contracts = scanner.findContractsRecursively();
 		if (log.isDebugEnabled()) {
@@ -93,10 +96,10 @@ public class RecursiveFilesConverter {
 					log.debug("Will create a stub for contract [" + contract + "]");
 				}
 				File sourceFile = contract.getPath().toFile();
-				Collection<StubGenerator> stubGenerators = holder.allOrDefault(new DslToWireMockClientConverter());
+				Collection<StubGenerator> stubGenerators = this.holder.allOrDefault(new DslToWireMockClientConverter());
 				try {
 					String path = sourceFile.getPath();
-					if (excludeBuildFolders && (matchesPath(path, "target") || matchesPath(path, "build"))) {
+					if (this.excludeBuildFolders && (matchesPath(path, "target") || matchesPath(path, "build"))) {
 						if (log.isDebugEnabled()) {
 							log.debug("Exclude build folder is set. Path [" + path
 									+ "] contains [target] or [build] in its path");
@@ -140,9 +143,9 @@ public class RecursiveFilesConverter {
 					}
 
 				}
-				catch (Exception e) {
+				catch (Exception ex) {
 					throw new ConversionContractVerifierException(
-							"Unable to make conversion of " + sourceFile.getName(), e);
+							"Unable to make conversion of " + sourceFile.getName(), ex);
 				}
 
 			}
@@ -160,7 +163,7 @@ public class RecursiveFilesConverter {
 		while (iterator.hasNext()) {
 			result = iterator.next();
 		}
-		return result;
+		return Objects.requireNonNull(result);
 	}
 
 	private boolean nullOrEmpty(ContractMetadata contract) {
@@ -176,8 +179,8 @@ public class RecursiveFilesConverter {
 	}
 
 	private Path createAndReturnTargetDirectory(File sourceFile) {
-		Path relativePath = Paths.get(contractsDslDir.toURI()).relativize(sourceFile.getParentFile().toPath());
-		Path absoluteTargetPath = outMappingsDir.toPath().resolve(relativePath);
+		Path relativePath = Paths.get(this.contractsDslDir.toURI()).relativize(sourceFile.getParentFile().toPath());
+		Path absoluteTargetPath = this.outMappingsDir.toPath().resolve(relativePath);
 		try {
 			Files.createDirectories(absoluteTargetPath);
 		}

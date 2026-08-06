@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.SerializationContext;
@@ -77,13 +78,12 @@ public final class MetadataUtil {
 		if (patch == null) {
 			return objectToMerge;
 		}
-		byte[] bytes = new byte[0];
 		try {
-			bytes = MAPPER.writer().writeValueAsBytes(patch);
+			byte[] bytes = MAPPER.writer().writeValueAsBytes(patch);
 			return MAPPER.readerForUpdating(objectToMerge).readValue(bytes);
 		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -94,16 +94,16 @@ public final class MetadataUtil {
 	private static JsonMapper buildJsonMapper() {
 		return JsonMapper.builder()
 			.withConfigOverride(Object.class,
-					o -> o.setIncludeAsProperty(
+					(o) -> o.setIncludeAsProperty(
 							JsonInclude.Value.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL)))
 			.withConfigOverride(Object.class,
-					o -> o.setIncludeAsProperty(JsonInclude.Value.construct(JsonInclude.Include.NON_DEFAULT,
+					(o) -> o.setIncludeAsProperty(JsonInclude.Value.construct(JsonInclude.Include.NON_DEFAULT,
 							JsonInclude.Include.NON_DEFAULT)))
 			.withConfigOverride(Object.class,
-					o -> o.setIncludeAsProperty(
+					(o) -> o.setIncludeAsProperty(
 							JsonInclude.Value.construct(JsonInclude.Include.NON_EMPTY, JsonInclude.Include.NON_EMPTY)))
 			.withConfigOverride(Object.class,
-					o -> o.setIncludeAsProperty(JsonInclude.Value.construct(JsonInclude.Include.NON_ABSENT,
+					(o) -> o.setIncludeAsProperty(JsonInclude.Value.construct(JsonInclude.Include.NON_ABSENT,
 							JsonInclude.Include.NON_ABSENT)))
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 			.addMixIn(Object.class, PropertyFilterMixIn.class)
@@ -141,7 +141,7 @@ public final class MetadataUtil {
 		}
 
 		@Override
-		public Object get(Object key) {
+		public @Nullable Object get(Object key) {
 			return this.delegate.get(key);
 		}
 
@@ -192,71 +192,71 @@ public final class MetadataUtil {
 
 	}
 
-}
+	@JsonFilter("non default properties")
+	static class PropertyFilterMixIn {
 
-@JsonFilter("non default properties")
-class PropertyFilterMixIn {
-
-}
-
-class MyFilter extends SimpleBeanPropertyFilter implements Serializable {
-
-	private static final Map<Class, Object> CACHE = new ConcurrentHashMap<>();
-
-	@Override
-	public void serializeAsProperty(Object pojo, JsonGenerator jgen, SerializationContext provider,
-			PropertyWriter writer) throws Exception {
-		if (pojo instanceof Map || pojo instanceof Collection) {
-			writer.serializeAsProperty(pojo, jgen, provider);
-			return;
-		}
-		Object defaultInstance = defaultInstance(pojo);
-		if (defaultInstance instanceof CantInstantiateThisClass
-				|| !valueSameAsDefault(pojo, defaultInstance, writer.getName())) {
-			writer.serializeAsProperty(pojo, jgen, provider);
-		}
 	}
 
-	Object defaultInstance(Object pojo) {
-		return CACHE.computeIfAbsent(pojo.getClass(), this::defaultInstance);
-	}
+	static class MyFilter extends SimpleBeanPropertyFilter implements Serializable {
 
-	private Object defaultInstance(Class aClass) {
-		try {
-			return aClass.getDeclaredConstructor().newInstance();
-		}
-		catch (Exception e) {
-			return new CantInstantiateThisClass();
-		}
-	}
+		private static final Map<Class, Object> CACHE = new ConcurrentHashMap<>();
 
-	boolean valueSameAsDefault(Object pojo, Object defaultInstance, String fieldName) {
-		Field field = findField(pojo.getClass(), fieldName);
-		if (field == null) {
-			return false;
+		@Override
+		public void serializeAsProperty(Object pojo, JsonGenerator jgen, SerializationContext provider,
+				PropertyWriter writer) throws Exception {
+			if (pojo instanceof Map || pojo instanceof Collection) {
+				writer.serializeAsProperty(pojo, jgen, provider);
+				return;
+			}
+			Object defaultInstance = defaultInstance(pojo);
+			if (defaultInstance instanceof CantInstantiateThisClass
+					|| !valueSameAsDefault(pojo, defaultInstance, writer.getName())) {
+				writer.serializeAsProperty(pojo, jgen, provider);
+			}
 		}
-		field.setAccessible(true);
-		try {
-			return Objects.equals(field.get(pojo), field.get(defaultInstance));
-		}
-		catch (IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		}
-	}
 
-	private static Field findField(Class<?> clazz, String fieldName) {
-		for (Class<?> c = clazz; c != null && c != Object.class; c = c.getSuperclass()) {
+		Object defaultInstance(Object pojo) {
+			return CACHE.computeIfAbsent(pojo.getClass(), this::defaultInstance);
+		}
+
+		private Object defaultInstance(Class aClass) {
 			try {
-				return c.getDeclaredField(fieldName);
+				return aClass.getDeclaredConstructor().newInstance();
 			}
-			catch (NoSuchFieldException ignored) {
+			catch (Exception ex) {
+				return new CantInstantiateThisClass();
 			}
 		}
-		return null;
+
+		boolean valueSameAsDefault(Object pojo, Object defaultInstance, String fieldName) {
+			Field field = findField(pojo.getClass(), fieldName);
+			if (field == null) {
+				return false;
+			}
+			field.setAccessible(true);
+			try {
+				return Objects.equals(field.get(pojo), field.get(defaultInstance));
+			}
+			catch (IllegalAccessException ex) {
+				throw new IllegalStateException(ex);
+			}
+		}
+
+		private static @Nullable Field findField(Class<?> clazz, String fieldName) {
+			for (Class<?> c = clazz; c != null && c != Object.class; c = c.getSuperclass()) {
+				try {
+					return c.getDeclaredField(fieldName);
+				}
+				catch (NoSuchFieldException ignored) {
+				}
+			}
+			return null;
+		}
+
 	}
 
-}
+	static class CantInstantiateThisClass {
 
-class CantInstantiateThisClass {
+	}
 
 }

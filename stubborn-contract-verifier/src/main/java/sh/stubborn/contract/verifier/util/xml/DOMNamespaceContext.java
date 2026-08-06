@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
 
+import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -35,12 +36,12 @@ public class DOMNamespaceContext implements NamespaceContext {
 		addNamespaces(contextNode);
 	}
 
-	public String getNamespaceURI(String arg0) {
-		return namespaceMap.get(arg0);
+	public @Nullable String getNamespaceURI(String arg0) {
+		return this.namespaceMap.get(arg0);
 	}
 
-	public String getPrefix(String arg0) {
-		for (Map.Entry<String, String> entry : namespaceMap.entrySet()) {
+	public @Nullable String getPrefix(String arg0) {
+		for (Map.Entry<String, String> entry : this.namespaceMap.entrySet()) {
 			if (entry.getValue().equals(arg0)) {
 				return entry.getKey();
 			}
@@ -49,7 +50,7 @@ public class DOMNamespaceContext implements NamespaceContext {
 	}
 
 	public Iterator<String> getPrefixes(String arg0) {
-		return namespaceMap.keySet().iterator();
+		return this.namespaceMap.keySet().iterator();
 	}
 
 	private void addNamespaces(Node element) {
@@ -67,7 +68,7 @@ public class DOMNamespaceContext implements NamespaceContext {
 			for (int x = 0; x < map.getLength(); x++) {
 				Attr attr = (Attr) map.item(x);
 				if ("xmlns".equals(attr.getPrefix())) {
-					namespaceMap.putIfAbsent(attr.getLocalName(), attr.getValue());
+					this.namespaceMap.putIfAbsent(attr.getLocalName(), attr.getValue());
 				}
 			}
 		}

@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Minimal resource abstraction used by Stub Runner, backed by {@link java.net.URL}.
  * Replaces the Spring {@code Resource} interface to remove the Spring Core dependency
@@ -38,7 +40,7 @@ public interface StubResource {
 
 	File getFile() throws IOException;
 
-	InputStream getInputStream() throws IOException;
+	@Nullable InputStream getInputStream() throws IOException;
 
 	String getFilename();
 

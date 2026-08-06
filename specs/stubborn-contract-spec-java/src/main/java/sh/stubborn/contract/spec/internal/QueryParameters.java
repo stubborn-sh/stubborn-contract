@@ -31,17 +31,17 @@ public class QueryParameters {
 		if (iterator.hasNext()) {
 			Map.Entry<String, Object> first = iterator.next();
 			if (first != null) {
-				parameters.add(QueryParameter.build(first.getKey(), first.getValue()));
+				this.parameters.add(QueryParameter.build(first.getKey(), first.getValue()));
 			}
 		}
 	}
 
 	public void parameter(String parameterName, Object parameterValue) {
-		parameters.add(QueryParameter.build(parameterName, parameterValue));
+		this.parameters.add(QueryParameter.build(parameterName, parameterValue));
 	}
 
 	public List<QueryParameter> getParameters() {
-		return parameters;
+		return this.parameters;
 	}
 
 	public void setParameters(List<QueryParameter> parameters) {
@@ -57,17 +57,17 @@ public class QueryParameters {
 			return false;
 		}
 		QueryParameters that = (QueryParameters) o;
-		return Objects.equals(parameters, that.parameters);
+		return Objects.equals(this.parameters, that.parameters);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(parameters);
+		return Objects.hash(this.parameters);
 	}
 
 	@Override
 	public String toString() {
-		return "QueryParameters{" + "\nparameters=" + parameters + '}';
+		return "QueryParameters{" + "\nparameters=" + this.parameters + '}';
 	}
 
 }

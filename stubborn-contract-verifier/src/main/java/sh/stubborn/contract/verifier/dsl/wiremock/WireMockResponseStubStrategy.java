@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.extension.Extension;
@@ -29,6 +31,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import groovy.lang.GString;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Request;
@@ -36,9 +39,6 @@ import sh.stubborn.contract.spec.internal.Response;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.MapConverter;
-
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Converts a {@link Request} into {@link ResponseDefinition}.
@@ -57,7 +57,7 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 
 	WireMockResponseStubStrategy(Contract groovyDsl, SingleContractMetadata singleContractMetadata) {
 		super(groovyDsl);
-		this.response = groovyDsl.getResponse();
+		this.response = Objects.requireNonNull(groovyDsl.getResponse());
 		this.contentType = contentType(singleContractMetadata);
 		this.contractMetadata = singleContractMetadata;
 	}
@@ -66,12 +66,12 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 		return singleContractMetadata.getEvaluatedOutputStubContentType();
 	}
 
-	ResponseDefinition buildClientResponseContent() {
-		if (response == null) {
+	@Nullable ResponseDefinition buildClientResponseContent() {
+		if (this.response == null) {
 			return null;
 		}
 		ResponseDefinitionBuilder builder = new ResponseDefinitionBuilder()
-			.withStatus((Integer) MapConverter.getStubSideValues(response.getStatus()));
+			.withStatus((Integer) MapConverter.getStubSideValues(Objects.requireNonNull(this.response.getStatus())));
 		appendHeaders(builder);
 		appendBody(builder);
 		appendResponseDelayTime(builder);
@@ -93,19 +93,20 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	private void appendHeaders(ResponseDefinitionBuilder builder) {
-		if (response.getHeaders() != null) {
-			HttpHeaders headers = response.getHeaders()
+		if (this.response.getHeaders() != null) {
+			HttpHeaders headers = this.response.getHeaders()
 				.getEntries()
 				.stream()
-				.map(it -> new HttpHeader(it.getName(), MapConverter.getStubSideValues(it.getClientValue()).toString()))
-				.collect(collectingAndThen(toList(), HttpHeaders::new));
+				.map((it) -> new HttpHeader(it.getName(),
+						MapConverter.getStubSideValues(Objects.requireNonNull(it.getClientValue())).toString()))
+				.collect(Collectors.collectingAndThen(Collectors.toList(), HttpHeaders::new));
 			builder.withHeaders(headers);
 		}
 	}
 
 	private void appendBody(ResponseDefinitionBuilder builder) {
-		if (response.getBody() != null) {
-			Object body = MapConverter.getStubSideValues(response.getBody(), parsingClosureForContentType());
+		if (this.response.getBody() != null) {
+			Object body = MapConverter.getStubSideValues(this.response.getBody(), parsingClosureForContentType());
 			if (body instanceof byte[]) {
 				builder.withBody((byte[]) body);
 			}
@@ -113,29 +114,29 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 				builder.withBody(((FromFileProperty) body).asBytes());
 			}
 			else if (body instanceof Map) {
-				builder.withBody(parseBody((Map<?, ?>) body, contentType));
+				builder.withBody(parseBody((Map<?, ?>) body, this.contentType));
 			}
 			else if (body instanceof List) {
-				builder.withBody(parseBody((List<?>) body, contentType));
+				builder.withBody(parseBody((List<?>) body, this.contentType));
 			}
 			else if (body instanceof GString) {
-				builder.withBody(parseBody((GString) body, contentType));
+				builder.withBody(parseBody((GString) body, this.contentType));
 			}
 			else {
-				builder.withBody(parseBody(body, contentType));
+				builder.withBody(parseBody(body, this.contentType));
 			}
 		}
 	}
 
 	Function<String, Object> parsingClosureForContentType() {
-		return contractMetadata.getDefinedOutputStubContentType().contains("/stream") ? MapConverter.IDENTITY
+		return this.contractMetadata.getDefinedOutputStubContentType().contains("/stream") ? MapConverter.IDENTITY
 				: MapConverter.JSON_PARSING_FUNCTION;
 	}
 
 	private void appendResponseDelayTime(ResponseDefinitionBuilder builder) {
 		// TODO: Add a missing test for this
-		if (response.getDelay() != null) {
-			builder.withFixedDelay((Integer) response.getDelay().getClientValue());
+		if (this.response.getDelay() != null) {
+			builder.withFixedDelay((Integer) this.response.getDelay().getClientValue());
 		}
 	}
 

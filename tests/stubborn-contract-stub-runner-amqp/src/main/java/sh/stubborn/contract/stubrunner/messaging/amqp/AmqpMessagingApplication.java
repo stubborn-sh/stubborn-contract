@@ -21,6 +21,7 @@ import tools.jackson.databind.json.JsonMapper;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -37,8 +38,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import static org.springframework.amqp.core.MessageProperties.CONTENT_TYPE_JSON;
-
 @SpringBootApplication
 public class AmqpMessagingApplication {
 
@@ -52,7 +51,7 @@ public class AmqpMessagingApplication {
 		jsonMessageConverter.setCreateMessageIds(true);
 		final ContentTypeDelegatingMessageConverter messageConverter = new ContentTypeDelegatingMessageConverter(
 				jsonMessageConverter);
-		messageConverter.addDelegate(CONTENT_TYPE_JSON, jsonMessageConverter);
+		messageConverter.addDelegate(MessageProperties.CONTENT_TYPE_JSON, jsonMessageConverter);
 		return messageConverter;
 	}
 
@@ -68,7 +67,7 @@ public class AmqpMessagingApplication {
 	static class MessageListenerAdapterConfig {
 
 		@Bean
-		public MessageListenerAdapter messageListenerAdapter(MessageSubscriber messageSubscriber,
+		MessageListenerAdapter messageListenerAdapter(MessageSubscriber messageSubscriber,
 				MessageConverter messageConverter) {
 			return new MessageListenerAdapter(messageSubscriber, messageConverter);
 		}
@@ -76,7 +75,7 @@ public class AmqpMessagingApplication {
 		// tag::amqp_binding[]
 
 		@Bean
-		public Binding binding() {
+		Binding binding() {
 			return BindingBuilder.bind(new Queue("test.queue"))
 				.to(new DirectExchange("contract-test.exchange"))
 				.with("#");
@@ -85,7 +84,7 @@ public class AmqpMessagingApplication {
 
 		// tag::amqp_listener[]
 		@Bean
-		public SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory,
+		SimpleMessageListenerContainer simpleMessageListenerContainer(ConnectionFactory connectionFactory,
 				MessageListenerAdapter listenerAdapter) {
 			SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 			container.setConnectionFactory(connectionFactory);
@@ -97,7 +96,7 @@ public class AmqpMessagingApplication {
 		// end::amqp_listener[]
 
 		@Bean
-		public MessageSubscriber messageSubscriber() {
+		MessageSubscriber messageSubscriber() {
 			return new MessageSubscriber();
 		}
 
@@ -109,12 +108,12 @@ public class AmqpMessagingApplication {
 	static class RabbitListenerConfig {
 
 		@Bean
-		public MessageSubscriberRabbitListener messageSubscriberRabbitLister() {
+		MessageSubscriberRabbitListener messageSubscriberRabbitLister() {
 			return new MessageSubscriberRabbitListener();
 		}
 
 		@Bean
-		public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory,
+		SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory,
 				MessageConverter messageConverter) {
 			SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
 			factory.setConnectionFactory(connectionFactory);

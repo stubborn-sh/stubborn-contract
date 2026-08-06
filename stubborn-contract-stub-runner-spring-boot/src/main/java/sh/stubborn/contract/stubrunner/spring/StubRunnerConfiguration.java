@@ -19,8 +19,9 @@ package sh.stubborn.contract.stubrunner.spring;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.BatchStubRunner;
 import sh.stubborn.contract.stubrunner.BatchStubRunnerFactory;
 import sh.stubborn.contract.stubrunner.RunningStubs;
@@ -28,10 +29,6 @@ import sh.stubborn.contract.stubrunner.StubConfiguration;
 import sh.stubborn.contract.stubrunner.StubDownloaderBuilderProvider;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
-import sh.stubborn.contract.verifier.converter.YamlContract;
-import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
-import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
-import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,8 +74,9 @@ public class StubRunnerConfiguration {
 	public BatchStubRunner batchStubRunner(BeanFactory beanFactory) {
 		StubRunnerProperties props = beanFactory.getBean(StubRunnerProperties.class);
 		StubRunnerOptionsBuilder builder = builder(props);
-		if (props.getProxyHost() != null) {
-			builder.withProxy(props.getProxyHost(), props.getProxyPort());
+		String proxyHost = props.getProxyHost();
+		if (proxyHost != null) {
+			builder.withProxy(proxyHost, Objects.requireNonNull(props.getProxyPort()));
 		}
 		StubRunnerOptions stubRunnerOptions = stubRunnerOptions(builder);
 		BatchStubRunner batchStubRunner = new BatchStubRunnerFactory(stubRunnerOptions,
@@ -101,12 +99,11 @@ public class StubRunnerConfiguration {
 	}
 
 	private StubRunnerOptionsBuilder builder(StubRunnerProperties props) {
-		return new StubRunnerOptionsBuilder()
+		StubRunnerOptionsBuilder builder = new StubRunnerOptionsBuilder()
 			.withMinMaxPort(Integer.valueOf(resolvePlaceholder(props.getMinPort(), props.getMinPort())),
 					Integer.valueOf(resolvePlaceholder(props.getMaxPort(), props.getMaxPort())))
 			.withStubRepositoryRoot(props.getRepositoryRoot())
-			.withStubsMode(resolvePlaceholder(props.getStubsMode()))
-			.withStubsClassifier(resolvePlaceholder(props.getClassifier()))
+			.withStubsClassifier(this.environment.resolvePlaceholders(props.getClassifier()))
 			.withStubs(resolvePlaceholder(props.getIds()))
 			.withUsername(resolvePlaceholder(props.getUsername()))
 			.withPassword(resolvePlaceholder(props.getPassword()))
@@ -117,26 +114,37 @@ public class StubRunnerConfiguration {
 			.withGenerateStubs(Boolean.parseBoolean(resolvePlaceholder(props.isGenerateStubs())))
 			.withProperties(props.getProperties())
 			.withHttpServerStubConfigurer(props.getHttpServerStubConfigurer())
-			.withServerId(resolvePlaceholder(props.getServerId()))
 			.withFailOnNoStubs(props.isFailOnNoStubs());
+		String stubsMode = resolvePlaceholder(props.getStubsMode());
+		if (stubsMode != null) {
+			builder.withStubsMode(stubsMode);
+		}
+		String serverId = resolvePlaceholder(props.getServerId());
+		if (serverId != null) {
+			builder.withServerId(serverId);
+		}
+		return builder;
 	}
 
 	private String[] resolvePlaceholder(String[] string) {
-		return Arrays.stream(string).map(this::resolvePlaceholder).toArray(String[]::new);
+		return Arrays.stream(string).map(this.environment::resolvePlaceholders).toArray(String[]::new);
 	}
 
-	private String resolvePlaceholder(Object string) {
-		return resolvePlaceholder(string, null);
-	}
-
-	private String resolvePlaceholder(Object string, Object defaultValue) {
+	private @Nullable String resolvePlaceholder(@Nullable Object string) {
 		if (string == null) {
-			return defaultValue != null ? defaultValue.toString() : null;
+			return null;
 		}
 		return this.environment.resolvePlaceholders(string.toString());
 	}
 
-	private String consumerName(StubRunnerProperties props) {
+	private String resolvePlaceholder(Object string, Object defaultValue) {
+		if (string == null) {
+			return defaultValue.toString();
+		}
+		return this.environment.resolvePlaceholders(string.toString());
+	}
+
+	private @Nullable String consumerName(StubRunnerProperties props) {
 		if (StringUtils.hasText(props.getConsumerName())) {
 			return resolvePlaceholder(props.getConsumerName());
 		}
@@ -148,7 +156,8 @@ public class StubRunnerConfiguration {
 		if (!propertySources.contains(STUBRUNNER_PREFIX)) {
 			propertySources.addFirst(new MapPropertySource(STUBRUNNER_PREFIX, new HashMap<>()));
 		}
-		Map<String, Object> source = ((MapPropertySource) propertySources.get(STUBRUNNER_PREFIX)).getSource();
+		Map<String, Object> source = ((MapPropertySource) Objects
+			.requireNonNull(propertySources.get(STUBRUNNER_PREFIX))).getSource();
 		for (Map.Entry<StubConfiguration, Integer> entry : runStubs.validNamesAndPorts().entrySet()) {
 			source.put(STUBRUNNER_PREFIX + "." + entry.getKey().getArtifactId() + ".port", entry.getValue());
 			// there are projects where artifact id is the same, what differs is the group
@@ -156,57 +165,6 @@ public class StubRunnerConfiguration {
 			source.put(STUBRUNNER_PREFIX + "." + entry.getKey().getGroupId() + "." + entry.getKey().getArtifactId()
 					+ ".port", entry.getValue());
 		}
-	}
-
-}
-
-@SuppressWarnings("unchecked")
-class LazyMessageVerifier implements MessageVerifierSender, MessageVerifierReceiver {
-
-	private MessageVerifierSender<?> messageVerifierSender;
-
-	private MessageVerifierReceiver<?> messageVerifierReceiver;
-
-	private final BeanFactory beanFactory;
-
-	LazyMessageVerifier(BeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-	}
-
-	private MessageVerifierSender messageVerifierSender() {
-		if (this.messageVerifierSender == null) {
-			this.messageVerifierSender = this.beanFactory.getBeanProvider(MessageVerifierSender.class)
-				.getIfAvailable(NoOpStubMessages::new);
-		}
-		return this.messageVerifierSender;
-	}
-
-	private MessageVerifierReceiver messageVerifierReceiver() {
-		if (this.messageVerifierReceiver == null) {
-			this.messageVerifierReceiver = this.beanFactory.getBeanProvider(MessageVerifierReceiver.class)
-				.getIfAvailable(NoOpStubMessages::new);
-		}
-		return this.messageVerifierReceiver;
-	}
-
-	@Override
-	public void send(Object message, String destination, YamlContract contract) {
-		messageVerifierSender().send(message, destination, contract);
-	}
-
-	@Override
-	public Object receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
-		return messageVerifierReceiver().receive(destination, timeout, timeUnit, contract);
-	}
-
-	@Override
-	public Object receive(String destination, YamlContract contract) {
-		return messageVerifierReceiver().receive(destination, contract);
-	}
-
-	@Override
-	public void send(Object payload, Map headers, String destination, YamlContract contract) {
-		messageVerifierSender().send(payload, headers, destination, contract);
 	}
 
 }

@@ -20,7 +20,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,7 +48,7 @@ public class StubRunnerJUnit5ExtensionExceptionThrowingTests {
 				.toURI()
 				.toString();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return "";
 		}
 	}

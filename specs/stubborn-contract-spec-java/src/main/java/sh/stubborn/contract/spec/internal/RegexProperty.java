@@ -24,30 +24,32 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.jspecify.annotations.Nullable;
 import repackaged.nl.flotsam.xeger.Xeger;
 
 /**
  * Represents a regular expression property.
  *
+ * @author Marcin Grzejszczak
  * @since 2.1.0
  */
 public class RegexProperty extends DslProperty implements CanBeDynamic {
 
-	final Pattern pattern;
+	final @Nullable Pattern pattern;
 
 	String charset = StandardCharsets.UTF_8.name();
 
-	private final Class clazz;
+	private final @Nullable Class clazz;
 
-	public RegexProperty(Object value) {
+	public RegexProperty(@Nullable Object value) {
 		this(value, value, null);
 	}
 
-	public RegexProperty(Object client, Object server) {
+	public RegexProperty(@Nullable Object client, @Nullable Object server) {
 		this(client, server, null);
 	}
 
-	public RegexProperty(Object client, Object server, Class clazz) {
+	public RegexProperty(@Nullable Object client, @Nullable Object server, @Nullable Class clazz) {
 		super(client, server);
 		boolean clientDynamic = client instanceof Pattern || client instanceof RegexProperty;
 		boolean serverDynamic = server instanceof Pattern || server instanceof RegexProperty;
@@ -57,12 +59,12 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 		Object dynamicValue = clientDynamic ? client : server;
 		if (dynamicValue instanceof Pattern) {
 			this.pattern = (Pattern) dynamicValue;
-			this.clazz = clazz != null ? clazz : String.class;
+			this.clazz = (clazz != null) ? clazz : String.class;
 		}
 		else if (dynamicValue instanceof RegexProperty) {
 			RegexProperty regexProperty = ((RegexProperty) dynamicValue);
 			this.pattern = regexProperty.pattern;
-			this.clazz = clazz != null ? clazz : regexProperty.clazz;
+			this.clazz = (clazz != null) ? clazz : regexProperty.clazz;
 		}
 		else {
 			this.clazz = clazz;
@@ -71,11 +73,11 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 	}
 
 	public Matcher matcher(CharSequence input) {
-		return this.pattern.matcher(input);
+		return Objects.requireNonNull(this.pattern, "pattern must not be null").matcher(input);
 	}
 
 	public String pattern() {
-		return this.pattern.pattern();
+		return Objects.requireNonNull(this.pattern, "pattern must not be null").pattern();
 	}
 
 	public Class clazz() {
@@ -128,7 +130,8 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 
 	private Object doGenerate(int retries) {
 		try {
-			String generatedValue = new Xeger(this.pattern.pattern()).generate();
+			Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+			String generatedValue = new Xeger(p.pattern()).generate();
 			if (Integer.class.equals(this.clazz)) {
 				return Integer.parseInt(generatedValue);
 			}
@@ -156,8 +159,8 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 			}
 			throw ex;
 		}
-		catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException(e);
+		catch (UnsupportedEncodingException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -170,23 +173,27 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 	}
 
 	private boolean isNumber() {
-		return Number.class.isAssignableFrom(this.clazz);
+		return this.clazz != null && Number.class.isAssignableFrom(this.clazz);
 	}
 
 	public RegexProperty dynamicClientConcreteProducer() {
-		return new RegexProperty(this.pattern, generate(), this.clazz);
+		Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+		return new RegexProperty(p, generate(), this.clazz);
 	}
 
 	public RegexProperty concreteClientDynamicProducer() {
-		return new RegexProperty(generate(), this.pattern, this.clazz);
+		Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+		return new RegexProperty(generate(), p, this.clazz);
 	}
 
 	public RegexProperty concreteClientEscapedDynamicProducer() {
-		return new RegexProperty(generateAndEscapeJavaStringIfNeeded(), this.pattern, this.clazz);
+		Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+		return new RegexProperty(generateAndEscapeJavaStringIfNeeded(), p, this.clazz);
 	}
 
 	public RegexProperty dynamicClientEscapedConcreteProducer() {
-		return new RegexProperty(this.pattern, generateAndEscapeJavaStringIfNeeded(), this.clazz);
+		Pattern p = Objects.requireNonNull(this.pattern, "pattern must not be null");
+		return new RegexProperty(p, generateAndEscapeJavaStringIfNeeded(), this.clazz);
 	}
 
 	@Override
@@ -198,17 +205,17 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 			return false;
 		}
 		RegexProperty that = (RegexProperty) o;
-		return Objects.equals(stringPatternIfPresent(pattern), stringPatternIfPresent(that.pattern))
-				&& Objects.equals(clazz, that.clazz);
+		return Objects.equals(stringPatternIfPresent(this.pattern), stringPatternIfPresent(that.pattern))
+				&& Objects.equals(this.clazz, that.clazz);
 	}
 
-	private Object stringPatternIfPresent(Pattern value) {
-		return value != null ? value.pattern() : null;
+	private @Nullable Object stringPatternIfPresent(@Nullable Pattern value) {
+		return (value != null) ? value.pattern() : null;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(stringPatternIfPresent(pattern), clazz);
+		return Objects.hash(stringPatternIfPresent(this.pattern), this.clazz);
 	}
 
 	@Override
@@ -221,12 +228,12 @@ public class RegexProperty extends DslProperty implements CanBeDynamic {
 		return generate();
 	}
 
-	public Pattern getPattern() {
-		return pattern;
+	public @Nullable Pattern getPattern() {
+		return this.pattern;
 	}
 
-	public Class getClazz() {
-		return clazz;
+	public @Nullable Class getClazz() {
+		return this.clazz;
 	}
 
 }

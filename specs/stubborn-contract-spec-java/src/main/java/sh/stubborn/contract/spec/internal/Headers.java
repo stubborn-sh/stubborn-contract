@@ -49,21 +49,21 @@ public class Headers {
 		if (iterator.hasNext()) {
 			Map.Entry<String, Object> first = iterator.next();
 			if (first != null) {
-				entries.add(Header.build(first.getKey(), first.getValue()));
+				this.entries.add(Header.build(first.getKey(), first.getValue()));
 			}
 		}
 	}
 
 	public void header(String headerKey, Object headerValue) {
-		entries.add(Header.build(headerKey, headerValue));
+		this.entries.add(Header.build(headerKey, headerValue));
 	}
 
 	public void executeForEachHeader(final Consumer<Header> consumer) {
-		entries.forEach(consumer);
+		this.entries.forEach(consumer);
 	}
 
 	public void headers(Set<Header> headers) {
-		entries.addAll(headers);
+		this.entries.addAll(headers);
 	}
 
 	public void accept(String contentType) {
@@ -95,7 +95,7 @@ public class Headers {
 
 	public Map<String, Object> asMap(final BiFunction<String, Header, Object> consumer) {
 		final Map<String, Object> map = new LinkedHashMap<>();
-		entries.forEach(header -> map.put(header.getName(), consumer.apply(header.getName(), header)));
+		this.entries.forEach((header) -> map.put(header.getName(), consumer.apply(header.getName(), header)));
 		return map;
 	}
 
@@ -126,21 +126,21 @@ public class Headers {
 			return false;
 		}
 		Headers headers = (Headers) o;
-		return Objects.equals(entries, headers.entries);
+		return Objects.equals(this.entries, headers.entries);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(entries);
+		return Objects.hash(this.entries);
 	}
 
 	@Override
 	public String toString() {
-		return "Headers{" + "\nentries=" + entries + '}';
+		return "Headers{" + "\nentries=" + this.entries + '}';
 	}
 
 	public Set<Header> getEntries() {
-		return entries;
+		return this.entries;
 	}
 
 	public void setEntries(Set<Header> entries) {

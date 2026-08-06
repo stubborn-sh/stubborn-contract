@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-build</artifactId>
+		<artifactId>stubborn-contract-build</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
-		<relativePath>../stubborn-build/pom.xml</relativePath>
+		<relativePath>../stubborn-contract-build/pom.xml</relativePath>
 	</parent>
 	<groupId>sh.stubborn</groupId>
-	<artifactId>stubborn-dependencies</artifactId>
+	<artifactId>stubborn-contract-dependencies</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>stubborn-contract-dependencies</name>
@@ -18,108 +18,197 @@
 	<properties>
 		<wiremock.version>3.13.2</wiremock.version>
 		<spring-cloud-stream.version>5.0.2</spring-cloud-stream.version>
-		<rest-assured.version>6.0.0</rest-assured.version>
+		<rest-assured.version>6.0.1</rest-assured.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<!--
+			  Security override: import netty-bom at the patched ${netty.version} (4.2.16.Final) so
+			  consumers importing this BOM get every io.netty artifact off the vulnerable 4.2.15.Final
+			  managed by the Spring Boot 4.1 BOM (netty:netty CVE-2026-56820, -55851, -56745, -56817,
+			  -56819, -44891, -55833, -55831, -56816). As with the Jetty pins below, this relies on
+			  consumers importing stubborn-contract-dependencies ahead of spring-boot-dependencies.
+			  Remove once the Spring Boot BOM ships >= 4.2.16.Final.
+			-->
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-bom</artifactId>
+				<version>${netty.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!--
+			  Security override: pin every Tomcat artifact the Spring Boot 4.1 BOM manages up to the
+			  patched ${tomcat.version} (11.0.24), off the vulnerable 11.0.22 (CVE-2026-55276,
+			  -53434, -59083, -59084, -53404). As with the Jetty pins below, this relies on consumers
+			  importing stubborn-contract-dependencies ahead of spring-boot-dependencies. Tomcat has
+			  no published BOM, so each managed artifact is pinned explicitly. Remove once the Spring
+			  Boot BOM ships >= 11.0.24.
+			-->
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-core</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-el</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-jasper</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat.embed</groupId>
+				<artifactId>tomcat-embed-websocket</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-annotations-api</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jdbc</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-jsp-api</artifactId>
+				<version>${tomcat.version}</version>
+			</dependency>
+			<!--
+			  Security override: pin Zookeeper up to the patched ${zookeeper.version} (3.9.5), off the
+			  vulnerable 3.9.3 managed by the spring-cloud-zookeeper-dependencies BOM (CVE-2026-24281,
+			  CVE-2026-24308). Relies on consumers importing stubborn-contract-dependencies ahead of
+			  the spring-cloud BOMs. zookeeper and zookeeper-jute are versioned together. Remove once
+			  spring-cloud-zookeeper ships >= 3.9.4.
+			-->
+			<dependency>
+				<groupId>org.apache.zookeeper</groupId>
+				<artifactId>zookeeper</artifactId>
+				<version>${zookeeper.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.zookeeper</groupId>
+				<artifactId>zookeeper-jute</artifactId>
+				<version>${zookeeper.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-wiremock</artifactId>
+				<artifactId>stubborn-contract-wiremock</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-wiremock-spring</artifactId>
+				<artifactId>stubborn-contract-wiremock-spring</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-wiremock-spring-boot</artifactId>
+				<artifactId>stubborn-contract-wiremock-spring-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-migration</artifactId>
+				<artifactId>stubborn-contract-migration</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-spec</artifactId>
+				<artifactId>stubborn-contract-spec</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-spec-java</artifactId>
+				<artifactId>stubborn-contract-spec-java</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-spec-groovy</artifactId>
+				<artifactId>stubborn-contract-spec-groovy</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-spec-kotlin</artifactId>
+				<artifactId>stubborn-contract-spec-kotlin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-verifier</artifactId>
+				<artifactId>stubborn-contract-verifier</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-verifier-spring</artifactId>
+				<artifactId>stubborn-contract-generator</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-verifier-spring-boot</artifactId>
+				<artifactId>stubborn-contract-verifier-spring</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-verifier-spring-cloud</artifactId>
+				<artifactId>stubborn-contract-verifier-spring-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-converters</artifactId>
+				<artifactId>stubborn-contract-verifier-spring-cloud</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-stub-runner</artifactId>
+				<artifactId>stubborn-contract-messaging-kafka</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-stub-runner-boot</artifactId>
+				<artifactId>stubborn-contract-converters</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-stub-runner-spring-boot</artifactId>
+				<artifactId>stubborn-contract-stub-runner</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<!--
+			  stubborn-contract-stub-runner-app is intentionally NOT managed here. It is a
+			  repackaged Spring Boot executable (fat) jar that is deliberately excluded from
+			  Maven Central publishing (see central-publishing excludeArtifacts in the root
+			  pom). Consumers build it from source (./mvnw package -pl
+			  stubborn-contract-stub-runner-app) or use the Docker image — they do not depend
+			  on it as a library. Listing it in the BOM would advertise an unresolvable
+			  coordinate. See docs/reference/stub-runner-spring-boot.md.
+			-->
+			<dependency>
+				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-stub-runner-spring-cloud</artifactId>
+				<artifactId>stubborn-contract-stub-runner-spring-cloud</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-verifier</artifactId>
+				<artifactId>stubborn-contract-starter-verifier</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-stub-runner</artifactId>
+				<artifactId>stubborn-contract-starter-stub-runner</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-starter-stub-runner-jetty</artifactId>
+				<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -148,101 +237,164 @@
 				<version>${wiremock.version}</version>
 			</dependency>
 			<!--
-			  wiremock-jetty12:3.13.2 uses jetty-ee10-*:12.0.30 which calls APIs only present in
+			  Security override: httpcore5 5.4.2 (via Apache HttpClient5 / WireMock) carries
+			  CVE-2026-54399 and CVE-2026-54428 (both CVSS 7.5). Pin the patched 5.4.3 so
+			  consumers importing this BOM inherit the fix. Remove once a managing BOM ships >= 5.4.3.
+			-->
+			<dependency>
+				<groupId>org.apache.httpcomponents.core5</groupId>
+				<artifactId>httpcore5</artifactId>
+				<version>${httpcore5.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents.core5</groupId>
+				<artifactId>httpcore5-h2</artifactId>
+				<version>${httpcore5.version}</version>
+			</dependency>
+			<!--
+			  wiremock-jetty12:3.13.2 uses jetty-ee10-*:12.0.37 which calls APIs only present in
 			  Jetty 12.0.x (e.g. ByteBufferPool.acquire(int,boolean), Environment.ensure(String)).
 			  Spring Boot 4 forces all org.eclipse.jetty:* to 12.1.x where those methods were removed.
-			  Pin the Jetty core artifacts to 12.0.30 so consumers who import stubborn-dependencies
+			  Pin the Jetty core artifacts to 12.0.37 so consumers who import stubborn-contract-dependencies
 			  get Jetty 12.0.x in their own dependencyManagement (which beats the parent BOM).
 			-->
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-util</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-io</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-http</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-server</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-security</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-session</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-xml</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-alpn-server</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-alpn-java-server</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-alpn-client</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-alpn-java-client</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-proxy</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-client</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty.http2</groupId>
 				<artifactId>jetty-http2-server</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty.http2</groupId>
 				<artifactId>jetty-http2-common</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.jetty.http2</groupId>
 				<artifactId>jetty-http2-hpack</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
+			</dependency>
+			<!--
+			  wiremock-jetty12:3.13.2 declares the Jakarta EE 10 servlet layer
+			  (org.eclipse.jetty.ee10:jetty-ee10-*) and org.eclipse.jetty:jetty-ee at 12.0.30,
+			  which the core jetty.version pins above do not reach. Pin them to ${jetty.version}
+			  (12.0.37) here as well so consumers importing this BOM get the CVE-patched 12.0.x
+			  EE artifacts (CVE-2026-2332, CVE-2026-5795, CVE-2026-1605, CVE-2026-10051).
+			-->
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-servlet</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-servlets</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-webapp</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-ee</artifactId>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-jsonassert</artifactId>
+				<artifactId>stubborn-contract-jsonassert</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-xmlassert</artifactId>
+				<artifactId>stubborn-contract-xmlassert</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<!--
+			  CVE-2025-5222 (CVSS 7.0): stubborn-contract-xmlassert pulls icu4j 4.6 transitively via the
+			  Eclipse WST xpath2 processor. Pin it here too so consumers importing this BOM get the
+			  safe version in their own dependencyManagement (which beats a parent BOM).
+			-->
+			<dependency>
+				<groupId>com.ibm.icu</groupId>
+				<artifactId>icu4j</artifactId>
+				<version>${icu4j.version}</version>
+			</dependency>
+			<!--
+			  CVE-2025-67030 (CVSS 8.8): stubborn-contract-stub-runner embeds Maven and pulls
+			  plexus-utils transitively; the Spring Boot 4.1 BOM downgrades it to the vulnerable
+			  3.6.0. Pin the patched 3.6.1 here too so consumers importing this BOM get the safe
+			  version in their own dependencyManagement. Remove once a managing BOM ships >= 3.6.1.
+			-->
+			<dependency>
+				<groupId>org.codehaus.plexus</groupId>
+				<artifactId>plexus-utils</artifactId>
+				<version>${plexus-utils.version}</version>
 			</dependency>
 			<!-- Spring Boot 4 split modules (needed for RestClient / TestRestTemplate) -->
 			<dependency>
@@ -298,14 +450,6 @@
 						<enabled>false</enabled>
 					</releases>
 				</repository>
-				<repository>
-					<id>spring-milestones</id>
-					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
@@ -318,14 +462,6 @@
 					<releases>
 						<enabled>false</enabled>
 					</releases>
-				</pluginRepository>
-				<pluginRepository>
-					<id>spring-milestones</id>
-					<name>Spring Milestones</name>
-					<url>https://repo.spring.io/milestone</url>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>

@@ -19,7 +19,6 @@ package sh.stubborn.contract.verifier.wiremock;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 
 import com.github.tomakehurst.wiremock.common.JsonException;
@@ -31,6 +30,7 @@ import sh.stubborn.contract.verifier.converter.StubGenerator;
 /**
  * WireMock implementation of the {@link StubGenerator}.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public abstract class DslToWireMockConverter implements StubGenerator<StubMapping> {
@@ -59,9 +59,9 @@ public abstract class DslToWireMockConverter implements StubGenerator<StubMappin
 			StubMapping.buildFrom(new String(stream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8));
 			return true;
 		}
-		catch (IOException | JsonException e) {
+		catch (IOException | JsonException ex) {
 			if (log.isDebugEnabled()) {
-				log.debug("Cannot read file", e);
+				log.debug("Cannot read file", ex);
 			}
 			return false;
 		}

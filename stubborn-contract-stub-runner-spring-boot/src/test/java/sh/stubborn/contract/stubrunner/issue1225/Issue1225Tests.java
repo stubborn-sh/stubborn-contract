@@ -21,12 +21,10 @@ import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
 import sh.stubborn.contract.stubrunner.spring.StubRunnerPort;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.bind.annotation.RestController;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,17 +57,6 @@ public class Issue1225Tests {
 	@SpringBootConfiguration
 	static class Config {
 
-	}
-
-}
-
-@RestController
-class PingProxyController {
-
-	String pingUrl;
-
-	PingProxyController(@Value("${ping.url}") String pingUrl) {
-		this.pingUrl = pingUrl;
 	}
 
 }

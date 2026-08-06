@@ -19,7 +19,6 @@ package sh.stubborn.contract.stubrunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import java.util.ServiceLoader;
 
 /**
@@ -42,6 +41,7 @@ public class StubDownloaderBuilderProvider {
 	}
 
 	/**
+	 * Builds a composite {@link StubDownloader} from all registered builders.
 	 * @param stubRunnerOptions options of Stub Runner
 	 * @param additionalBuilders - optional array of {@link StubDownloaderBuilder}s to
 	 * append to the list of builders

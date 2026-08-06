@@ -1,0 +1,69 @@
+# Stubborn Contract
+
+> Consumer-driven contract (CDC) testing library for JVM and polyglot projects. Official continuation of Spring Cloud Contract 5.x. Existing SCC contracts, stubs, and Groovy DSL files work without modification.
+
+Core vocabulary:
+- **contract**: a YAML or Groovy file describing one request/response or messaging interaction between two services
+- **producer**: the service implementing an API; runs auto-generated JUnit/Spock tests to prove it honours each contract
+- **consumer**: the service calling an API; tests against a generated WireMock stub without running the real service
+- **stub**: a WireMock-based fake HTTP server generated from contracts; packaged as a Maven JAR
+- **stub runner**: downloads stub JARs and starts them as local servers in consumer tests
+- **verifier**: the Maven/Gradle plugin that reads contracts and generates producer-side tests
+- **CDC**: Consumer-Driven Contracts — a testing methodology where consumers define what they expect and producers prove they deliver it
+
+End-to-end flow: (1) Consumer writes a YAML/Groovy contract. (2) Producer runs the Maven/Gradle verifier plugin — it auto-generates a JUnit/Spock test class and runs it against the real implementation. (3) On success, the build publishes a stubs JAR containing WireMock mappings. (4) Consumer test uses @AutoConfigureStubRunner (Spring Boot) or @RegisterExtension StubRunnerExtension (JUnit 5) to download the stubs JAR and start a fake server on a local port. (5) Consumer integration test calls localhost:{port} and asserts the response.
+
+GroupId: sh.stubborn. Maven plugin artifactId: stubborn-contract-maven-plugin. Property prefix: stubborn.contract.stubrunner.*. Old spring.cloud.contract.stubrunner.* is a deprecated bridge (StubRunnerPropertiesMigrator) that still works.
+
+## Prerequisites
+
+- [Prerequisites](docs/getting-started/index.md): Java 17+, Maven 3.9+, Spring Boot 4.1.x
+
+## Getting Started
+
+- [Quick Start (3 min)](docs/getting-started/quick-start.md): minimal producer + consumer setup, zero to working
+- [First Application](docs/getting-started/first-application.md): step-by-step walkthrough building a loan service
+- [CDC Tutorial](docs/getting-started/cdc.md): full multi-team scenario with broker integration
+- [Key Concepts](docs/getting-started/concepts.md): glossary of all core terms with sequence diagram
+
+## Writing Contracts
+
+- [YAML Contract Schema](docs/reference/yaml-contracts.md): all fields, types, defaults, request/response matchers
+- [HTTP Contracts](docs/reference/http-contracts.md): request/response matching, body matchers, priority
+- [Messaging Contracts](docs/reference/messaging-contracts.md): Kafka, Artemis, Spring Cloud Stream, Camel
+- [Dynamic Values](docs/howto/dynamic-values.md): regex matchers, value generators, $(consumer(), producer()) pattern
+- [Contract DSL Overview](docs/reference/contract-dsl.md): Groovy, YAML, Java, Kotlin formats compared
+
+## Build Plugins
+
+- [Maven Plugin](docs/reference/maven-plugin.md): goals (generateTests, generateStubs, pushStubsToScm), all config options including baseClassForTests and packageWithBaseClasses
+- [Gradle Plugin](docs/reference/gradle-plugin.md): tasks, contractsDslDir, baseClassForTests, contractsRepositoryUrl
+
+## Stub Runner
+
+- [Overview](docs/reference/stub-runner.md): StubsMode enum (CLASSPATH/LOCAL/REMOTE), ids format (groupId:artifactId:version:classifier:port), properties
+- [JUnit 5](docs/reference/stub-runner-junit5.md): @AutoConfigureStubRunner attributes, @RegisterExtension static StubRunnerExtension, lifecycle
+- [Spring Boot Auto-configure](docs/reference/stub-runner-spring-boot.md): @AutoConfigureStubRunner, standalone server mode
+- [Git Storage](docs/reference/stub-runner-git.md): git:// protocol, repository structure, branch selection
+
+## Configuration Reference
+
+- [All Properties](docs/reference/configuration.md): stubborn.contract.stubrunner.* runtime properties table; build plugin XML config options
+- [Customization SPIs](docs/reference/customization.md): WireMockStubStrategy, WireMockConfigurationCustomizer, baseClassMappings
+
+## Migration from Spring Cloud Contract 5.x
+
+- [Migration Guide](docs/migration/from-spring-cloud-contract.md): OpenRewrite automated recipe (sh.stubborn:stubborn-migration), Maven coordinate rename table, JUnit 4→5 rule migration, property prefix changes, Kotlin artifact rename
+
+## How-To Guides
+
+- [Common Contracts Repository](docs/howto/common-repo.md): hosting contracts in a shared producer-agnostic repo
+- [Dynamic Values](docs/howto/dynamic-values.md): regex, date/time generators, UUID generators
+- [Debug WireMock](docs/howto/debug-wiremock.md): enabling verbose WireMock logging, inspecting mapping files
+- [Git as Contract Storage](docs/howto/git-storage.md): using a Git repo instead of Maven for stubs
+- [Mark Contract In Progress](docs/howto/mark-in-progress.md): in-progress flag for parallel team development
+- [Non-JVM (Node.js)](docs/howto/non-jvm.md): @stubborn-sh npm packages for Node.js consumers/producers
+- [Stubs Versioning](docs/howto/stubs-versioning.md): RELEASE/SNAPSHOT classifiers, prod-stubs pattern
+- [Transitive Dependencies](docs/howto/transitive.md): excluding producer runtime deps from stubs JAR (isTransitive = false)
+
+> Full text of key reference pages: llms-full.txt

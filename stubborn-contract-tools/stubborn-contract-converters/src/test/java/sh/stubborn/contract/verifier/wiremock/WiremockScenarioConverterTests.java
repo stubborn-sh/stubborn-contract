@@ -21,7 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 

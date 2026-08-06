@@ -18,7 +18,7 @@ package sh.stubborn.contract.verifier.util;
 
 import java.util.LinkedList;
 
-import com.toomuchcoding.jsonassert.JsonVerifiable;
+import sh.stubborn.jsonassert.JsonVerifiable;
 
 /**
  * Helper class that represents a finished assertion of a JSON. Contains a list of all

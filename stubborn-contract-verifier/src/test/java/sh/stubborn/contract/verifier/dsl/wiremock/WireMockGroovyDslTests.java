@@ -23,15 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.github.jknack.handlebars.Helper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.extension.TemplateHelperProviderExtension;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.resttestclient.TestRestTemplate;
-import org.springframework.cloud.test.TestSocketUtils;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.RegexPatterns;
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsEscapeHelper;
@@ -40,7 +37,11 @@ import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.AssertionUtil;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
-import com.github.jknack.handlebars.Helper;
+
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.cloud.test.TestSocketUtils;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,7 +52,7 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 		StubMapping result = new WireMockStubStrategy("Test", new ContractMetadata(null, false, 0, null, groovyDsl),
 				groovyDsl)
 			.toWireMockClientStub();
-		return result != null ? result.toString() : null;
+		return (result != null) ? result.toString() : null;
 	}
 
 	private WireMockConfiguration config() {
@@ -103,8 +104,8 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 		try {
 			return java.nio.file.Files.readAllBytes(file.toPath());
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -897,10 +898,8 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 		Contract groovyDsl = Contract.make((c) -> {
 			c.request((r) -> {
 				r.method("GET");
-				r.urlPath(r.$(r.consumer(r.regex("/users/[0-9]+")), r.producer("/users/1")), (u) -> {
-					u.queryParameters((q) -> q.parameter("search",
-							r.$(r.consumer(r.notMatching("^/[0-9]{2}$")), r.producer("10"))));
-				});
+				r.urlPath(r.$(r.consumer(r.regex("/users/[0-9]+")), r.producer("/users/1")), (u) -> u.queryParameters(
+						(q) -> q.parameter("search", r.$(r.consumer(r.notMatching("^/[0-9]{2}$")), r.producer("10")))));
 			});
 			c.response((r) -> r.status(r.OK()));
 		});
@@ -998,10 +997,8 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 		assertThatThrownBy(() -> Contract.make((c) -> {
 			c.request((r) -> {
 				r.method("GET");
-				r.url("abc", (u) -> {
-					u.queryParameters((q) -> q.parameter("age",
-							r.$(r.consumer(r.notMatching("^\\w*$")), r.producer(r.regex(".*")))));
-				});
+				r.url("abc", (u) -> u.queryParameters((q) -> q.parameter("age",
+						r.$(r.consumer(r.notMatching("^\\w*$")), r.producer(r.regex(".*"))))));
 			});
 			c.response((r) -> r.status(r.OK()));
 		})).isInstanceOf(IllegalStateException.class);

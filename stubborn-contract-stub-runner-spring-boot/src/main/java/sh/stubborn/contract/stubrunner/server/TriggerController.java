@@ -32,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * Controller that allows triggering of stub messages by label.
+ *
  * @author Marcin Grzejszczak
  */
 @RestController
@@ -51,9 +53,9 @@ public class TriggerController {
 			this.stubFinder.trigger(label);
 			return ResponseEntity.ok().body(Collections.<String, Collection<String>>emptyMap());
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			throw new RuntimeException("Exception occurred while trying to return [" + label
-					+ "] label. \n\nAvailable labels are [" + this.stubFinder.labels() + " ]", e);
+					+ "] label. \n\nAvailable labels are [" + this.stubFinder.labels() + " ]", ex);
 		}
 	}
 
@@ -64,9 +66,9 @@ public class TriggerController {
 			this.stubFinder.trigger(ivyNotation, label);
 			return ResponseEntity.ok().body(Collections.<String, Collection<String>>emptyMap());
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			throw new RuntimeException("Exception occurred while trying to return [" + label
-					+ "] label. \n\nAvailable labels are [" + this.stubFinder.labels() + " ]", e);
+					+ "] label. \n\nAvailable labels are [" + this.stubFinder.labels() + " ]", ex);
 		}
 	}
 

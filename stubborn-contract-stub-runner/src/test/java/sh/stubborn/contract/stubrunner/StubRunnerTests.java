@@ -18,9 +18,9 @@ package sh.stubborn.contract.stubrunner;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 
 import org.springframework.cloud.test.TestSocketUtils;
@@ -42,15 +42,16 @@ class StubRunnerTests {
 			EXPECTED_STUB_URL = new URL("http://localhost:" + MIN_PORT);
 			GENERATE_STUBS = StubRunnerTests.class.getResource("/generateStubs/");
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
 	@Test
 	void shouldProvideStubUrlForProvidedGroupIdAndArtifactId() throws Exception {
 		Arguments args = argumentsWithProjectDefinition();
-		StubRunner runner = new StubRunner(args.getStubRunnerOptions(), args.getRepositoryPath(), args.getStub());
+		StubRunner runner = new StubRunner(args.getStubRunnerOptions(), args.getRepositoryPath(),
+				Objects.requireNonNull(args.getStub()));
 		try {
 			runner.runStubs();
 			assertThat(runner.findStubUrl("groupId", "artifactId")).isEqualTo(EXPECTED_STUB_URL);
@@ -63,7 +64,8 @@ class StubRunnerTests {
 	@Test
 	void shouldProvideStubUrlIfOnlyArtifactIdWasPassed() throws Exception {
 		Arguments args = argumentsWithProjectDefinition();
-		StubRunner runner = new StubRunner(args.getStubRunnerOptions(), args.getRepositoryPath(), args.getStub());
+		StubRunner runner = new StubRunner(args.getStubRunnerOptions(), args.getRepositoryPath(),
+				Objects.requireNonNull(args.getStub()));
 		try {
 			runner.runStubs();
 			assertThat(runner.findStubUrl(null, "artifactId")).isEqualTo(EXPECTED_STUB_URL);
@@ -76,7 +78,7 @@ class StubRunnerTests {
 	@Test
 	void shouldGenerateStubsAtRuntime() throws Exception {
 		Arguments args = argumentsWithGenerateStubs();
-		StubDownloader downloader = new FileStubDownloader().build(args.getStubRunnerOptions());
+		StubDownloader downloader = Objects.requireNonNull(new FileStubDownloader().build(args.getStubRunnerOptions()));
 		StubRunner runner = new StubRunnerFactory(args.getStubRunnerOptions(), downloader, new NoOpStubMessages())
 			.createStubsFromServiceConfiguration()
 			.iterator()
@@ -94,7 +96,7 @@ class StubRunnerTests {
 	@Test
 	void shouldOverrideExistingMappingsWhenGeneratingStubsAtRuntime() throws Exception {
 		Arguments args = argumentsWithGenerateStubs();
-		StubDownloader downloader = new FileStubDownloader().build(args.getStubRunnerOptions());
+		StubDownloader downloader = Objects.requireNonNull(new FileStubDownloader().build(args.getStubRunnerOptions()));
 		StubRunner runner = new StubRunnerFactory(args.getStubRunnerOptions(), downloader, new NoOpStubMessages())
 			.createStubsFromServiceConfiguration()
 			.iterator()
@@ -112,7 +114,7 @@ class StubRunnerTests {
 	@Test
 	void shouldHandleContractsWithBodyContentsLoadedFromExternalFileWhenGeneratingStubsAtRuntime() throws Exception {
 		Arguments args = argumentsWithGenerateStubs();
-		StubDownloader downloader = new FileStubDownloader().build(args.getStubRunnerOptions());
+		StubDownloader downloader = Objects.requireNonNull(new FileStubDownloader().build(args.getStubRunnerOptions()));
 		StubRunner runner = new StubRunnerFactory(args.getStubRunnerOptions(), downloader, new NoOpStubMessages())
 			.createStubsFromServiceConfiguration()
 			.iterator()

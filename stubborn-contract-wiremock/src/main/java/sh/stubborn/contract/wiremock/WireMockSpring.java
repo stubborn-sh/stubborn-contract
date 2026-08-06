@@ -16,19 +16,11 @@
 
 package sh.stubborn.contract.wiremock;
 
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 /**
- * Convenience factory class for a {@link WireMockConfiguration} that knows how to use
- * Spring Boot to create a stub server. Use, for example, in a JUnit rule:
+ * Convenience factory class for a {@link WireMockConfiguration}. Use, for example, in a
+ * JUnit rule:
  *
  * <pre>
  * &#64;ClassRule
@@ -38,38 +30,17 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
  *
  * and then use {@link com.github.tomakehurst.wiremock.client.WireMock} as normal in your
  * test methods.
+ * <p>
+ * If the WireMock server is configured for HTTPS, callers are responsible for configuring
+ * their HTTP client to trust the WireMock server's certificate. Do not disable
+ * certificate validation globally; instead use WireMock's bundled keystore or a dedicated
+ * test trust-store.
  *
  * @author Dave Syer
- *
  */
 public abstract class WireMockSpring {
 
-	private static boolean initialized = false;
-
 	public static WireMockConfiguration options() {
-		if (!initialized) {
-			try {
-				HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-				TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
-					public X509Certificate[] getAcceptedIssuers() {
-						return new X509Certificate[0];
-					}
-
-					public void checkClientTrusted(X509Certificate[] chain, String authType) {
-					}
-
-					public void checkServerTrusted(X509Certificate[] chain, String authType) {
-					}
-				} };
-				SSLContext sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(null, trustAll, new SecureRandom());
-				HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-			}
-			catch (Exception e) {
-				throw new AssertionError("Cannot install custom socket factory: [" + e.getMessage() + "]");
-			}
-			initialized = true;
-		}
 		return new WireMockConfiguration();
 	}
 

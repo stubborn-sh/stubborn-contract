@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class BatchStubRunnerTests {
 
@@ -40,10 +40,10 @@ class BatchStubRunnerTests {
 
 	private static List<StubRunner> runners() throws Exception {
 		StubRunner runner = mock(StubRunner.class);
-		when(runner.findStubUrl("group", "knownArtifact")).thenReturn(knownUrl());
-		when(runner.findStubUrl("group:knownArtifact")).thenReturn(knownUrl());
-		when(runner.findStubUrl("group:unknownArtifact")).thenThrow(new StubNotFoundException(UNKNOWN_STUB_PATH));
-		when(runner.labels()).thenReturn(Map.of("a:b:c", List.of("foo")));
+		given(runner.findStubUrl("group", "knownArtifact")).willReturn(knownUrl());
+		given(runner.findStubUrl("group:knownArtifact")).willReturn(knownUrl());
+		given(runner.findStubUrl("group:unknownArtifact")).willThrow(new StubNotFoundException(UNKNOWN_STUB_PATH));
+		given(runner.labels()).willReturn(Map.of("a:b:c", List.of("foo")));
 		return List.of(runner);
 	}
 

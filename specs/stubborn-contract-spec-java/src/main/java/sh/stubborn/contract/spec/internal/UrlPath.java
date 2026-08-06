@@ -20,6 +20,7 @@ package sh.stubborn.contract.spec.internal;
  * Represents a url path. Syntactic sugar when working with {@link QueryParameters}. It's
  * logically equal to {@link Url}.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class UrlPath extends Url {

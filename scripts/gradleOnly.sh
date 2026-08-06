@@ -6,6 +6,6 @@ FOLDER=`pwd`
 
 set -e
 
-cd "${FOLDER}/spring-cloud-contract-tools/spring-cloud-contract-gradle-plugin"
+cd "${FOLDER}/stubborn-contract-extras/stubborn-contract-gradle-plugin"
   ./gradlew clean build publishToMavenLocal
 cd "${FOLDER}"

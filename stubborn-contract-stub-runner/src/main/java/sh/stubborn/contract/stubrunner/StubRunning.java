@@ -26,8 +26,9 @@ import java.io.Closeable;
 public interface StubRunning extends Closeable, StubFinder {
 
 	/**
-	 * @return runs the stubs and returns the {@link RunningStubs}. If the stubs were
-	 * already started then a cached version will be returned.
+	 * Runs the stubs and returns the {@link RunningStubs}. If the stubs were already
+	 * started then a cached version will be returned.
+	 * @return the running stubs
 	 */
 	RunningStubs runStubs();
 

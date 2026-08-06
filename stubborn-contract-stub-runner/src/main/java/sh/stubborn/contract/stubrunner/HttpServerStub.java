@@ -28,11 +28,13 @@ import java.util.Collection;
 public interface HttpServerStub {
 
 	/**
+	 * Returns the port on which the server is running.
 	 * @return port on which the server is running. Return {@code -1} if not applicable.
 	 */
 	int port();
 
 	/**
+	 * Returns the https port on which the server is running.
 	 * @return https port on which the server is running. Return {@code -1} if not
 	 * applicable.
 	 */
@@ -41,6 +43,7 @@ public interface HttpServerStub {
 	}
 
 	/**
+	 * Checks if the server is running.
 	 * @return {@code true} if the server is running
 	 */
 	boolean isRunning();
@@ -75,11 +78,13 @@ public interface HttpServerStub {
 	HttpServerStub registerMappings(Collection<File> stubFiles);
 
 	/**
+	 * Returns a collection of registered mappings.
 	 * @return a collection of registered mappings.
 	 */
 	String registeredMappings();
 
 	/**
+	 * Checks whether the given file can be accepted by this server stub.
 	 * @param file file to check if can be accepted.
 	 * @return {@code true} if the file is a valid stub mapping
 	 */

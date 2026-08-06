@@ -24,13 +24,15 @@ import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration;
+import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
+import sh.stubborn.contract.stubrunner.StubConfiguration;
+import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
+
 import org.springframework.cloud.test.TestSocketUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
-
-import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration;
-import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,8 +49,9 @@ class WireMockHttpServerStubTests {
 	@Test
 	void shouldDescribeStubMapping() {
 		WireMockHttpServerStub mappingDescriptor = (WireMockHttpServerStub) new WireMockHttpServerStub()
-			.start(new HttpServerStubConfiguration(HttpServerStubConfigurer.NoOpHttpServerStubConfigurer.INSTANCE, null,
-					null, TestSocketUtils.findAvailableTcpPort()));
+			.start(new HttpServerStubConfiguration(HttpServerStubConfigurer.NoOpHttpServerStubConfigurer.INSTANCE,
+					new StubRunnerOptionsBuilder().build(), new StubConfiguration("group:artifact:version"),
+					TestSocketUtils.findAvailableTcpPort()));
 		try {
 			StubMapping mapping = mappingDescriptor.getMapping(MAPPING_DESCRIPTOR);
 			assertThat(mapping.getRequest().getMethod()).isEqualTo(RequestMethod.GET);
@@ -76,8 +79,9 @@ class WireMockHttpServerStubTests {
 	@Test
 	void shouldMakeWireMockPrintOutLogsOnInfo() {
 		WireMockHttpServerStub mappingDescriptor = (WireMockHttpServerStub) new WireMockHttpServerStub()
-			.start(new HttpServerStubConfiguration(HttpServerStubConfigurer.NoOpHttpServerStubConfigurer.INSTANCE, null,
-					null, TestSocketUtils.findAvailableTcpPort()));
+			.start(new HttpServerStubConfiguration(HttpServerStubConfigurer.NoOpHttpServerStubConfigurer.INSTANCE,
+					new StubRunnerOptionsBuilder().build(), new StubConfiguration("group:artifact:version"),
+					TestSocketUtils.findAvailableTcpPort()));
 		try {
 			mappingDescriptor.registerMappings(List
 				.of(new File(WireMockHttpServerStubTests.class.getClassLoader().getResource("simple.json").getFile())));

@@ -65,7 +65,9 @@ public final class ToYamlConverter {
 			log.debug("Converted collection of [{}] contracts to [{}] YAML contracts", collection.size(), yamls.size());
 		}
 		// rm target/copied_contracts/contracts/foo/baz/bar.groovy
-		file.delete();
+		if (!file.delete() && file.exists() && log.isWarnEnabled()) {
+			log.warn("Failed to delete original contract file [{}]", file.getAbsolutePath());
+		}
 		// [contracts/foo/baz/bar.groovy] -> [contracts/foo/baz/bar.yml]
 		Map<String, byte[]> stored = yamlContractConverter.store(yamls);
 		if (log.isDebugEnabled()) {
@@ -77,8 +79,8 @@ public final class ToYamlConverter {
 			try {
 				Files.write(ymlContractVersion.toPath(), value);
 			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
+			catch (IOException ex) {
+				throw new RuntimeException(ex);
 			}
 			if (log.isDebugEnabled()) {
 				log.debug("Written file [{}] with YAML contract definition", ymlContractVersion);
@@ -97,13 +99,13 @@ public final class ToYamlConverter {
 		try {
 			Files.walk(baseDir.toPath())
 				.map(Path::toFile)
-				.forEach(file -> CONTRACT_CONVERTERS.stream()
-					.filter(converter -> converter.isAccepted(file))
+				.forEach((file) -> CONTRACT_CONVERTERS.stream()
+					.filter((converter) -> converter.isAccepted(file))
 					.findFirst()
-					.ifPresent(converter -> doReplaceContractWithYaml(converter, file)));
+					.ifPresent((converter) -> doReplaceContractWithYaml(converter, file)));
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 

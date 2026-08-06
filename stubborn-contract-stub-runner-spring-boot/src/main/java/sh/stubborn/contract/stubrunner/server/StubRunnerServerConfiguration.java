@@ -23,6 +23,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
+ * Server side configuration for the stub runner boot application.
+ *
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
  */

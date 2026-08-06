@@ -38,8 +38,8 @@ cd ../consumer && ./mvnw test
 
 | Module | Description |
 |--------|-------------|
-| `stubborn-jsonassert` | JSON assertion helpers |
-| `stubborn-xmlassert` | XML assertion helpers |
+| `stubborn-contract-jsonassert` | JSON assertion helpers |
+| `stubborn-contract-xmlassert` | XML assertion helpers |
 | `specs/stubborn-contract-spec-java` | Java DSL for writing contracts |
 | `specs/stubborn-contract-spec-groovy` | Groovy DSL for writing contracts |
 | `stubborn-contract-verifier` | Contract verifier core — test generator |
@@ -52,8 +52,8 @@ cd ../consumer && ./mvnw test
 | Module | Description |
 |--------|-------------|
 | `stubborn-contract-verifier-spring` | Messaging abstractions (ContractVerifierMessage, MessageVerifierSender/Receiver) |
-| `stubborn-contract-stub-runner-boot` | Spring Framework stub runner integration |
-| `stubborn-wiremock-spring` | Spring MVC/RestTemplate WireMock helpers |
+| `stubborn-contract-stub-runner-app` | Spring Framework stub runner integration |
+| `stubborn-contract-wiremock-spring` | Spring MVC/RestTemplate WireMock helpers |
 
 ### Spring Boot tier (`-spring-boot`)
 
@@ -61,7 +61,7 @@ cd ../consumer && ./mvnw test
 |--------|-------------|
 | `stubborn-contract-verifier-spring-boot` | AutoConfigureMessageVerifier, all messaging backends (Integration, JMS, Camel, Avro) |
 | `stubborn-contract-stub-runner-spring-boot` | AutoConfigureStubRunner, port injection |
-| `stubborn-wiremock-spring-boot` | Spring Boot WireMock autoconfigure |
+| `stubborn-contract-wiremock-spring-boot` | Spring Boot WireMock autoconfigure |
 
 ### Spring Cloud tier (`-spring-cloud`)
 
@@ -74,12 +74,12 @@ cd ../consumer && ./mvnw test
 
 | Module | Description |
 |--------|-------------|
-| `stubborn-contract-dependencies` | Consumer BOM (`stubborn-dependencies`) — pin once, get all |
-| `stubborn-contract-starters` | `stubborn-starter-contract-verifier`, `stubborn-starter-stub-runner` |
-| `stubborn-build` | Parent POM (no spring-cloud-build) |
-| `stubborn-migration` | OpenRewrite recipes for SCC → Stubborn migration |
-| `stubborn-extras` | Kotlin DSL + Gradle plugin (designed for separate repo extraction) |
-| `stubborn-messaging-kafka` | Kafka messaging support |
+| `stubborn-contract-dependencies` | Consumer BOM (`stubborn-contract-dependencies`) — pin once, get all |
+| `stubborn-contract-starters` | `stubborn-contract-starter-verifier`, `stubborn-contract-starter-stub-runner` |
+| `stubborn-contract-build` | Parent POM (no spring-cloud-build) |
+| `stubborn-contract-migration` | OpenRewrite recipes for SCC → Stubborn migration |
+| `stubborn-contract-extras` | Kotlin DSL + Gradle plugin (designed for separate repo extraction) |
+| `stubborn-contract-messaging-kafka` | Kafka messaging support |
 
 ## Key conventions
 
@@ -116,4 +116,4 @@ cd ../consumer && ./mvnw test
 
 ## API compatibility
 
-Breaking changes to `public`/`protected` methods, constructors, or types in modules without a `-spring`, `-spring-boot`, or `-spring-cloud` suffix require an explicit `revapi` justification in the module's `pom.xml`. The `revapi-maven-plugin` runs on every PR for: `stubborn-contract-verifier`, `stubborn-contract-stub-runner`, `stubborn-contract-wiremock`, `stubborn-contract-converters`, `stubborn-jsonassert`, `stubborn-xmlassert`.
+Breaking changes to `public`/`protected` methods, constructors, or types in modules without a `-spring`, `-spring-boot`, or `-spring-cloud` suffix require an explicit `revapi` justification in the module's `pom.xml`. The `revapi-maven-plugin` runs on every PR for: `stubborn-contract-verifier`, `stubborn-contract-stub-runner`, `stubborn-contract-wiremock`, `stubborn-contract-converters`, `stubborn-contract-jsonassert`, `stubborn-contract-xmlassert`.

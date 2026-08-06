@@ -1,0 +1,44 @@
+package com.example;
+
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import io.restassured.module.webtestclient.specification.WebTestClientRequestSpecification;
+import io.restassured.module.webtestclient.response.WebTestClientResponse;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;
+import static io.restassured.module.webtestclient.RestAssuredWebTestClient.*;
+
+@SuppressWarnings("rawtypes")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
+
+	@Test
+	@Disabled
+	public void validate_contract() throws Exception {
+		// given:
+			WebTestClientRequestSpecification request = given()
+					.header("Content-Type", "application/json")
+					.body("{/"foo/":/"bar/"}");
+
+		// when:
+			WebTestClientResponse response = given().spec(request)
+					.put("/foo");
+
+		// then:
+			assertThat(response.statusCode()).isEqualTo(200);
+			assertThat(response.header("Content-Type")).matches("application/json.*");
+
+		// and:
+			DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
+			assertThatJson(parsedJson).field("['status']").isEqualTo("ok");
+	}
+
+}
+

@@ -41,16 +41,17 @@ public interface MessageVerifierReceiver<M> {
 	 * @param timeUnit param to define the unit of timeout
 	 * @return received message
 	 */
-	default M receive(String destination, long timeout, TimeUnit timeUnit) {
+	default @Nullable M receive(String destination, long timeout, TimeUnit timeUnit) {
 		return receive(destination, timeout, timeUnit, null);
 	}
 
 	/**
 	 * Receives the message from the given destination. A default timeout will be applied.
 	 * @param destination destination from which the message will be received
-	 * @return received message
+	 * @return received message, or {@code null} if no message was available within the
+	 * timeout
 	 */
-	default M receive(String destination) {
+	default @Nullable M receive(String destination) {
 		return receive(destination, null);
 	}
 
@@ -61,16 +62,18 @@ public interface MessageVerifierReceiver<M> {
 	 * @param timeout timeout to wait for the message
 	 * @param timeUnit param to define the unit of timeout
 	 * @param contract contract related to this method
-	 * @return received message
+	 * @return received message, or {@code null} if no message was available within the
+	 * timeout
 	 */
-	M receive(String destination, long timeout, TimeUnit timeUnit, @Nullable YamlContract contract);
+	@Nullable M receive(String destination, long timeout, TimeUnit timeUnit, @Nullable YamlContract contract);
 
 	/**
 	 * Receives the message from the given destination. A default timeout will be applied.
 	 * @param destination destination from which the message will be received
 	 * @param contract contract related to this method
-	 * @return received message
+	 * @return received message, or {@code null} if no message was available within the
+	 * timeout
 	 */
-	M receive(String destination, YamlContract contract);
+	@Nullable M receive(String destination, @Nullable YamlContract contract);
 
 }

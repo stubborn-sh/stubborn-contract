@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 
@@ -91,14 +92,14 @@ public class AmqpMetadata implements SpringCloudContractMetadata {
 		/**
 		 * Spring AMQP message properties.
 		 */
-		private MessageProperties messageProperties;
+		private @Nullable MessageProperties messageProperties;
 
 		/**
 		 * Properties related to connecting to a real broker.
 		 */
 		private ConnectToBroker connectToBroker = new ConnectToBroker();
 
-		public MessageProperties getMessageProperties() {
+		public @Nullable MessageProperties getMessageProperties() {
 			return this.messageProperties;
 		}
 
@@ -125,15 +126,15 @@ public class AmqpMetadata implements SpringCloudContractMetadata {
 		 * If set, will append any options to the existing ones that define connection to
 		 * the broker.
 		 */
-		private String additionalOptions;
+		private @Nullable String additionalOptions;
 
 		/**
 		 * If set, will declare a queue with given name and bind it to the provided
 		 * exchange from the contract.
 		 */
-		private String declareQueueWithName;
+		private @Nullable String declareQueueWithName;
 
-		public String getAdditionalOptions() {
+		public @Nullable String getAdditionalOptions() {
 			return this.additionalOptions;
 		}
 
@@ -141,8 +142,8 @@ public class AmqpMetadata implements SpringCloudContractMetadata {
 			this.additionalOptions = additionalOptions;
 		}
 
-		public String getDeclareQueueWithName() {
-			return declareQueueWithName;
+		public @Nullable String getDeclareQueueWithName() {
+			return this.declareQueueWithName;
 		}
 
 		public void setDeclareQueueWithName(String declareQueueWithName) {

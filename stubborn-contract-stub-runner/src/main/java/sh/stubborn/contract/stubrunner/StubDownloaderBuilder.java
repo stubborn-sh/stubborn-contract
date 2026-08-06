@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.stubrunner;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Builder for a {@link StubDownloader}. Instances must have a no-arg constructor so they
  * can be registered via {@link java.util.ServiceLoader} in
@@ -33,19 +35,20 @@ package sh.stubborn.contract.stubrunner;
 public interface StubDownloaderBuilder {
 
 	/**
+	 * Builds a {@link StubDownloader} from the given options.
 	 * @param stubRunnerOptions options of Stub Runner
 	 * @return {@link StubDownloader} instance or {@code null} if current parameters don't
 	 * allow building the instance
 	 */
-	StubDownloader build(StubRunnerOptions stubRunnerOptions);
+	@Nullable StubDownloader build(StubRunnerOptions stubRunnerOptions);
 
 	/**
 	 * Converts a URL string into a {@link StubResource} for protocols understood by this
 	 * builder. Returns {@code null} if the URL is not handled.
-	 * @param location URL string
+	 * @param location url string
 	 * @return resolved {@link StubResource} or {@code null}
 	 */
-	default StubResource resolve(String location) {
+	default @Nullable StubResource resolve(String location) {
 		return null;
 	}
 

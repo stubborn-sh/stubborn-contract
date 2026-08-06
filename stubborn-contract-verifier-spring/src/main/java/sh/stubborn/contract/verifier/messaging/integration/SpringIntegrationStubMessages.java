@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -31,6 +32,9 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 
 /**
+ * Spring Integration implementation of {@link MessageVerifierSender} and
+ * {@link MessageVerifierReceiver}.
+ *
  * @author Marcin Grzejszczak
  */
 public class SpringIntegrationStubMessages
@@ -47,12 +51,13 @@ public class SpringIntegrationStubMessages
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
-		send(this.builder.create(payload, headers), destination, contract);
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
+		send(this.builder.create(payload, (headers != null) ? headers : Map.of()), destination, contract);
 	}
 
 	@Override
-	public void send(Message<?> message, String destination, YamlContract contract) {
+	public void send(Message<?> message, String destination, @Nullable YamlContract contract) {
 		try {
 			if (trySendViaInputDestination(message, destination)) {
 				return;
@@ -60,10 +65,10 @@ public class SpringIntegrationStubMessages
 			MessageChannel messageChannel = this.context.getBean(destination, MessageChannel.class);
 			messageChannel.send(message);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.error("Exception occurred while trying to send a message [" + message + "] "
-					+ "to a channel with name [" + destination + "]", e);
-			throw e;
+					+ "to a channel with name [" + destination + "]", ex);
+			throw ex;
 		}
 	}
 
@@ -85,14 +90,15 @@ public class SpringIntegrationStubMessages
 			sendMethod.invoke(inputDestination, message, destination);
 			return true;
 		}
-		catch (Exception ignored) {
+		catch (ReflectiveOperationException | RuntimeException ignored) {
 			return false;
 		}
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Message<?> receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+	public @Nullable Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
+			@Nullable YamlContract contract) {
 		try {
 			if (!this.context.containsBean(destination)) {
 				// Spring Cloud Stream 5.x test binder: use
@@ -107,14 +113,14 @@ public class SpringIntegrationStubMessages
 			PollableChannel messageChannel = this.context.getBean(destination, PollableChannel.class);
 			return messageChannel.receive(timeUnit.toMillis(timeout));
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.error("Exception occurred while trying to read a message from " + " a channel with name [" + destination
-					+ "]", e);
-			throw new IllegalStateException(e);
+					+ "]", ex);
+			throw new IllegalStateException(ex);
 		}
 	}
 
-	private Message<?> tryReceiveViaOutputDestination(String destination, long timeoutMillis) {
+	private @Nullable Message<?> tryReceiveViaOutputDestination(String destination, long timeoutMillis) {
 		try {
 			Class<?> outputDestinationType = Class
 				.forName("org.springframework.cloud.stream.binder.test.OutputDestination");
@@ -126,13 +132,13 @@ public class SpringIntegrationStubMessages
 					String.class);
 			return (Message<?>) receiveMethod.invoke(outputDestination, timeoutMillis, destination);
 		}
-		catch (Exception ignored) {
+		catch (ReflectiveOperationException | RuntimeException ignored) {
 			return null;
 		}
 	}
 
 	@Override
-	public Message<?> receive(String destination, YamlContract contract) {
+	public @Nullable Message<?> receive(String destination, @Nullable YamlContract contract) {
 		return receive(destination, 5, TimeUnit.SECONDS, contract);
 	}
 

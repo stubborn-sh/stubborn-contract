@@ -53,7 +53,7 @@ final class MappingGenerator {
 			for (Map.Entry<Contract, String> entry : map.entrySet()) {
 				String value = entry.getValue();
 				File mapping = new File(mappingsFolder, stripFilenameExtension(contractFile.getName()) + "_"
-						+ Math.abs(entry.getKey().hashCode()) + stubGenerator.fileExtension());
+						+ Math.abs((long) entry.getKey().hashCode()) + stubGenerator.fileExtension());
 				mappings.add(storeFile(mapping.toPath(), value.getBytes()));
 			}
 		}
@@ -68,15 +68,15 @@ final class MappingGenerator {
 			}
 			return storedPath;
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
 	private static String stripFilenameExtension(String name) {
 		int dot = name.lastIndexOf('.');
 		int sep = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\'));
-		return dot > sep ? name.substring(0, dot) : name;
+		return (dot > sep) ? name.substring(0, dot) : name;
 	}
 
 }

@@ -22,6 +22,10 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
+import sh.stubborn.contract.stubrunner.StubFinder;
+import sh.stubborn.contract.stubrunner.StubsMode;
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,11 +33,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.consul.discovery.ConsulDiscoveryProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import sh.stubborn.contract.stubrunner.StubFinder;
-import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
-import sh.stubborn.contract.stubrunner.StubsMode;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;

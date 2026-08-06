@@ -19,13 +19,13 @@ package sh.stubborn.contract.verifier.file;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
-
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Contains metadata for a particular file with a DSL.
@@ -53,7 +53,7 @@ public class ContractMetadata {
 	/**
 	 * If scenario related will contain an order of execution.
 	 */
-	private final Integer order;
+	private final @Nullable Integer order;
 
 	/**
 	 * The list of contracts for the given file.
@@ -65,11 +65,12 @@ public class ContractMetadata {
 	 */
 	private final Collection<SingleContractMetadata> convertedContractWithMetadata = new ArrayList<>();
 
-	public ContractMetadata(Path path, boolean ignored, int groupSize, Integer order, Contract convertedContract) {
-		this(path, ignored, groupSize, order, singletonList(convertedContract));
+	public ContractMetadata(Path path, boolean ignored, int groupSize, @Nullable Integer order,
+			Contract convertedContract) {
+		this(path, ignored, groupSize, order, Collections.singletonList(convertedContract));
 	}
 
-	public ContractMetadata(Path path, boolean ignored, int groupSize, Integer order,
+	public ContractMetadata(Path path, boolean ignored, int groupSize, @Nullable Integer order,
 			Collection<Contract> convertedContract) {
 		this.groupSize = groupSize;
 		this.path = path;
@@ -78,13 +79,13 @@ public class ContractMetadata {
 		this.convertedContract.addAll(convertedContract);
 		this.convertedContractWithMetadata.addAll(this.convertedContract.stream()
 			.filter(Objects::nonNull)
-			.map(it -> new SingleContractMetadata(it, this))
-			.collect(toList()));
+			.map((it) -> new SingleContractMetadata(it, this))
+			.collect(Collectors.toList()));
 	}
 
-	public SingleContractMetadata forContract(Contract contract) {
+	public @Nullable SingleContractMetadata forContract(Contract contract) {
 		return this.convertedContractWithMetadata.stream()
-			.filter(it -> it.getContract().equals(contract))
+			.filter((it) -> it.getContract().equals(contract))
 			.findFirst()
 			.orElse(null);
 	}
@@ -94,37 +95,37 @@ public class ContractMetadata {
 	}
 
 	public Path getPath() {
-		return path;
+		return this.path;
 	}
 
 	public boolean getIgnored() {
-		return ignored;
+		return this.ignored;
 	}
 
 	public boolean isIgnored() {
-		return ignored;
+		return this.ignored;
 	}
 
 	public int getGroupSize() {
-		return groupSize;
+		return this.groupSize;
 	}
 
-	public Integer getOrder() {
-		return order;
+	public @Nullable Integer getOrder() {
+		return this.order;
 	}
 
 	public List<Contract> getConvertedContract() {
-		return convertedContract;
+		return this.convertedContract;
 	}
 
 	public Collection<SingleContractMetadata> getConvertedContractWithMetadata() {
-		return convertedContractWithMetadata;
+		return this.convertedContractWithMetadata;
 	}
 
 	@Override
 	public String toString() {
-		return "ContractMetadata{" + "path=" + path + ", ignored=" + ignored + ", groupSize=" + groupSize + ", order="
-				+ order + '}';
+		return "ContractMetadata{" + "path=" + this.path + ", ignored=" + this.ignored + ", groupSize=" + this.groupSize
+				+ ", order=" + this.order + '}';
 	}
 
 }

@@ -31,6 +31,7 @@ public final class XPathBuilder {
 	}
 
 	/**
+	 * Returns a builder with which you can build your XPath.
 	 * @return a builder of {@link XmlVerifiable} with which you can build your XPath.
 	 * Once finished just call {@link XmlVerifiable#xPath()} to get XPath as String.
 	 */

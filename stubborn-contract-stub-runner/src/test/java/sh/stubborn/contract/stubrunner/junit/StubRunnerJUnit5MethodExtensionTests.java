@@ -23,7 +23,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-
 import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +53,7 @@ class StubRunnerJUnit5MethodExtensionTests {
 		try {
 			return StubRunnerJUnit5MethodExtensionTests.class.getResource("/m2repo/repository/").toURI().toString();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return "";
 		}
 	}
@@ -62,18 +61,19 @@ class StubRunnerJUnit5MethodExtensionTests {
 
 	@Test
 	void should_start_WireMock_servers() {
-		assertThat(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance")).isNotNull();
-		assertThat(stubRunnerExtension.findStubUrl("loanIssuance")).isNotNull();
-		assertThat(stubRunnerExtension.findStubUrl("loanIssuance"))
-			.isEqualTo(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"));
-		assertThat(stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer"))
+		assertThat(this.stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"))
+			.isNotNull();
+		assertThat(this.stubRunnerExtension.findStubUrl("loanIssuance")).isNotNull();
+		assertThat(this.stubRunnerExtension.findStubUrl("loanIssuance"))
+			.isEqualTo(this.stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs", "loanIssuance"));
+		assertThat(this.stubRunnerExtension.findStubUrl("sh.stubborn.contract.verifier.stubs:fraudDetectionServer"))
 			.isNotNull();
 	}
 
 	@Test
 	void should_output_mappings_to_output_folder() {
 		// when
-		URL url = stubRunnerExtension.findStubUrl("fraudDetectionServer");
+		URL url = this.stubRunnerExtension.findStubUrl("fraudDetectionServer");
 
 		// then
 		assertThat(new File("target/outputmappingsforrule", "fraudDetectionServer_" + url.getPort())).exists();

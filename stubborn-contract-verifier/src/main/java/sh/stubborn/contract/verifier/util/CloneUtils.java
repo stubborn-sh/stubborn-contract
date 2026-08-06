@@ -44,8 +44,8 @@ public final class CloneUtils {
 			new ObjectOutputStream(baos).writeObject(object);
 			return new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray())).readObject();
 		}
-		catch (Exception e) {
-			throw new IllegalStateException("Failed to clone object", e);
+		catch (Exception ex) {
+			throw new IllegalStateException("Failed to clone object", ex);
 		}
 	}
 

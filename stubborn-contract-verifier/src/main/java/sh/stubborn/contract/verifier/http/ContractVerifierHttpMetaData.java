@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.http;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -64,7 +65,7 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 	}
 
 	public Scheme getScheme() {
-		return scheme;
+		return this.scheme;
 	}
 
 	public void setScheme(Scheme scheme) {
@@ -72,7 +73,7 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 	}
 
 	public void setScheme(String scheme) {
-		this.scheme = Scheme.fromString(scheme);
+		this.scheme = Objects.requireNonNull(Scheme.fromString(scheme));
 	}
 
 	public Protocol getProtocol() {
@@ -84,7 +85,7 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 	}
 
 	public void setProtocol(String protocol) {
-		this.protocol = Protocol.fromString(protocol);
+		this.protocol = Objects.requireNonNull(Protocol.fromString(protocol));
 	}
 
 	/**
@@ -104,9 +105,11 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 
 		/**
 		 * Builds an enum from string.
+		 * @param scheme the scheme name to parse
+		 * @return the matching scheme, or {@code null} if none matches
 		 */
 		public static @Nullable Scheme fromString(String scheme) {
-			return Arrays.stream(values()).filter(p -> p.name().equalsIgnoreCase(scheme)).findFirst().orElse(null);
+			return Arrays.stream(values()).filter((p) -> p.name().equalsIgnoreCase(scheme)).findFirst().orElse(null);
 		}
 
 	}
@@ -176,9 +179,14 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 
 		/**
 		 * Builds an enum from string.
+		 * @param protocol the protocol name to parse
+		 * @return the matching protocol, or {@code null} if none matches
 		 */
 		public static @Nullable Protocol fromString(String protocol) {
-			return Arrays.stream(values()).filter(p -> p.protocol.equalsIgnoreCase(protocol)).findFirst().orElse(null);
+			return Arrays.stream(values())
+				.filter((p) -> p.protocol.equalsIgnoreCase(protocol))
+				.findFirst()
+				.orElse(null);
 		}
 
 	}

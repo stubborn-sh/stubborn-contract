@@ -17,7 +17,6 @@
 package sh.stubborn.contract.stubrunner;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -25,98 +24,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-/**
- * A {@link StubResource} backed by a classpath location. Provides the path string for
- * classpath-based stub resolution.
- */
-class ClassPathStubResource implements StubResource {
-
-	private final String path;
-
-	ClassPathStubResource(String path) {
-		this.path = path.startsWith("/") ? path.substring(1) : path;
-	}
-
-	String getPath() {
-		return this.path;
-	}
-
-	@Override
-	public URI getURI() throws IOException {
-		URL url = getURL();
-		try {
-			return url.toURI();
-		}
-		catch (Exception ex) {
-			throw new IOException("Cannot convert URL [" + url + "] to URI", ex);
-		}
-	}
-
-	@Override
-	public URL getURL() throws IOException {
-		URL url = Thread.currentThread().getContextClassLoader().getResource(this.path);
-		if (url == null) {
-			url = ClassLoader.getSystemResource(this.path);
-		}
-		if (url == null) {
-			throw new FileNotFoundException("Cannot locate classpath resource [" + this.path + "]");
-		}
-		return url;
-	}
-
-	@Override
-	public File getFile() throws IOException {
-		return new File(getURI());
-	}
-
-	@Override
-	public InputStream getInputStream() throws IOException {
-		InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(this.path);
-		if (is == null) {
-			throw new IOException("Cannot open classpath resource [" + this.path + "]");
-		}
-		return is;
-	}
-
-	@Override
-	public String getFilename() {
-		int sep = Math.max(this.path.lastIndexOf('/'), this.path.lastIndexOf('\\'));
-		return sep >= 0 ? this.path.substring(sep + 1) : this.path;
-	}
-
-	@Override
-	public String getDescription() {
-		return "classpath [" + this.path + "]";
-	}
-
-	@Override
-	public boolean exists() {
-		return Thread.currentThread().getContextClassLoader().getResource(this.path) != null;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof ClassPathStubResource that)) {
-			return false;
-		}
-		return Objects.equals(this.path, that.path);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.path);
-	}
-
-}
+import org.jspecify.annotations.Nullable;
 
 /**
  * Resolves a URL string to a {@link StubResource} by iterating over
@@ -149,7 +61,7 @@ public final class ResourceResolver {
 	 * @return corresponding {@link StubResource}, or a plain-URL resource if no builder
 	 * handles the protocol
 	 */
-	public static StubResource resource(String url) {
+	public static @Nullable StubResource resource(String url) {
 		if (url == null || url.isBlank()) {
 			return null;
 		}
@@ -160,9 +72,9 @@ public final class ResourceResolver {
 					return resolved;
 				}
 			}
-			catch (Exception e) {
+			catch (Exception ex) {
 				log.error("Exception while resolving [" + url + "] via [" + builder.getClass().getSimpleName() + "]",
-						e);
+						ex);
 			}
 		}
 		return plainUrlResource(url);
@@ -215,9 +127,9 @@ public final class ResourceResolver {
 
 			@Override
 			public String getFilename() {
-				String path = url.contains("?") ? url.substring(0, url.indexOf('?')) : url;
+				String path = (url.contains("?")) ? url.substring(0, url.indexOf('?')) : url;
 				int sep = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
-				return sep >= 0 ? path.substring(sep + 1) : path;
+				return (sep >= 0) ? path.substring(sep + 1) : path;
 			}
 
 			@Override

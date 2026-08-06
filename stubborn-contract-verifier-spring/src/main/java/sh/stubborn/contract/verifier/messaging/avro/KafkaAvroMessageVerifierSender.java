@@ -70,7 +70,7 @@ public final class KafkaAvroMessageVerifierSender implements MessageVerifierSend
 	}
 
 	@Override
-	public <T> void send(final T payload, final Map<String, Object> headers, final String destination,
+	public <T> void send(final T payload, @Nullable final Map<String, Object> headers, final String destination,
 			@Nullable final YamlContract contract) {
 		if (contract == null || contract.metadata == null) {
 			throw new IllegalArgumentException("Contract or its metadata is null — cannot perform"
@@ -123,8 +123,8 @@ public final class KafkaAvroMessageVerifierSender implements MessageVerifierSend
 		GenericRecordBuilder builder = new GenericRecordBuilder(schema);
 		schema.getFields()
 			.stream()
-			.filter(field -> payloadMap.containsKey(field.name()))
-			.forEach(field -> builder.set(field, payloadMap.get(field.name())));
+			.filter((field) -> payloadMap.containsKey(field.name()))
+			.forEach((field) -> builder.set(field, payloadMap.get(field.name())));
 		return builder.build();
 	}
 

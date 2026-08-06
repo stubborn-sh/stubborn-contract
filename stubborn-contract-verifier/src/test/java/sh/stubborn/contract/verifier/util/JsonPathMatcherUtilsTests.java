@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
+import sh.stubborn.contract.spec.internal.BodyMatchers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

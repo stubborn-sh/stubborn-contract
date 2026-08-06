@@ -34,6 +34,7 @@ import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
+import sh.stubborn.contract.spec.internal.MatchingType;
 import sh.stubborn.contract.spec.internal.NamedProperty;
 import sh.stubborn.contract.spec.internal.QueryParameters;
 import sh.stubborn.contract.spec.internal.RegexPatterns;
@@ -44,14 +45,6 @@ import sh.stubborn.contract.verifier.util.MapConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static sh.stubborn.contract.spec.internal.MatchingType.COMMAND;
-import static sh.stubborn.contract.spec.internal.MatchingType.DATE;
-import static sh.stubborn.contract.spec.internal.MatchingType.EQUALITY;
-import static sh.stubborn.contract.spec.internal.MatchingType.NULL;
-import static sh.stubborn.contract.spec.internal.MatchingType.REGEX;
-import static sh.stubborn.contract.spec.internal.MatchingType.TIME;
-import static sh.stubborn.contract.spec.internal.MatchingType.TIMESTAMP;
-import static sh.stubborn.contract.spec.internal.MatchingType.TYPE;
 
 /**
  * @author Marcin Grzejszczak
@@ -76,8 +69,8 @@ class YamlContractConverterTests {
 		try {
 			return new File(YamlContractConverterTests.class.getResource("/yml/" + name).toURI());
 		}
-		catch (URISyntaxException e) {
-			throw new RuntimeException(e);
+		catch (URISyntaxException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -85,19 +78,19 @@ class YamlContractConverterTests {
 		try {
 			return new File(YamlContractConverterTests.class.getResource(path).toURI());
 		}
-		catch (URISyntaxException e) {
-			throw new RuntimeException(e);
+		catch (URISyntaxException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
 	private static boolean assertQueryParam(QueryParameters queryParameters, String queryParamName, Object serverValue,
 			MatchingStrategy.Type clientType, Object clientValue) {
 		if (clientType == MatchingStrategy.Type.ABSENT) {
-			return queryParameters.getParameters().stream().noneMatch(p -> p.getName().equals(queryParamName));
+			return queryParameters.getParameters().stream().noneMatch((p) -> p.getName().equals(queryParamName));
 		}
 		return queryParameters.getParameters()
 			.stream()
-			.anyMatch(p -> p.getName().equals(queryParamName) && p.getServerValue().equals(serverValue)
+			.anyMatch((p) -> p.getName().equals(queryParamName) && p.getServerValue().equals(serverValue)
 					&& ((MatchingStrategy) p.getClientValue()).getType() == clientType
 					&& ((MatchingStrategy) p.getClientValue()).getClientValue().equals(clientValue));
 	}
@@ -105,8 +98,8 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_yaml_with_cookies_to_dsl() {
 		File ymlCookies = yamlFile("contract_cookies.yml");
-		assertThat(converter.isAccepted(ymlCookies)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlCookies);
+		assertThat(this.converter.isAccepted(ymlCookies)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlCookies);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		assertThat(contract.getDescription()).isEqualTo("Contract with cookies");
@@ -115,36 +108,36 @@ class YamlContractConverterTests {
 		assertThat(contract.isIgnored()).isTrue();
 		assertThat(contract.getRequest().getMethod().getClientValue()).isEqualTo("PUT");
 		assertThat(contract.getRequest().getUrl().getClientValue()).isEqualTo("/foo");
-		assertThat(contract.getRequest().getCookies().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getCookies().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getKey()).isEqualTo("foo");
 			assertThat(e.getServerValue()).isEqualTo("bar");
 		});
-		assertThat(contract.getRequest().getCookies().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getCookies().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getKey()).isEqualTo("fooRegex");
 			assertThat(((Pattern) e.getClientValue()).pattern()).isEqualTo("reg");
 			assertThat(e.getServerValue()).isEqualTo("reg");
 		});
-		assertThat(contract.getRequest().getCookies().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getCookies().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getKey()).isEqualTo("fooPredefinedRegex");
 			assertThat(((Pattern) e.getClientValue()).pattern()).isEqualTo("(true|false)");
 			assertThat(e.getServerValue()).isEqualTo(true);
 		});
 		assertThat(contract.getResponse().getStatus().getClientValue()).isEqualTo(200);
-		assertThat(contract.getResponse().getCookies().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getResponse().getCookies().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getKey()).isEqualTo("foo");
 			assertThat(e.getClientValue()).isEqualTo("baz");
 		});
-		assertThat(contract.getResponse().getCookies().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getResponse().getCookies().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getKey()).isEqualTo("fooRegex");
 			assertThat(((Pattern) e.getServerValue()).pattern()).isEqualTo("[0-9]+");
 			assertThat(e.getClientValue()).isEqualTo(123);
 		});
-		assertThat(contract.getResponse().getCookies().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getResponse().getCookies().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getKey()).isEqualTo("source");
 			assertThat(((Pattern) e.getServerValue()).pattern()).isEqualTo("ip_address");
 			assertThat(e.getClientValue()).isEqualTo("ip_address");
 		});
-		assertThat(contract.getResponse().getCookies().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getResponse().getCookies().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getKey()).isEqualTo("fooPredefinedRegex");
 			assertThat(((Pattern) e.getServerValue()).pattern()).isEqualTo("(true|false)");
 			assertThat(e.getClientValue()).isEqualTo(true);
@@ -162,8 +155,8 @@ class YamlContractConverterTests {
 	@ParameterizedTest
 	@MethodSource("yamlFilesForRestToDsl")
 	void should_convert_yaml_with_rest_to_dsl(File ymlFile) {
-		assertThat(converter.isAccepted(ymlFile)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlFile);
+		assertThat(this.converter.isAccepted(ymlFile)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlFile);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		assertThat(contract.getDescription()).isEqualTo("Some description");
@@ -179,12 +172,12 @@ class YamlContractConverterTests {
 		assertThat(url.getQueryParameters().getParameters().get(1).getName()).isEqualTo("b");
 		assertThat(url.getQueryParameters().getParameters().get(1).getServerValue()).isEqualTo("c");
 		assertThat(contract.getRequest().getMethod().getClientValue()).isEqualTo("PUT");
-		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("foo");
 			assertThat(((Pattern) e.getClientValue()).pattern()).isEqualTo("bar");
 			assertThat(e.getServerValue()).isEqualTo("bar");
 		});
-		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("fooReq");
 			assertThat(e.getServerValue()).isEqualTo("baz");
 		});
@@ -192,7 +185,8 @@ class YamlContractConverterTests {
 			.asInstanceOf(InstanceOfAssertFactories.MAP)
 			.containsEntry("foo", "bar");
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).path()).isEqualTo("$.foo");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(0).value()).pattern())
 			.isEqualTo("bar");
 
@@ -203,16 +197,16 @@ class YamlContractConverterTests {
 		else {
 			assertThat(contract.getResponse().getDelay()).isNull();
 		}
-		assertThat(contract.getResponse().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getResponse().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("foo2");
 			assertThat(((Pattern) e.getServerValue()).pattern()).isEqualTo("bar");
 			assertThat(e.getClientValue()).isEqualTo("bar");
 		});
-		assertThat(contract.getResponse().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getResponse().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("foo3");
 			assertThat(((ExecutionProperty) e.getServerValue()).insertValue("foo")).isEqualTo("andMeToo(foo)");
 		});
-		assertThat(contract.getResponse().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getResponse().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("fooRes");
 			assertThat(e.getClientValue()).isEqualTo("baz");
 		});
@@ -221,25 +215,28 @@ class YamlContractConverterTests {
 			.containsEntry("foo2", "bar")
 			.containsEntry("foo3", "baz")
 			.containsKey("nullValue")
-			.satisfies(m -> assertThat(((Map<?, ?>) m).get("nullValue")).isNull());
+			.satisfies((m) -> assertThat(((Map<?, ?>) m).get("nullValue")).isNull());
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).path()).isEqualTo("$.foo2");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(0).value()).pattern())
 			.isEqualTo("bar");
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).path()).isEqualTo("$.foo3");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).matchingType()).isEqualTo(COMMAND);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).matchingType())
+			.isEqualTo(MatchingType.COMMAND);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).value())
 			.isEqualTo(new ExecutionProperty("executeMe($it)"));
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).path()).isEqualTo("$.nullValue");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).matchingType()).isEqualTo(NULL);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).matchingType())
+			.isEqualTo(MatchingType.NULL);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).value()).isNull();
 	}
 
 	@Test
 	void should_convert_yaml_with_rest_to_dsl_with_advanced_request_referencing() {
 		File ymlReference = yamlFile("contract_reference_request.yml");
-		assertThat(converter.isAccepted(ymlReference)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlReference);
+		assertThat(this.converter.isAccepted(ymlReference)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlReference);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		Url url = contract.getRequest().getUrl();
@@ -249,7 +246,7 @@ class YamlContractConverterTests {
 		assertThat(url.getQueryParameters().getParameters().get(1).getName()).isEqualTo("foo");
 		assertThat(url.getQueryParameters().getParameters().get(1).getServerValue()).isEqualTo("bar2");
 		assertThat(contract.getRequest().getMethod().getClientValue()).isEqualTo("GET");
-		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("Authorization");
 			assertThat(e.getClientValue()).isEqualTo(List.of("secret", "secret2"));
 		});
@@ -263,7 +260,7 @@ class YamlContractConverterTests {
 			.getHeaders()
 			.getEntries()
 			.stream()
-			.filter(e -> "Authorization".equals(e.getName()))
+			.filter((e) -> "Authorization".equals(e.getName()))
 			.findFirst()
 			.orElseThrow()
 			.getClientValue()).isEqualTo("foo {{{ request.headers.Authorization.0 }}} bar");
@@ -295,11 +292,11 @@ class YamlContractConverterTests {
 			.replace("\n  urlPath:", "\n  " + urlPropertyName + ":");
 		Files.writeString(ymlMatchers.toPath(), content);
 
-		assertThat(converter.isAccepted(ymlMatchers)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlMatchers);
+		assertThat(this.converter.isAccepted(ymlMatchers)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlMatchers);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
-		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("Content-Type");
 			assertThat(((Pattern) e.getClientValue()).pattern()).isEqualTo("application/json.*");
 			assertThat(e.getServerValue()).isEqualTo("application/json");
@@ -322,55 +319,68 @@ class YamlContractConverterTests {
 		assertThat(assertQueryParam(queryParameters, "hello", true, MatchingStrategy.Type.ABSENT, null)).isTrue();
 
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).path()).isEqualTo("$.duck");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(0).value()).pattern())
 			.isEqualTo("[0-9]{3}");
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(1).path()).isEqualTo("$.duck");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(1).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(1).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(2).path()).isEqualTo("$.alpha");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(2).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(2).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(2).value()).pattern())
 			.isEqualTo(RegexPatterns.onlyAlphaUnicode().pattern());
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(3).path()).isEqualTo("$.alpha");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(3).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(3).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(4).path()).isEqualTo("$.number");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(4).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(4).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(4).value()).pattern())
 			.isEqualTo(RegexPatterns.number().pattern());
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(5).path()).isEqualTo("$.aBoolean");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(5).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(5).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(5).value()).pattern())
 			.isEqualTo(RegexPatterns.anyBoolean().pattern());
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(6).path()).isEqualTo("$.date");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(6).matchingType()).isEqualTo(DATE);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(6).matchingType())
+			.isEqualTo(MatchingType.DATE);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(6).value()).pattern())
 			.isEqualTo(RegexPatterns.isoDate().pattern());
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(7).path()).isEqualTo("$.dateTime");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(7).matchingType()).isEqualTo(TIMESTAMP);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(7).matchingType())
+			.isEqualTo(MatchingType.TIMESTAMP);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(7).value()).pattern())
 			.isEqualTo(RegexPatterns.isoDateTime().pattern());
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(8).path()).isEqualTo("$.time");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(8).matchingType()).isEqualTo(TIME);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(8).matchingType())
+			.isEqualTo(MatchingType.TIME);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(8).value()).pattern())
 			.isEqualTo(RegexPatterns.isoTime().pattern());
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(9).path())
 			.isEqualTo("$.['key'].['complex.key']");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(9).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(9).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(10).path()).isEqualTo("$.valueWithMin");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(10).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(10).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(10).minTypeOccurrence()).isEqualTo(1);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(11).path()).isEqualTo("$.valueWithMax");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(11).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(11).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(11).maxTypeOccurrence()).isEqualTo(3);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(12).path()).isEqualTo("$.valueWithMinMax");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(12).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(12).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(12).minTypeOccurrence()).isEqualTo(1);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(12).maxTypeOccurrence()).isEqualTo(3);
 		assertThat(contract.getRequest()
 			.getCookies()
 			.getEntries()
 			.stream()
-			.filter(e -> "foo".equals(e.getKey()))
+			.filter((e) -> "foo".equals(e.getKey()))
 			.findFirst()
 			.orElseThrow()
 			.getClientValue()).isInstanceOf(Pattern.class);
@@ -378,64 +388,80 @@ class YamlContractConverterTests {
 			.getCookies()
 			.getEntries()
 			.stream()
-			.filter(e -> "bar".equals(e.getKey()))
+			.filter((e) -> "bar".equals(e.getKey()))
 			.findFirst()
 			.orElseThrow()
 			.getServerValue()).isEqualTo(new ExecutionProperty("equals($it)"));
 
 		assertThat(contract.getResponse().getStatus().getClientValue()).isEqualTo(200);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).path()).isEqualTo("$.duck");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(0).value()).pattern())
 			.isEqualTo("[0-9]{3}");
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).path()).isEqualTo("$.duck");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).path()).isEqualTo("$.alpha");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(2).value()).pattern())
 			.isEqualTo(RegexPatterns.onlyAlphaUnicode().pattern());
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(3).path()).isEqualTo("$.alpha");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(3).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(3).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(4).path()).isEqualTo("$.number");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(4).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(4).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(4).value()).pattern())
 			.isEqualTo(RegexPatterns.number().pattern());
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(5).path()).isEqualTo("$.aBoolean");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(5).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(5).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(5).value()).pattern())
 			.isEqualTo(RegexPatterns.anyBoolean().pattern());
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(6).path()).isEqualTo("$.date");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(6).matchingType()).isEqualTo(DATE);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(6).matchingType())
+			.isEqualTo(MatchingType.DATE);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(6).value()).pattern())
 			.isEqualTo(RegexPatterns.isoDate().pattern());
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(7).path()).isEqualTo("$.dateTime");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(7).matchingType()).isEqualTo(TIMESTAMP);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(7).matchingType())
+			.isEqualTo(MatchingType.TIMESTAMP);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(7).value()).pattern())
 			.isEqualTo(RegexPatterns.isoDateTime().pattern());
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(8).path()).isEqualTo("$.time");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(8).matchingType()).isEqualTo(TIME);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(8).matchingType())
+			.isEqualTo(MatchingType.TIME);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(8).value()).pattern())
 			.isEqualTo(RegexPatterns.isoTime().pattern());
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(9).path()).isEqualTo("$.valueWithTypeMatch");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(9).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(9).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(10).path()).isEqualTo("$.valueWithMin");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(10).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(10).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(10).minTypeOccurrence()).isEqualTo(1);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(11).path()).isEqualTo("$.valueWithMax");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(11).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(11).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(11).maxTypeOccurrence()).isEqualTo(3);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(12).path()).isEqualTo("$.valueWithMinMax");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(12).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(12).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(12).minTypeOccurrence()).isEqualTo(1);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(12).maxTypeOccurrence()).isEqualTo(3);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(13).path()).isEqualTo("$.valueWithMinEmpty");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(13).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(13).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(13).minTypeOccurrence()).isEqualTo(0);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(14).path()).isEqualTo("$.valueWithMaxEmpty");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(14).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(14).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(14).maxTypeOccurrence()).isEqualTo(0);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(15).path()).isEqualTo("$.duck");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(15).matchingType()).isEqualTo(COMMAND);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(15).matchingType())
+			.isEqualTo(MatchingType.COMMAND);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(15).value())
 			.isEqualTo(new ExecutionProperty("assertThatValueIsANumber($it)"));
 	}
@@ -448,9 +474,9 @@ class YamlContractConverterTests {
 					.toPath()));
 		Files.writeString(ymlMatchers.toPath(), content);
 
-		assertThat(converter.isAccepted(ymlMatchers)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlMatchers);
-		List<YamlContract> convertedBack = converter.convertTo(contracts);
+		assertThat(this.converter.isAccepted(ymlMatchers)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlMatchers);
+		List<YamlContract> convertedBack = this.converter.convertTo(contracts);
 		assertThat(convertedBack).hasSize(1);
 		assertThat(convertedBack.get(0).request.matchers.url.regex).isEqualTo("/get/[0-9]");
 	}
@@ -462,75 +488,91 @@ class YamlContractConverterTests {
 				new File(YamlContractConverterTests.class.getResource("/yml/contract_matchers.yml").toURI()).toPath()));
 		Files.writeString(ymlMatchers.toPath(), content);
 
-		assertThat(converter.isAccepted(ymlMatchers)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlMatchers);
-		List<YamlContract> convertedBack = converter.convertTo(contracts);
+		assertThat(this.converter.isAccepted(ymlMatchers)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlMatchers);
+		List<YamlContract> convertedBack = this.converter.convertTo(contracts);
 		assertThat(convertedBack).hasSize(1);
 	}
 
 	@Test
 	void should_convert_yaml_with_message_matchers_to_dsl() {
 		File ymlMessagingMatchers = yamlFile("contract_message_matchers.yml");
-		assertThat(converter.isAccepted(ymlMessagingMatchers)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlMessagingMatchers);
+		assertThat(this.converter.isAccepted(ymlMessagingMatchers)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlMessagingMatchers);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(0).path()).isEqualTo("$.duck");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(0).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(0).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getOutputMessage().getBodyMatchers().matchers().get(0).value()).pattern())
 			.isEqualTo("[0-9]{3}");
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(1).path()).isEqualTo("$.duck");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(1).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(1).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(2).path()).isEqualTo("$.alpha");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(2).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(2).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getOutputMessage().getBodyMatchers().matchers().get(2).value()).pattern())
 			.isEqualTo(RegexPatterns.onlyAlphaUnicode().pattern());
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(3).path()).isEqualTo("$.alpha");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(3).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(3).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(4).path()).isEqualTo("$.number");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(4).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(4).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getOutputMessage().getBodyMatchers().matchers().get(4).value()).pattern())
 			.isEqualTo(RegexPatterns.number().pattern());
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(5).path()).isEqualTo("$.aBoolean");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(5).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(5).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getOutputMessage().getBodyMatchers().matchers().get(5).value()).pattern())
 			.isEqualTo(RegexPatterns.anyBoolean().pattern());
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(6).path()).isEqualTo("$.date");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(6).matchingType()).isEqualTo(DATE);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(6).matchingType())
+			.isEqualTo(MatchingType.DATE);
 		assertThat(((RegexProperty) contract.getOutputMessage().getBodyMatchers().matchers().get(6).value()).pattern())
 			.isEqualTo(RegexPatterns.isoDate().pattern());
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(7).path()).isEqualTo("$.dateTime");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(7).matchingType()).isEqualTo(TIMESTAMP);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(7).matchingType())
+			.isEqualTo(MatchingType.TIMESTAMP);
 		assertThat(((RegexProperty) contract.getOutputMessage().getBodyMatchers().matchers().get(7).value()).pattern())
 			.isEqualTo(RegexPatterns.isoDateTime().pattern());
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(8).path()).isEqualTo("$.time");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(8).matchingType()).isEqualTo(TIME);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(8).matchingType())
+			.isEqualTo(MatchingType.TIME);
 		assertThat(((RegexProperty) contract.getOutputMessage().getBodyMatchers().matchers().get(8).value()).pattern())
 			.isEqualTo(RegexPatterns.isoTime().pattern());
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(9).path())
 			.isEqualTo("$.valueWithTypeMatch");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(9).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(9).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(10).path()).isEqualTo("$.valueWithMin");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(10).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(10).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(10).minTypeOccurrence()).isEqualTo(1);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(11).path()).isEqualTo("$.valueWithMax");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(11).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(11).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(11).maxTypeOccurrence()).isEqualTo(3);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(12).path())
 			.isEqualTo("$.valueWithMinMax");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(12).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(12).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(12).minTypeOccurrence()).isEqualTo(1);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(12).maxTypeOccurrence()).isEqualTo(3);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(13).path())
 			.isEqualTo("$.valueWithMinEmpty");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(13).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(13).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(13).minTypeOccurrence()).isEqualTo(0);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(14).path())
 			.isEqualTo("$.valueWithMaxEmpty");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(14).matchingType()).isEqualTo(TYPE);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(14).matchingType())
+			.isEqualTo(MatchingType.TYPE);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(14).maxTypeOccurrence()).isEqualTo(0);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(15).path()).isEqualTo("$.duck");
-		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(15).matchingType()).isEqualTo(COMMAND);
+		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(15).matchingType())
+			.isEqualTo(MatchingType.COMMAND);
 		assertThat(contract.getOutputMessage().getBodyMatchers().matchers().get(15).value())
 			.isEqualTo(new ExecutionProperty("assertThatValueIsANumber($it)"));
 	}
@@ -538,8 +580,8 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_yaml_with_rest_with_response_from_request() throws Exception {
 		File ymlBody = yamlFile("contract_from_file.yml");
-		assertThat(converter.isAccepted(ymlBody)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlBody);
+		assertThat(this.converter.isAccepted(ymlBody)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlBody);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -552,8 +594,8 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_yaml_with_rest_with_multipart() {
 		File yml = yamlFile("contract_multipart.yml");
-		assertThat(converter.isAccepted(yml)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(yml);
+		assertThat(this.converter.isAccepted(yml)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(yml);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		Map<?, ?> stubSide = (Map<?, ?>) MapConverter.getStubSideValues(contract.getRequest().getMultipart());
@@ -575,15 +617,15 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_yaml_with_messaging_triggered_by_method_to_dsl() {
 		File ymlMessagingMethod = yamlFile("contract_message_method.yml");
-		assertThat(converter.isAccepted(ymlMessagingMethod)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlMessagingMethod);
+		assertThat(this.converter.isAccepted(ymlMessagingMethod)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlMessagingMethod);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		assertThat(contract.getDescription()).isEqualTo("Some description");
 		assertThat(contract.getLabel()).isEqualTo("some_label");
 		assertThat(contract.getInput().getTriggeredBy().toString()).isEqualTo("bookReturnedTriggered()");
 		assertThat(contract.getOutputMessage().getSentTo().getClientValue()).isEqualTo("output");
-		assertThat(contract.getOutputMessage().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getOutputMessage().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("BOOK-NAME");
 			assertThat(e.getClientValue()).isEqualTo("foo");
 		});
@@ -594,8 +636,8 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_yaml_with_http_binary_body_to_dsl() {
 		File ymlBytes = yamlFile("contract_pdf.yml");
-		assertThat(converter.isAccepted(ymlBytes)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlBytes);
+		assertThat(this.converter.isAccepted(ymlBytes)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlBytes);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		assertThat(contract.getRequest().getBody().getClientValue()).isInstanceOf(FromFileProperty.class);
@@ -609,8 +651,8 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_yaml_with_messaging_binary_body_to_dsl() {
 		File ymlMessagingBytes = yamlFile("contract_messaging_pdf.yml");
-		assertThat(converter.isAccepted(ymlMessagingBytes)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlMessagingBytes);
+		assertThat(this.converter.isAccepted(ymlMessagingBytes)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlMessagingBytes);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		assertThat(contract.getOutputMessage().getBody().getClientValue()).isInstanceOf(FromFileProperty.class);
@@ -621,8 +663,8 @@ class YamlContractConverterTests {
 	@Test
 	void should_assert_request_headers_when_converting_yaml_to_dsl() {
 		File yml = resourceFile("/yml/contract_broken_request_headers.yml");
-		assertThat(converter.isAccepted(yml)).isFalse();
-		assertThatThrownBy(() -> converter.convertFrom(yml)).isInstanceOf(IllegalStateException.class)
+		assertThat(this.converter.isAccepted(yml)).isFalse();
+		assertThatThrownBy(() -> this.converter.convertFrom(yml)).isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining(
 					"Broken headers! A header with key [foo] with value [bar] is not matched by regex [barrrr]");
 	}
@@ -630,8 +672,8 @@ class YamlContractConverterTests {
 	@Test
 	void should_assert_response_headers_when_converting_yaml_to_dsl() {
 		File yml = resourceFile("/yml/contract_broken_response_headers.yml");
-		assertThat(converter.isAccepted(yml)).isFalse();
-		assertThatThrownBy(() -> converter.convertFrom(yml)).isInstanceOf(IllegalStateException.class)
+		assertThat(this.converter.isAccepted(yml)).isFalse();
+		assertThatThrownBy(() -> this.converter.convertFrom(yml)).isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining(
 					"Broken headers! A header with key [foo2] with value [bar] is not matched by regex [barrrr]");
 	}
@@ -639,10 +681,10 @@ class YamlContractConverterTests {
 	@Test
 	void should_parse_multiple_documents_into_a_list_of_contracts() {
 		File ymlMultiple = yamlFile("multiple_contracts.yml");
-		assertThat(converter.isAccepted(ymlMultiple)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlMultiple);
+		assertThat(this.converter.isAccepted(ymlMultiple)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlMultiple);
 		assertThat(contracts).hasSize(3);
-		List<Contract> contractList = contracts instanceof List ? (List<Contract>) contracts : List.copyOf(contracts);
+		List<Contract> contractList = (contracts instanceof List) ? (List<Contract>) contracts : List.copyOf(contracts);
 		assertThat(contractList.get(0).getRequest().getUrl().getClientValue()).isEqualTo("/users/1");
 		assertThat(contractList.get(contractList.size() - 1).getRequest().getUrl().getClientValue())
 			.isEqualTo("/users/3");
@@ -671,7 +713,7 @@ class YamlContractConverterTests {
 				+ "  async: null\n" + "  body: null\n" + "  bodyFromFile: null\n" + "  bodyFromFileAsBytes: null\n"
 				+ "  cookies: {}\n" + "  fixedDelayMilliseconds: null\n" + "  headers: {}\n" + "  matchers:\n"
 				+ "    body: []\n" + "    cookies: []\n" + "    headers: []\n" + "  status: 200\n";
-		Map<String, byte[]> strings = converter.store(yamlContracts());
+		Map<String, byte[]> strings = this.converter.store(yamlContracts());
 		assertThat(strings).hasSize(2);
 		assertThat(new String(strings.get("post1.yml")).trim()).isEqualTo(expectedYaml1.trim());
 		assertThat(new String(strings.get("post2.yml")).trim()).isEqualTo(expectedYaml2.trim());
@@ -700,8 +742,8 @@ class YamlContractConverterTests {
 	@Test
 	void should_parse_messaging_contract_for_messaging_scenario_1() {
 		File file = resourceFile("/yml/contract_message_scenario1.yml");
-		assertThat(converter.isAccepted(file)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(file);
+		assertThat(this.converter.isAccepted(file)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(file);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
 		assertThat(contract.getInput() != null || contract.getOutputMessage() != null).isTrue();
@@ -710,7 +752,7 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_http_dsl_to_yaml() {
 		File ymlWithRest = yamlFile("contract.yml");
-		assertThat(converter.isAccepted(ymlWithRest)).isTrue();
+		assertThat(this.converter.isAccepted(ymlWithRest)).isTrue();
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
 				"import sh.stubborn.contract.spec.Contract\n" + "Contract.make {\n" + "  request {\n"
 						+ "    inProgress()\n" + "    url('/foo')\n" + "    method('PUT')\n" + "    headers {\n"
@@ -722,7 +764,7 @@ class YamlContractConverterTests {
 						+ "    cookies {\n" + "      cookie(foo: value(c('client'), p('server')))\n"
 						+ "      cookie('bar', value(c('client'), p('server')))\n" + "    }\n"
 						+ "    body([foo2: 'bar'])\n" + "  }\n" + "}");
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.inProgress).isTrue();
@@ -761,7 +803,7 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_multiple_messaging_dsls_to_yaml() {
 		File ymlMessagingMethod = yamlFile("contract_message_method.yml");
-		assertThat(converter.isAccepted(ymlMessagingMethod)).isTrue();
+		assertThat(this.converter.isAccepted(ymlMessagingMethod)).isTrue();
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
 				"import sh.stubborn.contract.spec.Contract\n" + "[Contract.make {\n" + "  input {\n"
 						+ "    description('Some description')\n" + "    label('some_label')\n"
@@ -772,9 +814,9 @@ class YamlContractConverterTests {
 						+ "    triggeredBy('bookReturnedTriggered()2')\n" + "  }\n" + "  outputMessage {\n"
 						+ "    sentTo('output2')\n" + "    body([bookName2: 'foo'])\n" + "    headers {\n"
 						+ "      header('BOOK-NAME2', 'foo')\n" + "    }\n" + "  }\n" + "}]");
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(2);
-		List<YamlContract> yamlList = yamlContracts instanceof List ? (List<YamlContract>) yamlContracts
+		List<YamlContract> yamlList = (yamlContracts instanceof List) ? (List<YamlContract>) yamlContracts
 				: List.copyOf(yamlContracts);
 		YamlContract yamlContract = yamlList.get(0);
 		assertThat(yamlContract.description).isEqualTo("Some description");
@@ -797,14 +839,14 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_messaging_dsl_with_input_triggered_by_method_to_yaml() {
 		File ymlMessagingMethod = yamlFile("contract_message_method.yml");
-		assertThat(converter.isAccepted(ymlMessagingMethod)).isTrue();
+		assertThat(this.converter.isAccepted(ymlMessagingMethod)).isTrue();
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
 				"import sh.stubborn.contract.spec.Contract\n" + "Contract.make {\n" + "  input {\n"
 						+ "    description('Some description')\n" + "    label('some_label')\n"
 						+ "    triggeredBy('bookReturnedTriggered()')\n" + "  }\n" + "  outputMessage {\n"
 						+ "    sentTo('output')\n" + "    body([bookName: 'foo'])\n" + "    headers {\n"
 						+ "      header('BOOK-NAME', 'foo')\n" + "    }\n" + "  }\n" + "}");
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.description).isEqualTo("Some description");
@@ -819,7 +861,7 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_messaging_with_a_message_dsl_to_yaml() {
 		File ymlMessagingMatchers = yamlFile("contract_message_matchers.yml");
-		assertThat(converter.isAccepted(ymlMessagingMatchers)).isTrue();
+		assertThat(this.converter.isAccepted(ymlMessagingMatchers)).isTrue();
 		Collection<Contract> contracts = ContractVerifierDslConverter
 			.convertAsCollection(new File("/"), "import sh.stubborn.contract.spec.Contract\n"
 					+ "import static sh.stubborn.contract.spec.internal.RegexPatterns.*\n" + "Contract.make {\n"
@@ -851,7 +893,7 @@ class YamlContractConverterTests {
 					+ "      messagingContentType(applicationJson())\n"
 					+ "      header('Some-Header', $(c('someValue'), p(regex('[a-zA-Z]{9}'))))\n" + "    }\n" + "  }\n"
 					+ "}");
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.name).isEqualTo("fooo");
@@ -876,7 +918,7 @@ class YamlContractConverterTests {
 			.containsEntry("valueWithMinEmpty", List.of())
 			.containsEntry("valueWithMaxEmpty", List.of())
 			.containsKey("nullValue")
-			.satisfies(m -> assertThat(((Map<?, ?>) m).get("nullValue")).isNull());
+			.satisfies((m) -> assertThat(((Map<?, ?>) m).get("nullValue")).isNull());
 		assertThat(yamlContract.outputMessage.headers).containsEntry("contentType", "application/json")
 			.containsEntry("Some-Header", "someValue");
 
@@ -953,7 +995,7 @@ class YamlContractConverterTests {
 	void should_convert_contract_with_body_as_bytes() {
 		File groovyBytes = resourceFile("/body_builder/worksWithPdf.groovy");
 		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(groovyBytes);
-		Collection<YamlContract> yamlContracts = converter.convertTo(contracts);
+		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();
 		assertThat(yamlContract.request.body).isNull();
@@ -969,8 +1011,8 @@ class YamlContractConverterTests {
 		inputContract.request.url = "/users/1";
 		inputContract.response = new YamlContract.Response();
 		inputContract.response.status = 200;
-		Map<String, byte[]> strings = converter.store(List.of(inputContract));
-		List<YamlContract> yamlContracts = converter.read(strings.values().iterator().next());
+		Map<String, byte[]> strings = this.converter.store(List.of(inputContract));
+		List<YamlContract> yamlContracts = this.converter.read(strings.values().iterator().next());
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.get(0);
 		assertThat(yamlContract.request.method).isEqualTo("POST");
@@ -981,23 +1023,26 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_rest_yaml_with_xml_request_and_response_to_dsl() {
 		File ymlRestXml = yamlFile("contract_rest_xml.yml");
-		assertThat(converter.isAccepted(ymlRestXml)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlRestXml);
+		assertThat(this.converter.isAccepted(ymlRestXml)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlRestXml);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
-		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("Content-Type");
 			assertThat(e.getClientValue()).isEqualTo("application/xml");
 			assertThat(e.getServerValue()).isEqualTo("application/xml");
 		});
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).path()).isEqualTo("/test/duck/text()");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(0).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(0).value()).pattern())
 			.isEqualTo("[0-9]{10}");
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(1).path()).isEqualTo("/test/duck/text()");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(1).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(1).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getRequest().getBodyMatchers().matchers().get(2).path()).isEqualTo("/test/time/text()");
-		assertThat(contract.getRequest().getBodyMatchers().matchers().get(2).matchingType()).isEqualTo(TIME);
+		assertThat(contract.getRequest().getBodyMatchers().matchers().get(2).matchingType())
+			.isEqualTo(MatchingType.TIME);
 		assertThat(((RegexProperty) contract.getRequest().getBodyMatchers().matchers().get(2).value()).pattern())
 			.isEqualTo(RegexPatterns.isoTime().pattern());
 		assertThat(contract.getRequest().getBody().getClientValue().toString().replaceAll("\n", "").replaceAll(" ", ""))
@@ -1006,19 +1051,24 @@ class YamlContractConverterTests {
 			.isEqualTo(XML_CONTRACT_BODY.replaceAll("\n", "").replaceAll(" ", ""));
 
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).path()).isEqualTo("/test/duck/text()");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).matchingType()).isEqualTo(REGEX);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(0).matchingType())
+			.isEqualTo(MatchingType.REGEX);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(0).value()).pattern())
 			.isEqualTo("[0-9]{10}");
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).path()).isEqualTo("/test/duck/text()");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).matchingType()).isEqualTo(COMMAND);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(1).matchingType())
+			.isEqualTo(MatchingType.COMMAND);
 		assertThat(((ExecutionProperty) contract.getResponse().getBodyMatchers().matchers().get(1).value())
 			.getExecutionCommand()).isEqualTo("test($it)");
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).path()).isEqualTo("/test/duck/xxx");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).matchingType()).isEqualTo(NULL);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(2).matchingType())
+			.isEqualTo(MatchingType.NULL);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(3).path()).isEqualTo("/test/duck/text()");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(3).matchingType()).isEqualTo(EQUALITY);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(3).matchingType())
+			.isEqualTo(MatchingType.EQUALITY);
 		assertThat(contract.getResponse().getBodyMatchers().matchers().get(4).path()).isEqualTo("/test/time/text()");
-		assertThat(contract.getResponse().getBodyMatchers().matchers().get(4).matchingType()).isEqualTo(TIME);
+		assertThat(contract.getResponse().getBodyMatchers().matchers().get(4).matchingType())
+			.isEqualTo(MatchingType.TIME);
 		assertThat(((RegexProperty) contract.getResponse().getBodyMatchers().matchers().get(4).value()).pattern())
 			.isEqualTo(RegexPatterns.isoTime().pattern());
 		assertThat(
@@ -1032,11 +1082,11 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_rest_yaml_with_xml_with_namespace_in_request_and_response_to_dsl() {
 		File ymlRestNamedXml = yamlFile("contract_rest_named_xml.yml");
-		assertThat(converter.isAccepted(ymlRestNamedXml)).isTrue();
-		Collection<Contract> contracts = converter.convertFrom(ymlRestNamedXml);
+		assertThat(this.converter.isAccepted(ymlRestNamedXml)).isTrue();
+		Collection<Contract> contracts = this.converter.convertFrom(ymlRestNamedXml);
 		assertThat(contracts).hasSize(1);
 		Contract contract = contracts.iterator().next();
-		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy(e -> {
+		assertThat(contract.getRequest().getHeaders().getEntries()).anySatisfy((e) -> {
 			assertThat(e.getName()).isEqualTo("Content-Type");
 			assertThat(e.getClientValue()).isEqualTo("application/xml");
 			assertThat(e.getServerValue()).isEqualTo("application/xml");
@@ -1059,13 +1109,13 @@ class YamlContractConverterTests {
 	@Test
 	void should_accept_a_yaml_file_that_is_a_proper_scc_yaml_contract() {
 		File ymlWithRest3 = yamlFile("contract_rest_with_path.yml");
-		assertThat(converter.isAccepted(ymlWithRest3)).isTrue();
+		assertThat(this.converter.isAccepted(ymlWithRest3)).isTrue();
 	}
 
 	@Test
 	void should_not_accept_a_yaml_file_that_is_not_a_scc_yaml_contract() {
 		File oa3File = resourceFile("/yml/oa3/openapi_petstore.yml");
-		assertThat(converter.isAccepted(oa3File)).isFalse();
+		assertThat(this.converter.isAccepted(oa3File)).isFalse();
 	}
 
 }

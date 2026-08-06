@@ -19,6 +19,7 @@ package sh.stubborn.contract.spec.internal;
 /**
  * Represents JSON comparison modes.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public enum JSONCompareMode {
@@ -38,6 +39,6 @@ public enum JSONCompareMode {
 	/**
 	 * Strict order checking. Extensible, and strict array ordering.
 	 */
-	STRICT_ORDER;
+	STRICT_ORDER
 
 }

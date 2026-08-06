@@ -23,6 +23,7 @@ import java.lang.invoke.MethodHandles;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
 import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
@@ -57,6 +58,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.transport.ssh.jsch.JschConfigSessionFactory;
 import org.eclipse.jgit.transport.ssh.jsch.OpenSshConfig;
 import org.eclipse.jgit.util.FS;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,8 +123,8 @@ class GitRepo {
 			log.info("Cloned repo to [" + clonedRepo + "]");
 			return clonedRepo;
 		}
-		catch (Exception e) {
-			throw new IllegalStateException("Exception occurred while cloning repo", e);
+		catch (Exception ex) {
+			throw new IllegalStateException("Exception occurred while cloning repo", ex);
 		}
 	}
 
@@ -142,8 +144,8 @@ class GitRepo {
 			checkoutBranch(project, branch);
 			log.info("Successfully checked out the branch [" + branch + "]");
 		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -158,8 +160,8 @@ class GitRepo {
 				command.setRebase(true).call();
 			}
 		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -176,12 +178,12 @@ class GitRepo {
 			log.info("Commited successfully with message [" + message + "]");
 			return CommitResult.SUCCESSFUL;
 		}
-		catch (EmptyCommitException e) {
+		catch (EmptyCommitException ex) {
 			log.info("There were no changes detected. Will not commit an empty commit");
 			return CommitResult.EMPTY;
 		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -189,8 +191,8 @@ class GitRepo {
 		try (Git git = this.gitFactory.open(file(project))) {
 			git.reset().setMode(ResetCommand.ResetType.HARD).call();
 		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -202,8 +204,8 @@ class GitRepo {
 		try (Git git = this.gitFactory.open(file(project))) {
 			this.gitFactory.push(git).call();
 		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -229,9 +231,9 @@ class GitRepo {
 			}
 			return git;
 		}
-		catch (GitAPIException | URISyntaxException e) {
+		catch (GitAPIException | URISyntaxException ex) {
 			deleteBaseDirIfExists("Failed to initialize base directory");
-			throw new IllegalStateException(e);
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -249,9 +251,9 @@ class GitRepo {
 			}
 			return command.call();
 		}
-		catch (GitAPIException e) {
+		catch (GitAPIException ex) {
 			deleteBaseDirIfExists("Failed to delete base directory");
-			throw e;
+			throw ex;
 		}
 		finally {
 			git.close();
@@ -261,10 +263,10 @@ class GitRepo {
 	private String currentBranch(File projectDir) {
 		Git git = this.gitFactory.open(projectDir);
 		try {
-			return git.getRepository().getBranch();
+			return Objects.requireNonNull(git.getRepository().getBranch());
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
 		finally {
 			git.close();
@@ -290,7 +292,8 @@ class GitRepo {
 		return containsBranch(git, label, null);
 	}
 
-	private boolean containsBranch(Git git, String label, ListBranchCommand.ListMode listMode) throws GitAPIException {
+	private boolean containsBranch(Git git, String label, ListBranchCommand.@Nullable ListMode listMode)
+			throws GitAPIException {
 		ListBranchCommand command = git.branchList();
 		if (listMode != null) {
 			command.setListMode(listMode);
@@ -343,7 +346,7 @@ class GitRepo {
 
 		private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-		final CredentialsProvider provider;
+		final @Nullable CredentialsProvider provider;
 
 		private final SshSessionFactory factory = new JschConfigSessionFactory() {
 
@@ -361,9 +364,9 @@ class GitRepo {
 					}
 					log.info("Successfully connected to an agent");
 				}
-				catch (AgentProxyException e) {
+				catch (AgentProxyException ex) {
 					log.error("Exception occurred while trying to connect to agent. Will create"
-							+ "the default JSch connection", e);
+							+ "the default JSch connection", ex);
 					return super.createDefaultJSch(fs);
 				}
 				final JSch jsch = super.createDefaultJSch(fs);
@@ -376,7 +379,7 @@ class GitRepo {
 			}
 		};
 
-		private final TransportConfigCallback callback = transport -> {
+		private final TransportConfigCallback callback = (transport) -> {
 			if (transport instanceof SshTransport) {
 				SshTransport sshTransport = (SshTransport) transport;
 				sshTransport.setSshSessionFactory(this.factory);
@@ -421,8 +424,8 @@ class GitRepo {
 			try {
 				return Git.open(file);
 			}
-			catch (IOException e) {
-				throw new IllegalStateException(e);
+			catch (IOException ex) {
+				throw new IllegalStateException(ex);
 			}
 		}
 

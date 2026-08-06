@@ -42,7 +42,7 @@
 	<suppress files=".*WiremockServerApplicationTests.*" checks="LineLengthCheck"/>
 	<suppress files=".*ContractVerifierConfigProperties.*" checks="JavadocStyle"/>
 	<suppress files=".*YamlContract.*" checks="JavadocVariable"/>
-	<suppress files=".*HttpHeaders.*" checks="HideUtility*"/>
+	<suppress files=".*HttpHeaders.*" checks="(Javadoc*|HideUtility*)"/>
 	<suppress files=".*HttpMethods.*" checks="(Javadoc*|HideUtility*)"/>
 	<suppress files=".*HttpStatus.*" checks="HideUtility*"/>
 	<suppress files=".*contractsToCompile.*" checks=".*"/>
@@ -50,6 +50,10 @@
 	<suppress files=".*gradle.*" checks=".*"/>
 	<!-- Generated Avro file — no copyright header, no Javadoc, generated class structure -->
 	<suppress files=".*FooAvro.*" checks=".*"/>
+	<!-- gmavenplus-generated Groovy Java stubs — never lint machine-generated sources -->
+	<suppress files=".*[/\\](generated-sources|generated-test-sources)[/\\].*" checks=".*"/>
+	<!-- Cross-generator parity test helper (not a test class despite living in the test tree) -->
+	<suppress files=".*GeneratorUnderTest.*" checks="SpringTestFileName"/>
 	<!-- Pre-existing violations in verifier module — tab indented, builder-pattern classes -->
 	<suppress files=".*verifier/builder/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|NoWhitespaceAfter|DesignForExtension|FinalClass|JavadocStyle|HideUtilityClassConstructor)"/>
 	<suppress files=".*verifier/assertion/.*" checks="(FileTabCharacter|LineLength|FinalParameters|MissingJavadocMethod|JavadocVariable|JavadocPackage|HiddenField|DesignForExtension)"/>

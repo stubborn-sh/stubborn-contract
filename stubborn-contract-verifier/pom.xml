@@ -6,24 +6,25 @@
 	<properties>
 		<stubborn.revapi.skip>false</stubborn.revapi.skip>
 		<stubborn.no-spring.skip>false</stubborn.no-spring.skip>
+		<stubborn.no-groovy-transform.skip>false</stubborn.no-groovy-transform.skip>
 		<javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
 		<avro.version>1.12.1</avro.version>
-		<kafka-avro-serializer.version>7.9.8</kafka-avro-serializer.version>
+		<kafka-avro-serializer.version>8.2.1</kafka-avro-serializer.version>
 	</properties>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-parent</artifactId>
+		<artifactId>stubborn-contract-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-verifier</artifactId>
+	<artifactId>stubborn-contract-verifier</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Verifier</name>
 	<description>Stubborn Contract Verifier</description>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec</artifactId>
+			<artifactId>stubborn-contract-spec</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>tools.jackson.core</groupId>
@@ -81,7 +82,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-jsonassert</artifactId>
+			<artifactId>stubborn-contract-jsonassert</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -91,6 +92,11 @@
 		<dependency>
 			<groupId>org.jspecify</groupId>
 			<artifactId>jspecify</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.errorprone</groupId>
+			<artifactId>error_prone_annotations</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.rackspace.eclipse.webtools.sourceediting</groupId>
@@ -175,13 +181,12 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<scope>compile</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.javacrumbs.json-unit</groupId>
 			<artifactId>json-unit-assertj</artifactId>
 			<version>${json-unit-assertj.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -225,13 +230,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty.ee10</groupId>
 			<artifactId>jetty-ee10-servlet</artifactId>
-			<version>12.0.30</version>
+			<version>${jetty.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.ee10</groupId>
 			<artifactId>jetty-ee10-servlets</artifactId>
-			<version>12.0.30</version>
+			<version>${jetty.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -276,7 +281,7 @@
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-bom</artifactId>
-				<version>12.0.30</version>
+				<version>${jetty.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -314,6 +319,26 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<!--
+					  Error Prone / NullAway (configured in the parent) gates PRODUCTION
+					  code only. This module's test sources are Spock/Groovy fixtures and
+					  their Java helpers, joint-compiled via gmavenplus; they are not part
+					  of the JSpecify-annotated surface, so NullAway must not run over them.
+					  Override the inherited Error Prone compiler arguments and processor
+					  paths for the test compilation only.
+					-->
+					<execution>
+						<id>default-testCompile</id>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<compilerArgs combine.self="override" />
+							<annotationProcessorPaths combine.self="override" />
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

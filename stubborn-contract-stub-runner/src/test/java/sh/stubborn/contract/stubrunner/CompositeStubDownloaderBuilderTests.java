@@ -17,11 +17,11 @@
 package sh.stubborn.contract.stubrunner;
 
 import java.io.File;
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ public class CompositeStubDownloaderBuilderTests {
 		List<StubDownloaderBuilder> builders = Arrays.asList(emptyStubDownloaderBuilder, impossible,
 				new SomeStubDownloaderBuilder());
 		CompositeStubDownloaderBuilder builder = new CompositeStubDownloaderBuilder(builders);
-		StubDownloader downloader = builder.build(new StubRunnerOptionsBuilder().build());
+		StubDownloader downloader = Objects.requireNonNull(builder.build(new StubRunnerOptionsBuilder().build()));
 
 		Map.Entry<StubConfiguration, File> entry = downloader.downloadAndUnpackStubJar(new StubConfiguration("a:b:v"));
 
@@ -61,7 +61,8 @@ public class CompositeStubDownloaderBuilderTests {
 		EmptyStubDownloaderBuilder emptyStubDownloaderBuilder = new EmptyStubDownloaderBuilder();
 		CompositeStubDownloaderBuilder builder = new CompositeStubDownloaderBuilder(
 				Collections.singletonList(emptyStubDownloaderBuilder));
-		StubDownloader downloader = builder.build(new StubRunnerOptionsBuilder().withFailOnNoStubs(false).build());
+		StubDownloader downloader = Objects
+			.requireNonNull(builder.build(new StubRunnerOptionsBuilder().withFailOnNoStubs(false).build()));
 
 		Map.Entry<StubConfiguration, File> entry = downloader.downloadAndUnpackStubJar(new StubConfiguration("a:b:v"));
 
@@ -73,68 +74,11 @@ public class CompositeStubDownloaderBuilderTests {
 		EmptyStubDownloaderBuilder emptyStubDownloaderBuilder = new EmptyStubDownloaderBuilder();
 		CompositeStubDownloaderBuilder builder = new CompositeStubDownloaderBuilder(
 				Collections.singletonList(emptyStubDownloaderBuilder));
-		StubDownloader downloader = builder.build(new StubRunnerOptionsBuilder().withFailOnNoStubs(true).build());
+		StubDownloader downloader = Objects
+			.requireNonNull(builder.build(new StubRunnerOptionsBuilder().withFailOnNoStubs(true).build()));
 
 		BDDAssertions.thenThrownBy(() -> downloader.downloadAndUnpackStubJar(new StubConfiguration("a:b:v")))
 			.isInstanceOf(IllegalArgumentException.class);
-	}
-
-}
-
-class EmptyStubDownloaderBuilder implements StubDownloaderBuilder {
-
-	EmptyStubDownloader emptyStubDownloader;
-
-	@Override
-	public StubDownloader build(StubRunnerOptions stubRunnerOptions) {
-		this.emptyStubDownloader = new EmptyStubDownloader();
-		return this.emptyStubDownloader;
-	}
-
-	boolean downloaderCalled() {
-		return this.emptyStubDownloader.called;
-	}
-
-}
-
-class ImpossibleToBuildStubDownloaderBuilder implements StubDownloaderBuilder {
-
-	boolean called;
-
-	@Override
-	public StubDownloader build(StubRunnerOptions stubRunnerOptions) {
-		this.called = true;
-		return null;
-	}
-
-}
-
-class EmptyStubDownloader implements StubDownloader {
-
-	boolean called;
-
-	@Override
-	public Map.Entry<StubConfiguration, File> downloadAndUnpackStubJar(StubConfiguration stubConfiguration) {
-		this.called = true;
-		return null;
-	}
-
-}
-
-class SomeStubDownloaderBuilder implements StubDownloaderBuilder {
-
-	@Override
-	public StubDownloader build(StubRunnerOptions stubRunnerOptions) {
-		return new SomeStubDownloader();
-	}
-
-}
-
-class SomeStubDownloader implements StubDownloader {
-
-	@Override
-	public Map.Entry<StubConfiguration, File> downloadAndUnpackStubJar(StubConfiguration stubConfiguration) {
-		return new AbstractMap.SimpleEntry<>(stubConfiguration, new File("."));
 	}
 
 }

@@ -32,8 +32,8 @@ import sh.stubborn.contract.verifier.util.MapConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link WireMockResponseStubStrategy}.
@@ -113,7 +113,7 @@ class WireMockResponseStubStrategyTests {
 			});
 		});
 		SingleContractMetadata metadata = mock(SingleContractMetadata.class);
-		when(metadata.getEvaluatedOutputStubContentType()).thenReturn(ContentType.JSON);
+		given(metadata.getEvaluatedOutputStubContentType()).willReturn(ContentType.JSON);
 		WireMockResponseStubStrategy subject = new WireMockResponseStubStrategy(contract, metadata) {
 			@Override
 			Function<String, Object> parsingClosureForContentType() {
@@ -138,7 +138,7 @@ class WireMockResponseStubStrategyTests {
 			});
 		});
 		SingleContractMetadata metadata = mock(SingleContractMetadata.class);
-		when(metadata.getEvaluatedOutputStubContentType()).thenReturn(ContentType.JSON);
+		given(metadata.getEvaluatedOutputStubContentType()).willReturn(ContentType.JSON);
 		WireMockResponseStubStrategy subject = new WireMockResponseStubStrategy(contract, metadata) {
 			@Override
 			Function<String, Object> parsingClosureForContentType() {
@@ -166,7 +166,7 @@ class WireMockResponseStubStrategyTests {
 			});
 		});
 		SingleContractMetadata metadata = mock(SingleContractMetadata.class);
-		when(metadata.getEvaluatedOutputStubContentType()).thenReturn(ContentType.JSON);
+		given(metadata.getEvaluatedOutputStubContentType()).willReturn(ContentType.JSON);
 		WireMockResponseStubStrategy subject = new WireMockResponseStubStrategy(contract, metadata) {
 			@Override
 			Function<String, Object> parsingClosureForContentType() {
