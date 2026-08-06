@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
 	<!--
-	  BROAD SELF-CPE FALSE POSITIVE (systemic): our own first-party sh.stubborn:* snapshot jars
-	  keep getting matched to third-party product CPEs (vmware:spring_boot, wiremock:wiremock,
-	  vmware:spring_framework, vmware:spring_cloud_contract, ...) purely on artifactId/description
-	  name tokens plus the low 0.1.0 SNAPSHOT version, inheriting those products' historical CVEs
-	  (e.g. Spring Boot CVE-2017-8046, CVE-2021-26987, CVE-2023-20873, CVE-2023-20883,
-	  CVE-2022-27772, CVE-2026-40972/40975/22733; WireMock CVE-2018-9116; legacy Spring Framework
-	  CVEs). None of our jars ARE those products. Rather than maintain a per-module, per-CPE
-	  whack-a-mole list, suppress ALL CPE-based matches for any sh.stubborn artifact. Genuine CVEs
-	  filed against our own code would be matched by packageUrl / CVE identifier, not by a
-	  third-party product CPE, so those remain fully evaluated.
+	  SELF-CPE FALSE POSITIVE (systemic, narrowed 2026-08-05): our own first-party sh.stubborn:*
+	  jars keep getting matched to third-party PRODUCT CPEs purely on artifactId/description name
+	  tokens plus the low 0.x version, inheriting those products' historical CVEs (e.g. Spring Boot
+	  CVE-2017-8046, CVE-2021-26987, CVE-2023-20873, CVE-2023-20883, CVE-2022-27772,
+	  CVE-2026-40972/40975/22733; WireMock CVE-2018-9116; legacy Spring Framework CVEs). None of our
+	  jars ARE those products.
+	  Previously this rule suppressed ALL CPE matches (<cpe>.*</cpe>) for any sh.stubborn artifact,
+	  at any version — broad enough to mask a genuine future CVE that happens to arrive under a CPE.
+	  Narrowed to (a) the specific mis-attributing third-party product vendors actually observed
+	  (vmware / pivotal / springsource spring products + wiremock), and (b) the pre-1.0 0.x line
+	  only. A CVE against our own code (matched by packageUrl/CVE, or under any other vendor CPE)
+	  is now evaluated, and the whole rule re-opens for review at 1.0.
+	  REVIEW/REMOVE at the 1.0 release, or sooner if OSS-Index/NVD stops the name-token mis-match.
 	-->
 	<suppress>
-		<notes><![CDATA[ First-party sh.stubborn artifacts are matched to third-party product CPEs (vmware:spring_boot, wiremock:wiremock, vmware:*, etc.) purely on name tokens + the 0.1.0 SNAPSHOT version, inheriting those products' CVEs. Our own jars are never those products; any CPE match on a sh.stubborn artifact is a false positive. Genuine CVEs against our own code would be matched by packageUrl/CVE, not a third-party CPE, so those are still evaluated. ]]></notes>
-		<packageUrl regex="true">^pkg:maven/sh\.stubborn/.*$</packageUrl>
-		<cpe regex="true">.*</cpe>
+		<notes><![CDATA[ First-party sh.stubborn 0.x artifacts are matched to third-party spring/wiremock product CPEs purely on name tokens + the low version, inheriting those products' CVEs. Our own jars are never those products. Scoped to the observed mis-attributing vendors (vmware/pivotal/springsource/wiremock) and the 0.x line only, so genuine CVEs (matched by packageUrl/CVE or any other CPE) stay evaluated and the rule re-opens at 1.0. Narrowed 2026-08-05. ]]></notes>
+		<packageUrl regex="true">^pkg:maven/sh\.stubborn/.*@0\..*$</packageUrl>
+		<cpe regex="true">^cpe:/a:(vmware|pivotal_software|pivotal|springsource|wiremock):.*$</cpe>
 	</suppress>
 
 	<!--
@@ -102,19 +105,25 @@
 	  attracts a rolling set of low-severity DOM-clobbering/XSS CVEs (the original CVE-2026-65898 no
 	  longer matches; ODC now reports CVE-2026-49978, CVE-2026-49458, CVE-2026-49459, CVE-2026-41240,
 	  CVE-2026-0540, CVE-2026-65902, CVE-2026-65914 and more, currently <7 but churning). A
-	  CVE-pinned rule would rot into a dead "zero matches" entry on every WireMock bump; scoping to
-	  the DOMPurify packageUrl keeps the browser-only asset suppressed regardless of the exact CVE.
-	  REMOVE THIS SUPPRESSION once WireMock ships a swagger-ui bundle with a patched DOMPurify.
+	  CVE-pinned rule would rot into a dead "zero matches" entry on every WireMock bump; a bounded
+	  version range keeps the browser-only asset suppressed regardless of the exact CVE while still
+	  self-expiring on the next bump.
+	  NARROWED 2026-08-05: previously scoped to ANY DOMPurify version (@.*), broad enough to mask a
+	  future CVE against a different — possibly reachable — DOMPurify build. WireMock 3.13.2 vendors
+	  exactly DOMPurify 3.2.6 (verified: swagger-ui-dist/swagger-ui-bundle.js contains
+	  DOMPurify.version="3.2.6"), so the rule is pinned to that exact version. The moment WireMock
+	  ships a different DOMPurify the suppression stops matching and the finding re-surfaces.
+	  REMOVE (or re-pin) once WireMock ships a swagger-ui bundle with a patched DOMPurify.
 	-->
 	<suppress>
 		<notes><![CDATA[
-			Browser-only DOMPurify inside WireMock's vendored swagger-ui admin bundle. WireMock is
-			used only as an in-process stub server here; the swagger-ui is never served, so the XSS
-			path is unreachable at runtime. Upstream-owned, browser-only asset — suppressed by
-			packageUrl (no CVE filter) as the vendored version churns through low-severity CVEs.
-			Remove once WireMock bundles a patched DOMPurify.
+			Browser-only DOMPurify 3.2.6 inside WireMock 3.13.2's vendored swagger-ui admin bundle.
+			WireMock is used only as an in-process stub server here; the swagger-ui is never served,
+			so the XSS path is unreachable at runtime. Upstream-owned, browser-only asset. Pinned to
+			the exact vendored version (3.2.6) so any WireMock/DOMPurify bump re-surfaces the finding.
+			Narrowed 2026-08-05. Remove once WireMock bundles a patched DOMPurify.
 		]]></notes>
-		<packageUrl regex="true">^pkg:javascript/DOMPurify@.*$</packageUrl>
+		<packageUrl regex="true">^pkg:javascript/DOMPurify@3\.2\.6$</packageUrl>
 		<vulnerabilityName regex="true">.*</vulnerabilityName>
 	</suppress>
 
@@ -122,6 +131,7 @@
 	  NOTE: the previously separate per-module self-CPE suppressions —
 	    * sh.stubborn *wiremock* jars -> cpe:/a:wiremock:wiremock (CVE-2018-9116)
 	    * sh.stubborn:stubborn-contract-converters -> cpe:/a:vmware:* (legacy Spring CVEs)
-	  have been folded into the single broad first-party self-CPE rule at the top of this file.
+	  have been folded into the single (narrowed 2026-08-05) first-party self-CPE rule at the top
+	  of this file.
 	-->
 </suppressions>

@@ -164,6 +164,11 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-contract-messaging-kafka</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-contract-converters</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -172,11 +177,15 @@
 				<artifactId>stubborn-contract-stub-runner</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-contract-stub-runner-app</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+			<!--
+			  stubborn-contract-stub-runner-app is intentionally NOT managed here. It is a
+			  repackaged Spring Boot executable (fat) jar that is deliberately excluded from
+			  Maven Central publishing (see central-publishing excludeArtifacts in the root
+			  pom). Consumers build it from source (./mvnw package -pl
+			  stubborn-contract-stub-runner-app) or use the Docker image — they do not depend
+			  on it as a library. Listing it in the BOM would advertise an unresolvable
+			  coordinate. See docs/reference/stub-runner-spring-boot.md.
+			-->
 			<dependency>
 				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
