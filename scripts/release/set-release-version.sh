@@ -5,10 +5,10 @@
 #   2. versions:set over stubborn-contract-build (the build parent is NOT a reactor module).
 #   3. Finalize the two out-of-reactor <parent> refs that point at stubborn-contract-build
 #      (root pom.xml + the BOM) via finalize-parent-version.sh.
-#
-# NOTE: This script intentionally does NOT touch the Docker image versions. Those are
-# Maven-filtered from gradle.properties at docker build time (verifierVersion=${project.version},
-# camelVersion=${camel.version}), so there is nothing to sed here anymore.
+#   4. Rewrite verifierVersion in the Docker image's project/gradle.properties. That file
+#      carries CONCRETE versions (not Maven placeholders) and the docker module's Maven
+#      drift check (scripts/docker/check-gradle-versions.sh) fails the build if verifierVersion
+#      no longer matches project.version, so it must track the release version here.
 #
 # Must be run from the repository root (uses ./mvnw and repo-relative pom paths).
 #
@@ -32,3 +32,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 "${SCRIPT_DIR}/finalize-parent-version.sh" "${RELEASE_VERSION}" \
 	pom.xml \
 	stubborn-contract-dependencies/pom.xml
+
+# 4. Rewrite verifierVersion in the Docker image's concrete gradle.properties so it tracks
+#    project.version (the docker module's Maven drift check enforces the match).
+GRADLE_PROPS="docker/stubborn-contract-docker/project/gradle.properties"
+sed -i -E "s#^verifierVersion=.*#verifierVersion=${RELEASE_VERSION}#" "${GRADLE_PROPS}"
+if ! grep -q "^verifierVersion=${RELEASE_VERSION}$" "${GRADLE_PROPS}"; then
+	echo "error: failed to rewrite verifierVersion to ${RELEASE_VERSION} in ${GRADLE_PROPS}" >&2
+	exit 1
+fi

@@ -34,10 +34,6 @@ ENV PATH "${PATH}:${JAVA_HOME}/bin"
 
 # Spring Cloud Contract
 COPY --chown=scc:scc project /stubborn-contract/
-# Overlay the Maven-filtered gradle.properties (verifierVersion/camelVersion/springBootVersion
-# resolved from Maven). Staged by maven-resources-plugin into target/docker-context/ so the source
-# tree stays untouched and the gradle wrapper/scripts above are copied intact from project/.
-COPY --chown=scc:scc target/docker-context/gradle.properties /stubborn-contract/gradle.properties
 WORKDIR /stubborn-contract/
 
 # Let's copy the downloaded deps to .m2 and the gradle cache

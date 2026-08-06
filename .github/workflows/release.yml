@@ -56,9 +56,10 @@ jobs:
 
       - name: Set release version
         # Extracted to scripts/release/set-release-version.sh (unit-tested via test/bats).
-        # Runs the two versions:set calls (reactor + build parent) and finalizes the two
-        # out-of-reactor <parent> refs (root + BOM). It does NOT touch the Docker image
-        # versions: those are Maven-filtered from gradle.properties at docker build time.
+        # Runs the two versions:set calls (reactor + build parent), finalizes the two
+        # out-of-reactor <parent> refs (root + BOM), and rewrites verifierVersion in the
+        # Docker image's concrete gradle.properties (the docker module's drift check
+        # enforces the match against project.version).
         run: scripts/release/set-release-version.sh "${{ inputs.version }}"
 
       - name: Build stubborn-contract-build parent
