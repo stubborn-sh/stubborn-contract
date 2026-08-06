@@ -19,11 +19,13 @@ package sh.stubborn.contract.spec.internal;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
 import repackaged.nl.flotsam.xeger.Xeger;
 
 /**
  * Represents a property that may or may not be there.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class OptionalProperty implements Serializable, CanBeDynamic {
@@ -47,7 +49,7 @@ public class OptionalProperty implements Serializable, CanBeDynamic {
 		return valueToCheck(this.value).toString();
 	}
 
-	private Object valueToCheck(Object value) {
+	private Object valueToCheck(@Nullable Object value) {
 		if (value == null) {
 			return "";
 		}
@@ -80,7 +82,7 @@ public class OptionalProperty implements Serializable, CanBeDynamic {
 	}
 
 	public final Object getValue() {
-		return value;
+		return this.value;
 	}
 
 }

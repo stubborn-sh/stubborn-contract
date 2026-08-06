@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.maven.verifier.stubrunner;
 
+import java.util.Objects;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.aether.RepositorySystemSession;
@@ -46,7 +48,9 @@ public class RemoteStubRunner {
 	}
 
 	public BatchStubRunner run(StubRunnerOptions options, RepositorySystemSession repositorySystemSession) {
-		StubDownloader stubDownloader = this.aetherStubDownloaderFactory.build(repositorySystemSession).build(options);
+		StubDownloader stubDownloader = Objects.requireNonNull(
+				this.aetherStubDownloaderFactory.build(repositorySystemSession).build(options),
+				"StubDownloader must not be null");
 		try {
 			if (log.isDebugEnabled()) {
 				log.debug("Launching StubRunner with args: " + options);
@@ -56,9 +60,9 @@ public class RemoteStubRunner {
 			log.info(runningCollaborators.toString());
 			return stubRunner;
 		}
-		catch (Exception e) {
-			log.error("An exception occurred while trying to execute the stubs: " + e.getMessage());
-			throw e;
+		catch (Exception ex) {
+			log.error("An exception occurred while trying to execute the stubs: " + ex.getMessage());
+			throw ex;
 		}
 
 	}

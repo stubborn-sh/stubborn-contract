@@ -17,6 +17,8 @@
 package sh.stubborn.contract.stubrunner.junit;
 
 /**
+ * Options that allow configuring the port of a downloaded stub.
+ *
  * @author Olga Maciaszek-Sharma
  * @since 2.1.0
  */

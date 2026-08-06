@@ -23,6 +23,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.jar.Manifest;
 import org.codehaus.plexus.archiver.jar.ManifestException;
+import org.jspecify.annotations.Nullable;
 
 final class ManifestCreator {
 
@@ -30,7 +31,7 @@ final class ManifestCreator {
 		throw new IllegalStateException("Can't instantiate a utility class");
 	}
 
-	public static Manifest createManifest(MavenProject project) throws ManifestException {
+	static Manifest createManifest(MavenProject project) throws ManifestException {
 		Manifest manifest = new Manifest();
 		Plugin verifierMavenPlugin = findMavenPlugin(project.getBuildPlugins());
 		if (verifierMavenPlugin != null) {
@@ -48,18 +49,18 @@ final class ManifestCreator {
 		return manifest;
 	}
 
-	private static Plugin findMavenPlugin(List<Plugin> plugins) {
+	private static @Nullable Plugin findMavenPlugin(List<Plugin> plugins) {
 		for (Plugin plugin : plugins) {
-			if ("stubborn-maven-plugin".equals(plugin.getArtifactId())) {
+			if ("stubborn-contract-maven-plugin".equals(plugin.getArtifactId())) {
 				return plugin;
 			}
 		}
 		return null;
 	}
 
-	private static Dependency findVerifierDependency(List<Dependency> deps) {
+	private static @Nullable Dependency findVerifierDependency(List<Dependency> deps) {
 		for (Dependency dep : deps) {
-			if ("stubborn-verifier".equals(dep.getArtifactId())) {
+			if ("stubborn-contract-verifier".equals(dep.getArtifactId())) {
 				return dep;
 			}
 		}

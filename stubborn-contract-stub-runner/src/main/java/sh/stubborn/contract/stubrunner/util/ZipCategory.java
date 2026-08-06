@@ -28,8 +28,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
-import org.springframework.util.StreamUtils;
-
 /**
  * Based on
  * <a href="https://github.com/timyates/groovy-common-extensions">https://github.com/
@@ -76,24 +74,27 @@ public final class ZipCategory {
 							throw new ZipException("The file " + zipEntryName
 									+ " is trying to leave the target output directory of " + destination);
 						}
-						if (destinationFile.getParentFile() != null) {
-							destinationFile.getParentFile().mkdirs();
+						File parentFile = destinationFile.getParentFile();
+						if (parentFile != null && !parentFile.mkdirs() && !parentFile.isDirectory()) {
+							throw new IOException("Cannot create directory " + parentFile);
 						}
 						try (OutputStream output = Files.newOutputStream(destinationFile.toPath())) {
-							StreamUtils.copy(zipInput, output);
+							zipInput.transferTo(output);
 						}
 						unzippedFiles.add(destinationFile);
 					}
 					else {
 						final File dir = new File(destination, entry.getName());
-						dir.mkdirs();
+						if (!dir.mkdirs() && !dir.isDirectory()) {
+							throw new IOException("Cannot create directory " + dir);
+						}
 						unzippedFiles.add(dir);
 					}
 				}
 			}
 		}
-		catch (IOException e) {
-			throw new IllegalStateException("Cannot unzip archive", e);
+		catch (IOException ex) {
+			throw new IllegalStateException("Cannot unzip archive", ex);
 		}
 		return unzippedFiles;
 	}

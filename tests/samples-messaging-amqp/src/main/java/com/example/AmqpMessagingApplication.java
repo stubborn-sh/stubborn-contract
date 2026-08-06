@@ -19,6 +19,7 @@ package com.example;
 import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -28,8 +29,6 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import static org.springframework.amqp.core.MessageProperties.CONTENT_TYPE_JSON;
 
 @SpringBootApplication
 public class AmqpMessagingApplication {
@@ -44,7 +43,7 @@ public class AmqpMessagingApplication {
 		jsonMessageConverter.setCreateMessageIds(true);
 		final ContentTypeDelegatingMessageConverter messageConverter = new ContentTypeDelegatingMessageConverter(
 				jsonMessageConverter);
-		messageConverter.addDelegate(CONTENT_TYPE_JSON, jsonMessageConverter);
+		messageConverter.addDelegate(MessageProperties.CONTENT_TYPE_JSON, jsonMessageConverter);
 		return messageConverter;
 	}
 

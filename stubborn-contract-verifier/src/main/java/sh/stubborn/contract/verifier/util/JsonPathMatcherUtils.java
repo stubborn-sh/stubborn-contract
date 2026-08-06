@@ -20,19 +20,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import groovy.json.JsonOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.MatchingType;
 import sh.stubborn.contract.spec.internal.RegexProperty;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Utility class for JSON path matching operations including path cleanup, comparison
@@ -57,7 +59,7 @@ public final class JsonPathMatcherUtils {
 	 * @param bodyMatchers - the part of request / response that contains matchers
 	 * @return json with removed entries
 	 */
-	public static Object removeMatchingJsonPaths(Object json, BodyMatchers bodyMatchers) {
+	public static Object removeMatchingJsonPaths(Object json, @Nullable BodyMatchers bodyMatchers) {
 		Object jsonCopy = cloneBody(json);
 		if (bodyMatchers == null || !bodyMatchers.hasMatchers()) {
 			return jsonCopy;
@@ -82,7 +84,7 @@ public final class JsonPathMatcherUtils {
 	 * For the given matcher converts it into a JSON path that checks the regex pattern or
 	 * equality.
 	 * @param bodyMatcher the body matcher
-	 * @return JSON path that checks the regex for its last element
+	 * @return the JSON path that checks the regex for its last element
 	 */
 	public static String convertJsonPathAndRegexToAJsonPath(BodyMatcher bodyMatcher) {
 		return convertJsonPathAndRegexToAJsonPath(bodyMatcher, null);
@@ -93,9 +95,9 @@ public final class JsonPathMatcherUtils {
 	 * equality.
 	 * @param bodyMatcher the body matcher
 	 * @param body the body to read from (required for EQUALITY matching)
-	 * @return JSON path that checks the regex for its last element
+	 * @return the JSON path that checks the regex for its last element
 	 */
-	public static String convertJsonPathAndRegexToAJsonPath(BodyMatcher bodyMatcher, Object body) {
+	public static String convertJsonPathAndRegexToAJsonPath(BodyMatcher bodyMatcher, @Nullable Object body) {
 		String path = bodyMatcher.path();
 		Object value = bodyMatcher.value();
 		if (value == null && bodyMatcher.matchingType() != MatchingType.EQUALITY
@@ -103,9 +105,9 @@ public final class JsonPathMatcherUtils {
 			return path;
 		}
 		int lastDotIndex = findLastDotIndex(path);
-		String toLastDot = lastDotIndex == -1 ? "$" : path.substring(0, lastDotIndex);
+		String toLastDot = (lastDotIndex == -1) ? "$" : path.substring(0, lastDotIndex);
 		String fromLastDot = path.substring(lastDotIndex + 1);
-		String propertyName = lastDotIndex == -1 ? "@" : "@." + fromLastDot;
+		String propertyName = (lastDotIndex == -1) ? "@" : "@." + fromLastDot;
 		String comparison = createComparison(propertyName, bodyMatcher, value, body);
 		return toLastDot + "[?(" + comparison + ")]";
 	}
@@ -135,9 +137,9 @@ public final class JsonPathMatcherUtils {
 					pathsToDelete.add(path);
 				}
 			}
-			catch (RuntimeException e) {
+			catch (RuntimeException ex) {
 				if (log.isTraceEnabled()) {
-					log.trace("Exception deleting path [" + path + "]", e);
+					log.trace("Exception deleting path [" + path + "]", ex);
 				}
 			}
 		}
@@ -158,7 +160,8 @@ public final class JsonPathMatcherUtils {
 			String pathWithoutArray = containsArray
 					? matcherPath.substring(0, matcherPath.lastIndexOf(lastMatch(matcher))) : matcherPath;
 			Object object = readPath(context, pathWithoutArray);
-			if (isIterable(object) && containsOnlyEmptyElements(object) && !isRootArray(matcherPath)) {
+			if (object != null && isIterable(object) && containsOnlyEmptyElements(object)
+					&& !isRootArray(matcherPath)) {
 				String pathToDelete = pathWithoutArray.equals("$") ? "$[*]" : pathWithoutArray;
 				if (pathToDelete.contains("..")) {
 					Object root = context.read("$");
@@ -182,9 +185,9 @@ public final class JsonPathMatcherUtils {
 			}
 			return false;
 		}
-		catch (RuntimeException e) {
+		catch (RuntimeException ex) {
 			if (log.isTraceEnabled()) {
-				log.trace("Exception removing trailing containers for [" + matcherPath + "]", e);
+				log.trace("Exception removing trailing containers for [" + matcherPath + "]", ex);
 			}
 			return false;
 		}
@@ -199,11 +202,11 @@ public final class JsonPathMatcherUtils {
 		return matches.get(matches.size() - 1);
 	}
 
-	private static Object readPath(DocumentContext context, String path) {
+	private static @Nullable Object readPath(DocumentContext context, String path) {
 		try {
 			return context.read(path);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return null;
 		}
 	}
@@ -280,28 +283,30 @@ public final class JsonPathMatcherUtils {
 		return path.lastIndexOf(".");
 	}
 
-	private static String createComparison(String propertyName, BodyMatcher bodyMatcher, Object value, Object body) {
+	private static String createComparison(String propertyName, BodyMatcher bodyMatcher, @Nullable Object value,
+			@Nullable Object body) {
 		return switch (bodyMatcher.matchingType()) {
 			case EQUALITY -> createEqualityComparison(propertyName, bodyMatcher, body);
 			case TYPE -> createTypeComparison(propertyName, bodyMatcher);
-			default -> createRegexComparison(propertyName, value);
+			default -> createRegexComparison(propertyName, Objects.requireNonNull(value));
 		};
 	}
 
-	private static String createEqualityComparison(String propertyName, BodyMatcher bodyMatcher, Object body) {
+	private static String createEqualityComparison(String propertyName, BodyMatcher bodyMatcher,
+			@Nullable Object body) {
 		if (body == null) {
 			throw new IllegalStateException("Body hasn't been passed");
 		}
 		try {
 			Object convertedBody = MapConverter.transformValues(body, JsonPathMatcherUtils::generatedValueIfNeeded);
 			Object retrievedValue = JsonPath.parse(convertedBody).read(bodyMatcher.path());
-			String wrappedValue = retrievedValue instanceof Number ? retrievedValue.toString()
+			String wrappedValue = (retrievedValue instanceof Number) ? retrievedValue.toString()
 					: "'" + retrievedValue.toString() + "'";
 			return propertyName + " == " + wrappedValue;
 		}
-		catch (PathNotFoundException e) {
-			throw new IllegalStateException(
-					"Value [" + bodyMatcher.path() + "] not found in JSON [" + JsonOutput.toJson(body) + "]", e);
+		catch (PathNotFoundException ex) {
+			throw new IllegalStateException("Value [" + bodyMatcher.path() + "] not found in JSON ["
+					+ new JsonMapper().writeValueAsString(body) + "]", ex);
 		}
 	}
 

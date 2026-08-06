@@ -19,6 +19,8 @@ package sh.stubborn.contract.stubrunner;
 import java.io.File;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Contract for providing a tuple containing configuration of a downloaded and unpacked
  * stub, together with the file location of that extracted artifact.
@@ -40,6 +42,6 @@ public interface StubDownloader {
 	 * version) and the location of the downloaded stubs. If there was no artifact this
 	 * method will return {@code null}.
 	 */
-	Map.Entry<StubConfiguration, File> downloadAndUnpackStubJar(StubConfiguration stubConfiguration);
+	Map.@Nullable Entry<StubConfiguration, File> downloadAndUnpackStubJar(StubConfiguration stubConfiguration);
 
 }

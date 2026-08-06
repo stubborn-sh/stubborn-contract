@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.util.xml;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -28,13 +29,11 @@ import org.eclipse.wst.xml.xpath2.processor.Engine;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.ElementType;
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 
-import org.springframework.util.StringUtils;
-
 class XmlAsserter implements XmlVerifiable {
 
 	private static final Log log = LogFactory.getLog(XmlAsserter.class);
 
-	private final static Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
+	private static final Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
 
 	final XmlCachedObjects cachedObjects;
 
@@ -107,7 +106,7 @@ class XmlAsserter implements XmlVerifiable {
 	}
 
 	private static String wrapValueWithSingleQuotes(Object value) {
-		return value instanceof String ? "'" + value + "'" : value.toString();
+		return (value instanceof String) ? "'" + value + "'" : value.toString();
 	}
 
 	@Override
@@ -124,7 +123,7 @@ class XmlAsserter implements XmlVerifiable {
 		FieldAssertion asserter = new FieldAssertion(this.cachedObjects, this.xPathBuffer, this.specialCaseXPathBuffer,
 				value, this.xmlAsserterConfiguration);
 		String path = String.format("*[local-name()='%s'", value);
-		if (StringUtils.hasText(defaultNamespace)) {
+		if (defaultNamespace != null && !defaultNamespace.isBlank()) {
 			path += String.format(" and namespace-uri()='%s'", defaultNamespace);
 		}
 		path += "]";
@@ -187,9 +186,9 @@ class XmlAsserter implements XmlVerifiable {
 	public FieldAssertion node(String... nodeNames) {
 		FieldAssertion assertion = null;
 		for (String field : nodeNames) {
-			assertion = assertion == null ? node(field) : assertion.node(field);
+			assertion = (assertion != null) ? assertion.node(field) : node(field);
 		}
-		return assertion;
+		return Objects.requireNonNull(assertion);
 	}
 
 	@Override
@@ -331,8 +330,8 @@ class XmlAsserter implements XmlVerifiable {
 			return expr.evaluate(new DynamicContextBuilder(this.cachedObjects.xpathBuilder),
 					new Object[] { this.cachedObjects.document });
 		}
-		catch (Exception e) {
-			throw new XmlAsserterXpathException(xPath(), this.cachedObjects.xmlAsString, e);
+		catch (Exception ex) {
+			throw new XmlAsserterXpathException(xPath(), this.cachedObjects.xmlAsString, ex);
 		}
 	}
 
@@ -385,14 +384,14 @@ class XmlAsserter implements XmlVerifiable {
 		if (!this.xPathBuffer.equals(that.xPathBuffer)) {
 			return false;
 		}
-		return this.fieldName != null ? this.fieldName.equals(that.fieldName) : that.fieldName == null;
+		return (this.fieldName != null) ? this.fieldName.equals(that.fieldName) : that.fieldName == null;
 
 	}
 
 	@Override
 	public int hashCode() {
 		int result = this.xPathBuffer.hashCode();
-		result = 31 * result + (this.fieldName != null ? this.fieldName.hashCode() : 0);
+		result = 31 * result + ((this.fieldName != null) ? this.fieldName.hashCode() : 0);
 		return result;
 	}
 

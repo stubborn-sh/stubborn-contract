@@ -19,13 +19,13 @@ package sh.stubborn.contract.verifier.builder.handlebars;
 import java.io.IOException;
 import java.util.Map;
 
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.RequestTemplateModel;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.helpers.WireMockHelpers;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import sh.stubborn.contract.verifier.builder.TestSideRequestTemplateModel;
-import wiremock.com.github.jknack.handlebars.Helper;
-import wiremock.com.github.jknack.handlebars.Options;
+import sh.stubborn.contract.verifier.template.TestSideRequestTemplateModel;
 
 /**
  * A Handlebars helper for the {@code jsonpath} helper function.
@@ -77,7 +77,7 @@ public class HandlebarsJsonPathHelper implements Helper<Object> {
 		}
 
 		Map map = (Map) model;
-		return map.values().stream().anyMatch(o -> o instanceof TestSideRequestTemplateModel);
+		return map.values().stream().anyMatch((o) -> o instanceof TestSideRequestTemplateModel);
 	}
 
 	private Object returnObjectForStub(Object model, String jsonPath) {

@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-tests</artifactId>
+		<artifactId>stubborn-contract-tests</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>stubborn-stub-runner-moco-contract-jar</artifactId>
+	<artifactId>stubborn-contract-stub-runner-moco-contract-jar</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner Moco Contract Jar</name>
 	<description>Stubborn Contract Stub Runner Moco Contract Jar</description>
@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-verifier</artifactId>
+			<artifactId>stubborn-contract-verifier</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

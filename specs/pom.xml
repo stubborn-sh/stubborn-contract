@@ -6,12 +6,12 @@
 
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-parent</artifactId>
+		<artifactId>stubborn-contract-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>stubborn-specs</artifactId>
+	<artifactId>stubborn-contract-specs</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>Stubborn Contract Specs</name>
@@ -24,7 +24,6 @@
 	<modules>
 		<module>stubborn-contract-spec-java</module>
 		<module>stubborn-contract-spec-groovy</module>
-		<module>stubborn-contract-spec-kotlin</module>
 		<module>stubborn-contract-spec</module>
 	</modules>
 

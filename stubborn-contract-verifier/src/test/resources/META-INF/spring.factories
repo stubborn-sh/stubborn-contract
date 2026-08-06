@@ -1,4 +1,0 @@
-# tag::extension[]
-sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions=\
-sh.stubborn.contract.verifier.dsl.wiremock.TestWireMockExtensions
-# end::extension[]

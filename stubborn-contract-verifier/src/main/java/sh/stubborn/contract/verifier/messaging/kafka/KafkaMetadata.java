@@ -18,6 +18,8 @@ package sh.stubborn.contract.verifier.messaging.kafka;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.messaging.avro.AvroMetadata;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
@@ -28,6 +30,7 @@ import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
  * @author Marcin Grzejszczak
  * @since 3.0.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public final class KafkaMetadata implements SpringCloudContractMetadata {
 
 	/**
@@ -49,7 +52,7 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 	 * Avro serialization metadata. Configures the schema used to serialize/deserialize
 	 * messages on this Kafka topic.
 	 */
-	private AvroMetadata avro = new AvroMetadata();
+	private @Nullable AvroMetadata avro;
 
 	/**
 	 * Returns the input message metadata.
@@ -87,7 +90,7 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 	 * Returns the Avro serialization metadata.
 	 * @return the Avro metadata
 	 */
-	public AvroMetadata getAvro() {
+	public @Nullable AvroMetadata getAvro() {
 		return this.avro;
 	}
 
@@ -155,13 +158,13 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 		 * If set, will append any options to the existing ones that define connection to
 		 * the broker.
 		 */
-		private String additionalOptions;
+		private @Nullable String additionalOptions;
 
 		/**
 		 * Returns the additional broker connection options.
 		 * @return the additional options
 		 */
-		public String getAdditionalOptions() {
+		public @Nullable String getAdditionalOptions() {
 			return this.additionalOptions;
 		}
 

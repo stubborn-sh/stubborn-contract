@@ -22,10 +22,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -41,7 +43,7 @@ import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.StubNotFoundException;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
@@ -66,7 +68,7 @@ public class StubRunnerExtension implements BeforeAllCallback, AfterAllCallback,
 
 	private AtomicBoolean afterAllCalled = new AtomicBoolean();
 
-	private BatchStubRunner stubFinder;
+	private @Nullable BatchStubRunner stubFinder;
 
 	private StubRunnerOptionsBuilder stubRunnerOptionsBuilder = new StubRunnerOptionsBuilder(
 			StubRunnerOptions.fromSystemProps());
@@ -137,7 +139,7 @@ public class StubRunnerExtension implements BeforeAllCallback, AfterAllCallback,
 	}
 
 	@Override
-	public URL findStubUrl(String groupId, String artifactId) throws StubNotFoundException {
+	public URL findStubUrl(@Nullable String groupId, String artifactId) throws StubNotFoundException {
 		return stubFinder().findStubUrl(groupId, artifactId);
 	}
 
@@ -226,7 +228,7 @@ public class StubRunnerExtension implements BeforeAllCallback, AfterAllCallback,
 	}
 
 	@Override
-	public StubRunnerExtension stubsMode(StubRunnerProperties.StubsMode stubsMode) {
+	public StubRunnerExtension stubsMode(StubsMode stubsMode) {
 		builder().withStubsMode(stubsMode);
 		return this.delegate;
 	}
@@ -323,7 +325,7 @@ public class StubRunnerExtension implements BeforeAllCallback, AfterAllCallback,
 	}
 
 	BatchStubRunner stubFinder() {
-		return this.delegate.stubFinder;
+		return Objects.requireNonNull(this.delegate.stubFinder);
 	}
 
 	void stubFinder(BatchStubRunner stubFinder) {

@@ -39,9 +39,7 @@ import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-
-import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utilities for creating/obtaining Aether (Maven Resolver) components.
@@ -56,6 +54,8 @@ import org.springframework.util.StringUtils;
  * {@link RepositorySystemSession} when called from a Mojo, avoiding classpath issues
  * entirely.</li>
  * </ul>
+ *
+ * @author Marcin Grzejszczak
  */
 final class AetherFactories {
 
@@ -82,6 +82,8 @@ final class AetherFactories {
 	/**
 	 * Return the injected system if available, otherwise create a new one via a
 	 * {@link DefaultServiceLocator} without hard-linking to optional providers.
+	 * @param injectedOrNull the injected repository system, or {@code null}
+	 * @return the repository system to use
 	 */
 	static RepositorySystem repositorySystemOr(@Nullable RepositorySystem injectedOrNull) {
 		if (injectedOrNull != null) {
@@ -99,8 +101,12 @@ final class AetherFactories {
 	/**
 	 * Return the injected session if available, otherwise create a new session for the
 	 * given system.
+	 * @param system the repository system
+	 * @param injectedOrNull the injected session, or {@code null}
+	 * @param workOffline whether to work offline
+	 * @return the repository system session to use
 	 */
-	static RepositorySystemSession sessionOr(RepositorySystem system, @Nullable RepositorySystemSession injectedOrNull,
+	static RepositorySystemSession sessionOr(RepositorySystem system, RepositorySystemSession injectedOrNull,
 			boolean workOffline) {
 		if (injectedOrNull != null) {
 			if (log.isDebugEnabled()) {
@@ -123,6 +129,7 @@ final class AetherFactories {
 	 * If any of these are missing on the classpath, we simply don't register them and let
 	 * ServiceLoader discover whatever is available. This avoids
 	 * {@code NoClassDefFoundError} at class load time.
+	 * @return a newly created repository system
 	 */
 	private static RepositorySystem newRepositorySystemFallback() {
 		DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
@@ -133,7 +140,7 @@ final class AetherFactories {
 			public void serviceCreationFailed(Class<?> type, Class<?> impl, Throwable exception) {
 				if (log.isDebugEnabled()) {
 					log.debug("Failed to create service " + type.getName() + " via "
-							+ (impl != null ? impl.getName() : "<null>") + ": " + exception.toString());
+							+ ((impl != null) ? impl.getName() : "<null>") + ": " + exception.toString());
 				}
 			}
 		});
@@ -187,6 +194,9 @@ final class AetherFactories {
 	/**
 	 * Create a new {@link RepositorySystemSession}, controlling offline/update/checksum
 	 * policies.
+	 * @param system the repository system
+	 * @param workOffline whether to work offline
+	 * @return a newly created session
 	 */
 	static RepositorySystemSession newSession(RepositorySystem system, boolean workOffline) {
 		DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
@@ -209,6 +219,8 @@ final class AetherFactories {
 	/**
 	 * Determine local repo directory: respect settings/system prop; use temp when online
 	 * to avoid pollution.
+	 * @param workOffline whether to work offline
+	 * @return the local repository directory
 	 */
 	static String localRepositoryDirectory(boolean workOffline) {
 		String localRepoLocationFromSettings = settings().getLocalRepository();
@@ -223,25 +235,25 @@ final class AetherFactories {
 		try {
 			return Files.createTempDirectory("aether-local").toString();
 		}
-		catch (IOException e) {
+		catch (IOException ex) {
 			if (log.isDebugEnabled()) {
-				log.debug("Failed to create a new temporary directory, will generate a new one under temp dir", e);
+				log.debug("Failed to create a new temporary directory, will generate a new one under temp dir", ex);
 			}
 			return System.getProperty("java.io.tmpdir") + File.separator + RANDOM.nextInt();
 		}
 	}
 
-	private static String readPropertyFromSystemProps(@Nullable String localRepoLocationFromSettings) {
+	private static String readPropertyFromSystemProps(String localRepoLocationFromSettings) {
 		String mavenLocalRepo = fromSystemPropOrEnv(MAVEN_LOCAL_REPOSITORY_LOCATION);
-		return StringUtils.hasText(mavenLocalRepo) ? mavenLocalRepo
-				: (localRepoLocationFromSettings != null ? localRepoLocationFromSettings
+		return (mavenLocalRepo != null && !mavenLocalRepo.isBlank()) ? mavenLocalRepo
+				: ((localRepoLocationFromSettings != null) ? localRepoLocationFromSettings
 						: System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository");
 	}
 
 	// system prop takes precedence over env var
 	private static String fromSystemPropOrEnv(String prop) {
 		String resolvedProp = System.getProperty(prop);
-		if (StringUtils.hasText(resolvedProp)) {
+		if (resolvedProp != null && !resolvedProp.isBlank()) {
 			return resolvedProp;
 		}
 		return System.getenv(prop);

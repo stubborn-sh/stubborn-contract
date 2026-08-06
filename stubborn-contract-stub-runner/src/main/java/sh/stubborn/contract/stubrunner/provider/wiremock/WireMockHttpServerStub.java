@@ -19,7 +19,7 @@ package sh.stubborn.contract.stubrunner.provider.wiremock;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +27,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.github.jknack.handlebars.Helper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.JsonException;
@@ -40,6 +43,7 @@ import com.github.tomakehurst.wiremock.security.NoClientAuthenticator;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.stubrunner.HttpServerStub;
@@ -52,12 +56,6 @@ import sh.stubborn.contract.verifier.dsl.wiremock.SpringCloudContractRequestMatc
 import sh.stubborn.contract.verifier.dsl.wiremock.SpringCloudContractRequestMatcherCompat;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions;
 import sh.stubborn.contract.wiremock.WireMockSpring;
-import wiremock.com.github.jknack.handlebars.Helper;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.StreamUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Abstraction over WireMock as a HTTP Server Stub.
@@ -73,22 +71,32 @@ public class WireMockHttpServerStub implements HttpServerStub {
 
 	private static final int INVALID_PORT = -1;
 
-	private WireMockServer wireMockServer;
+	private @Nullable WireMockServer wireMockServer;
 
 	private boolean https = false;
 
-	private WireMockConfiguration wireMockConfiguration;
+	private @Nullable WireMockConfiguration wireMockConfiguration;
+
+	private static boolean isPresent(String className) {
+		try {
+			Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+			return true;
+		}
+		catch (ClassNotFoundException ex) {
+			return false;
+		}
+	}
 
 	private WireMockConfiguration config() {
-		if (ClassUtils.isPresent("sh.stubborn.contract.wiremock.WireMockSpring", null)) {
+		if (isPresent("sh.stubborn.contract.wiremock.WireMockSpring")) {
 			return WireMockSpring.options().extensions(responseTransformers());
 		}
 		return new WireMockConfiguration().extensions(responseTransformers());
 	}
 
 	private Extension[] responseTransformers() {
-		List<WireMockExtensions> wireMockExtensions = SpringFactoriesLoader.loadFactories(WireMockExtensions.class,
-				null);
+		List<WireMockExtensions> wireMockExtensions = new ArrayList<>();
+		ServiceLoader.load(WireMockExtensions.class).forEach(wireMockExtensions::add);
 		List<Extension> extensions = new ArrayList<>();
 		if (!wireMockExtensions.isEmpty()) {
 			for (WireMockExtensions wireMockExtension : wireMockExtensions) {
@@ -111,7 +119,11 @@ public class WireMockHttpServerStub implements HttpServerStub {
 
 	@Override
 	public int port() {
-		return isRunning() ? (this.https ? this.wireMockServer.httpsPort() : this.wireMockServer.port()) : INVALID_PORT;
+		if (!isRunning()) {
+			return INVALID_PORT;
+		}
+		WireMockServer server = Objects.requireNonNull(this.wireMockServer);
+		return this.https ? server.httpsPort() : server.port();
 	}
 
 	@Override
@@ -127,7 +139,7 @@ public class WireMockHttpServerStub implements HttpServerStub {
 			}
 			return this;
 		}
-		int port = configuration.port;
+		int port = Objects.requireNonNull(configuration.port);
 		WireMockConfiguration wireMockConfiguration = config().port(port).notifier(new Slf4jNotifier(true));
 		if (configuration.configurer.isAccepted(wireMockConfiguration)) {
 			@SuppressWarnings("unchecked")
@@ -154,7 +166,7 @@ public class WireMockHttpServerStub implements HttpServerStub {
 
 	@Override
 	public HttpServerStub reset() {
-		this.wireMockServer.resetAll();
+		Objects.requireNonNull(this.wireMockServer).resetAll();
 		return this;
 	}
 
@@ -170,7 +182,7 @@ public class WireMockHttpServerStub implements HttpServerStub {
 			}
 			return this;
 		}
-		this.wireMockServer.stop();
+		Objects.requireNonNull(this.wireMockServer).stop();
 		return this;
 	}
 
@@ -186,14 +198,14 @@ public class WireMockHttpServerStub implements HttpServerStub {
 	@Override
 	public String registeredMappings() {
 		Collection<String> mappings = new ArrayList<>();
-		for (StubMapping stubMapping : this.wireMockServer.getStubMappings()) {
+		for (StubMapping stubMapping : Objects.requireNonNull(this.wireMockServer).getStubMappings()) {
 			mappings.add(stubMapping.toString());
 		}
 		return jsonArrayOfMappings(mappings);
 	}
 
 	private String jsonArrayOfMappings(Collection<String> mappings) {
-		return "[" + StringUtils.collectionToDelimitedString(mappings, ",\n") + "]";
+		return "[" + String.join(",\n", mappings) + "]";
 	}
 
 	@Override
@@ -206,17 +218,17 @@ public class WireMockHttpServerStub implements HttpServerStub {
 			getMapping(file);
 			return true;
 		}
-		catch (IllegalStateException e) {
+		catch (IllegalStateException ex) {
 			return false;
 		}
 	}
 
 	StubMapping getMapping(File file) {
 		try (InputStream stream = Files.newInputStream(file.toPath())) {
-			return StubMapping.buildFrom(StreamUtils.copyToString(stream, Charset.forName("UTF-8")));
+			return StubMapping.buildFrom(new String(stream.readAllBytes(), StandardCharsets.UTF_8));
 		}
-		catch (IOException | JsonException e) {
-			throw new IllegalStateException("Cannot read file", e);
+		catch (IOException | JsonException ex) {
+			throw new IllegalStateException("Cannot read file", ex);
 		}
 	}
 
@@ -231,9 +243,10 @@ public class WireMockHttpServerStub implements HttpServerStub {
 		String host = "localhost";
 		int port = port();
 		String urlPathPrefix = "";
-		String hostHeader = "";
-		String proxyHost = this.wireMockConfiguration.proxyHostHeader();
-		int proxyPort = this.wireMockConfiguration.proxyVia().port();
+		String hostHeader = host + ":" + port;
+		WireMockConfiguration config = Objects.requireNonNull(this.wireMockConfiguration);
+		String proxyHost = config.proxyHostHeader();
+		int proxyPort = config.proxyVia().port();
 		ClientAuthenticator authenticator = NoClientAuthenticator.noClientAuthenticator();
 		return new WireMock(scheme, host, port, urlPathPrefix, hostHeader, proxyHost, proxyPort, authenticator);
 	}
@@ -252,13 +265,13 @@ public class WireMockHttpServerStub implements HttpServerStub {
 					log.debug("Registered stub mappings from [" + mappingDescriptor + "]");
 				}
 			}
-			catch (Exception e) {
+			catch (Exception ex) {
 				if (log.isDebugEnabled()) {
-					log.debug("Failed to register the stub mapping [" + mappingDescriptor + "]", e);
+					log.debug("Failed to register the stub mapping [" + mappingDescriptor + "]", ex);
 				}
 			}
 		}
-		PortAndMappings portAndMappings = SERVERS.get(this);
+		PortAndMappings portAndMappings = Objects.requireNonNull(SERVERS.get(this));
 		SERVERS.put(this, new PortAndMappings(portAndMappings.random, portAndMappings.port, stubMappings));
 	}
 
@@ -289,7 +302,7 @@ public class WireMockHttpServerStub implements HttpServerStub {
 
 		@Override
 		public void info(String message) {
-			if (verbose) {
+			if (this.verbose) {
 				log.info(message);
 			}
 		}
@@ -304,28 +317,6 @@ public class WireMockHttpServerStub implements HttpServerStub {
 			log.error(message, t);
 		}
 
-	}
-
-}
-
-class PortAndMappings {
-
-	final boolean random;
-
-	final Integer port;
-
-	final List<StubMapping> mappings;
-
-	PortAndMappings(boolean random, Integer port, List<StubMapping> mappings) {
-		this.random = random;
-		this.port = port;
-		this.mappings = mappings;
-	}
-
-	@Override
-	public String toString() {
-		return "PortAndMappings{" + "random=" + this.random + ", port=" + this.port + ", mappings=" + this.mappings
-				+ '}';
 	}
 
 }

@@ -1,4 +1,4 @@
-spring.cloud.contract.stubrunner:
+stubborn.contract.stubrunner:
   repositoryRoot: classpath:m2repo/repository/
   ids: sh.stubborn.contract.verifier.stubs.amqp:spring-cloud-contract-amqp-test:0.4.0-SNAPSHOT:stubs
   stubs-mode: remote

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 
@@ -28,11 +29,13 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  * Converts contracts into their stub representation.
  *
  * @param <T> - type of stub mapping
+ * @author Marcin Grzejszczak
  * @since 1.1.0
  */
 public interface StubGenerator<T> {
 
 	/**
+	 * Checks whether this generator could have generated the given stub mapping.
 	 * @param mapping - potential stub mapping mapping
 	 * @return {@code true} if this converter could have generated this mapping stub.
 	 */
@@ -41,6 +44,7 @@ public interface StubGenerator<T> {
 	}
 
 	/**
+	 * Converts the given contract metadata into stubs.
 	 * @param rootName - root name of the contract
 	 * @param content - metadata of the contract
 	 * @return the collection of converted contracts into stubs. One contract can result
@@ -54,14 +58,15 @@ public interface StubGenerator<T> {
 	 * @param contract - contract for which stub was generated
 	 * @return the converted stub mapping
 	 */
-	default T postProcessStubMapping(T stubMapping, Contract contract) {
-		List<StubPostProcessor> processors = StubPostProcessor.PROCESSORS.stream()
-			.filter(p -> p.isApplicable(contract))
+	default @Nullable T postProcessStubMapping(@Nullable T stubMapping, Contract contract) {
+		List<StubPostProcessor> processors = StubPostProcessor.PROCESSORS()
+			.stream()
+			.filter((p) -> p.isApplicable(contract))
 			.collect(Collectors.toList());
 		if (processors.isEmpty()) {
 			return defaultStubMappingPostProcessing(stubMapping, contract);
 		}
-		T stub = stubMapping;
+		@Nullable T stub = stubMapping;
 		for (StubPostProcessor processor : processors) {
 			stub = (T) processor.postProcess(stub, contract);
 		}
@@ -74,11 +79,12 @@ public interface StubGenerator<T> {
 	 * @param contract - contract for which stub was generated
 	 * @return the converted stub mapping
 	 */
-	default T defaultStubMappingPostProcessing(T stubMapping, Contract contract) {
+	default @Nullable T defaultStubMappingPostProcessing(@Nullable T stubMapping, Contract contract) {
 		return stubMapping;
 	}
 
 	/**
+	 * Generates the output stub file name for the given input file.
 	 * @param inputFileName - name of the input file
 	 * @return the name of the converted stub file. If you have multiple contracts in a
 	 * single file then a prefix will be added to the generated file. If you provide the

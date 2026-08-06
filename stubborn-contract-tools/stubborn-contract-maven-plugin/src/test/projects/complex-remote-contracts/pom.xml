@@ -30,7 +30,7 @@
 		<plugins>
 			<plugin>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-maven-plugin</artifactId>
+				<artifactId>stubborn-contract-maven-plugin</artifactId>
 				<configuration>
 					<contractsMode>REMOTE</contractsMode>
 					<contractsPath>com/example/server</contractsPath>

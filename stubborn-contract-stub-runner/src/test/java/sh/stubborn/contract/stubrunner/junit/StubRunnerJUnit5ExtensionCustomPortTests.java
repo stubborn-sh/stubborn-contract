@@ -24,7 +24,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import org.springframework.util.StreamUtils;
 
@@ -38,7 +38,7 @@ class StubRunnerJUnit5ExtensionCustomPortTests {
 
 	@RegisterExtension
 	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension().repoRoot(repoRoot())
-		.stubsMode(StubRunnerProperties.StubsMode.REMOTE)
+		.stubsMode(StubsMode.REMOTE)
 		.downloadStub("sh.stubborn.contract.verifier.stubs", "loanIssuance")
 		.withPort(22345)
 		.downloadStub("sh.stubborn.contract.verifier.stubs:fraudDetectionServer:22346");
@@ -46,15 +46,15 @@ class StubRunnerJUnit5ExtensionCustomPortTests {
 	@BeforeAll
 	@AfterAll
 	static void setupProps() {
-		System.clearProperty("spring.cloud.contract.stubrunner.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.classifier");
 	}
 
 	private static String repoRoot() {
 		try {
 			return StubRunnerJUnit5ExtensionCustomPortTests.class.getResource("/m2repo/repository/").toURI().toString();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return "";
 		}
 	}

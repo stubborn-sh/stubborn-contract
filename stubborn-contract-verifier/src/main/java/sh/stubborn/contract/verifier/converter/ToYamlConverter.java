@@ -20,17 +20,17 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
 
 /**
  * Converts contracts to YAML for the given folder.
@@ -65,7 +65,9 @@ public final class ToYamlConverter {
 			log.debug("Converted collection of [{}] contracts to [{}] YAML contracts", collection.size(), yamls.size());
 		}
 		// rm target/copied_contracts/contracts/foo/baz/bar.groovy
-		file.delete();
+		if (!file.delete() && file.exists() && log.isWarnEnabled()) {
+			log.warn("Failed to delete original contract file [{}]", file.getAbsolutePath());
+		}
 		// [contracts/foo/baz/bar.groovy] -> [contracts/foo/baz/bar.yml]
 		Map<String, byte[]> stored = yamlContractConverter.store(yamls);
 		if (log.isDebugEnabled()) {
@@ -77,8 +79,8 @@ public final class ToYamlConverter {
 			try {
 				Files.write(ymlContractVersion.toPath(), value);
 			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
+			catch (IOException ex) {
+				throw new RuntimeException(ex);
 			}
 			if (log.isDebugEnabled()) {
 				log.debug("Written file [{}] with YAML contract definition", ymlContractVersion);
@@ -97,18 +99,19 @@ public final class ToYamlConverter {
 		try {
 			Files.walk(baseDir.toPath())
 				.map(Path::toFile)
-				.forEach(file -> CONTRACT_CONVERTERS.stream()
-					.filter(converter -> converter.isAccepted(file))
+				.forEach((file) -> CONTRACT_CONVERTERS.stream()
+					.filter((converter) -> converter.isAccepted(file))
 					.findFirst()
-					.ifPresent(converter -> doReplaceContractWithYaml(converter, file)));
+					.ifPresent((converter) -> doReplaceContractWithYaml(converter, file)));
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 
 	private static List<ContractConverter> converters() {
-		List<ContractConverter> converters = SpringFactoriesLoader.loadFactories(ContractConverter.class, null);
+		List<ContractConverter> converters = new ArrayList<>();
+		ServiceLoader.load(ContractConverter.class).forEach(converters::add);
 		converters.add(YamlContractConverter.INSTANCE);
 		converters.add(ContractVerifierDslConverter.INSTANCE);
 		return converters;

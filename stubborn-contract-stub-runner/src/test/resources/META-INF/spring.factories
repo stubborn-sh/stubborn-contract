@@ -1,4 +1,0 @@
-sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions=\
-sh.stubborn.contract.stubrunner.provider.wiremock.TestWireMockExtensions
-sh.stubborn.contract.spec.ContractConverter=\
-sh.stubborn.contract.stubrunner.TestCustomYamlContractConverter

@@ -30,7 +30,7 @@
 		<plugins>
 			<plugin>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-maven-plugin</artifactId>
+				<artifactId>stubborn-contract-maven-plugin</artifactId>
 				<version>2.0.0.BUILD-SNAPSHOT</version>
 				<configuration>
 					<contractsMode>REMOTE</contractsMode>

@@ -2,48 +2,32 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "4.3.x"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "github-actions"
-    directory: "/"
     target-branch: "main"
     schedule:
       interval: "weekly"
+
   - package-ecosystem: maven
     directory: /
     schedule:
-      interval: daily
-    target-branch: 4.3.x
-    ignore:
-      # only upgrade patch versions for maintenance branch
-      - dependency-name: "*"
-        update-types:
-          - version-update:semver-major
-          - version-update:semver-minor
-  - package-ecosystem: maven
-    directory: /
-    schedule:
-      interval: daily
+      interval: weekly
     target-branch: main
-    ignore:
-      # only upgrade patch versions for maintenance branch
-      - dependency-name: "*"
-        update-types:
-          - version-update:semver-major
-          - version-update:semver-minor
-  - package-ecosystem: npm
-    target-branch: docs-build
-    directory: /
-    schedule:
-      interval: weekly
-  - package-ecosystem: npm
-    target-branch: main
-    directory: /docs
-    schedule:
-      interval: weekly
-  - package-ecosystem: npm
-    target-branch: 4.3.x
-    directory: /docs
-    schedule:
-      interval: weekly
+    groups:
+      spring-boot:
+        patterns:
+          - "org.springframework.boot:*"
+          - "org.springframework:*"
+      spring-cloud-stream:
+        patterns:
+          - "org.springframework.cloud:spring-cloud-stream*"
+      wiremock:
+        patterns:
+          - "org.wiremock:*"
+      rest-assured:
+        patterns:
+          - "io.rest-assured:*"
+      testing:
+        patterns:
+          - "org.junit.jupiter:*"
+          - "org.junit.vintage:*"
+          - "org.assertj:*"
+          - "org.mockito:*"

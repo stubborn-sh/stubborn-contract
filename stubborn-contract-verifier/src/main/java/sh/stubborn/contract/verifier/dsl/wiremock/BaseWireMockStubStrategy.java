@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.dsl.wiremock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -36,14 +37,10 @@ import sh.stubborn.contract.verifier.util.MapConverter;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
-import static sh.stubborn.contract.verifier.util.ContentType.UNKNOWN;
-import static sh.stubborn.contract.verifier.util.ContentUtils.extractValue;
-import static sh.stubborn.contract.verifier.util.ContentUtils.getClientContentType;
-import static sh.stubborn.contract.verifier.util.MapConverter.transformValues;
-
 /**
  * Common abstraction over WireMock Request / Response conversion implementations.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 abstract class BaseWireMockStubStrategy {
@@ -71,6 +68,8 @@ abstract class BaseWireMockStubStrategy {
 	}
 
 	/**
+	 * Returns the stub side values from the object.
+	 * @param object the object to extract stub side values from
 	 * @return the stub side values from the object
 	 */
 	protected Object getStubSideValue(Object object) {
@@ -79,6 +78,9 @@ abstract class BaseWireMockStubStrategy {
 
 	/**
 	 * For the given {@link ContentType} returns the String version of the body.
+	 * @param value the body value
+	 * @param contentType the content type
+	 * @return the String version of the body
 	 */
 	String parseBody(Object value, ContentType contentType) {
 		return parseBody(value.toString(), contentType);
@@ -86,6 +88,9 @@ abstract class BaseWireMockStubStrategy {
 
 	/**
 	 * Return body as String from file.
+	 * @param value the file property
+	 * @param contentType the content type
+	 * @return the body as String from file
 	 */
 	String parseBody(FromFileProperty value, ContentType contentType) {
 		return value.asString();
@@ -93,6 +98,9 @@ abstract class BaseWireMockStubStrategy {
 
 	/**
 	 * For the given {@link ContentType} returns the Boolean version of the body.
+	 * @param value the body value
+	 * @param contentType the content type
+	 * @return the Boolean version of the body
 	 */
 	Boolean parseBody(Boolean value, ContentType contentType) {
 		return value;
@@ -100,6 +108,9 @@ abstract class BaseWireMockStubStrategy {
 
 	/**
 	 * For the given {@link ContentType} returns the Number version of the body.
+	 * @param value the body value
+	 * @param contentType the content type
+	 * @return the Number version of the body
 	 */
 	Number parseBody(Number value, ContentType contentType) {
 		return value;
@@ -107,6 +118,9 @@ abstract class BaseWireMockStubStrategy {
 
 	/**
 	 * For the given {@link ContentType} returns the String version of the body.
+	 * @param map the map body
+	 * @param contentType the content type
+	 * @return the String version of the body
 	 */
 	String parseBody(Map<?, ?> map, ContentType contentType) {
 		Object transformedMap = MapConverter.getStubSideValues(map);
@@ -120,7 +134,7 @@ abstract class BaseWireMockStubStrategy {
 	}
 
 	private Object transformMapIfRequestPresent(Object transformedMap) {
-		Object requestBody = contract.getRequest().getBody();
+		Object requestBody = Objects.requireNonNull(this.contract.getRequest()).getBody();
 		if (requestBody == null) {
 			return transformedMap;
 		}
@@ -130,9 +144,9 @@ abstract class BaseWireMockStubStrategy {
 	}
 
 	private Object processEntriesForTemplating(Object transformedMap, DocumentContext context) {
-		return transformValues(transformedMap, (val) -> {
-			if (val instanceof String && processor.containsJsonPathTemplateEntry((String) val)) {
-				String jsonPath = processor.jsonPathFromTemplateEntry((String) val);
+		return MapConverter.transformValues(transformedMap, (val) -> {
+			if (val instanceof String && this.processor.containsJsonPathTemplateEntry((String) val)) {
+				String jsonPath = this.processor.jsonPathFromTemplateEntry((String) val);
 				if (jsonPath == null) {
 					return val;
 				}
@@ -142,9 +156,9 @@ abstract class BaseWireMockStubStrategy {
 				}
 				return WRAPPER + val + WRAPPER;
 			}
-			else if (val instanceof String && processor.containsTemplateEntry((String) val)
-					&& template.escapedBody().equals(val)) {
-				return template.escapedBody();
+			else if (val instanceof String && this.processor.containsTemplateEntry((String) val)
+					&& this.template.escapedBody().equals(val)) {
+				return this.template.escapedBody();
 			}
 			return val;
 		});
@@ -152,10 +166,13 @@ abstract class BaseWireMockStubStrategy {
 
 	/**
 	 * For the given {@link ContentType} returns the String version of the body.
+	 * @param list the list body
+	 * @param contentType the content type
+	 * @return the String version of the body
 	 */
 	String parseBody(List<?> list, ContentType contentType) {
 		final List<Object> result = new ArrayList<>();
-		list.forEach(l -> {
+		list.forEach((l) -> {
 			if (l instanceof Map) {
 				result.add(MapConverter.getStubSideValues(l));
 			}
@@ -180,10 +197,13 @@ abstract class BaseWireMockStubStrategy {
 
 	/**
 	 * For the given {@link ContentType} returns the String version of the body.
+	 * @param value the body value
+	 * @param contentType the content type
+	 * @return the String version of the body
 	 */
 	String parseBody(GString value, ContentType contentType) {
-		Object processedValue = extractValue(value, contentType,
-				(o) -> o instanceof DslProperty ? ((DslProperty<?>) o).getClientValue() : o);
+		Object processedValue = ContentUtils.extractValue(value, contentType,
+				(o) -> Objects.requireNonNull((o instanceof DslProperty) ? ((DslProperty<?>) o).getClientValue() : o));
 		if (processedValue instanceof GString) {
 			return parseBody(processedValue.toString(), contentType);
 		}
@@ -192,6 +212,9 @@ abstract class BaseWireMockStubStrategy {
 
 	/**
 	 * For the given {@link ContentType} returns the String version of the body.
+	 * @param value the body value
+	 * @param contentType the content type
+	 * @return the String version of the body
 	 */
 	String parseBody(String value, ContentType contentType) {
 		return value;
@@ -201,13 +224,13 @@ abstract class BaseWireMockStubStrategy {
 		try {
 			if (value instanceof Map) {
 				Object convertedMap = MapConverter.transformValues(value,
-						(v) -> v instanceof GString ? ((GString) v).toString() : v);
+						(v) -> (v instanceof GString) ? ((GString) v).toString() : v);
 				String jsonOutput = new JsonMapper().writeValueAsString(convertedMap);
 				return jsonOutput.replaceAll("\\\\\\\\\\\\", "\\\\");
 			}
 			return new JsonMapper().writeValueAsString(value);
 		}
-		catch (JacksonException e) {
+		catch (JacksonException ex) {
 			throw new IllegalArgumentException("The current object [" + value + "] could not be serialized");
 		}
 	}
@@ -215,14 +238,17 @@ abstract class BaseWireMockStubStrategy {
 	/**
 	 * Attempts to guess the {@link ContentType} from body and headers. Returns
 	 * {@link ContentType#UNKNOWN} if it fails to guess.
+	 * @param body the body to inspect
+	 * @param headers the headers to inspect
+	 * @return the guessed content type
 	 */
 	protected ContentType tryToGetContentType(Object body, Headers headers) {
 		ContentType contentType = ContentUtils.recognizeContentTypeFromHeader(headers);
-		if (UNKNOWN == contentType) {
+		if (ContentType.UNKNOWN == contentType) {
 			if (body == null) {
-				return UNKNOWN;
+				return ContentType.UNKNOWN;
 			}
-			return getClientContentType(body);
+			return ContentUtils.getClientContentType(body);
 		}
 		return contentType;
 	}

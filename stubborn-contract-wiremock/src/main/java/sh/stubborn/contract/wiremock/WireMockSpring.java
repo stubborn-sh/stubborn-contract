@@ -16,18 +16,11 @@
 
 package sh.stubborn.contract.wiremock;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.ssl.SSLContexts;
-
-import org.springframework.util.ClassUtils;
 
 /**
- * Convenience factory class for a {@link WireMockConfiguration} that knows how to use
- * Spring Boot to create a stub server. Use, for example, in a JUnit rule:
+ * Convenience factory class for a {@link WireMockConfiguration}. Use, for example, in a
+ * JUnit rule:
  *
  * <pre>
  * &#64;ClassRule
@@ -37,30 +30,17 @@ import org.springframework.util.ClassUtils;
  *
  * and then use {@link com.github.tomakehurst.wiremock.client.WireMock} as normal in your
  * test methods.
+ * <p>
+ * If the WireMock server is configured for HTTPS, callers are responsible for configuring
+ * their HTTP client to trust the WireMock server's certificate. Do not disable
+ * certificate validation globally; instead use WireMock's bundled keystore or a dedicated
+ * test trust-store.
  *
  * @author Dave Syer
- *
  */
 public abstract class WireMockSpring {
 
-	private static boolean initialized = false;
-
 	public static WireMockConfiguration options() {
-		if (!initialized) {
-			if (ClassUtils.isPresent("org.apache.http.conn.ssl.NoopHostnameVerifier", null)) {
-				HttpsURLConnection.setDefaultHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-				try {
-					HttpsURLConnection.setDefaultSSLSocketFactory(SSLContexts.custom()
-						.loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE)
-						.build()
-						.getSocketFactory());
-				}
-				catch (Exception e) {
-					throw new AssertionError("Cannot install custom socket factory: [" + e.getMessage() + "]");
-				}
-			}
-			initialized = true;
-		}
 		return new WireMockConfiguration();
 	}
 

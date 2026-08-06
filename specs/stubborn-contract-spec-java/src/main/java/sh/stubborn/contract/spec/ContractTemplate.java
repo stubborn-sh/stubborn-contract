@@ -28,6 +28,7 @@ package sh.stubborn.contract.spec;
 public interface ContractTemplate {
 
 	/**
+	 * Asserts whether the given text starts with a proper opening template.
 	 * @param text text to assert
 	 * @return asserts whether the given text starts with proper opening template.
 	 */
@@ -36,6 +37,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Asserts whether the given text starts with a proper escaped opening template.
 	 * @param text text to assert
 	 * @return asserts whether the given text starts with proper opening template for
 	 * escaped value.
@@ -77,11 +79,13 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving a URL path and query from the request.
 	 * @return returns the template for retrieving a URL path and query from request
 	 */
 	String url();
 
 	/**
+	 * Returns the template for retrieving the first value of a query parameter.
 	 * @param key query parameter key
 	 * @return the template for retrieving first value of a query parameter e.g. {{
 	 * request.query.search }}
@@ -89,6 +93,7 @@ public interface ContractTemplate {
 	String query(String key);
 
 	/**
+	 * Returns the template for retrieving the nth value of a query parameter.
 	 * @param key query parameter key
 	 * @param index query parameter index
 	 * @return the template for retrieving nth value of a query parameter (zero indexed)
@@ -97,11 +102,13 @@ public interface ContractTemplate {
 	String query(String key, int index);
 
 	/**
+	 * Returns the template for retrieving a URL path.
 	 * @return the template for retrieving a URL path
 	 */
 	String path();
 
 	/**
+	 * Returns the template for retrieving the nth value of a URL path.
 	 * @param index request path index
 	 * @return the template for retrieving nth value of a URL path (zero indexed) e.g. {{
 	 * request.path.[2] }}
@@ -109,6 +116,7 @@ public interface ContractTemplate {
 	String path(int index);
 
 	/**
+	 * Returns the template for retrieving the first value of a request header.
 	 * @param key headers key
 	 * @return the template for retrieving the first value of a request header e.g. {{
 	 * request.headers.X-Request-Id }}
@@ -116,6 +124,7 @@ public interface ContractTemplate {
 	String header(String key);
 
 	/**
+	 * Returns the template for retrieving the nth value of a request header.
 	 * @param key headers key
 	 * @param index headers index
 	 * @return the template for retrieving the nth value of a request header (zero
@@ -124,12 +133,14 @@ public interface ContractTemplate {
 	String header(String key, int index);
 
 	/**
+	 * Returns the template for retrieving the first value of a cookie.
 	 * @param key cookie key
 	 * @return the template for retrieving the first value of a cookie with certain key
 	 */
 	String cookie(String key);
 
 	/**
+	 * Returns the template for retrieving the request body text.
 	 * @return request body text (avoid for non-text bodies) e.g. {{ request.body }} . The
 	 * body will not be escaped so you won't be able to directly embed it in a JSON for
 	 * example.
@@ -137,6 +148,7 @@ public interface ContractTemplate {
 	String body();
 
 	/**
+	 * Returns request body text for the given JsonPath.
 	 * @param jsonPath json path value
 	 * @return request body text for the given JsonPath. e.g. {{ jsonPath request.body
 	 * '$.a.b.c' }}
@@ -144,6 +156,7 @@ public interface ContractTemplate {
 	String body(String jsonPath);
 
 	/**
+	 * Returns the template for retrieving an escaped URL path and query from the request.
 	 * @return the template for retrieving a escaped URL path and query from request
 	 */
 	default String escapedUrl() {
@@ -151,6 +164,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving the escaped first value of a query parameter.
 	 * @param key query parameter key
 	 * @return the template for retrieving escaped first value of a query parameter e.g.
 	 * {{{ request.query.search }}}
@@ -160,6 +174,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving the escaped nth value of a query parameter.
 	 * @param key query parameter key
 	 * @param index query parameter index
 	 * @return the template for retrieving esacped nth value of a query parameter (zero
@@ -170,6 +185,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving an escaped URL path.
 	 * @return the template for retrieving a escaped URL path
 	 */
 	default String escapedPath() {
@@ -177,6 +193,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving the escaped nth value of a URL path.
 	 * @param index path index
 	 * @return the template for retrieving escaped nth value of a URL path (zero indexed)
 	 * e.g. {{{ request.path.[2] }}}
@@ -186,6 +203,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving the escaped first value of a request header.
 	 * @param key headers key
 	 * @return the template for retrieving the escaped first value of a request header
 	 * e.g. {{{ request.headers.X-Request-Id }}}
@@ -195,6 +213,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving the escaped nth value of a request header.
 	 * @param key headers key
 	 * @param index headers index
 	 * @return the template for retrieving the esacaped nth value of a request header
@@ -205,6 +224,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving the escaped first value of a cookie.
 	 * @param key cookie key
 	 * @return the template for retrieving the escaped first value of a cookie with
 	 * certain key
@@ -214,6 +234,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns the template for retrieving the escaped request body text.
 	 * @return request body text (avoid for non-text bodies) e.g. {{{ request.body }}} .
 	 * The body will not be escaped so you won't be able to directly embed it in a JSON
 	 * for example.
@@ -223,6 +244,7 @@ public interface ContractTemplate {
 	}
 
 	/**
+	 * Returns escaped request body text for the given JsonPath.
 	 * @param jsonPath json path value
 	 * @return request body text for the given JsonPath. e.g. {{{ jsonPath request.body
 	 * '$.a.b.c' }}}

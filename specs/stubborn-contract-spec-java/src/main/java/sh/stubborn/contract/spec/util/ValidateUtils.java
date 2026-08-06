@@ -19,8 +19,10 @@ package sh.stubborn.contract.spec.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
 import sh.stubborn.contract.spec.internal.RegexProperty;
@@ -28,6 +30,7 @@ import sh.stubborn.contract.spec.internal.RegexProperty;
 /**
  * Checks the validity of DSL entries.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public final class ValidateUtils {
@@ -48,13 +51,13 @@ public final class ValidateUtils {
 	 * @param msg potential exception message
 	 * @return object if everything is fine
 	 */
-	public static Object validateServerValueIsAvailable(Object value, String msg) {
+	public static @Nullable Object validateServerValueIsAvailable(@Nullable Object value, String msg) {
 		if (value instanceof Pattern) {
 			validateServerValue((Pattern) value, msg);
 		}
 		else if (value instanceof RegexProperty) {
 			RegexProperty property = (RegexProperty) value;
-			validateServerValue(property.getPattern(), msg);
+			validateServerValue(Objects.requireNonNull(property.getPattern(), "RegexProperty pattern"), msg);
 		}
 		else if (value instanceof MatchingStrategy) {
 			validateServerValue((MatchingStrategy) value, msg);
@@ -86,7 +89,7 @@ public final class ValidateUtils {
 		validateServerValue(value.getServerValue(), msg);
 	}
 
-	public static void validateServerValue(Object value, String msg) {
+	public static void validateServerValue(@Nullable Object value, String msg) {
 		// OK
 	}
 

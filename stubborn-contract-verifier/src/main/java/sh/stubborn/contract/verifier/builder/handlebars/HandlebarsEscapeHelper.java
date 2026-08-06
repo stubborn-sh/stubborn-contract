@@ -19,11 +19,11 @@ package sh.stubborn.contract.verifier.builder.handlebars;
 import java.io.IOException;
 import java.util.Map;
 
+import com.github.jknack.handlebars.Helper;
+import com.github.jknack.handlebars.Options;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.RequestTemplateModel;
 import org.apache.commons.text.StringEscapeUtils;
-import sh.stubborn.contract.verifier.builder.TestSideRequestTemplateModel;
-import wiremock.com.github.jknack.handlebars.Helper;
-import wiremock.com.github.jknack.handlebars.Options;
+import sh.stubborn.contract.verifier.template.TestSideRequestTemplateModel;
 
 /**
  * A Handlebars helper for the {@code escapejsonbody} helper function.

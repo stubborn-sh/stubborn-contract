@@ -16,23 +16,24 @@
 
 package sh.stubborn.contract.stubrunner;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.ProtocolResolver;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Uses {@code META-INF/spring.factories} to read {@link ProtocolResolver} list that gets
- * added to {@link DefaultResourceLoader}. Each implementor of a new
- * {@link sh.stubborn.contract.stubrunner.StubDownloaderBuilder}, if one uses a new
- * protocol, should register their own {@link ProtocolResolver} so that Stub Runner can
- * convert a {@link String} version of a URI to a {@link Resource}.
+ * Resolves a URL string to a {@link StubResource} by iterating over
+ * {@link StubDownloaderBuilder} instances loaded from {@link java.util.ServiceLoader} and
+ * the built-in default builders.
  *
  * IMPORTANT! Internal tool. Do not use.
  *
@@ -43,16 +44,11 @@ public final class ResourceResolver {
 
 	private static final Log log = LogFactory.getLog(ResourceResolver.class);
 
-	private static final List<ProtocolResolver> RESOLVERS = new ArrayList<>();
-
-	private static final DefaultResourceLoader LOADER = new DefaultResourceLoader();
+	private static final List<StubDownloaderBuilder> RESOLVERS = new ArrayList<>();
 
 	static {
-		RESOLVERS.addAll(SpringFactoriesLoader.loadFactories(StubDownloaderBuilder.class, null));
+		ServiceLoader.load(StubDownloaderBuilder.class).forEach(RESOLVERS::add);
 		RESOLVERS.addAll(new StubDownloaderBuilderProvider().defaultStubDownloaderBuilders());
-		for (ProtocolResolver resolver : RESOLVERS) {
-			LOADER.addProtocolResolver(resolver);
-		}
 	}
 
 	private ResourceResolver() {
@@ -60,17 +56,87 @@ public final class ResourceResolver {
 	}
 
 	/**
-	 * @param url - string url
-	 * @return corresponding {@link Resource}
+	 * Converts a URL string to a {@link StubResource}.
+	 * @param url string URL
+	 * @return corresponding {@link StubResource}, or a plain-URL resource if no builder
+	 * handles the protocol
 	 */
-	public static Resource resource(String url) {
-		try {
-			return LOADER.getResource(url);
-		}
-		catch (Exception e) {
-			log.error("Exception occurred while trying to read the resource [" + url + "]", e);
+	public static @Nullable StubResource resource(String url) {
+		if (url == null || url.isBlank()) {
 			return null;
 		}
+		for (StubDownloaderBuilder builder : RESOLVERS) {
+			try {
+				StubResource resolved = builder.resolve(url);
+				if (resolved != null) {
+					return resolved;
+				}
+			}
+			catch (Exception ex) {
+				log.error("Exception while resolving [" + url + "] via [" + builder.getClass().getSimpleName() + "]",
+						ex);
+			}
+		}
+		return plainUrlResource(url);
+	}
+
+	static ClassPathStubResource classpathResource(String path) {
+		return new ClassPathStubResource(path);
+	}
+
+	private static StubResource plainUrlResource(String url) {
+		if (url.startsWith("classpath:") || url.startsWith("classpath*:")) {
+			String path = url.replaceFirst("classpath\\*?:", "");
+			return classpathResource(path);
+		}
+		// No URL scheme → treat as classpath (matches Spring DefaultResourceLoader
+		// behavior)
+		if (!url.contains(":")) {
+			return classpathResource(url);
+		}
+		return new StubResource() {
+			@Override
+			public URI getURI() throws IOException {
+				try {
+					return new URL(url).toURI();
+				}
+				catch (URISyntaxException ex) {
+					throw new IOException("Cannot convert URL to URI: " + url, ex);
+				}
+			}
+
+			@Override
+			public URL getURL() throws IOException {
+				return new URL(url);
+			}
+
+			@Override
+			public File getFile() throws IOException {
+				try {
+					return new File(new URL(url).toURI());
+				}
+				catch (URISyntaxException ex) {
+					throw new IOException("Cannot convert URL to URI: " + url, ex);
+				}
+			}
+
+			@Override
+			public InputStream getInputStream() throws IOException {
+				return new URL(url).openStream();
+			}
+
+			@Override
+			public String getFilename() {
+				String path = (url.contains("?")) ? url.substring(0, url.indexOf('?')) : url;
+				int sep = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+				return (sep >= 0) ? path.substring(sep + 1) : path;
+			}
+
+			@Override
+			public String getDescription() {
+				return "URL [" + url + "]";
+			}
+		};
 	}
 
 }

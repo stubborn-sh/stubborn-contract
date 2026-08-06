@@ -35,12 +35,12 @@ public class GroovyDslPropertyConverter implements DslPropertyConverter {
 	public Object testSide(Object object) {
 		if (object instanceof GString) {
 			boolean anyPattern = Arrays.stream(((GString) object).getValues())
-				.anyMatch(it -> it instanceof RegexProperty);
+				.anyMatch((it) -> it instanceof RegexProperty);
 			if (!anyPattern) {
 				return object;
 			}
 			List<Object> generatedValues = Arrays.stream(((GString) object).getValues())
-				.map(it -> it instanceof RegexProperty ? ((RegexProperty) it).generate() : it)
+				.map((it) -> (it instanceof RegexProperty) ? ((RegexProperty) it).generate() : it)
 				.collect(Collectors.toList());
 			Object[] arrayOfObjects = generatedValues.toArray();
 			String[] strings = Arrays.copyOf(((GString) object).getStrings(), ((GString) object).getStrings().length,

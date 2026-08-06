@@ -27,9 +27,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.stubrunner.ContractDownloader;
 import sh.stubborn.contract.stubrunner.InclusionPropertiesAccessor;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 
+@SuppressWarnings("NullAway.Init")
 class MavenContractsDownloaderTests {
 
 	@TempDir
@@ -73,7 +74,7 @@ class MavenContractsDownloaderTests {
 	}
 
 	private MavenContractsDownloader contractsDownloader(MavenProject mavenProject, Dependency one, File file) {
-		return new MavenContractsDownloader(mavenProject, one, "", "", StubRunnerProperties.StubsMode.LOCAL, new Log() {
+		return new MavenContractsDownloader(mavenProject, one, "", "", StubsMode.LOCAL, new Log() {
 			@Override
 			public boolean isDebugEnabled() {
 				return false;
@@ -155,6 +156,9 @@ class MavenContractsDownloaderTests {
 			}
 		}, "", "", "", null, false, new HashMap<>(), false) {
 			@Override
+			// Intentionally constructs a ContractDownloader with null args; the anonymous
+			// subclass overrides every method that would use them.
+			@SuppressWarnings("NullAway")
 			ContractDownloader contractDownloader() {
 				return new ContractDownloader(null, null, null, null, null, null) {
 
@@ -162,10 +166,11 @@ class MavenContractsDownloaderTests {
 
 					@Override
 					public File unpackAndDownloadContracts() {
-						if (file == fileForDependencyOne) {
+						if (file == MavenContractsDownloaderTests.this.fileForDependencyOne) {
 							this.counterForDependencyOne = this.counterForDependencyOne + 1;
 						}
-						if (file == fileForDependencyOne && this.counterForDependencyOne == 2) {
+						if (file == MavenContractsDownloaderTests.this.fileForDependencyOne
+								&& this.counterForDependencyOne == 2) {
 							throw new AssertionError("Second call for dependency 1 should come from cache");
 						}
 						return file;

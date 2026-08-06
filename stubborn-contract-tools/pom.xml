@@ -6,12 +6,12 @@
 
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-parent</artifactId>
+		<artifactId>stubborn-contract-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>stubborn-tools</artifactId>
+	<artifactId>stubborn-contract-tools</artifactId>
 	<packaging>pom</packaging>
 
 	<name>Stubborn Contract Tools</name>
@@ -71,8 +71,6 @@
 	<modules>
 		<module>stubborn-contract-converters</module>
 		<module>stubborn-contract-maven-plugin</module>
-		<module>stubborn-contract-gradle-plugin</module>
-		<module>stubborn-contract-gradle-portal-plugin</module>
 	</modules>
 
 	<build>

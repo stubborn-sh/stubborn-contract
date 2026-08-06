@@ -19,12 +19,12 @@ package sh.stubborn.contract.stubrunner.junit;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import sh.stubborn.contract.stubrunner.junit4.StubRunnerRuleCustomPortJUnitTest;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -40,8 +40,7 @@ class StubRunnerJUnit5ExtensionCustomMessageVerifierTests {
 
 	// Visible for testing
 	@RegisterExtension
-	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension()
-		.stubsMode(StubRunnerProperties.StubsMode.REMOTE)
+	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension().stubsMode(StubsMode.REMOTE)
 		.repoRoot(repoRoot())
 		.downloadStub("sh.stubborn.contract.verifier.stubs", "bootService")
 		.messageVerifierSender(new MyMessageVerifier())
@@ -50,15 +49,17 @@ class StubRunnerJUnit5ExtensionCustomMessageVerifierTests {
 	@BeforeAll
 	@AfterAll
 	static void setupProps() {
-		System.clearProperty("spring.cloud.contract.stubrunner.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.classifier");
 	}
 
 	private static String repoRoot() {
 		try {
-			return StubRunnerRuleCustomPortJUnitTest.class.getResource("/m2repo/repository/").toURI().toString();
+			return StubRunnerJUnit5ExtensionCustomMessageVerifierTests.class.getResource("/m2repo/repository/")
+				.toURI()
+				.toString();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return "";
 		}
 	}
@@ -76,25 +77,27 @@ class StubRunnerJUnit5ExtensionCustomMessageVerifierTests {
 		assertThat(wrongLabelWithIvyNotation.getMessage()).contains("Failed to send a message with headers");
 	}
 
-	static class MyMessageVerifier implements MessageVerifierSender, MessageVerifierReceiver {
+	static class MyMessageVerifier implements MessageVerifierSender<Object>, MessageVerifierReceiver<Object> {
 
 		@Override
-		public void send(Object message, String destination, YamlContract contract) {
+		public void send(Object message, String destination, @Nullable YamlContract contract) {
 			throw new IllegalStateException("Failed to send a message");
 		}
 
 		@Override
-		public Object receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+		public @Nullable Object receive(String destination, long timeout, TimeUnit timeUnit,
+				@Nullable YamlContract contract) {
 			throw new IllegalStateException("Failed to receive a message with timeout");
 		}
 
 		@Override
-		public Object receive(String destination, YamlContract contract) {
+		public @Nullable Object receive(String destination, @Nullable YamlContract contract) {
 			throw new IllegalStateException("Failed to receive a message");
 		}
 
 		@Override
-		public void send(Object payload, Map headers, String destination, YamlContract contract) {
+		public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+				@Nullable YamlContract contract) {
 			throw new IllegalStateException("Failed to send a message with headers");
 		}
 

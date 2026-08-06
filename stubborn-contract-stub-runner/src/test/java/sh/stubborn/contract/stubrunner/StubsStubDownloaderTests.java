@@ -20,9 +20,10 @@ import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.assertj.core.api.BDDAssertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StubsStubDownloaderTests {
 
@@ -30,7 +31,7 @@ public class StubsStubDownloaderTests {
 
 	@Test
 	public void should_pick_stubs_from_a_given_location() {
-		String path = url.getPath();
+		String path = this.url.getPath();
 		StubRunnerOptions options = new StubRunnerOptionsBuilder().withStubRepositoryRoot("stubs://file://" + path)
 			.build();
 		StubsStubDownloader downloader = new StubsStubDownloader(options);
@@ -39,14 +40,16 @@ public class StubsStubDownloaderTests {
 			.downloadAndUnpackStubJar(new StubConfiguration("lv.spring.cloud:bye"));
 
 		BDDAssertions.then(entry).isNotNull();
-		BDDAssertions.then(entry.getValue()).exists();
-		BDDAssertions.then(new File(entry.getValue(), "pl/spring/cloud/bye/pl_bye.json")).exists();
-		BDDAssertions.then(new File(entry.getValue(), "lv/spring/cloud/bye/lv_bye.json")).exists();
+		BDDAssertions.then(Objects.requireNonNull(entry).getValue()).exists();
+		BDDAssertions.then(new File(Objects.requireNonNull(entry).getValue(), "pl/spring/cloud/bye/pl_bye.json"))
+			.exists();
+		BDDAssertions.then(new File(Objects.requireNonNull(entry).getValue(), "lv/spring/cloud/bye/lv_bye.json"))
+			.exists();
 	}
 
 	@Test
 	public void should_pick_stubs_from_a_given_location_for_a_find_producer_with_ga() {
-		String path = url.getPath();
+		String path = this.url.getPath();
 		StubRunnerOptions options = new StubRunnerOptionsBuilder().withStubRepositoryRoot("stubs://file://" + path)
 			.withProperties(propsWithFindProducer())
 			.build();
@@ -56,13 +59,13 @@ public class StubsStubDownloaderTests {
 			.downloadAndUnpackStubJar(new StubConfiguration("lv.spring.cloud:bye"));
 
 		BDDAssertions.then(entry).isNotNull();
-		File stub = new File(entry.getValue().getPath(), "lv/spring/cloud/bye/lv_bye.json");
+		File stub = new File(Objects.requireNonNull(entry).getValue().getPath(), "lv/spring/cloud/bye/lv_bye.json");
 		BDDAssertions.then(stub).exists();
 	}
 
 	@Test
 	public void should_pick_stubs_from_a_given_location_for_a_find_producer_with_gav() {
-		String path = url.getPath();
+		String path = this.url.getPath();
 		StubRunnerOptions options = new StubRunnerOptionsBuilder().withStubRepositoryRoot("stubs://file://" + path)
 			.withProperties(propsWithFindProducer())
 			.build();
@@ -72,7 +75,7 @@ public class StubsStubDownloaderTests {
 			.downloadAndUnpackStubJar(new StubConfiguration("lv.spring:cloud:bye"));
 
 		BDDAssertions.then(entry).isNotNull();
-		File stub = new File(entry.getValue().getPath(), "lv/spring/cloud/bye/lv_bye.json");
+		File stub = new File(Objects.requireNonNull(entry).getValue().getPath(), "lv/spring/cloud/bye/lv_bye.json");
 		BDDAssertions.then(stub).exists();
 	}
 

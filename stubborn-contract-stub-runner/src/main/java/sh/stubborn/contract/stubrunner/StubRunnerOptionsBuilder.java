@@ -17,19 +17,19 @@
 package sh.stubborn.contract.stubrunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.util.StubsParser;
-
-import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
 
 /**
  * A builder object for {@link StubRunnerOptions}.
@@ -51,23 +51,23 @@ public class StubRunnerOptionsBuilder {
 
 	private Integer maxPortValue = 15000;
 
-	private Resource stubRepositoryRoot;
+	private @Nullable StubResource stubRepositoryRoot;
 
 	private String stubsClassifier = "stubs";
 
-	private String username;
+	private @Nullable String username;
 
-	private String password;
+	private @Nullable String password;
 
-	private StubRunnerOptions.StubRunnerProxyOptions stubRunnerProxyOptions;
+	private StubRunnerOptions.@Nullable StubRunnerProxyOptions stubRunnerProxyOptions;
 
 	private boolean stubsPerConsumer = false;
 
-	private String consumerName;
+	private @Nullable String consumerName;
 
-	private String mappingsOutputFolder;
+	private @Nullable String mappingsOutputFolder;
 
-	private StubRunnerProperties.StubsMode stubsMode;
+	private @Nullable StubsMode stubsMode;
 
 	private boolean deleteStubsAfterTest = true;
 
@@ -79,7 +79,7 @@ public class StubRunnerOptionsBuilder {
 
 	private Class httpServerStubConfigurer = HttpServerStubConfigurer.NoOpHttpServerStubConfigurer.class;
 
-	private String serverId;
+	private @Nullable String serverId;
 
 	public StubRunnerOptionsBuilder() {
 	}
@@ -91,22 +91,24 @@ public class StubRunnerOptionsBuilder {
 	private static List<String> stubsToList(String[] stubIdsToPortMapping) {
 		List<String> list = new ArrayList<>();
 		if (stubIdsToPortMapping.length == 1 && !containsRange(stubIdsToPortMapping[0])) {
-			list.addAll(StringUtils.commaDelimitedListToSet(stubIdsToPortMapping[0]));
+			list.addAll(Arrays.stream(stubIdsToPortMapping[0].split(","))
+				.map(String::trim)
+				.collect(Collectors.toCollection(LinkedHashSet::new)));
 			return list;
 		}
 		else if (stubIdsToPortMapping.length == 1 && containsRange(stubIdsToPortMapping[0])) {
-			LinkedList<String> linkedList = new LinkedList<>();
+			List<String> parts = new ArrayList<>();
 			String[] split = stubIdsToPortMapping[0].split(",");
 			for (String string : split) {
 				if (containsClosingRange(string)) {
-					String last = linkedList.pop();
-					linkedList.push(last + "," + string);
+					String last = parts.remove(parts.size() - 1);
+					parts.add(last + "," + string);
 				}
 				else {
-					linkedList.push(string);
+					parts.add(string);
 				}
 			}
-			list.addAll(linkedList);
+			list.addAll(parts);
 			return list;
 		}
 		Collections.addAll(list, stubIdsToPortMapping);
@@ -149,19 +151,19 @@ public class StubRunnerOptionsBuilder {
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withStubRepositoryRoot(Resource stubRepositoryRoot) {
+	public StubRunnerOptionsBuilder withStubRepositoryRoot(@Nullable StubResource stubRepositoryRoot) {
 		this.stubRepositoryRoot = stubRepositoryRoot;
 		return this;
 	}
 
 	public StubRunnerOptionsBuilder withStubRepositoryRoot(String stubRepositoryRoot) {
-		if (StringUtils.hasText(stubRepositoryRoot)) {
+		if (stubRepositoryRoot != null && !stubRepositoryRoot.isBlank()) {
 			this.stubRepositoryRoot = ResourceResolver.resource(stubRepositoryRoot);
 		}
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withStubsMode(StubRunnerProperties.StubsMode stubsMode) {
+	public StubRunnerOptionsBuilder withStubsMode(StubsMode stubsMode) {
 		if (stubsMode == null) {
 			return this;
 		}
@@ -173,7 +175,7 @@ public class StubRunnerOptionsBuilder {
 		if (stubsMode == null) {
 			return this;
 		}
-		this.stubsMode = StubRunnerProperties.StubsMode.valueOf(stubsMode);
+		this.stubsMode = StubsMode.valueOf(stubsMode);
 		return this;
 	}
 
@@ -200,8 +202,9 @@ public class StubRunnerOptionsBuilder {
 		this.stubsPerConsumer = options.isStubsPerConsumer();
 		this.consumerName = options.getConsumerName();
 		this.mappingsOutputFolder = options.getMappingsOutputFolder();
-		this.stubConfigurations = options.dependencies != null ? options.dependencies : new ArrayList<>();
-		this.stubIdsToPortMapping = options.stubIdsToPortMapping != null ? options.stubIdsToPortMapping
+		this.stubConfigurations = (options.dependencies != null) ? new ArrayList<>(options.dependencies)
+				: new ArrayList<>();
+		this.stubIdsToPortMapping = (options.stubIdsToPortMapping != null) ? options.stubIdsToPortMapping
 				: new LinkedHashMap<>();
 		this.deleteStubsAfterTest = options.isDeleteStubsAfterTest();
 		this.generateStubs = options.isGenerateStubs();
@@ -212,7 +215,7 @@ public class StubRunnerOptionsBuilder {
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withMappingsOutputFolder(String mappingsOutputFolder) {
+	public StubRunnerOptionsBuilder withMappingsOutputFolder(@Nullable String mappingsOutputFolder) {
 		this.mappingsOutputFolder = mappingsOutputFolder;
 		return this;
 	}
@@ -285,12 +288,12 @@ public class StubRunnerOptionsBuilder {
 		this.stubIdsToPortMapping.putAll(stubIdsToPortMapping);
 	}
 
-	public StubRunnerOptionsBuilder withUsername(final String username) {
+	public StubRunnerOptionsBuilder withUsername(final @Nullable String username) {
 		this.username = username;
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withPassword(final String password) {
+	public StubRunnerOptionsBuilder withPassword(final @Nullable String password) {
 		this.password = password;
 		return this;
 	}
@@ -305,7 +308,7 @@ public class StubRunnerOptionsBuilder {
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withConsumerName(String consumerName) {
+	public StubRunnerOptionsBuilder withConsumerName(@Nullable String consumerName) {
 		this.consumerName = consumerName;
 		return this;
 	}

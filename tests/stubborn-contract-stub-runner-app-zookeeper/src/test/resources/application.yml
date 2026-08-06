@@ -1,0 +1,5 @@
+stubborn.contract.stubrunner:
+  idsToServiceIds:
+    fraudDetectionServer: someNameThatShouldMapFraudDetectionServer
+server:
+  port: 0

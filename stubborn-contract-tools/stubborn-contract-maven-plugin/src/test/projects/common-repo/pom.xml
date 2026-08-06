@@ -38,7 +38,7 @@
 		<plugins>
 			<plugin>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-maven-plugin</artifactId>
+				<artifactId>stubborn-contract-maven-plugin</artifactId>
 				<configuration>
 					<!-- By default it would search under src/test/resources/ -->
 					<contractsDirectory>${project.basedir}</contractsDirectory>

@@ -20,17 +20,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
-
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Stub downloader that picks stubs and contracts from the provided resource. If
  * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties#stubsMode} is set to
- * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties.StubsMode#CLASSPATH}
- * then classpath is searched according to what has been passed in
+ * {@link sh.stubborn.contract.stubrunner.spring.StubsMode#CLASSPATH} then classpath is
+ * searched according to what has been passed in
  * {@link sh.stubborn.contract.stubrunner.spring.StubRunnerProperties#ids}. The pattern to
  * search for stubs looks like this
  *
@@ -56,8 +52,8 @@ public class ClasspathStubProvider implements StubDownloaderBuilder {
 	private static final Log log = LogFactory.getLog(ClasspathStubProvider.class);
 
 	@Override
-	public StubDownloader build(final StubRunnerOptions stubRunnerOptions) {
-		if (stubRunnerOptions.stubsMode != StubRunnerProperties.StubsMode.CLASSPATH) {
+	public @Nullable StubDownloader build(final StubRunnerOptions stubRunnerOptions) {
+		if (stubRunnerOptions.stubsMode != StubsMode.CLASSPATH) {
 			return null;
 		}
 		log.info("Will download stubs from classpath");
@@ -65,15 +61,14 @@ public class ClasspathStubProvider implements StubDownloaderBuilder {
 	}
 
 	private RepoRoots repoRoot(StubRunnerOptions stubRunnerOptions, StubConfiguration configuration) {
-		Resource repositoryRoot = stubRunnerOptions.getStubRepositoryRoot();
-		if (repositoryRoot instanceof ClassPathResource) {
-			ClassPathResource classPathResource = (ClassPathResource) repositoryRoot;
+		StubResource repositoryRoot = stubRunnerOptions.getStubRepositoryRoot();
+		if (repositoryRoot instanceof ClassPathStubResource classPathResource) {
 			String path = classPathResource.getPath();
-			if (StringUtils.hasText(path)) {
+			if (path != null && !path.isBlank()) {
 				return RepoRoots.asList(new RepoRoot(stubRunnerOptions.getStubRepositoryRootAsString()));
 			}
 		}
-		String path = "/**/" + configuration.getGroupId() + "/" + configuration.getArtifactId();
+		String path = "/" + configuration.getGroupId() + "/" + configuration.getArtifactId();
 		return RepoRoots.asList(new RepoRoot("classpath*:/META-INF" + path, "/**/*.*"),
 				new RepoRoot("classpath*:/contracts" + path, "/**/*.*"),
 				new RepoRoot("classpath*:/mappings" + path, "/**/*.*"));

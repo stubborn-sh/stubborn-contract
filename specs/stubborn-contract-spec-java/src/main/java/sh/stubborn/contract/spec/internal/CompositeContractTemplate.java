@@ -31,7 +31,7 @@ public class CompositeContractTemplate implements ContractTemplate {
 
 	@Override
 	public boolean startsWithTemplate(String text) {
-		return template.startsWithTemplate(text);
+		return this.template.startsWithTemplate(text);
 	}
 
 	@Override

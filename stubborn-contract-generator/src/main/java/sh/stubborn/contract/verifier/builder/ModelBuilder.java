@@ -1,0 +1,212 @@
+/*
+ * Copyright 2013-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package sh.stubborn.contract.verifier.builder;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
+import sh.stubborn.contract.verifier.config.TestFramework;
+import sh.stubborn.contract.verifier.config.TestMode;
+import sh.stubborn.contract.verifier.file.ContractMetadata;
+import sh.stubborn.contract.verifier.file.SingleContractMetadata;
+import sh.stubborn.contract.verifier.util.NamesUtil;
+
+/**
+ * Walks the plugin configuration and parsed contracts into a {@link TestClassModel}.
+ *
+ * <p>
+ * This is where today's builder <em>decisions</em> (which class name, base class, class
+ * annotations, which methods) live, separated from formatting. Phase 2 populates the full
+ * class scaffold: package/name/base-class, class-level annotations (the
+ * {@code @SuppressWarnings("rawtypes")} the Java targets carry, plus JUnit 5's
+ * {@code @TestMethodOrder} when a contract carries an order), one method per contract
+ * with its {@code @Test}/{@code @Disabled}/{@code @Test(enabled = false)} annotations,
+ * the real method-name derivation (via {@link NameProvider}) and the verbatim method body
+ * captured from the legacy generator by {@link LegacyMethodBodyExtractor}. The
+ * class-level import set is captured from the legacy generator so the renderer can merge
+ * it in.
+ *
+ * @author Marcin Grzejszczak
+ */
+class ModelBuilder {
+
+	private static final String JUNIT_JUPITER_TEST = "org.junit.jupiter.api.Test";
+
+	private static final String JUNIT_JUPITER_DISABLED = "org.junit.jupiter.api.Disabled";
+
+	private static final String JUNIT_JUPITER_TEST_METHOD_ORDER = "org.junit.jupiter.api.TestMethodOrder";
+
+	private static final String TESTNG_TEST = "org.testng.annotations.Test";
+
+	private static final String SPOCK_STEPWISE = "spock.lang.Stepwise";
+
+	private static final String SPOCK_IGNORE = "spock.lang.Ignore";
+
+	private final NameProvider nameProvider = new NameProvider();
+
+	private final LegacyMethodBodyExtractor bodyExtractor = new LegacyMethodBodyExtractor();
+
+	private final ResponseBodyLineProducer responseBodyLineProducer = new ResponseBodyLineProducer();
+
+	private final RequestModelBuilder requestModelBuilder = new RequestModelBuilder();
+
+	private final ResponseModelBuilder responseModelBuilder = new ResponseModelBuilder();
+
+	TestClassModel build(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
+			String includedDirectoryRelativePath, SingleTestGenerator.GeneratedClassData generatedClassData,
+			List<String> extraFieldLines) {
+		TestFramework framework = properties.getTestFramework();
+		boolean spock = framework == TestFramework.SPOCK;
+
+		GeneratedClassMetaData meta = new GeneratedClassMetaData(properties, listOfFiles, includedDirectoryRelativePath,
+				generatedClassData);
+
+		// Produce the import block and the class-level field block directly from the
+		// visitor producers, in the same order and with the same per-framework setup the
+		// legacy scaffold used, so the model path stays byte-identical. The
+		// extraFieldLines (empty in production) let a caller inject additional fields —
+		// e.g. the WebTarget the JAX-RS tests supply, which no production Field visitor
+		// declares.
+		ClassScaffoldProducer scaffold = new ClassScaffoldProducer(meta, extraFieldLines);
+
+		List<AnnotationModel> classAnnotations = new ArrayList<>();
+		// SuppressWarningsClassAnnotation accepts unconditionally, for every framework
+		// including Spock.
+		classAnnotations.add(new AnnotationModel("java.lang.SuppressWarnings", "\"rawtypes\""));
+		if (hasOrder(listOfFiles)) {
+			if (spock) {
+				// Mirrors SpockOrderClassAnnotation: @Stepwise is Spock's ordering
+				// mechanism.
+				classAnnotations.add(AnnotationModel.marker(SPOCK_STEPWISE));
+			}
+			else if (framework == TestFramework.JUNIT5) {
+				// Mirrors JUnit5OrderClassAnnotation. Kept short so it matches the legacy
+				// output; the MethodOrderer import is supplied by the merged import set.
+				classAnnotations.add(AnnotationModel.member(JUNIT_JUPITER_TEST_METHOD_ORDER, "value",
+						"MethodOrderer.MethodName.class"));
+			}
+		}
+
+		TestMode mode = properties.getTestMode();
+		List<TestMethodModel> methods = new ArrayList<>();
+		for (SingleContractMetadata scm : meta.toSingleContractMetadata()) {
+			methods.add(methodModel(scm, framework, meta, mode));
+		}
+
+		List<String> imports = scaffold.importDeclarations();
+
+		// Resolve the base class exactly as the legacy generator does: base-class
+		// mappings
+		// and the packageWithBaseClasses convention, not only the explicit
+		// baseClassForTests
+		// property. Missing this dropped the "extends <Base>" clause for convention-based
+		// base classes, so the generated test never inherited the MockMvc setup.
+		String baseClass = new BaseClassProvider().retrieveBaseClass(properties.getBaseClassMappings(),
+				properties.getPackageWithBaseClasses(), properties.getBaseClassForTests(),
+				includedDirectoryRelativePath);
+
+		// Class-level fields (messaging collaborators, CUSTOM-mode httpVerifier, the
+		// JAX-RS WebTarget) emitted before the methods. Empty for the plain
+		// MockMvc/EXPLICIT/WebTestClient HTTP shapes.
+		List<String> fields = scaffold.fieldLines();
+
+		return new TestClassModel(generatedClassData.classPackage, className(properties, generatedClassData, spock),
+				baseClass, spock, classAnnotations, fields, methods, imports);
+	}
+
+	/**
+	 * Normalizes the class name exactly as the legacy generator does (see
+	 * {@code DefaultClassMetadata#className} and the {@code suffix()} of
+	 * {@code JavaClassMetaData}/{@code GroovyClassMetaData}): the provided name is
+	 * capitalized and the configured test-name suffix is appended unless already present.
+	 * The default suffix is {@code Test} for the Java targets and {@code Spec} for
+	 * Groovy/Spock. Keeping this identical to the legacy rule makes the model path a
+	 * faithful drop-in for any class name, not only the already-normalized ones
+	 * production feeds in.
+	 * @param properties the plugin configuration (carries the optional name suffix)
+	 * @param generatedClassData the generated-class descriptor carrying the raw name
+	 * @param spock {@code true} for the Groovy/Spock target
+	 * @return the normalized class name
+	 */
+	private static String className(ContractVerifierConfigProperties properties,
+			SingleTestGenerator.GeneratedClassData generatedClassData, boolean spock) {
+		String capitalized = NamesUtil.capitalize(generatedClassData.className);
+		String nameSuffix = properties.getNameSuffixForTests();
+		String suffix = (nameSuffix != null && !nameSuffix.isBlank()) ? nameSuffix : (spock ? "Spec" : "Test");
+		return capitalized.endsWith(suffix) ? capitalized : capitalized + suffix;
+	}
+
+	private TestMethodModel methodModel(SingleContractMetadata scm, TestFramework framework,
+			GeneratedClassMetaData meta, TestMode mode) {
+		boolean ignored = isIgnored(scm);
+		if (framework == TestFramework.SPOCK) {
+			// Spock has no @Test; an ignored/in-progress contract carries @Ignore
+			// (spock.lang), nothing otherwise (mirrors SpockIgnoreMethodAnnotation). The
+			// body is emitted verbatim from the legacy Groovy pipeline — the structured
+			// request/response model targets the Java idiom only.
+			List<AnnotationModel> spockAnnotations = ignored ? List.of(AnnotationModel.marker(SPOCK_IGNORE))
+					: List.of();
+			return new TestMethodModel(this.nameProvider.methodName(scm), spockAnnotations,
+					this.bodyExtractor.bodyLines(meta, scm), null, null);
+		}
+		List<AnnotationModel> annotations = new ArrayList<>();
+		if (framework == TestFramework.TESTNG) {
+			// TestNG disables via a named member on @Test, not a separate annotation.
+			annotations.add(ignored ? AnnotationModel.member(TESTNG_TEST, "enabled", "false")
+					: AnnotationModel.marker(TESTNG_TEST));
+		}
+		else {
+			annotations.add(AnnotationModel.marker(JUNIT_JUPITER_TEST));
+			if (ignored) {
+				annotations.add(AnnotationModel.marker(JUNIT_JUPITER_DISABLED));
+			}
+		}
+		// Layered structured gate. When the request portion is eligible, emit it from the
+		// model. When the response status/header assertions are also eligible, emit them
+		// from the model too and capture only the verbatim // and: body block; else emit
+		// the whole // then: block verbatim. When neither is eligible, fall back to the
+		// whole body verbatim from the legacy generator.
+		RequestModel request = this.requestModelBuilder.build(scm, framework, meta, mode);
+		ResponseModel response = (request != null) ? this.responseModelBuilder.build(scm, framework, meta, mode) : null;
+		List<String> bodyLines;
+		if (response != null) {
+			bodyLines = this.responseBodyLineProducer.andBlockLines(meta, scm);
+		}
+		else if (request != null) {
+			bodyLines = this.bodyExtractor.responseBodyLines(meta, scm);
+		}
+		else {
+			bodyLines = this.bodyExtractor.bodyLines(meta, scm);
+		}
+		return new TestMethodModel(this.nameProvider.methodName(scm), annotations, bodyLines, request, response);
+	}
+
+	// Mirrors JUnit5IgnoreMethodAnnotation#accept: a contract is treated as ignored when
+	// the contract or its metadata is ignored, or the contract is in progress.
+	private boolean isIgnored(SingleContractMetadata scm) {
+		return scm.getContractMetadata().isIgnored() || scm.getContract().isIgnored()
+				|| scm.getContract().isInProgress();
+	}
+
+	// Mirrors JUnit5OrderClassAnnotation#accept.
+	private boolean hasOrder(Collection<ContractMetadata> listOfFiles) {
+		return listOfFiles.stream().anyMatch((file) -> file.getOrder() != null);
+	}
+
+}

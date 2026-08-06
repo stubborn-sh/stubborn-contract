@@ -28,8 +28,8 @@ public class BookService {
 	private static final Logger log = LoggerFactory.getLogger(BookService.class);
 
 	/**
-	 * Scenario for "should generate tests triggered by a method": client side: must have
-	 * a possibility to "trigger" sending of a message to the given message
+	 * Scenario for "should generate tests triggered by a method": client side must have a
+	 * possibility to "trigger" sending of a message to the given message.
 	 * @param exchange - input exchange.
 	 */
 	public void returnBook(Exchange exchange) {

@@ -48,5 +48,8 @@ dependency-reduced-pom.xml
 node
 node_modules
 build
-/package.json
 package-lock.json
+
+# VitePress build output
+docs/.vitepress/dist/
+docs/.vitepress/cache/

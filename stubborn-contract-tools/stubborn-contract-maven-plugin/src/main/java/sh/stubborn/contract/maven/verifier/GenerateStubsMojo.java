@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -35,8 +37,6 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 
-import static sh.stubborn.contract.maven.verifier.ChangeDetector.inputFilesChangeDetected;
-
 /**
  * Picks the converted .json files and creates a jar. Requires convert to be executed
  * first.
@@ -44,6 +44,7 @@ import static sh.stubborn.contract.maven.verifier.ChangeDetector.inputFilesChang
  * @author Mariusz Smykula
  */
 @Mojo(name = "generateStubs", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true)
+@SuppressWarnings("NullAway.Init")
 public class GenerateStubsMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${project.build.directory}", readonly = true, required = true)
@@ -67,7 +68,7 @@ public class GenerateStubsMojo extends AbstractMojo {
 	@Parameter(property = "spring.cloud.contract.verifier.jar.skip", defaultValue = "false")
 	private boolean jarSkip;
 
-	@Component
+	@Inject
 	private MavenProjectHelper projectHelper;
 
 	/**
@@ -79,8 +80,9 @@ public class GenerateStubsMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", readonly = true)
 	private MavenProject project;
 
-	@Component(role = Archiver.class, hint = "jar")
-	private JarArchiver archiver;
+	@Inject
+	@Named("jar")
+	private Archiver archiver;
 
 	@Parameter(defaultValue = "stubs")
 	private String classifier;
@@ -121,7 +123,8 @@ public class GenerateStubsMojo extends AbstractMojo {
 					+ "] .\nPlease make sure that stubborn-contract:convert was invoked");
 		}
 		File stubsJarFile = getStubJarDestFile();
-		if (this.incrementalContractStubsJar && !inputFilesChangeDetected(stubsDirectory, mojoExecution, session)) {
+		if (this.incrementalContractStubsJar
+				&& !ChangeDetector.inputFilesChangeDetected(this.stubsDirectory, this.mojoExecution, this.session)) {
 			getLog().info("Nothing to generate - stubs jar is up to date");
 		}
 		else {
@@ -140,15 +143,16 @@ public class GenerateStubsMojo extends AbstractMojo {
 		getLog().info(
 				"Files matching this pattern will be excluded from " + "stubs generation " + Arrays.toString(excludes));
 		try {
-			this.archiver.addDirectory(stubsOutputDir, new String[] { "**/*.*" },
+			JarArchiver jarArchiver = (JarArchiver) this.archiver;
+			jarArchiver.addDirectory(stubsOutputDir, new String[] { "**/*.*" },
 					excludedFilesEmpty() ? new String[0] : this.excludedFiles);
-			this.archiver.setCompress(true);
-			this.archiver.setDestFile(stubsJarFile);
-			this.archiver.addConfiguredManifest(ManifestCreator.createManifest(this.project));
-			this.archiver.createArchive();
+			jarArchiver.setCompress(true);
+			jarArchiver.setDestFile(stubsJarFile);
+			jarArchiver.addConfiguredManifest(ManifestCreator.createManifest(this.project));
+			jarArchiver.createArchive();
 		}
-		catch (Exception e) {
-			throw new MojoFailureException("Exception while packaging " + this.classifier + " jar.", e);
+		catch (Exception ex) {
+			throw new MojoFailureException("Exception while packaging " + this.classifier + " jar.", ex);
 		}
 	}
 

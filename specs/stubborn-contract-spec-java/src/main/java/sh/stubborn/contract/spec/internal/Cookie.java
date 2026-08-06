@@ -51,7 +51,7 @@ public class Cookie extends DslProperty {
 	}
 
 	public String getKey() {
-		return key;
+		return this.key;
 	}
 
 	public void setKey(String key) {
@@ -70,17 +70,17 @@ public class Cookie extends DslProperty {
 			return false;
 		}
 		Cookie cookie = (Cookie) o;
-		return Objects.equals(key, cookie.key);
+		return Objects.equals(this.key, cookie.key);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), key);
+		return Objects.hash(super.hashCode(), this.key);
 	}
 
 	@Override
 	public String toString() {
-		return "Cookie{" + "key='" + key + '\'' + "}, value=" + super.toString();
+		return "Cookie{" + "key='" + this.key + '\'' + "}, value=" + super.toString();
 	}
 
 }

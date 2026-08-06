@@ -21,9 +21,12 @@ import java.io.IOException;
 
 import org.eclipse.jgit.util.FileUtils;
 
-class TestUtils {
+final class TestUtils {
 
-	public static void prepareLocalRepo() throws IOException {
+	private TestUtils() {
+	}
+
+	static void prepareLocalRepo() throws IOException {
 		prepareLocalRepo("target/test-classes/git_samples/", "contract-git");
 		prepareLocalRepo("target/test-classes/git_samples/", "contract-predefined-names-git");
 	}

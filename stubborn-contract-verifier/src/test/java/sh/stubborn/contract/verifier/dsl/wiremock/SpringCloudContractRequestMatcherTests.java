@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
-import sh.stubborn.contract.verifier.converter.YamlContract;
 
 class SpringCloudContractRequestMatcherTests {
 
@@ -137,20 +136,6 @@ class SpringCloudContractRequestMatcherTests {
 			map.put(tuple.getT1(), tuple.getT2());
 		}
 		return Parameters.from(map);
-	}
-
-}
-
-class ApplicableRequestMatcher implements RequestMatcher {
-
-	@Override
-	public MatchResult match(List<YamlContract> contracts, Request request, Parameters parameters) {
-		return MatchResult.of(true);
-	}
-
-	@Override
-	public boolean isApplicable(String tool) {
-		return true;
 	}
 
 }

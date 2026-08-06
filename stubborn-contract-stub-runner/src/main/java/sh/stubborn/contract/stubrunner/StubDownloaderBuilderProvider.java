@@ -19,8 +19,7 @@ package sh.stubborn.contract.stubrunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
+import java.util.ServiceLoader;
 
 /**
  * Provider for {@link StubDownloaderBuilder}. It can also pick a default downloader if
@@ -34,7 +33,7 @@ public class StubDownloaderBuilderProvider {
 	private final List<StubDownloaderBuilder> builders = new ArrayList<>();
 
 	public StubDownloaderBuilderProvider() {
-		this.builders.addAll(SpringFactoriesLoader.loadFactories(StubDownloaderBuilder.class, null));
+		ServiceLoader.load(StubDownloaderBuilder.class).forEach(this.builders::add);
 	}
 
 	StubDownloaderBuilderProvider(List<StubDownloaderBuilder> builders) {
@@ -42,6 +41,7 @@ public class StubDownloaderBuilderProvider {
 	}
 
 	/**
+	 * Builds a composite {@link StubDownloader} from all registered builders.
 	 * @param stubRunnerOptions options of Stub Runner
 	 * @param additionalBuilders - optional array of {@link StubDownloaderBuilder}s to
 	 * append to the list of builders

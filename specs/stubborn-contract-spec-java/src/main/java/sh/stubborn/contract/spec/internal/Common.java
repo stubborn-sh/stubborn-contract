@@ -24,10 +24,13 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Contains useful common methods for the DSL.
@@ -42,8 +45,8 @@ public class Common {
 	public Map<String, DslProperty> convertObjectsToDslProperties(Map<String, Object> body) {
 		return body.entrySet()
 			.stream()
-			.collect(Collectors.toMap((Function<Map.Entry, String>) t -> t.getKey().toString(),
-					(Function<Map.Entry, DslProperty>) t -> toDslProperty(t.getValue()), throwingMerger(),
+			.collect(Collectors.toMap((Function<Map.Entry, String>) (t) -> t.getKey().toString(),
+					(Function<Map.Entry, DslProperty>) (t) -> toDslProperty(t.getValue()), throwingMerger(),
 					LinkedHashMap::new));
 	}
 
@@ -209,7 +212,7 @@ public class Common {
 	/**
 	 * Read file contents as String.
 	 * @param relativePath of the file to read
-	 * @return String file contents
+	 * @return file contents as a String
 	 */
 	public FromFileProperty file(String relativePath) {
 		return file(relativePath, Charset.defaultCharset());
@@ -218,7 +221,7 @@ public class Common {
 	/**
 	 * Read file contents as bytes[].
 	 * @param relativePath of the file to read
-	 * @return String file contents
+	 * @return file contents as a String
 	 */
 	public FromFileProperty fileAsBytes(String relativePath) {
 		return new FromFileProperty(fileLocation(relativePath), byte[].class);
@@ -228,7 +231,7 @@ public class Common {
 	 * Read file contents as String with the given Charset.
 	 * @param relativePath of the file to read
 	 * @param charset to use for converting the bytes to String
-	 * @return String file contents
+	 * @return file contents as a String
 	 */
 	public FromFileProperty file(String relativePath, Charset charset) {
 		return new FromFileProperty(fileLocation(relativePath), String.class, charset);
@@ -271,7 +274,7 @@ public class Common {
 		}
 	}
 
-	public void assertThatSidesMatch(Object firstSide, Object secondSide) {
+	public void assertThatSidesMatch(@Nullable Object firstSide, @Nullable Object secondSide) {
 		if (firstSide instanceof OptionalProperty) {
 			if (secondSide == null) {
 				return;
@@ -281,15 +284,15 @@ public class Common {
 							+ secondSide.toString() + "]");
 		}
 		else if ((firstSide instanceof Pattern || firstSide instanceof RegexProperty) && secondSide instanceof String) {
-			Pattern pattern = firstSide instanceof Pattern ? (Pattern) firstSide
-					: ((RegexProperty) firstSide).getPattern();
+			Pattern pattern = (firstSide instanceof Pattern) ? (Pattern) firstSide
+					: Objects.requireNonNull(((RegexProperty) firstSide).getPattern(), "RegexProperty pattern");
 			assertThat(((String) secondSide).toString().matches(pattern.pattern()),
 					"Pattern [" + pattern.pattern() + "] is not matched by [" + secondSide.toString() + "]");
 		}
 		else if ((secondSide instanceof Pattern || secondSide instanceof RegexProperty)
 				&& firstSide instanceof String) {
-			Pattern pattern = secondSide instanceof Pattern ? (Pattern) secondSide
-					: ((RegexProperty) secondSide).getPattern();
+			Pattern pattern = (secondSide instanceof Pattern) ? (Pattern) secondSide
+					: Objects.requireNonNull(((RegexProperty) secondSide).getPattern(), "RegexProperty pattern");
 			assertThat(((String) firstSide).matches(pattern.pattern()),
 					"Pattern [" + pattern.pattern() + "] is not matched by [" + firstSide.toString() + "]");
 		}

@@ -23,8 +23,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Reads property from system prop and from env var.
  *
@@ -35,7 +33,7 @@ public final class StubRunnerPropertyUtils {
 
 	private static final Log log = LogFactory.getLog(StubRunnerPropertyUtils.class);
 
-	private static final String STUBRUNNER_PROPERTIES = "spring.cloud.contract.stubrunner.properties";
+	private static final String STUBRUNNER_PROPERTIES = "stubborn.contract.stubrunner.properties";
 
 	static PropertyFetcher FETCHER = new PropertyFetcher();
 
@@ -44,30 +42,33 @@ public final class StubRunnerPropertyUtils {
 	}
 
 	/**
+	 * Checks whether the given property is set to {@code true}.
 	 * @param propName property name
 	 * @return for Env vars takes the prop name, converts dots to underscores and applies
 	 * upper case
 	 */
 	public static boolean isPropertySet(String propName) {
 		String value = getProperty(new HashMap<>(), propName);
-		return StringUtils.hasText(value) && Boolean.parseBoolean(value);
+		return value != null && !value.isBlank() && Boolean.parseBoolean(value);
 	}
 
 	/**
+	 * Checks whether the given property is present.
 	 * @param options map of options
 	 * @param propName property name
-	 * @return For options, system props and env vars returns {@code true} when property
+	 * @return for options, system props and env vars returns {@code true} when property
 	 * is set
 	 */
 	public static boolean hasProperty(Map<String, String> options, String propName) {
 		String value = getProperty(options, propName);
-		return StringUtils.hasText(value);
+		return value != null && !value.isBlank();
 	}
 
 	/**
+	 * Fetches the value of the given property.
 	 * @param options map of options
 	 * @param propName property name
-	 * @return Tries to pick a value from options, for Env vars takes the prop name,
+	 * @return tries to pick a value from options, for Env vars takes the prop name,
 	 * converts dots to underscores and applies upper case
 	 */
 	public static String getProperty(Map<String, String> options, String propName) {
@@ -82,7 +83,7 @@ public final class StubRunnerPropertyUtils {
 	}
 
 	private static String appendPrefixIfNecessary(String prop) {
-		if (prop.toLowerCase(Locale.ROOT).startsWith("spring.cloud.contract.stubrunner")) {
+		if (prop.toLowerCase(Locale.ROOT).startsWith("stubborn.contract.stubrunner")) {
 			return prop;
 		}
 		return STUBRUNNER_PROPERTIES + "." + prop;
@@ -90,7 +91,7 @@ public final class StubRunnerPropertyUtils {
 
 	private static String doGetProp(String stubRunnerProp) {
 		String systemProp = FETCHER.systemProp(stubRunnerProp);
-		if (StringUtils.hasText(systemProp)) {
+		if (systemProp != null && !systemProp.isBlank()) {
 			if (log.isTraceEnabled()) {
 				log.trace("System property [" + stubRunnerProp + "] has value [" + systemProp + "]");
 			}
@@ -102,18 +103,6 @@ public final class StubRunnerPropertyUtils {
 			log.trace("Environment variable [" + convertedEnvProp + "] has value [" + envVar + "]");
 		}
 		return envVar;
-	}
-
-}
-
-class PropertyFetcher {
-
-	String systemProp(String prop) {
-		return System.getProperty(prop);
-	}
-
-	String envVar(String prop) {
-		return System.getenv(prop);
 	}
 
 }

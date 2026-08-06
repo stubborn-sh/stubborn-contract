@@ -16,8 +16,8 @@
 
 package sh.stubborn.contract.spec.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains most commonly used media types.
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class MediaTypes {
 
-	private static final Log log = LogFactory.getLog(MediaTypes.class);
+	private static final Logger log = LoggerFactory.getLogger(MediaTypes.class);
 
 	private MediaTypes() {
 		throw new IllegalStateException("You can't instantiate an utility class");

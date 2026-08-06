@@ -24,8 +24,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Downloads a JAR with contracts and sets up the plugin configuration with proper
  * inclusion patterns.
@@ -86,7 +84,7 @@ public class ContractDownloader {
 	public InclusionProperties createNewInclusionProperties(File contractsDirectory) {
 		String pattern;
 		String includedAntPattern;
-		if (StringUtils.hasText(this.contractsPath)) {
+		if (this.contractsPath != null && !this.contractsPath.isBlank()) {
 			pattern = patternFromProperty(contractsDirectory);
 			log.info("Will pick a pattern from the contractPath property");
 			includedAntPattern = wrapWithAntPattern(contractsPath());
@@ -184,11 +182,13 @@ public class ContractDownloader {
 	public static class InclusionProperties {
 
 		/**
+		 * Ant pattern of the included contracts.
 		 * @see ContractVerifierConfigProperties.includedContracts
 		 */
 		private final String includedContracts;
 
 		/**
+		 * Ant pattern of the included root folder.
 		 * @see ContractVerifierConfigProperties.includedRootFolderAntPattern
 		 */
 		private final String includedRootFolderAntPattern;
@@ -199,11 +199,11 @@ public class ContractDownloader {
 		}
 
 		public String getIncludedContracts() {
-			return includedContracts;
+			return this.includedContracts;
 		}
 
 		public String getIncludedRootFolderAntPattern() {
-			return includedRootFolderAntPattern;
+			return this.includedRootFolderAntPattern;
 		}
 
 	}

@@ -20,8 +20,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.util.StringUtils;
-
 public final class RecursiveFilesConverterApplication {
 
 	private RecursiveFilesConverterApplication() {
@@ -34,7 +32,7 @@ public final class RecursiveFilesConverterApplication {
 
 		File stubsOutputDir = new File(args[0]);
 		File contractsDslDir = new File(args[1]);
-		List<String> excludedFiles = Arrays.asList(StringUtils.commaDelimitedListToStringArray(args[2]));
+		List<String> excludedFiles = Arrays.asList(args[2].split(","));
 		String includedContracts = args[3];
 		boolean excludeBuildFolders = Boolean.parseBoolean(args[4]);
 

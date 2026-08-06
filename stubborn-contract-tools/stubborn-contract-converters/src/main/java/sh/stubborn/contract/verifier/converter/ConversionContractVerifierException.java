@@ -19,8 +19,9 @@ package sh.stubborn.contract.verifier.converter;
 import sh.stubborn.contract.spec.ContractVerifierException;
 
 /**
- * Thrown when a a DSL can't be properly converted.
+ * Thrown when a DSL can't be properly converted.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class ConversionContractVerifierException extends ContractVerifierException {

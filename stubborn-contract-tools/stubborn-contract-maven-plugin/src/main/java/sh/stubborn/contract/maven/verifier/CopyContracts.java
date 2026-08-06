@@ -50,7 +50,7 @@ class CopyContracts {
 		this.config = config;
 	}
 
-	public void copy(File contractsDirectory, File outputDirectory) throws MojoExecutionException {
+	void copy(File contractsDirectory, File outputDirectory) throws MojoExecutionException {
 		log.info("Copying Spring Cloud Contract Verifier contracts to [" + outputDirectory + "]"
 				+ ". Only files matching [" + this.config.getIncludedContracts() + "] pattern will end up in "
 				+ "the final JAR with stubs.");
@@ -86,8 +86,8 @@ class CopyContracts {
 		try {
 			this.mavenResourcesFiltering.filterResources(execution);
 		}
-		catch (MavenFilteringException e) {
-			throw new MojoExecutionException(e.getMessage(), e);
+		catch (MavenFilteringException ex) {
+			throw new MojoExecutionException(ex.getMessage(), ex);
 		}
 	}
 

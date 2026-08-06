@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.spec.internal;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Matchers for the given path.
  *
@@ -25,34 +27,39 @@ package sh.stubborn.contract.spec.internal;
 public interface BodyMatcher {
 
 	/**
-	 * @return What kind of matching are we dealing with.
+	 * Kind of matching to be applied.
+	 * @return what kind of matching are we dealing with.
 	 */
-	MatchingType matchingType();
+	@Nullable MatchingType matchingType();
 
 	/**
-	 * @return Path to the path. Example for JSON it will be JSON Path.
+	 * Path to the element to match.
+	 * @return path to the path. Example for JSON it will be JSON Path.
 	 */
 	String path();
 
 	/**
-	 * @return Optional value that the given path should be checked against. If there is
+	 * Value the path should be checked against.
+	 * @return optional value that the given path should be checked against. If there is
 	 * no value then presence will be checked only together with type check. Example if we
 	 * expect a JSON Path path {@code $.a} to be matched. by type, the defined response
 	 * body contained an integer but the actual one contained a string then the assertion
 	 * should fail.
 	 */
-	Object value();
+	@Nullable Object value();
 
 	/**
-	 * @return Min no of occurrence when matching by type. In all other cases it will be
+	 * Minimum number of occurrences when matching by type.
+	 * @return min no of occurrence when matching by type. In all other cases it will be
 	 * ignored.
 	 */
-	Integer minTypeOccurrence();
+	@Nullable Integer minTypeOccurrence();
 
 	/**
-	 * @return Max no of occurrence when matching by type. In all other cases it will be
+	 * Maximum number of occurrences when matching by type.
+	 * @return max no of occurrence when matching by type. In all other cases it will be
 	 * ignored.
 	 */
-	Integer maxTypeOccurrence();
+	@Nullable Integer maxTypeOccurrence();
 
 }

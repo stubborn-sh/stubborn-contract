@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.util;
 /**
  * Represents content type. Used to pick the way bodies are parsed.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public enum ContentType {
@@ -55,7 +56,7 @@ public enum ContentType {
 	}
 
 	public final String getMimeType() {
-		return mimeType;
+		return this.mimeType;
 	}
 
 }

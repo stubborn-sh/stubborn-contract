@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 
 import groovy.lang.Closure;
 import groovy.lang.DelegatesTo;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.Input;
 import sh.stubborn.contract.spec.internal.OutputMessage;
 import sh.stubborn.contract.spec.internal.Request;
@@ -32,6 +33,7 @@ import sh.stubborn.contract.spec.internal.Response;
  * The definition of a Contract. Contains helper methods in Groovy left for backward
  * compatibility reasons.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class Contract {
@@ -42,27 +44,27 @@ public class Contract {
 	 * take precedence. A priority of 1 is highest and takes precedence over a priority of
 	 * 2.
 	 */
-	private Integer priority;
+	private @Nullable Integer priority;
 
 	/**
 	 * The HTTP request part of the contract.
 	 */
-	private Request request;
+	private @Nullable Request request;
 
 	/**
 	 * The HTTP response part of the contract.
 	 */
-	private Response response;
+	private @Nullable Response response;
 
 	/**
 	 * The label by which you'll reference the contract on the message consumer side.
 	 */
-	private String label;
+	private @Nullable String label;
 
 	/**
 	 * Description of a contract. May be used in the documentation generation.
 	 */
-	private String description;
+	private @Nullable String description;
 
 	/**
 	 * Name of the generated test / stub. If not provided then the file name will be used.
@@ -73,17 +75,17 @@ public class Contract {
 	 * Remember to have a unique name for every single contract. Otherwise you might
 	 * generate tests that have two identical methods or you will override the stubs.
 	 */
-	private String name;
+	private @Nullable String name;
 
 	/**
 	 * The input side of a messaging contract.
 	 */
-	private Input input;
+	private @Nullable Input input;
 
 	/**
 	 * The output side of a messaging contract.
 	 */
-	private OutputMessage outputMessage;
+	private @Nullable OutputMessage outputMessage;
 
 	/**
 	 * Whether the contract should be ignored or not.
@@ -147,16 +149,18 @@ public class Contract {
 	}
 
 	public static void assertContract(Contract dsl) {
-		if (dsl.getRequest() != null) {
-			if (dsl.request.getUrl() == null && dsl.request.getUrlPath() == null) {
+		Request request = dsl.getRequest();
+		if (request != null) {
+			if (request.getUrl() == null && request.getUrlPath() == null) {
 				throw new IllegalStateException("URL is missing for HTTP contract");
 			}
-			if (dsl.request.getMethod() == null) {
+			if (request.getMethod() == null) {
 				throw new IllegalStateException("Method is missing for HTTP contract");
 			}
 		}
-		if (dsl.response != null) {
-			if (dsl.response.getStatus() == null) {
+		Response response = dsl.getResponse();
+		if (response != null) {
+			if (response.getStatus() == null) {
 				throw new IllegalStateException("Status is missing for HTTP contract");
 			}
 		}
@@ -170,6 +174,7 @@ public class Contract {
 	public static Contract make(Consumer<Contract> consumer) {
 		Contract contract = new Contract();
 		consumer.accept(contract);
+		assertContract(contract);
 		return contract;
 	}
 
@@ -288,76 +293,76 @@ public class Contract {
 		return this.inProgress;
 	}
 
-	public Integer getPriority() {
-		return priority;
+	public @Nullable Integer getPriority() {
+		return this.priority;
 	}
 
-	public void setPriority(Integer priority) {
+	public void setPriority(@Nullable Integer priority) {
 		this.priority = priority;
 	}
 
-	public Request getRequest() {
-		return request;
+	public @Nullable Request getRequest() {
+		return this.request;
 	}
 
-	public void setRequest(Request request) {
+	public void setRequest(@Nullable Request request) {
 		this.request = request;
 	}
 
-	public Response getResponse() {
-		return response;
+	public @Nullable Response getResponse() {
+		return this.response;
 	}
 
-	public void setResponse(Response response) {
+	public void setResponse(@Nullable Response response) {
 		this.response = response;
 	}
 
-	public String getLabel() {
-		return label;
+	public @Nullable String getLabel() {
+		return this.label;
 	}
 
-	public void setLabel(String label) {
+	public void setLabel(@Nullable String label) {
 		this.label = label;
 	}
 
-	public String getDescription() {
-		return description;
+	public @Nullable String getDescription() {
+		return this.description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(@Nullable String description) {
 		this.description = description;
 	}
 
-	public String getName() {
-		return name;
+	public @Nullable String getName() {
+		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(@Nullable String name) {
 		this.name = name;
 	}
 
-	public Input getInput() {
-		return input;
+	public @Nullable Input getInput() {
+		return this.input;
 	}
 
-	public void setInput(Input input) {
+	public void setInput(@Nullable Input input) {
 		this.input = input;
 	}
 
-	public OutputMessage getOutputMessage() {
-		return outputMessage;
+	public @Nullable OutputMessage getOutputMessage() {
+		return this.outputMessage;
 	}
 
-	public void setOutputMessage(OutputMessage outputMessage) {
+	public void setOutputMessage(@Nullable OutputMessage outputMessage) {
 		this.outputMessage = outputMessage;
 	}
 
 	public boolean getIgnored() {
-		return ignored;
+		return this.ignored;
 	}
 
 	public boolean isIgnored() {
-		return ignored;
+		return this.ignored;
 	}
 
 	public void setIgnored(boolean ignored) {
@@ -377,7 +382,7 @@ public class Contract {
 	}
 
 	public Map<String, Object> getMetadata() {
-		return metadata;
+		return this.metadata;
 	}
 
 	@Override
@@ -389,25 +394,26 @@ public class Contract {
 			return false;
 		}
 		Contract contract = (Contract) o;
-		return ignored == contract.ignored && Objects.equals(priority, contract.priority)
-				&& Objects.equals(request, contract.request) && Objects.equals(response, contract.response)
-				&& Objects.equals(label, contract.label) && Objects.equals(description, contract.description)
-				&& Objects.equals(name, contract.name) && Objects.equals(input, contract.input)
-				&& Objects.equals(metadata, contract.metadata) && Objects.equals(outputMessage, contract.outputMessage);
+		return this.ignored == contract.ignored && Objects.equals(this.priority, contract.priority)
+				&& Objects.equals(this.request, contract.request) && Objects.equals(this.response, contract.response)
+				&& Objects.equals(this.label, contract.label) && Objects.equals(this.description, contract.description)
+				&& Objects.equals(this.name, contract.name) && Objects.equals(this.input, contract.input)
+				&& Objects.equals(this.metadata, contract.metadata)
+				&& Objects.equals(this.outputMessage, contract.outputMessage);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(priority, request, response, label, description, name, input, outputMessage, metadata,
-				ignored);
+		return Objects.hash(this.priority, this.request, this.response, this.label, this.description, this.name,
+				this.input, this.outputMessage, this.metadata, this.ignored);
 	}
 
 	@Override
 	public String toString() {
-		return "Contract{" + "\npriority=" + priority + ", \n\trequest=" + request + ", \n\tresponse=" + response
-				+ ", \n\tlabel='" + label + '\'' + ", \n\tdescription='" + description + '\'' + ", \n\tname='" + name
-				+ '\'' + ", \n\tinput=" + input + ", \n\toutputMessage=" + outputMessage + ", \n\tignored=" + ignored
-				+ '}';
+		return "Contract{" + "\npriority=" + this.priority + ", \n\trequest=" + this.request + ", \n\tresponse="
+				+ this.response + ", \n\tlabel='" + this.label + '\'' + ", \n\tdescription='" + this.description + '\''
+				+ ", \n\tname='" + this.name + '\'' + ", \n\tinput=" + this.input + ", \n\toutputMessage="
+				+ this.outputMessage + ", \n\tignored=" + this.ignored + '}';
 	}
 
 }

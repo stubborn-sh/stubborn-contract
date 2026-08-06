@@ -50,6 +50,11 @@ public final class XmlAssertion {
 		this.cachedObjects = new XmlCachedObjects(parsedXml);
 	}
 
+	// The XPath builder (XPathBuilder#builder) constructs with empty XML, which
+	// legitimately leaves cachedObjects null; the parsed document is only dereferenced
+	// during assertion, never during XPath building, so the non-null field contract holds
+	// for every mode that reads it.
+	@SuppressWarnings("NullAway")
 	private XmlAssertion(String xml) {
 		XmlCachedObjects cachedObjects = CACHE.get(xml);
 		if (cachedObjects == null && !empty(xml)) {
@@ -59,8 +64,8 @@ public final class XmlAssertion {
 				Document document = loader.load(inputXml);
 				cachedObjects = new XmlCachedObjects(document, xml);
 			}
-			catch (Exception e) {
-				throw new IllegalStateException("Exception occurred while trying to parse the XML", e);
+			catch (Exception ex) {
+				throw new IllegalStateException("Exception occurred while trying to parse the XML", ex);
 			}
 			CACHE.put(xml, cachedObjects);
 		}

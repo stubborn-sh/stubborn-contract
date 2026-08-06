@@ -1,4 +1,0 @@
-# Example of a custom HTTP Server Stub
-sh.stubborn.contract.stubrunner.HttpServerStub=\
-sh.stubborn.contract.stubrunner.provider.moco.MocoHttpServerStub
-

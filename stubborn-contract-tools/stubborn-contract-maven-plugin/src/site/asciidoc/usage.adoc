@@ -2,7 +2,7 @@
 
 == Converting Stubborn Contract DSL into WireMock stub mappings
 
-   mvn org.springframework.cloud:stubborn-maven-plugin:convert
+   mvn sh.stubborn:stubborn-contract-maven-plugin:convert
 
 or shortly footnoteref:[prefix,Additional configuration inside `~/.m2/settings.xml` is required: `<pluginGroups><pluginGroup>org.springframework.cloud</pluginGroup></pluginGroups>`.]
 
@@ -14,7 +14,7 @@ For more information please go to the Stubborn Contract Wiki or Plugin Documenta
 
 Run stubs mappings from current directory:
 
-    mvn org.springframework.cloud:stubborn-maven-plugin:run
+    mvn sh.stubborn:stubborn-contract-maven-plugin:run
 
 or shortly footnoteref:[prefix]
 

@@ -54,7 +54,9 @@ final class TemporaryFileStorage {
 	}
 
 	static void add(File file) {
-		TEMP_FILES_LOG.offer(file);
+		if (!TEMP_FILES_LOG.offer(file) && log.isTraceEnabled()) {
+			log.trace("Temporary file log is full; not tracking [" + file + "]");
+		}
 	}
 
 	static Queue<File> files() {
@@ -93,11 +95,11 @@ final class TemporaryFileStorage {
 					Files.delete(file.toPath());
 				}
 			}
-			catch (NoClassDefFoundError | IOException e) {
+			catch (NoClassDefFoundError | IOException ex) {
 				// Added NoClassDefFoundError cause sometimes it's visible in the builds
 				// this error is completely harmless
 				if (log.isTraceEnabled()) {
-					log.trace("Failed to remove temporary file", e);
+					log.trace("Failed to remove temporary file", ex);
 				}
 			}
 			TemporaryFileStorage.files().clear();

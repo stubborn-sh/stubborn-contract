@@ -18,7 +18,11 @@ package sh.stubborn.contract.spec.internal;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
+ * A body matcher that matches against a given path.
+ *
  * @author Marcin Grzejszczak
  */
 public class PathBodyMatcher implements BodyMatcher {
@@ -27,13 +31,13 @@ public class PathBodyMatcher implements BodyMatcher {
 
 	private MatchingTypeValue matchingTypeValue;
 
-	PathBodyMatcher(String path, MatchingTypeValue matchingTypeValue) {
+	public PathBodyMatcher(String path, MatchingTypeValue matchingTypeValue) {
 		this.path = path;
 		this.matchingTypeValue = matchingTypeValue;
 	}
 
 	@Override
-	public MatchingType matchingType() {
+	public @Nullable MatchingType matchingType() {
 		return this.matchingTypeValue.getType();
 	}
 
@@ -43,17 +47,17 @@ public class PathBodyMatcher implements BodyMatcher {
 	}
 
 	@Override
-	public Object value() {
+	public @Nullable Object value() {
 		return this.matchingTypeValue.getValue();
 	}
 
 	@Override
-	public Integer minTypeOccurrence() {
+	public @Nullable Integer minTypeOccurrence() {
 		return this.matchingTypeValue.getMinTypeOccurrence();
 	}
 
 	@Override
-	public Integer maxTypeOccurrence() {
+	public @Nullable Integer maxTypeOccurrence() {
 		return this.matchingTypeValue.getMaxTypeOccurrence();
 	}
 
@@ -66,17 +70,17 @@ public class PathBodyMatcher implements BodyMatcher {
 			return false;
 		}
 		PathBodyMatcher that = (PathBodyMatcher) o;
-		return Objects.equals(path, that.path) && Objects.equals(matchingTypeValue, that.matchingTypeValue);
+		return Objects.equals(this.path, that.path) && Objects.equals(this.matchingTypeValue, that.matchingTypeValue);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(path, matchingTypeValue);
+		return Objects.hash(this.path, this.matchingTypeValue);
 	}
 
 	@Override
 	public String toString() {
-		return "PathBodyMatcher{" + "path='" + path + '\'' + ", matchingTypeValue=" + matchingTypeValue + '}';
+		return "PathBodyMatcher{" + "path='" + this.path + '\'' + ", matchingTypeValue=" + this.matchingTypeValue + '}';
 	}
 
 }

@@ -48,14 +48,11 @@ import javax.tools.ToolProvider;
 
 import groovy.lang.GroovyShell;
 import org.codehaus.groovy.control.CompilerConfiguration;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
-
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Converts a String or a Groovy or Java file into a {@link Contract}.
@@ -87,12 +84,12 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 			Object object = groovyShell(urlCl, rootFolder).evaluate(dsl);
 			return listOfContracts(object);
 		}
-		catch (DslParseException e) {
-			throw e;
+		catch (DslParseException ex) {
+			throw ex;
 		}
-		catch (Exception e) {
-			LOG.error("Exception occurred while trying to evaluate the contract", e);
-			throw new DslParseException(e);
+		catch (Exception ex) {
+			LOG.error("Exception occurred while trying to evaluate the contract", ex);
+			throw new DslParseException(ex);
 		}
 		finally {
 			Thread.currentThread().setContextClassLoader(classLoader);
@@ -110,12 +107,12 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 			Object object = toObject(urlCl, rootFolder, dsl);
 			return listOfContracts(dsl, object);
 		}
-		catch (DslParseException e) {
-			throw e;
+		catch (DslParseException ex) {
+			throw ex;
 		}
-		catch (Exception e) {
-			LOG.error("Exception occurred while trying to evaluate the contract at path [" + dsl.getPath() + "]", e);
-			throw new DslParseException(e);
+		catch (Exception ex) {
+			LOG.error("Exception occurred while trying to evaluate the contract at path [" + dsl.getPath() + "]", ex);
+			throw new DslParseException(ex);
 		}
 		finally {
 			Thread.currentThread().setContextClassLoader(classLoader);
@@ -128,10 +125,10 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 			urlCl = URLClassLoader
 				.newInstance(Collections.singletonList(rootFolder.toURI().toURL()).toArray(new URL[0]), classLoader);
 		}
-		catch (MalformedURLException e) {
+		catch (MalformedURLException ex) {
 			LOG.error("Exception occurred while trying to construct the URL from the root folder at path ["
-					+ rootFolder.getPath() + "]", e);
-			throw new DslParseException(e);
+					+ rootFolder.getPath() + "]", ex);
+			throw new DslParseException(ex);
 		}
 		updateTheThreadClassLoader(urlCl);
 		return urlCl;
@@ -141,7 +138,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		Thread.currentThread().setContextClassLoader(urlCl);
 	}
 
-	private static Object toObject(ClassLoader cl, File rootFolder, File dsl) throws IOException {
+	private static @Nullable Object toObject(ClassLoader cl, File rootFolder, File dsl) throws IOException {
 		if (isJava(dsl)) {
 			try {
 				return parseJavaFile(rootFolder, dsl);
@@ -157,7 +154,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		return groovyShell(cl, rootFolder).evaluate(dsl);
 	}
 
-	private static Object parseJavaFile(File rootFolder, File dsl) throws IllegalAccessException,
+	private static @Nullable Object parseJavaFile(File rootFolder, File dsl) throws IllegalAccessException,
 			InvocationTargetException, InstantiationException, IOException, NoSuchMethodException {
 		Constructor<?> constructor = classConstructor(rootFolder, dsl);
 		Object newInstance = constructor.newInstance();
@@ -184,7 +181,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 				classpathLocations.add(rootFolder);
 				appendUrlsFromAllClassLoaders(classpathLocations);
 				String classPath = System.getProperty("java.class.path", "");
-				if (StringUtils.hasText(classPath)) {
+				if (classPath != null && !classPath.isBlank()) {
 					classpathLocations.addAll(Arrays.stream(classPath.split(":")).map(File::new).toList());
 				}
 				fileManager.setLocation(StandardLocation.CLASS_PATH, classpathLocations);
@@ -197,8 +194,8 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 					throw new IllegalStateException(
 							"Exceptions occurred while trying to compile the file \n" + diagnostics.getDiagnostics()
 								.stream()
-								.map(d -> "Error " + d.getMessage(Locale.getDefault()) + " on line " + d.getLineNumber()
-										+ " in " + d.getSource())
+								.map((d) -> "Error " + d.getMessage(Locale.getDefault()) + " on line "
+										+ d.getLineNumber() + " in " + d.getSource())
 								.collect(Collectors.joining("\n")));
 				}
 				try {
@@ -206,12 +203,12 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 					URLClassLoader urlClassLoader = new URLClassLoader("contract-classloader",
 							new URL[] { new URL("file://" + directory.toAbsolutePath() + "/") },
 							Thread.currentThread().getContextClassLoader());
-					Class<?> clazz = ClassUtils.forName(fqn, urlClassLoader);
+					Class<?> clazz = Class.forName(fqn, true, urlClassLoader);
 					Constructor<?> constructor = clazz.getDeclaredConstructor();
 					constructor.setAccessible(true);
 					return constructor;
 				}
-				catch (ClassNotFoundException e) {
+				catch (ClassNotFoundException ex) {
 					throw new IllegalStateException("Class with name [" + fqn + "] not found");
 				}
 			}
@@ -233,7 +230,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		if (classLoader instanceof URLClassLoader urlClassLoader) {
 			URL[] urLs = urlClassLoader.getURLs();
 			if (urLs.length > 0) {
-				Arrays.stream(urLs).forEach(url -> files.add(new File(url.getFile())));
+				Arrays.stream(urLs).forEach((url) -> files.add(new File(url.getFile())));
 			}
 		}
 	}
@@ -272,7 +269,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		return Collections.singletonList((Contract) object);
 	}
 
-	private static Collection<Contract> listOfContracts(File file, Object object) {
+	private static Collection<Contract> listOfContracts(File file, @Nullable Object object) {
 		if (object == null) {
 			return Collections.emptyList();
 		}
@@ -286,12 +283,12 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 	}
 
 	private static boolean isACollectionOfContracts(Object object) {
-		return object instanceof Collection && ((Collection) object).stream().allMatch(it -> it instanceof Contract);
+		return object instanceof Collection && ((Collection) object).stream().allMatch((it) -> it instanceof Contract);
 	}
 
 	private static Collection<Contract> withName(File file, Collection<Contract> contracts) {
 		AtomicInteger counter = new AtomicInteger(0);
-		return contracts.stream().peek(it -> {
+		return contracts.stream().peek((it) -> {
 			if (contractNameEmpty(it)) {
 				it.name(NamesUtil.defaultContractName(file, contracts, counter.get()));
 			}
@@ -300,7 +297,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 	}
 
 	private static boolean contractNameEmpty(Contract it) {
-		return it != null && ObjectUtils.isEmpty(it.getName());
+		return it != null && (it.getName() == null || it.getName().isEmpty());
 	}
 
 	@Override

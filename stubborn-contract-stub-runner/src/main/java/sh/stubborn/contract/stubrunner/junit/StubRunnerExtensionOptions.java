@@ -21,11 +21,13 @@ import java.util.Map;
 
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
 /**
+ * Fluent options for the {@link StubRunnerExtension}.
+ *
  * @author Olga Maciaszek-Sharma
  * @since 2.1.0
  */
@@ -58,30 +60,35 @@ interface StubRunnerExtensionOptions {
 	StubRunnerExtension options(StubRunnerOptions stubRunnerOptions);
 
 	/**
+	 * Sets the minimum port value.
 	 * @param minPort min value of port for WireMock server
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension minPort(int minPort);
 
 	/**
+	 * Sets the maximum port value.
 	 * @param maxPort max value of port for WireMock server
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension maxPort(int maxPort);
 
 	/**
-	 * @param repoRoot String URI of repository containing stubs
+	 * Sets the repository root.
+	 * @param repoRoot string URI of repository containing stubs
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension repoRoot(String repoRoot);
 
 	/**
-	 * @param stubsMode Stubs mode that should be used
+	 * Sets the stubs mode.
+	 * @param stubsMode stubs mode that should be used
 	 * @return the stub runner extension
 	 */
-	StubRunnerExtension stubsMode(StubRunnerProperties.StubsMode stubsMode);
+	StubRunnerExtension stubsMode(StubsMode stubsMode);
 
 	/**
+	 * Downloads the stub with the given coordinates.
 	 * @param groupId group id of the stub
 	 * @param artifactId artifact id of the stub
 	 * @param version version of the stub
@@ -91,6 +98,7 @@ interface StubRunnerExtensionOptions {
 	PortStubRunnerExtensionOptions downloadStub(String groupId, String artifactId, String version, String classifier);
 
 	/**
+	 * Downloads the latest stub with the given coordinates.
 	 * @param groupId group id of the stub
 	 * @param artifactId artifact id of the stub
 	 * @param classifier classifier of the stub
@@ -99,6 +107,7 @@ interface StubRunnerExtensionOptions {
 	PortStubRunnerExtensionOptions downloadLatestStub(String groupId, String artifactId, String classifier);
 
 	/**
+	 * Downloads the stub with the given coordinates.
 	 * @param groupId group id of the stub
 	 * @param artifactId artifact id of the stub
 	 * @param version version of the stub
@@ -107,6 +116,7 @@ interface StubRunnerExtensionOptions {
 	PortStubRunnerExtensionOptions downloadStub(String groupId, String artifactId, String version);
 
 	/**
+	 * Downloads the stub with the given coordinates.
 	 * @param groupId group id of the stub
 	 * @param artifactId artifact id of the stub
 	 * @return the stub runner extension with ports
@@ -114,56 +124,65 @@ interface StubRunnerExtensionOptions {
 	PortStubRunnerExtensionOptions downloadStub(String groupId, String artifactId);
 
 	/**
-	 * @param ivyNotation Ivy notation of a single stub to download.
+	 * Downloads a single stub described by the given ivy notation.
+	 * @param ivyNotation ivy notation of a single stub to download
 	 * @return the stub runner extension with ports
 	 */
 	PortStubRunnerExtensionOptions downloadStub(String ivyNotation);
 
 	/**
-	 * @param ivyNotations Stubs to download in Ivy notations.
+	 * Downloads the stubs described by the given ivy notations.
+	 * @param ivyNotations stubs to download in ivy notations
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension downloadStubs(String... ivyNotations);
 
 	/**
-	 * @param ivyNotations Stubs to download in Ivy notations.
+	 * Downloads the stubs described by the given ivy notations.
+	 * @param ivyNotations stubs to download in ivy notations
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension downloadStubs(List<String> ivyNotations);
 
 	/**
-	 * @param stubPerConsumer Allows stub per consumer.
+	 * Enables stubs per consumer.
+	 * @param stubPerConsumer allows stub per consumer
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension withStubPerConsumer(boolean stubPerConsumer);
 
 	/**
+	 * Sets the consumer name.
 	 * @param consumerName given consumer name
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension withConsumerName(String consumerName);
 
 	/**
-	 * @param mappingsOutputFolder Allows setting the output folder for mappings
+	 * Sets the mappings output folder.
+	 * @param mappingsOutputFolder allows setting the output folder for mappings
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension withMappingsOutputFolder(String mappingsOutputFolder);
 
 	/**
-	 * @param deleteStubsAfterTest If set to {@code false} will NOT delete stubs from a
+	 * Configures whether to delete stubs after the tests.
+	 * @param deleteStubsAfterTest if set to {@code false} will NOT delete stubs from a
 	 * temporary folder after running tests
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension withDeleteStubsAfterTest(boolean deleteStubsAfterTest);
 
 	/**
-	 * @param generateStubs If set to {@code true} will NOT load generated stubs but will
-	 * generate stubs from contract definitions at runtime.
+	 * Configures whether to generate stubs at runtime.
+	 * @param generateStubs if set to {@code true} will NOT load generated stubs but will
+	 * generate stubs from contract definitions at runtime
 	 * @return the rule
 	 */
 	StubRunnerExtension withGenerateStubs(boolean generateStubs);
 
 	/**
+	 * Configures whether to fail when no stubs are found.
 	 * @param failOnNoStubs when enabled, this flag will tell stub runner to throw an
 	 * exception when no stubs / contracts were found.
 	 * @return the rule
@@ -171,14 +190,16 @@ interface StubRunnerExtensionOptions {
 	StubRunnerExtension failOnNoStubs(boolean failOnNoStubs);
 
 	/**
-	 * @param properties Map of properties that can be passed to custom
+	 * Sets custom properties.
+	 * @param properties map of properties that can be passed to custom
 	 * {@link sh.stubborn.contract.stubrunner.StubDownloaderBuilder}
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension withProperties(Map<String, String> properties);
 
 	/**
-	 * @param httpServerStubConfigurer Configuration for an HTTP server stub
+	 * Sets the HTTP server stub configurer.
+	 * @param httpServerStubConfigurer configuration for an HTTP server stub
 	 * @return the stub runner extension
 	 */
 	StubRunnerExtension withHttpServerStubConfigurer(

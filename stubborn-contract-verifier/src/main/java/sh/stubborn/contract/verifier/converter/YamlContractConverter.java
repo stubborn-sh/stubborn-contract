@@ -18,8 +18,10 @@ package sh.stubborn.contract.verifier.converter;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,9 +29,6 @@ import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 import tools.jackson.dataformat.yaml.YAMLMapper;
-
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * Simple converter from and to a {@link YamlContract} to a collection of
@@ -59,8 +58,8 @@ public class YamlContractConverter implements ContractConverter<List<YamlContrac
 			try {
 				this.yamlToContracts.convertFrom(file);
 			}
-			catch (Exception e) {
-				log.warn("Error Processing yaml file. Skipping Contract Generation ", e);
+			catch (Exception ex) {
+				log.warn("Error Processing yaml file. Skipping Contract Generation ", ex);
 				acceptFile = false;
 			}
 		}
@@ -79,21 +78,21 @@ public class YamlContractConverter implements ContractConverter<List<YamlContrac
 
 	@Override
 	public Map<String, byte[]> store(List<YamlContract> contracts) {
-		return contracts.stream().collect(toMap(this::name, this::getBytes));
+		return contracts.stream().collect(Collectors.toMap(this::name, this::getBytes));
 	}
 
 	@Override
 	public List<YamlContract> read(byte[] bytes) {
 		try {
-			return singletonList(this.mapper.readValue(bytes, YamlContract.class));
+			return Collections.singletonList(this.mapper.readValue(bytes, YamlContract.class));
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return this.mapper.readerForListOf(YamlContract.class).readValue(bytes);
 		}
 	}
 
 	protected String name(YamlContract contract) {
-		return StringUtils.defaultIfEmpty(contract.name, String.valueOf(Math.abs((contract.hashCode())))) + ".yml";
+		return StringUtils.defaultIfEmpty(contract.name, String.valueOf(Math.abs((long) contract.hashCode()))) + ".yml";
 	}
 
 	protected byte[] getBytes(YamlContract yamlContract) {

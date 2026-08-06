@@ -55,7 +55,7 @@ class GenerateTestsMojoIntegrationTests extends AbstractMojoIntegrationTests {
 		then(Files.exists(generatedResources)).isTrue();
 		List<Path> generatedJava;
 		try (Stream<Path> paths = Files.walk(generatedSources)) {
-			generatedJava = paths.filter(path -> path.toString().endsWith(".java")).toList();
+			generatedJava = paths.filter((path) -> path.toString().endsWith(".java")).toList();
 		}
 		then(generatedJava).isNotEmpty();
 		String generatedContent = Files.readString(generatedJava.get(0));

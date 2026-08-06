@@ -1,0 +1,67 @@
+/*
+ * Copyright 2013-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package sh.stubborn.contract.verifier.messaging.stream;
+
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
+import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+
+import org.springframework.cloud.stream.binder.test.InputDestination;
+import org.springframework.context.ApplicationContext;
+import org.springframework.messaging.Message;
+
+/**
+ * Sends messages to a Spring Cloud Stream test binder {@link InputDestination}.
+ *
+ * @author Marcin Grzejszczak
+ */
+class StreamInputDestinationMessageSender implements MessageVerifierSender<Message<?>> {
+
+	private static final Log log = LogFactory.getLog(StreamInputDestinationMessageSender.class);
+
+	private final ApplicationContext context;
+
+	private final ContractVerifierStreamMessageBuilder builder = new ContractVerifierStreamMessageBuilder();
+
+	StreamInputDestinationMessageSender(ApplicationContext context) {
+		this.context = context;
+	}
+
+	@Override
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
+		send(this.builder.create(payload, (headers != null) ? headers : Map.of()), destination, contract);
+	}
+
+	@Override
+	public void send(Message<?> message, String destination, @Nullable YamlContract contract) {
+		try {
+			InputDestination inputDestination = this.context.getBean(InputDestination.class);
+			inputDestination.send(message, destination);
+		}
+		catch (Exception ex) {
+			log.error("Exception occurred while trying to send a message [" + message + "] "
+					+ "to a destination with name [" + destination + "]", ex);
+			throw ex;
+		}
+	}
+
+}

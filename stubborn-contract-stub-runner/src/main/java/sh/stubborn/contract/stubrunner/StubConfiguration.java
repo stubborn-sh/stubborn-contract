@@ -18,8 +18,6 @@ package sh.stubborn.contract.stubrunner;
 
 import java.util.Locale;
 
-import org.springframework.util.StringUtils;
-
 /**
  * Represents a configuration of a single stub. The stub can be described by
  * groupId:artifactId:version:classifier notation
@@ -84,17 +82,18 @@ public class StubConfiguration {
 		if (splitPath.length >= 2) {
 			stubsGroupId = splitPath[0];
 			stubsArtifactId = splitPath[1];
-			stubsVersion = splitPath.length >= 3 ? splitPath[2] : DEFAULT_VERSION;
-			stubsClassifier = splitPath.length >= 4 ? splitPath[3] : defaultClassifier;
+			stubsVersion = (splitPath.length >= 3) ? splitPath[2] : DEFAULT_VERSION;
+			stubsClassifier = (splitPath.length >= 4) ? splitPath[3] : defaultClassifier;
 		}
 		return new String[] { stubsGroupId, stubsArtifactId, stubsVersion, stubsClassifier };
 	}
 
 	private boolean isDefined() {
-		return StringUtils.hasText(this.groupId) && StringUtils.hasText(this.artifactId);
+		return this.groupId != null && !this.groupId.isBlank() && this.artifactId != null && !this.artifactId.isBlank();
 	}
 
 	/**
+	 * Returns a colon separated representation of the stub configuration.
 	 * @return a colon separated representation of the stub configuration (e.g.
 	 * groupid:artifactid:version:classifier)
 	 */
@@ -102,12 +101,12 @@ public class StubConfiguration {
 		if (!isDefined()) {
 			return "";
 		}
-		return StringUtils.arrayToDelimitedString(new String[] { nullCheck(this.groupId), nullCheck(this.artifactId),
-				nullCheck(this.version), nullCheck(this.classifier) }, STUB_COLON_DELIMITER);
+		return String.join(STUB_COLON_DELIMITER, nullCheck(this.groupId), nullCheck(this.artifactId),
+				nullCheck(this.version), nullCheck(this.classifier));
 	}
 
 	private String nullCheck(String value) {
-		return StringUtils.hasText(value) ? value : "";
+		return (value != null && !value.isBlank()) ? value : "";
 	}
 
 	/**
@@ -127,6 +126,7 @@ public class StubConfiguration {
 	}
 
 	/**
+	 * Checks if this stub has a changing version.
 	 * @return {@code true} for a snapshot or a LATEST (+) version.
 	 */
 	public boolean isVersionChanging() {
@@ -147,15 +147,6 @@ public class StubConfiguration {
 
 	public String getVersion() {
 		return this.version;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.artifactId == null) ? 0 : this.artifactId.hashCode());
-		result = prime * result + ((this.groupId == null) ? 0 : this.groupId.hashCode());
-		return result;
 	}
 
 	@Override
@@ -187,6 +178,15 @@ public class StubConfiguration {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.artifactId == null) ? 0 : this.artifactId.hashCode());
+		result = prime * result + ((this.groupId == null) ? 0 : this.groupId.hashCode());
+		return result;
 	}
 
 	public boolean matchesIvyNotation(String ivyNotationAsString) {

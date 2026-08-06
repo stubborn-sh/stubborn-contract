@@ -1,3 +1,0 @@
-# Stub converters
-sh.stubborn.contract.verifier.converter.StubGenerator=\
-sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter

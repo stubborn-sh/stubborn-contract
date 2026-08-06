@@ -18,22 +18,25 @@ package sh.stubborn.contract.spec.internal;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Represents a matching strategy for a JSON.
  *
+ * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 public class MatchingStrategy extends DslProperty {
 
 	private Type type;
 
-	private JSONCompareMode jsonCompareMode;
+	private @Nullable JSONCompareMode jsonCompareMode;
 
 	public MatchingStrategy(Object value, Type type) {
 		this(value, type, null);
 	}
 
-	public MatchingStrategy(Object value, Type type, JSONCompareMode jsonCompareMode) {
+	public MatchingStrategy(Object value, Type type, @Nullable JSONCompareMode jsonCompareMode) {
 		super(value);
 		this.type = type;
 		this.jsonCompareMode = jsonCompareMode;
@@ -43,31 +46,26 @@ public class MatchingStrategy extends DslProperty {
 		this(value, type, null);
 	}
 
-	public MatchingStrategy(DslProperty value, Type type, JSONCompareMode jsonCompareMode) {
+	public MatchingStrategy(DslProperty value, Type type, @Nullable JSONCompareMode jsonCompareMode) {
 		super(value.getClientValue(), value.getServerValue());
 		this.type = type;
 		this.jsonCompareMode = jsonCompareMode;
 	}
 
 	public Type getType() {
-		return type;
+		return this.type;
 	}
 
 	public void setType(Type type) {
 		this.type = type;
 	}
 
-	public JSONCompareMode getJsonCompareMode() {
-		return jsonCompareMode;
+	public @Nullable JSONCompareMode getJsonCompareMode() {
+		return this.jsonCompareMode;
 	}
 
-	public void setJsonCompareMode(JSONCompareMode jsonCompareMode) {
+	public void setJsonCompareMode(@Nullable JSONCompareMode jsonCompareMode) {
 		this.jsonCompareMode = jsonCompareMode;
-	}
-
-	@Override
-	public String toString() {
-		return "MatchingStrategy{" + "type=" + type + ", jsonCompareMode=" + jsonCompareMode + '}';
 	}
 
 	@Override
@@ -82,12 +80,17 @@ public class MatchingStrategy extends DslProperty {
 			return false;
 		}
 		MatchingStrategy that = (MatchingStrategy) o;
-		return type == that.type && jsonCompareMode == that.jsonCompareMode;
+		return this.type == that.type && this.jsonCompareMode == that.jsonCompareMode;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), type, jsonCompareMode);
+		return Objects.hash(super.hashCode(), this.type, this.jsonCompareMode);
+	}
+
+	@Override
+	public String toString() {
+		return "MatchingStrategy{" + "type=" + this.type + ", jsonCompareMode=" + this.jsonCompareMode + '}';
 	}
 
 	public enum Type {
@@ -139,7 +142,7 @@ public class MatchingStrategy extends DslProperty {
 		}
 
 		public final String getName() {
-			return name;
+			return this.name;
 		}
 
 	}

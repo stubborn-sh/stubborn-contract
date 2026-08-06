@@ -18,40 +18,43 @@ package sh.stubborn.contract.stubrunner;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.jspecify.annotations.Nullable;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author Marcin Grzejszczak
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class StubDownloaderBuilderProviderTests {
 
 	@Mock
-	StubDownloaderBuilder one;
+	@Nullable StubDownloaderBuilder one;
 
 	@Mock
-	StubDownloaderBuilder two;
+	@Nullable StubDownloaderBuilder two;
 
 	@Mock
-	StubDownloaderBuilder three;
+	@Nullable StubDownloaderBuilder three;
 
 	@Test
 	public void should_get_providers_from_factories_default_and_additional_ones() {
 		StubDownloaderBuilderProvider provider = new StubDownloaderBuilderProvider(
-				Collections.singletonList(this.one)) {
+				Collections.singletonList(Objects.requireNonNull(this.one))) {
 			@Override
 			List<StubDownloaderBuilder> defaultStubDownloaderBuilders() {
-				return Collections.singletonList(StubDownloaderBuilderProviderTests.this.two);
+				return Collections.singletonList(Objects.requireNonNull(StubDownloaderBuilderProviderTests.this.two));
 			}
 		};
 		StubRunnerOptions options = new StubRunnerOptionsBuilder().withFailOnNoStubs(false).build();
 
-		provider.get(options, this.three).downloadAndUnpackStubJar(new StubConfiguration("a:b:c"));
+		provider.get(options, Objects.requireNonNull(this.three))
+			.downloadAndUnpackStubJar(new StubConfiguration("a:b:c"));
 
 		BDDMockito.then(this.one).should().build(options);
 		BDDMockito.then(this.two).should().build(options);

@@ -20,8 +20,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import sh.stubborn.contract.stubrunner.junit4.StubRunnerRuleCustomPortJUnitTest;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
+import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,23 +31,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class StubRunnerJUnit5ExtensionExceptionThrowingTests {
 
 	@RegisterExtension
-	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension()
-		.stubsMode(StubRunnerProperties.StubsMode.REMOTE)
+	static StubRunnerExtension stubRunnerExtension = new StubRunnerExtension().stubsMode(StubsMode.REMOTE)
 		.repoRoot(repoRoot())
 		.downloadStub("sh.stubborn.contract.verifier.stubs", "bootService");
 
 	@BeforeAll
 	@AfterAll
 	static void setupProps() {
-		System.clearProperty("spring.cloud.contract.stubrunner.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.classifier");
 	}
 
 	private static String repoRoot() {
 		try {
-			return StubRunnerRuleCustomPortJUnitTest.class.getResource("/m2repo/repository/").toURI().toString();
+			return StubRunnerJUnit5ExtensionExceptionThrowingTests.class.getResource("/m2repo/repository/")
+				.toURI()
+				.toString();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return "";
 		}
 	}

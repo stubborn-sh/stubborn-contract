@@ -22,18 +22,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
-
-import org.springframework.core.io.support.SpringFactoriesLoader;
-import org.springframework.util.StringUtils;
 
 /**
  * Represents a single instance of ready-to-run stubs. Can run the stubs and then will
@@ -63,7 +63,8 @@ public class StubRunner implements StubRunning {
 			MessageVerifierSender<?> contractVerifierMessaging) {
 		this.stubsConfiguration = stubsConfiguration;
 		this.stubRunnerOptions = stubRunnerOptions;
-		List<HttpServerStub> serverStubs = SpringFactoriesLoader.loadFactories(HttpServerStub.class, null);
+		List<HttpServerStub> serverStubs = new ArrayList<>();
+		ServiceLoader.load(HttpServerStub.class).forEach(serverStubs::add);
 		this.stubRepository = new StubRepository(new File(repositoryPath), serverStubs, this.stubRunnerOptions,
 				stubsConfiguration);
 		AvailablePortScanner portScanner = new AvailablePortScanner(stubRunnerOptions.getMinPortValue(),
@@ -78,23 +79,28 @@ public class StubRunner implements StubRunning {
 				this.stubsConfiguration);
 		if (this.stubRunnerOptions.hasMappingsOutputFolder()) {
 			String registeredMappings = this.localStubRunner.registeredMappings();
-			if (StringUtils.hasText(registeredMappings)) {
+			if (registeredMappings != null && !registeredMappings.isBlank()) {
 				File outputMappings = new File(this.stubRunnerOptions.getMappingsOutputFolder(),
 						this.stubsConfiguration.artifactId + "_"
 								+ stubs.getPort(this.stubsConfiguration.toColonSeparatedDependencyNotation()));
 				try {
-					outputMappings.getParentFile().mkdirs();
+					if (!outputMappings.getParentFile().mkdirs() && log.isTraceEnabled()) {
+						log.trace(
+								"Parent directory already exists or could not be created for [" + outputMappings + "]");
+					}
 					clearOldFiles(outputMappings.getParentFile(), this.stubsConfiguration.artifactId);
-					outputMappings.createNewFile();
+					if (!outputMappings.createNewFile() && log.isTraceEnabled()) {
+						log.trace("Mappings file already exists [" + outputMappings + "]");
+					}
 					Files.write(Paths.get(outputMappings.toURI()), registeredMappings.getBytes());
 					if (log.isDebugEnabled()) {
 						log.debug("Stored the mappings for artifactid [" + this.stubsConfiguration.artifactId + "] at ["
 								+ outputMappings + "] location");
 					}
 				}
-				catch (IOException e) {
-					log.error("Exception occurred while trying to store the mappings", e);
-					throw new IllegalStateException(e);
+				catch (IOException ex) {
+					log.error("Exception occurred while trying to store the mappings", ex);
+					throw new IllegalStateException(ex);
 				}
 			}
 		}
@@ -124,7 +130,7 @@ public class StubRunner implements StubRunning {
 	}
 
 	@Override
-	public URL findStubUrl(String groupId, String artifactId) {
+	public URL findStubUrl(@Nullable String groupId, String artifactId) {
 		return this.localStubRunner.findStubUrl(groupId, artifactId);
 	}
 
@@ -170,7 +176,7 @@ public class StubRunner implements StubRunning {
 				try {
 					close();
 				}
-				catch (IOException e) {
+				catch (IOException ex) {
 				}
 			}
 		};

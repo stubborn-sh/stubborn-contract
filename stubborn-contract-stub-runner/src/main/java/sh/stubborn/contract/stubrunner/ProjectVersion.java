@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import org.springframework.util.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Object representing a root project's version. Knows how to provide a minor bumped
@@ -69,7 +69,7 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 		return dotSeparatedReleaseTrainsAndVersions();
 	}
 
-	private SplitVersion tryHyphenSeparatedVersion() {
+	private @Nullable SplitVersion tryHyphenSeparatedVersion() {
 		// Check for hyphen separated BOMs versioning
 		// Dysprosium-BUILD-SNAPSHOT or Dysprosium-RELEASE
 		// 1.0.0-BUILD-SNAPSHOT or 1.0.0-RELEASE
@@ -105,7 +105,7 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 	}
 
 	private boolean validVersionType() {
-		return VALID_PATTERNS.stream().anyMatch(p -> p.matcher(this.version).matches());
+		return VALID_PATTERNS.stream().anyMatch((p) -> p.matcher(this.version).matches());
 	}
 
 	private String[] combinedArrays(String versionName, String versionType) {
@@ -206,11 +206,6 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 	}
 
 	@Override
-	public String toString() {
-		return this.version;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -225,6 +220,11 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(this.version);
+	}
+
+	@Override
+	public String toString() {
+		return this.version;
 	}
 
 	@Override
@@ -275,7 +275,7 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 		}
 
 		private static String orDefault(String[] args, int argIndex) {
-			return args.length > argIndex ? args[argIndex] : "";
+			return (args.length > argIndex) ? args[argIndex] : "";
 		}
 
 		static SplitVersion hyphen(String major, String suffix) {
@@ -312,16 +312,16 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 		}
 
 		private boolean noSuffix() {
-			return !StringUtils.hasText(suffix);
+			return this.suffix == null || this.suffix.isBlank();
 		}
 
 		private String gav() {
 			// Finchley
-			if (!StringUtils.hasText(minor)) {
-				return String.format("%s", major);
+			if (this.minor == null || this.minor.isBlank()) {
+				return String.format("%s", this.major);
 			}
 			// 1.0.1
-			return String.format("%s.%s.%s", major, minor, patch);
+			return String.format("%s.%s.%s", this.major, this.minor, this.patch);
 		}
 
 		private boolean isNumeric(String string) {
@@ -338,21 +338,16 @@ class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 			// must have
 			// either major and suffix (release train)
 			// major, minor, patch and suffix
-			return isNumeric(major) && (!StringUtils.hasText(minor) || !StringUtils.hasText(patch)
-					|| !StringUtils.hasText(suffix) || !StringUtils.hasText(delimiter));
+			return isNumeric(this.major) && ((this.minor == null || this.minor.isBlank())
+					|| (this.patch == null || this.patch.isBlank()) || (this.suffix == null || this.suffix.isBlank())
+					|| (this.delimiter == null || this.delimiter.isBlank()));
 		}
 
 		private boolean wrongReleaseTrainVersion() {
 			// BAD: 1.EXAMPLE, GOOD: Hoxton.RELEASE
-			return isNumeric(major) && !StringUtils.hasText(suffix);
+			return isNumeric(this.major) && (this.suffix == null || this.suffix.isBlank());
 		}
 
 	}
-
-}
-
-enum ReleaseType {
-
-	SNAPSHOT, M, RC, RELEASE, SR
 
 }

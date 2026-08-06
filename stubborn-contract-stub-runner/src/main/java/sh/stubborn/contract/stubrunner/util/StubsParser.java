@@ -21,10 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
-
-import org.springframework.util.StringUtils;
 
 /**
  * Utility to parse string into a list of configuration of stubs.
@@ -60,7 +60,7 @@ public final class StubsParser {
 	public static List<StubConfiguration> fromString(Collection<String> collection, String defaultClassifier) {
 		List<StubConfiguration> stubs = new ArrayList<>();
 		for (String config : collection) {
-			if (StringUtils.hasText(config)) {
+			if (config != null && !config.isBlank()) {
 				stubs.add(StubSpecification.parse(config, defaultClassifier).stub);
 			}
 		}
@@ -68,6 +68,7 @@ public final class StubsParser {
 	}
 
 	/**
+	 * Parses the notation into a mapping of stub configurations to ports.
 	 * @param notation ivy notation of stubs with ports
 	 * @return mapping of parsed stub configurations to ports on which the stub is running
 	 */
@@ -76,10 +77,11 @@ public final class StubsParser {
 		if (!stub.hasPort()) {
 			return Collections.emptyMap();
 		}
-		return Collections.singletonMap(stub.stub, stub.port);
+		return Collections.singletonMap(stub.stub, Objects.requireNonNull(stub.port));
 	}
 
 	/**
+	 * Parses the notation into a colon separated dependency notation with port.
 	 * @param notation ivy notation of stubs with ports
 	 * @return colon seprated dependency notation with port or empty string if no port is
 	 * present
@@ -93,6 +95,7 @@ public final class StubsParser {
 	}
 
 	/**
+	 * Checks whether the given identifier contains a port.
 	 * @param id string notation of a stub
 	 * @return {@code true} if a port is there in the identifier
 	 */
@@ -102,7 +105,7 @@ public final class StubsParser {
 			Integer.valueOf(splitEntry[splitEntry.length - 1]);
 			return true;
 		}
-		catch (NumberFormatException e) {
+		catch (NumberFormatException ex) {
 			return false;
 		}
 	}
@@ -111,9 +114,9 @@ public final class StubsParser {
 
 		private final StubConfiguration stub;
 
-		private final Integer port;
+		private final @Nullable Integer port;
 
-		StubSpecification(StubConfiguration stub, Integer port) {
+		StubSpecification(StubConfiguration stub, @Nullable Integer port) {
 			this.stub = stub;
 			this.port = port;
 		}
@@ -125,12 +128,12 @@ public final class StubsParser {
 				port = Integer.valueOf(splitEntry[splitEntry.length - 1]);
 				id = id.substring(0, id.lastIndexOf(":"));
 			}
-			catch (NumberFormatException e) {
+			catch (NumberFormatException ex) {
 			}
 			return new StubSpecification(new StubConfiguration(id, defaultClassifier), port);
 		}
 
-		public boolean hasPort() {
+		boolean hasPort() {
 			return this.port != null;
 		}
 
