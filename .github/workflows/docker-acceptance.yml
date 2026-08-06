@@ -1,0 +1,124 @@
+name: Docker Image Acceptance Test
+
+# Acceptance test for the `stubborn-contract` Docker image: build the image and
+# run it against a minimal fixture contract project, asserting it generates the
+# contract tests and emits the stub jar. This is heavy (full reactor install +
+# image build), so it is a SEPARATE workflow from the main CI build and only
+# runs when the docker module or this test changes (plus manual dispatch).
+#
+# NOTE: this workflow was authored by inspection; the image build/run has not
+# been executed locally (the dev sandbox has no Docker). See the "things to
+# watch on the first run" notes inline below.
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docker/**'
+      - '.github/workflows/docker-acceptance.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'docker/**'
+      - '.github/workflows/docker-acceptance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+  # Local-only image org; never pushed. Keeps the ref distinct from the
+  # published mgrzejszczak/* images.
+  DOCKER_ORG: stubborn-acceptance
+
+jobs:
+  docker-acceptance:
+    name: Build image & run acceptance test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Install bats
+        run: sudo apt-get update && sudo apt-get install -y bats
+
+      # ---------------------------------------------------------------------
+      # Dependency-resolution strategy (IMPORTANT — the crux of this workflow)
+      #
+      # The image's inner Gradle build resolves the stubborn-contract artifacts
+      # (stubborn-contract-gradle-plugin, the stubborn-contract-dependencies BOM,
+      # etc. at ${verifierVersion} = the project version) primarily from the
+      # container's local Maven repo, which the Dockerfile bakes in at build time
+      # from `target/maven_dependencies` (produced by the docker module's
+      # maven-dependency-plugin copy-dependencies) and `target/gradle_dependencies`
+      # (produced by get_dependencies.sh). central-snapshots is only a fallback.
+      #
+      # Therefore CI must first `install` the whole reactor into the local ~/.m2
+      # so those SNAPSHOT artifacts exist when the docker module is packaged.
+      # This mirrors publish-docker.yml exactly.
+      #
+      # IF THIS ASSUMPTION IS WRONG (e.g. the image is meant to pull from
+      # central-snapshots instead): the one-line fix is to drop the four reactor
+      # install steps below and instead ensure the matching SNAPSHOTs are
+      # published to https://central.sonatype.com/repository/maven-snapshots/ —
+      # build.gradle already declares that repo for SNAPSHOT versions.
+      # ---------------------------------------------------------------------
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress -q
+
+      - name: Install BOM (stubborn-contract-dependencies)
+        run: |
+          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress -q
+
+      - name: Build & install all modules (no tests)
+        run: ./mvnw install -DskipTests --no-transfer-progress
+
+      - name: Build docker module parents
+        run: ./mvnw install -N -f docker/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Resolve project version
+        id: ver
+        run: |
+          VERSION="$(./mvnw -q -N help:evaluate \
+            -Dexpression=project.version -DforceStdout \
+            -f docker/stubborn-contract-docker/pom.xml)"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Resolved project version: ${VERSION}"
+
+      # Build the image via the module's real dockerfile-maven build, with the
+      # push goal skipped (`dockerfile.push.skip=true`). This also runs
+      # copy-dependencies + get_dependencies.sh, which stage the deps the
+      # Dockerfile bakes in.
+      #
+      # WATCH ON FIRST RUN: get_dependencies.sh runs the inner Gradle build and
+      # can take several minutes; the Dockerfile uses noCache=true. If the build
+      # is flaky on resolving the gradle plugin, confirm the reactor install
+      # above actually populated ~/.m2/repository/sh/stubborn/....
+      - name: Build docker image (no push)
+        run: |
+          ./mvnw package -f docker/stubborn-contract-docker/pom.xml \
+            -Ddocker.registry.organization=${DOCKER_ORG} \
+            -Ddockerfile.push.skip=true \
+            -DskipTests --no-transfer-progress
+
+      - name: Run acceptance test (BATS)
+        env:
+          SC_DOCKER_IMAGE: ${{ env.DOCKER_ORG }}/stubborn-contract:${{ steps.ver.outputs.version }}
+          FIXTURE_PORT: '8888'
+        # The BATS test streams the container log tail, the output tree, and (on
+        # a non-zero container exit) the full container log to the test output,
+        # so --print-output-on-failure surfaces everything needed to debug a red
+        # first run directly in this step's log.
+        run: |
+          bats --print-output-on-failure \
+            docker/stubborn-contract-docker/src/test/acceptance/docker-acceptance.bats
