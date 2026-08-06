@@ -25,6 +25,9 @@ Before you start:
 
 Choose your starting point:
 
+### → [Installation & Coordinates](./installation)
+The BOM, the starters, the build plugins, real `sh.stubborn` coordinates and the snapshot repository — in one place.
+
 ### → [Quick Start (3 min)](./quick-start)
 Zero-to-working in 3 minutes. Producer + consumer, minimal setup.
 

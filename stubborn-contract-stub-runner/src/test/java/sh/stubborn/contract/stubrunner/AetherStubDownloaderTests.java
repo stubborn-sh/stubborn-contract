@@ -24,18 +24,18 @@ import java.util.Map;
 
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.Authentication;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import sh.stubborn.contract.stubrunner.StubsMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AetherStubDownloaderTests {
 
 	@TempDir
-	Path tmpDir;
+	@Nullable Path tmpDir;
 
 	private String originalMavenRepoLocal;
 
@@ -136,7 +136,7 @@ class AetherStubDownloaderTests {
 			.build();
 		AetherStubDownloader aetherStubDownloader = new AetherStubDownloader(stubRunnerOptions) {
 			@Override
-			Authentication buildAuthentication(String stubServerPassword, String username) {
+			Authentication buildAuthentication(@Nullable String stubServerPassword, @Nullable String username) {
 				assertThat(username).isEqualTo("admin");
 				assertThat(stubServerPassword).isEqualTo("mypassword");
 				return super.buildAuthentication(stubServerPassword, username);

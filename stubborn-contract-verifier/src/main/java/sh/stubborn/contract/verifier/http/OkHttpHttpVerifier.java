@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import okhttp3.Headers;
@@ -31,6 +32,7 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import okhttp3.RequestBody;
+import org.jspecify.annotations.Nullable;
 
 /**
  * {@link HttpVerifier} implementation that uses {@link OkHttpClient}. Has an inbuilt
@@ -46,6 +48,7 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 	private final String hostAndPort;
 
 	/**
+	 * Creates a new verifier for the given host and port.
 	 * @param hostAndPort - don't pass the scheme, it will be resolved from
 	 * {@link Request#scheme()}. E.g. pass {@code localhost:1234}.
 	 */
@@ -121,23 +124,23 @@ public class OkHttpHttpVerifier implements HttpVerifier {
 					res.headers().values("Set-Cookie").stream().flatMap((s) -> Arrays.stream(s.split(";"))).map((s) -> {
 						String[] singleCookie = s.split("=");
 						return new AbstractMap.SimpleEntry<>(singleCookie[0],
-								singleCookie.length > 1 ? singleCookie[1] : "");
+								(singleCookie.length > 1) ? singleCookie[1] : "");
 					})
 						.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue,
 								(a, b) -> a, HashMap::new)))
 			.build();
 	}
 
-	private RequestBody requestBody(Request request, String requestContentType) {
+	private @Nullable RequestBody requestBody(Request request, @Nullable String requestContentType) {
 		if (request.body() == null) {
 			return null;
 		}
 		byte[] bodyArray = request.body().asByteArray();
-		return RequestBody.create(MediaType.parse(requestContentType), bodyArray);
+		return RequestBody.create(MediaType.parse(Objects.requireNonNull(requestContentType)), bodyArray);
 	}
 
 	private byte[] responseBody(okhttp3.Response res) throws IOException {
-		return res.body() != null ? res.body().bytes() : null;
+		return Objects.requireNonNull(res.body()).bytes();
 	}
 
 	private Map<String, Object> withSingleHeader(okhttp3.Response res) {

@@ -117,7 +117,7 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 	}
 
 	public ServerPatternValueDslProperty getProperty() {
-		return property;
+		return this.property;
 	}
 
 	public void setProperty(ServerPatternValueDslProperty property) {
@@ -125,7 +125,7 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 	}
 
 	public @Nullable DslProperty<String> getSentTo() {
-		return sentTo;
+		return this.sentTo;
 	}
 
 	public void setSentTo(@Nullable DslProperty<String> sentTo) {
@@ -133,7 +133,7 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 	}
 
 	public @Nullable Headers getHeaders() {
-		return headers;
+		return this.headers;
 	}
 
 	public void setHeaders(@Nullable Headers headers) {
@@ -141,7 +141,7 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 	}
 
 	public @Nullable DslProperty getBody() {
-		return body;
+		return this.body;
 	}
 
 	public void setBody(@Nullable DslProperty body) {
@@ -149,7 +149,7 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 	}
 
 	public @Nullable ExecutionProperty getAssertThat() {
-		return assertThat;
+		return this.assertThat;
 	}
 
 	public void setAssertThat(@Nullable ExecutionProperty assertThat) {
@@ -157,7 +157,7 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 	}
 
 	public @Nullable ResponseBodyMatchers getBodyMatchers() {
-		return bodyMatchers;
+		return this.bodyMatchers;
 	}
 
 	public void setBodyMatchers(@Nullable ResponseBodyMatchers bodyMatchers) {
@@ -166,107 +166,107 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 
 	@Override
 	public ServerDslProperty anyAlphaUnicode() {
-		return property.anyAlphaUnicode();
+		return this.property.anyAlphaUnicode();
 	}
 
 	@Override
 	public ServerDslProperty anyAlphaNumeric() {
-		return property.anyAlphaNumeric();
+		return this.property.anyAlphaNumeric();
 	}
 
 	@Override
 	public ServerDslProperty anyNumber() {
-		return property.anyNumber();
+		return this.property.anyNumber();
 	}
 
 	@Override
 	public ServerDslProperty anyInteger() {
-		return property.anyInteger();
+		return this.property.anyInteger();
 	}
 
 	@Override
 	public ServerDslProperty anyPositiveInt() {
-		return property.anyPositiveInt();
+		return this.property.anyPositiveInt();
 	}
 
 	@Override
 	public ServerDslProperty anyDouble() {
-		return property.anyDouble();
+		return this.property.anyDouble();
 	}
 
 	@Override
 	public ServerDslProperty anyHex() {
-		return property.anyHex();
+		return this.property.anyHex();
 	}
 
 	@Override
 	public ServerDslProperty aBoolean() {
-		return property.aBoolean();
+		return this.property.aBoolean();
 	}
 
 	@Override
 	public ServerDslProperty anyIpAddress() {
-		return property.anyIpAddress();
+		return this.property.anyIpAddress();
 	}
 
 	@Override
 	public ServerDslProperty anyHostname() {
-		return property.anyHostname();
+		return this.property.anyHostname();
 	}
 
 	@Override
 	public ServerDslProperty anyEmail() {
-		return property.anyEmail();
+		return this.property.anyEmail();
 	}
 
 	@Override
 	public ServerDslProperty anyUrl() {
-		return property.anyUrl();
+		return this.property.anyUrl();
 	}
 
 	@Override
 	public ServerDslProperty anyHttpsUrl() {
-		return property.anyHttpsUrl();
+		return this.property.anyHttpsUrl();
 	}
 
 	@Override
 	public ServerDslProperty anyUuid() {
-		return property.anyUuid();
+		return this.property.anyUuid();
 	}
 
 	@Override
 	public ServerDslProperty anyDate() {
-		return property.anyDate();
+		return this.property.anyDate();
 	}
 
 	@Override
 	public ServerDslProperty anyDateTime() {
-		return property.anyDateTime();
+		return this.property.anyDateTime();
 	}
 
 	@Override
 	public ServerDslProperty anyTime() {
-		return property.anyTime();
+		return this.property.anyTime();
 	}
 
 	@Override
 	public ServerDslProperty anyIso8601WithOffset() {
-		return property.anyIso8601WithOffset();
+		return this.property.anyIso8601WithOffset();
 	}
 
 	@Override
 	public ServerDslProperty anyNonBlankString() {
-		return property.anyNonBlankString();
+		return this.property.anyNonBlankString();
 	}
 
 	@Override
 	public ServerDslProperty anyNonEmptyString() {
-		return property.anyNonEmptyString();
+		return this.property.anyNonEmptyString();
 	}
 
 	@Override
 	public ServerDslProperty anyOf(String... values) {
-		return property.anyOf(values);
+		return this.property.anyOf(values);
 	}
 
 	/**
@@ -316,20 +316,21 @@ public class OutputMessage extends Common implements RegexCreatingProperty<Serve
 			return false;
 		}
 		OutputMessage that = (OutputMessage) o;
-		return Objects.equals(sentTo, that.sentTo) && Objects.equals(headers, that.headers)
-				&& Objects.equals(body, that.body) && Objects.equals(assertThat, that.assertThat)
-				&& Objects.equals(bodyMatchers, that.bodyMatchers);
+		return Objects.equals(this.sentTo, that.sentTo) && Objects.equals(this.headers, that.headers)
+				&& Objects.equals(this.body, that.body) && Objects.equals(this.assertThat, that.assertThat)
+				&& Objects.equals(this.bodyMatchers, that.bodyMatchers);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(sentTo, headers, body, assertThat, bodyMatchers);
+		return Objects.hash(this.sentTo, this.headers, this.body, this.assertThat, this.bodyMatchers);
 	}
 
 	@Override
 	public String toString() {
-		return "OutputMessage{" + "\n\tsentTo=" + sentTo + ", \n\theaders=" + headers + ", \n\tbody=" + body
-				+ ", \n\tassertThat=" + assertThat + ", \n\tbodyMatchers=" + bodyMatchers + "} \n\t" + super.toString();
+		return "OutputMessage{" + "\n\tsentTo=" + this.sentTo + ", \n\theaders=" + this.headers + ", \n\tbody="
+				+ this.body + ", \n\tassertThat=" + this.assertThat + ", \n\tbodyMatchers=" + this.bodyMatchers
+				+ "} \n\t" + super.toString();
 	}
 
 	private static final class ServerPatternValueDslProperty extends PatternValueDslProperty<ServerDslProperty> {

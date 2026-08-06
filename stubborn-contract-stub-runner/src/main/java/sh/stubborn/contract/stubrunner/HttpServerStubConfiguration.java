@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.stubrunner;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Configuration class for an {@link HttpServerStub}.
  *
@@ -42,7 +44,7 @@ public final class HttpServerStubConfiguration {
 	/**
 	 * Port at which the stub will be started.
 	 */
-	public final Integer port;
+	public final @Nullable Integer port;
 
 	/**
 	 * Is port a random one or was it fixed.
@@ -50,12 +52,12 @@ public final class HttpServerStubConfiguration {
 	public boolean randomPort;
 
 	public HttpServerStubConfiguration(HttpServerStubConfigurer configurer, StubRunnerOptions stubRunnerOptions,
-			StubConfiguration stubConfiguration, Integer port) {
+			StubConfiguration stubConfiguration, @Nullable Integer port) {
 		this(configurer, stubRunnerOptions, stubConfiguration, port, randomPort(port));
 	}
 
 	public HttpServerStubConfiguration(HttpServerStubConfigurer configurer, StubRunnerOptions stubRunnerOptions,
-			StubConfiguration stubConfiguration, Integer port, boolean randomPort) {
+			StubConfiguration stubConfiguration, @Nullable Integer port, boolean randomPort) {
 		this.configurer = configurer;
 		this.stubRunnerOptions = stubRunnerOptions;
 		this.stubConfiguration = stubConfiguration;
@@ -63,8 +65,8 @@ public final class HttpServerStubConfiguration {
 		this.randomPort = randomPort;
 	}
 
-	private static boolean randomPort(Integer port) {
-		return port == null || port == 0;
+	private static boolean randomPort(@Nullable Integer port) {
+		return (port == null) || (port == 0);
 	}
 
 	public boolean isRandomPort() {

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>sh.stubborn</groupId>
-		<artifactId>stubborn-parent</artifactId>
+		<artifactId>stubborn-contract-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
@@ -13,6 +13,12 @@
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Spec Groovy</name>
 	<description>Stubborn Contract Spec Groovy</description>
+
+	<properties>
+		<!-- This module is the Groovy DSL — Groovy production source is expected here. -->
+		<stubborn.no-groovy.skip>true</stubborn.no-groovy.skip>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>

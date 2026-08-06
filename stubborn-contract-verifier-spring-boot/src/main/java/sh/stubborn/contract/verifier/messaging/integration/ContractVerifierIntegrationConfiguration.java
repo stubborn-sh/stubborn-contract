@@ -23,10 +23,9 @@ import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -36,6 +35,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 
 /**
+ * Configuration that registers Spring Integration messaging beans for contract
+ * verification.
+ *
  * @author Marcin Grzejszczak
  */
 @Configuration(proxyBeanMethods = false)
@@ -56,7 +58,7 @@ public class ContractVerifierIntegrationConfiguration {
 			}
 
 			@Override
-			public <T> void send(T payload, Map<String, Object> headers, String destination,
+			public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 					@Nullable YamlContract contract) {
 				springIntegrationStubMessages.send(payload, headers, destination, contract);
 			}
@@ -71,13 +73,13 @@ public class ContractVerifierIntegrationConfiguration {
 				applicationContext);
 		return new MessageVerifierReceiver<>() {
 			@Override
-			public Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
+			public @Nullable Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
 					@Nullable YamlContract contract) {
 				return springIntegrationStubMessages.receive(destination, timeout, timeUnit, contract);
 			}
 
 			@Override
-			public Message<?> receive(String destination, YamlContract contract) {
+			public @Nullable Message<?> receive(String destination, @Nullable YamlContract contract) {
 				return springIntegrationStubMessages.receive(destination, contract);
 			}
 		};
@@ -88,19 +90,6 @@ public class ContractVerifierIntegrationConfiguration {
 	public ContractVerifierMessaging<Message<?>> integrationContractVerifierMessaging(
 			MessageVerifierSender<Message<?>> sender, MessageVerifierReceiver<Message<?>> receiver) {
 		return new ContractVerifierHelper(sender, receiver);
-	}
-
-}
-
-class ContractVerifierHelper extends ContractVerifierMessaging<Message<?>> {
-
-	ContractVerifierHelper(MessageVerifierSender<Message<?>> sender, MessageVerifierReceiver<Message<?>> receiver) {
-		super(sender, receiver);
-	}
-
-	@Override
-	protected ContractVerifierMessage convert(Message<?> receive) {
-		return new ContractVerifierMessage(receive.getPayload(), receive.getHeaders());
 	}
 
 }

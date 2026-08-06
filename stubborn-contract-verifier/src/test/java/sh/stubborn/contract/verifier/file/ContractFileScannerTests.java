@@ -47,14 +47,15 @@ class ContractFileScannerTests {
 
 	@BeforeEach
 	void setup() throws Exception {
-		tmpFolder = new File(tmp.toFile(), "contracts");
-		tmpFolder.mkdirs();
+		this.tmpFolder = new File(this.tmp.toFile(), "contracts");
+		this.tmpFolder.mkdirs();
 	}
 
 	@Test
 	void should_find_contract_files() throws Exception {
-		FileSystemUtils.copyRecursively(new File(getClass().getResource("/directory/with/stubs").toURI()), tmpFolder);
-		File baseDir = tmpFolder;
+		FileSystemUtils.copyRecursively(new File(getClass().getResource("/directory/with/stubs").toURI()),
+				this.tmpFolder);
+		File baseDir = this.tmpFolder;
 		Set<String> excluded = Set.of("package/**");
 		Set<String> ignored = Set.of("other/different/**");
 		ContractFileScanner scanner = new ContractFileScanner(baseDir, excluded, ignored, Set.of(), null);
@@ -181,8 +182,8 @@ class ContractFileScannerTests {
 	@Test
 	void should_find_contracts_for_include_pattern() throws Exception {
 		FileSystemUtils.copyRecursively(new File(getClass().getResource("/directory/with/common-messaging").toURI()),
-				tmpFolder);
-		File baseDir = tmpFolder;
+				this.tmpFolder);
+		File baseDir = this.tmpFolder;
 		Set<String> included = Set.of("social-service/**", "**/coupon-collected/**/*V1*");
 		ContractFileScanner scanner = new ContractFileScanner(baseDir, Set.of(), Set.of(), included, null);
 		Map<Path, List<ContractMetadata>> result = scanner.findContractsRecursively();

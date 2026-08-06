@@ -1,0 +1,38 @@
+package com.example;
+
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;
+import static javax.ws.rs.client.Entity.*;
+
+@SuppressWarnings("rawtypes")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
+
+	@Test
+	@Disabled
+	public void validate_contract() throws Exception {
+
+		// when:
+			Response response = webTarget
+							.path("/foo")
+							.request()
+							.build("PUT", entity(new String(fileToBytes(this, "contract_request_request.json")), "application/json"))
+							.invoke();
+
+		// then:
+			assertThat(response.getStatus()).isEqualTo(200);
+	}
+
+}
+

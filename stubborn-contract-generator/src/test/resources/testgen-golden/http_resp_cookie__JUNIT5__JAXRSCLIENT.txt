@@ -1,0 +1,45 @@
+package com.example;
+
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;
+import static javax.ws.rs.client.Entity.*;
+
+@SuppressWarnings("rawtypes")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
+
+	@Test
+	@Disabled
+	public void validate_contract() throws Exception {
+
+		// when:
+			Response response = webTarget
+							.path("/resp/cookie")
+							.request()
+							.build("GET")
+							.invoke();
+			String responseAsString = response.readEntity(String.class);
+
+		// then:
+			assertThat(response.getStatus()).isEqualTo(200);
+			assertThat(response.getCookies().get("session")).isNotNull();
+			assertThat(response.getCookies().get("session").getValue()).isEqualTo("abc123");
+
+		// and:
+			DocumentContext parsedJson = JsonPath.parse(responseAsString);
+			assertThatJson(parsedJson).field("['id']").isEqualTo(1);
+	}
+
+}
+

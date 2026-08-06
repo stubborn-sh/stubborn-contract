@@ -22,7 +22,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.HttpMethods;
 
 /**
@@ -58,16 +60,17 @@ public class Request {
 		this.scheme = scheme;
 		this.method = method;
 		this.path = path;
-		this.queryParameters = queryParameters == null ? new LinkedList<>() : queryParameters;
+		this.queryParameters = (queryParameters != null) ? queryParameters : new LinkedList<>();
 		this.body = body;
-		this.headers = headers == null ? new HashMap<>() : headers;
-		this.cookies = cookies == null ? new HashMap<>() : cookies;
+		this.headers = (headers != null) ? headers : new HashMap<>();
+		this.cookies = (cookies != null) ? cookies : new HashMap<>();
 	}
 
 	/**
+	 * Returns the content type from the request headers.
 	 * @return content type from headers
 	 */
-	public String contentType() {
+	public @Nullable String contentType() {
 		Object value = this.headers.entrySet()
 			.stream()
 			.filter((e) -> e.getKey().toLowerCase(Locale.ROOT).equals("content-type"))
@@ -81,6 +84,7 @@ public class Request {
 	}
 
 	/**
+	 * Returns the request protocol.
 	 * @return {@link ContractVerifierHttpMetaData.Protocol}
 	 */
 	public ContractVerifierHttpMetaData.Protocol protocol() {
@@ -88,6 +92,7 @@ public class Request {
 	}
 
 	/**
+	 * Returns the request scheme.
 	 * @return {@link ContractVerifierHttpMetaData.Scheme}
 	 */
 	public ContractVerifierHttpMetaData.Scheme scheme() {
@@ -95,20 +100,23 @@ public class Request {
 	}
 
 	/**
-	 * @return HTTP method
+	 * Returns the HTTP method.
+	 * @return the HTTP method
 	 */
 	public HttpMethods.HttpMethod method() {
 		return this.method;
 	}
 
 	/**
-	 * @return HTTP path
+	 * Returns the HTTP path.
+	 * @return the HTTP path
 	 */
 	public String path() {
 		return this.path;
 	}
 
 	/**
+	 * Returns the request body.
 	 * @return request body
 	 */
 	public Body body() {
@@ -116,6 +124,7 @@ public class Request {
 	}
 
 	/**
+	 * Returns the request headers.
 	 * @return request headers
 	 */
 	public Map<String, Object> headers() {
@@ -123,6 +132,7 @@ public class Request {
 	}
 
 	/**
+	 * Returns the request cookies.
 	 * @return request cookies
 	 */
 	public Map<String, Object> cookies() {
@@ -130,6 +140,7 @@ public class Request {
 	}
 
 	/**
+	 * Returns the query parameters.
 	 * @return query parameters
 	 */
 	public List<AbstractMap.SimpleEntry<String, String>> queryParams() {
@@ -145,6 +156,7 @@ public class Request {
 	}
 
 	/**
+	 * Creates a builder from an existing request.
 	 * @param request from which a builder will be built
 	 * @return a builder with request data filled in
 	 */
@@ -262,6 +274,8 @@ public class Request {
 
 		ContractVerifierHttpMetaData.Scheme scheme = ContractVerifierHttpMetaData.Scheme.HTTP;
 
+		// Set only when body(...) is invoked; may remain null, matching prior behavior.
+		@SuppressWarnings("NullAway.Init")
 		Body body;
 
 		Map<String, Object> headers = new HashMap<>();
@@ -274,7 +288,8 @@ public class Request {
 		}
 
 		/**
-		 * @param method HTTP method
+		 * Sets the HTTP method.
+		 * @param method the HTTP method
 		 * @return builder
 		 */
 		public Request.Builder method(HttpMethods.HttpMethod method) {
@@ -283,7 +298,8 @@ public class Request {
 		}
 
 		/**
-		 * @param path HTTP path
+		 * Sets the HTTP path.
+		 * @param path the HTTP path
 		 * @return builder
 		 */
 		public Request.Builder path(String path) {
@@ -292,24 +308,27 @@ public class Request {
 		}
 
 		/**
+		 * Sets the scheme from its text representation.
 		 * @param scheme text representation of a scheme
 		 * @return builder
 		 */
 		public Request.Builder scheme(String scheme) {
-			this.scheme = ContractVerifierHttpMetaData.Scheme.fromString(scheme);
+			this.scheme = Objects.requireNonNull(ContractVerifierHttpMetaData.Scheme.fromString(scheme));
 			return this;
 		}
 
 		/**
+		 * Sets the protocol from its text representation.
 		 * @param protocol text representation of a protocol
 		 * @return builder
 		 */
 		public Request.Builder protocol(String protocol) {
-			this.protocol = ContractVerifierHttpMetaData.Protocol.fromString(protocol);
+			this.protocol = Objects.requireNonNull(ContractVerifierHttpMetaData.Protocol.fromString(protocol));
 			return this;
 		}
 
 		/**
+		 * Sets the scheme.
 		 * @param scheme representation of a scheme
 		 * @return builder
 		 */
@@ -319,6 +338,7 @@ public class Request {
 		}
 
 		/**
+		 * Sets the protocol.
 		 * @param protocol representation of a protocol
 		 * @return builder
 		 */
@@ -328,7 +348,8 @@ public class Request {
 		}
 
 		/**
-		 * @param body HTTP body
+		 * Sets the HTTP body.
+		 * @param body the HTTP body
 		 * @return builder
 		 */
 		public Request.Builder body(Object body) {
@@ -337,6 +358,7 @@ public class Request {
 		}
 
 		/**
+		 * Adds a single query parameter.
 		 * @param name - query parameter name
 		 * @param value - query parameter value
 		 * @return builder
@@ -347,6 +369,7 @@ public class Request {
 		}
 
 		/**
+		 * Sets the list of query parameters.
 		 * @param queryParameters - list of query parameters
 		 * @return builder
 		 */
@@ -356,7 +379,8 @@ public class Request {
 		}
 
 		/**
-		 * @param headers HTTP headers
+		 * Sets the HTTP headers.
+		 * @param headers the HTTP headers
 		 * @return builder
 		 */
 		public Request.Builder headers(Map<String, Object> headers) {
@@ -365,8 +389,9 @@ public class Request {
 		}
 
 		/**
-		 * @param key HTTP header key
-		 * @param value HTTP header value
+		 * Adds a single HTTP header.
+		 * @param key the HTTP header key
+		 * @param value the HTTP header value
 		 * @return builder
 		 */
 		public Request.Builder header(String key, Object value) {
@@ -375,6 +400,7 @@ public class Request {
 		}
 
 		/**
+		 * Adds a single cookie.
 		 * @param key cookie key
 		 * @param value cookie value
 		 * @return builder
@@ -385,7 +411,8 @@ public class Request {
 		}
 
 		/**
-		 * @param cookies HTTP cookies
+		 * Sets the HTTP cookies.
+		 * @param cookies the HTTP cookies
 		 * @return builder
 		 */
 		public Request.Builder cookies(Map<String, Object> cookies) {
@@ -394,6 +421,7 @@ public class Request {
 		}
 
 		/**
+		 * Builds the request.
 		 * @return built {@link Request}
 		 */
 		public Request build() {

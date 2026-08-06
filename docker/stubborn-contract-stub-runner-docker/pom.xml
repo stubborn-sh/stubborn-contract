@@ -20,7 +20,9 @@
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-contract-stub-runner-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-app</artifactId>
+			<!-- Not managed by the BOM (repackaged executable, excluded from publishing); pin the reactor version. -->
+			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
@@ -48,7 +50,7 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
-									<artifactId>stubborn-contract-stub-runner-boot</artifactId>
+									<artifactId>stubborn-contract-stub-runner-app</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>

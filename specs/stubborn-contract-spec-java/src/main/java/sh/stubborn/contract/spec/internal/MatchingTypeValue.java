@@ -51,7 +51,7 @@ public class MatchingTypeValue {
 		this.type = type;
 	}
 
-	MatchingTypeValue(@Nullable MatchingType type, @Nullable Object value) {
+	public MatchingTypeValue(@Nullable MatchingType type, @Nullable Object value) {
 		this.type = type;
 		this.value = value;
 	}

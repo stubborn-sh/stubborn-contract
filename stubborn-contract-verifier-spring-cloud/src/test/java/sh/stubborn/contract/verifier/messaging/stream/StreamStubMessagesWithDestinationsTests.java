@@ -19,6 +19,7 @@ package sh.stubborn.contract.verifier.messaging.stream;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+
 import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.OutputDestination;
 import org.springframework.cloud.stream.function.StreamFunctionProperties;
@@ -27,10 +28,10 @@ import org.springframework.messaging.Message;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Tests for stream stub messaging with destinations.
@@ -46,9 +47,9 @@ class StreamStubMessagesWithDestinationsTests {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 		StreamFunctionProperties functionProperties = mock(StreamFunctionProperties.class);
 		OutputDestination output = mock(OutputDestination.class);
-		when(applicationContext.getBean(OutputDestination.class)).thenReturn(output);
-		when(applicationContext.getBean(StreamFunctionProperties.class)).thenReturn(functionProperties);
-		when(functionProperties.getDefinition()).thenReturn("verifications");
+		given(applicationContext.getBean(OutputDestination.class)).willReturn(output);
+		given(applicationContext.getBean(StreamFunctionProperties.class)).willReturn(functionProperties);
+		given(functionProperties.getDefinition()).willReturn("verifications");
 		StreamOutputDestinationMessageReceiver messages = new StreamOutputDestinationMessageReceiver(
 				applicationContext);
 
@@ -62,9 +63,9 @@ class StreamStubMessagesWithDestinationsTests {
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 		StreamFunctionProperties functionProperties = mock(StreamFunctionProperties.class);
 		InputDestination input = mock(InputDestination.class);
-		when(applicationContext.getBean(InputDestination.class)).thenReturn(input);
-		when(applicationContext.getBean(StreamFunctionProperties.class)).thenReturn(functionProperties);
-		when(functionProperties.getDefinition()).thenReturn("verifications");
+		given(applicationContext.getBean(InputDestination.class)).willReturn(input);
+		given(applicationContext.getBean(StreamFunctionProperties.class)).willReturn(functionProperties);
+		given(functionProperties.getDefinition()).willReturn("verifications");
 		StreamInputDestinationMessageSender messages = new StreamInputDestinationMessageSender(applicationContext);
 
 		messages.send("foo", Collections.emptyMap(), "verifications");
@@ -78,10 +79,10 @@ class StreamStubMessagesWithDestinationsTests {
 		StreamFunctionProperties functionProperties = mock(StreamFunctionProperties.class);
 		InputDestination input = mock(InputDestination.class);
 		OutputDestination output = mock(OutputDestination.class);
-		when(applicationContext.getBean(InputDestination.class)).thenReturn(input);
-		when(applicationContext.getBean(OutputDestination.class)).thenReturn(output);
-		when(applicationContext.getBean(StreamFunctionProperties.class)).thenReturn(functionProperties);
-		when(functionProperties.getDefinition()).thenReturn("verifications");
+		given(applicationContext.getBean(InputDestination.class)).willReturn(input);
+		given(applicationContext.getBean(OutputDestination.class)).willReturn(output);
+		given(applicationContext.getBean(StreamFunctionProperties.class)).willReturn(functionProperties);
+		given(functionProperties.getDefinition()).willReturn("verifications");
 		StreamStubMessages messages = new StreamStubMessages(
 				new StreamInputDestinationMessageSender(applicationContext),
 				new StreamOutputDestinationMessageReceiver(applicationContext));
@@ -97,10 +98,10 @@ class StreamStubMessagesWithDestinationsTests {
 		StreamFunctionProperties functionProperties = mock(StreamFunctionProperties.class);
 		InputDestination input = mock(InputDestination.class);
 		OutputDestination output = mock(OutputDestination.class);
-		when(applicationContext.getBean(InputDestination.class)).thenReturn(input);
-		when(applicationContext.getBean(OutputDestination.class)).thenReturn(output);
-		when(applicationContext.getBean(StreamFunctionProperties.class)).thenReturn(functionProperties);
-		when(functionProperties.getDefinition()).thenReturn("verifications");
+		given(applicationContext.getBean(InputDestination.class)).willReturn(input);
+		given(applicationContext.getBean(OutputDestination.class)).willReturn(output);
+		given(applicationContext.getBean(StreamFunctionProperties.class)).willReturn(functionProperties);
+		given(functionProperties.getDefinition()).willReturn("verifications");
 		StreamStubMessages messages = new StreamStubMessages(
 				new StreamInputDestinationMessageSender(applicationContext),
 				new StreamOutputDestinationMessageReceiver(applicationContext));

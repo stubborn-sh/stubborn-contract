@@ -19,10 +19,13 @@ package sh.stubborn.contract.stubrunner.provider.wiremock;
 /**
  * Test accessor for WireMockHttpServerStub internals.
  */
-public class WireMockHttpServerStubAccessor {
+public final class WireMockHttpServerStubAccessor {
+
+	private WireMockHttpServerStubAccessor() {
+	}
 
 	public static boolean everyPortRandom() {
-		return WireMockHttpServerStub.SERVERS.values().stream().allMatch(pam -> pam.random);
+		return WireMockHttpServerStub.SERVERS.values().stream().allMatch((pam) -> pam.random);
 	}
 
 	public static void clear() {

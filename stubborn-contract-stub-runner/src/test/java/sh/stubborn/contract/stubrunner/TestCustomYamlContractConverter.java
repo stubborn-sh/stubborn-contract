@@ -40,8 +40,8 @@ public class TestCustomYamlContractConverter implements ContractConverter {
 		try {
 			line = Files.lines(file.toPath()).findFirst();
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
 		return line.isPresent() && line.get().startsWith("custom_format: 1.0");
 	}

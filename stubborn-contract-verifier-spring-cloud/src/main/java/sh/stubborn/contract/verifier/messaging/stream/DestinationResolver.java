@@ -70,9 +70,9 @@ class DestinationResolver {
 				return matchingChannelName;
 			}
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.error("Exception took place while trying to resolve the destination. Will assume the name ["
-					+ destination + "]", e);
+					+ destination + "]", ex);
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("No destination named [" + destination

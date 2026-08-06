@@ -78,9 +78,9 @@ public class ZookeeperStubsRegistrar implements StubsRegistrar {
 							+ "] in Service Discovery");
 				}
 			}
-			catch (Exception e) {
+			catch (Exception ex) {
 				log.warn("Exception occurred while trying to register a stub ["
-						+ entry.getKey().toColonSeparatedDependencyNotation() + "] in Service Discovery", e);
+						+ entry.getKey().toColonSeparatedDependencyNotation() + "] in Service Discovery", ex);
 			}
 		}
 	}
@@ -94,8 +94,8 @@ public class ZookeeperStubsRegistrar implements StubsRegistrar {
 				.name(name(stubConfiguration))
 				.build();
 		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
+		catch (Exception ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 

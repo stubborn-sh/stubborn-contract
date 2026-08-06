@@ -21,6 +21,7 @@ import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
@@ -29,6 +30,7 @@ import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.transport.jersey.TransportClientFactories;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 import sh.stubborn.contract.stubrunner.StubRunning;
 import sh.stubborn.contract.stubrunner.spring.cloud.StubMapperProperties;
@@ -106,7 +108,7 @@ public class EurekaStubsRegistrar implements StubsRegistrar {
 				.build();
 			EurekaHealthCheckHandler eurekaHealthCheckHandler = new EurekaHealthCheckHandler(
 					StatusAggregator.getDefault());
-			eurekaHealthCheckHandler.setApplicationContext(context);
+			eurekaHealthCheckHandler.setApplicationContext(this.context);
 			eurekaHealthCheckHandler.afterPropertiesSet();
 			registration.setHealthCheckHandler(new SimpleObjectProvider<>(eurekaHealthCheckHandler));
 			this.registrations.add(registration);
@@ -115,27 +117,27 @@ public class EurekaStubsRegistrar implements StubsRegistrar {
 				log.info("Successfully registered stub " + "[" + entry.getKey().toColonSeparatedDependencyNotation()
 						+ "] in Service Discovery");
 			}
-			catch (Exception e) {
+			catch (Exception ex) {
 				log.warn("Exception occurred while trying to register a stub ["
-						+ entry.getKey().toColonSeparatedDependencyNotation() + "] in Service Discovery", e);
+						+ entry.getKey().toColonSeparatedDependencyNotation() + "] in Service Discovery", ex);
 			}
 		}
 	}
 
-	private AbstractDiscoveryClientOptionalArgs<?> args() {
+	private @Nullable AbstractDiscoveryClientOptionalArgs<?> args() {
 		try {
 			return this.context.getBean(AbstractDiscoveryClientOptionalArgs.class);
 		}
-		catch (BeansException e) {
+		catch (BeansException ex) {
 			return null;
 		}
 	}
 
-	private TransportClientFactories<?> transportClientFactories() {
+	private @Nullable TransportClientFactories<?> transportClientFactories() {
 		try {
 			return this.context.getBean(TransportClientFactories.class);
 		}
-		catch (BeansException e) {
+		catch (BeansException ex) {
 			return null;
 		}
 	}
@@ -144,7 +146,7 @@ public class EurekaStubsRegistrar implements StubsRegistrar {
 		EurekaInstanceConfigBean config = new EurekaInstanceConfigBean(this.inetUtils);
 		String appName = name(entry.getKey());
 		config.setInstanceEnabledOnit(true);
-		InetAddress address = this.inetUtils.findFirstNonLoopbackAddress();
+		InetAddress address = Objects.requireNonNull(this.inetUtils.findFirstNonLoopbackAddress());
 		config.setIpAddress(address.getHostAddress());
 		config.setHostname(StringUtils.hasText(hostName(entry)) ? hostName(entry) : address.getHostName());
 		config.setAppname(appName);

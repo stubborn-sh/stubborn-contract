@@ -32,10 +32,15 @@ public interface TemplateProcessor {
 	/**
 	 * For the given {@link Request} and the test contents should perform a transformation
 	 * and return the converted test.
+	 * @param request the request side of the contract
+	 * @param testContents the contents of the generated test
+	 * @return the transformed test contents
 	 */
 	String transform(Request request, String testContents);
 
 	/**
+	 * Checks whether the current line contains a template related entry.
+	 * @param line the line to inspect
 	 * @return {@code true} if the current line contains template related entry. E.g. for
 	 * Handlebars if a line contains {{{...}}} then it's considered to contain template
 	 * related entry
@@ -43,6 +48,8 @@ public interface TemplateProcessor {
 	boolean containsTemplateEntry(String line);
 
 	/**
+	 * Checks whether the current line contains a json path template related entry.
+	 * @param line the line to inspect
 	 * @return {@code true} if the current line contains template related entry for json
 	 * path processing. E.g. for Handlebars if a line contains {{{jsonpath ...}}} or
 	 * {{{jsonPath ...}}} then it's considered to contain template related entry for json
@@ -51,6 +58,8 @@ public interface TemplateProcessor {
 	boolean containsJsonPathTemplateEntry(String line);
 
 	/**
+	 * Returns the json path entry from the current line.
+	 * @param line the line to inspect
 	 * @return the json path entry from the current line that contains template related
 	 * entry for json path processing. E.g. for Handlebars if a line contains {{{jsonpath
 	 * this '$.a.b.c'}}} or {{{jsonPath request.body ...}}} then the te method would

@@ -19,29 +19,34 @@ package sh.stubborn.contract.verifier.messaging.noop;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 
 /**
+ * No-op implementation of the message verifier sender and receiver.
+ *
+ * @param <U> the message type
  * @author Marcin Grzejszczak
  */
 public class NoOpStubMessages<U> implements sh.stubborn.contract.verifier.messaging.MessageVerifierSender<U>,
 		sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver<U> {
 
 	@Override
-	public void send(U message, String destination, YamlContract contract) {
+	public void send(U message, String destination, @Nullable YamlContract contract) {
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
 	}
 
 	@Override
-	public U receive(String destination, long timeout, TimeUnit timeUnit, YamlContract contract) {
+	public @Nullable U receive(String destination, long timeout, TimeUnit timeUnit, @Nullable YamlContract contract) {
 		return null;
 	}
 
 	@Override
-	public U receive(String destination, YamlContract contract) {
+	public @Nullable U receive(String destination, @Nullable YamlContract contract) {
 		return null;
 	}
 

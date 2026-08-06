@@ -53,6 +53,7 @@ export default withMermaid({
           text: 'Getting Started',
           items: [
             { text: 'Introduction', link: '/getting-started/' },
+            { text: 'Installation & Coordinates', link: '/getting-started/installation' },
             { text: 'Quick Start (3 min)', link: '/getting-started/quick-start' },
             { text: 'First Application', link: '/getting-started/first-application' },
             { text: 'Consumer-Driven CDC', link: '/getting-started/cdc' },
@@ -60,6 +61,12 @@ export default withMermaid({
         },
       ],
       '/reference/': [
+        {
+          text: 'Architecture',
+          items: [
+            { text: 'Modules & Architecture', link: '/reference/modules' },
+          ],
+        },
         {
           text: 'Build Plugins',
           items: [
@@ -74,6 +81,7 @@ export default withMermaid({
             { text: 'HTTP Contracts', link: '/reference/http-contracts' },
             { text: 'Messaging Contracts', link: '/reference/messaging-contracts' },
             { text: 'YAML Contracts', link: '/reference/yaml-contracts' },
+            { text: 'WireMock Helpers', link: '/reference/wiremock' },
           ],
         },
         {

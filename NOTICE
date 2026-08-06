@@ -1,0 +1,45 @@
+Stubborn Contract
+Copyright 2026-present Stubborn (https://stubborn.sh/) and the Stubborn Contract
+authors.
+
+This product is licensed to you under the Apache License, Version 2.0 (the
+"License"). You may not use this product except in compliance with the License.
+A copy of the License is provided in the LICENSE file distributed alongside this
+NOTICE.
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+
+--------------------------------------------------------------------------------
+Origin and attribution
+--------------------------------------------------------------------------------
+
+Stubborn Contract is the official continuation of the Spring Cloud Contract
+project, led by Marcin Grzejszczak, one of its original creators. A substantial
+portion of this codebase is derived from Spring Cloud Contract, whose source
+files retain their original Apache-2.0 license headers ("Copyright <year>-present
+the original author or authors.").
+
+Spring Cloud Contract was developed as part of the Spring Cloud portfolio and,
+over its history, was copyright the following prior holders, who are gratefully
+acknowledged:
+
+    Copyright 2013-present Pivotal Software, Inc.
+    Copyright 2013-present VMware, Inc.
+    Copyright 2013-present Broadcom Inc. (and/or its subsidiaries)
+
+The names "Spring", "Spring Cloud", and "Spring Cloud Contract", and their
+associated marks, are trademarks of their respective owners and are used here
+only to describe this project's origin. Stubborn Contract is an independent
+project and is not endorsed by or affiliated with those trademark holders.
+
+--------------------------------------------------------------------------------
+Third-party software
+--------------------------------------------------------------------------------
+
+This product bundles and/or depends on third-party software components, each
+distributed under its own license (for example the Apache License 2.0, the
+Eclipse Public License, and others). Those components remain the copyright of
+their respective authors and are governed by their respective license terms.

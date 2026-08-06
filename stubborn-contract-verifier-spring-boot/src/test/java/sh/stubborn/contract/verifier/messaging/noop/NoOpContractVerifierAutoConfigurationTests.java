@@ -17,10 +17,10 @@
 package sh.stubborn.contract.verifier.messaging.noop;
 
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,10 +33,9 @@ class NoOpContractVerifierAutoConfigurationTests {
 		.withConfiguration(AutoConfigurations.of(NoOpContractVerifierAutoConfiguration.class));
 
 	@Test
-	public void shouldCreateBeansByDefault() {
-		this.contextRunner.run((context) -> {
-			assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(1);
-		});
+	void shouldCreateBeansByDefault() {
+		this.contextRunner
+			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(1));
 	}
 
 }

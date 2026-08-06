@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jspecify.annotations.Nullable;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.crypto.DefaultSettingsDecryptionRequest;
@@ -43,6 +42,7 @@ import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.resolution.VersionRangeResolutionException;
 import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions.StubRunnerProxyOptions;
 import sh.stubborn.contract.stubrunner.util.ZipCategory;
 
@@ -112,8 +112,8 @@ public class AetherStubDownloader implements StubDownloader {
 	}
 
 	/**
-	 * used by the Maven Plugin.
-	 * @param repositorySystem Maven repository system
+	 * Used by the Maven Plugin.
+	 * @param repositorySystem maven repository system
 	 * @param remoteRepositories remote artifact repositories
 	 * @param session repository system session
 	 * @param settings the Maven settings
@@ -185,7 +185,7 @@ public class AetherStubDownloader implements StubDownloader {
 		return buildAuthentication(stubRunnerOptions.password, stubRunnerOptions.username);
 	}
 
-	Authentication buildAuthentication(String stubServerPassword, String username) {
+	Authentication buildAuthentication(@Nullable String stubServerPassword, @Nullable String username) {
 		return new AuthenticationBuilder().addUsername(username).addPassword(stubServerPassword).build();
 	}
 
@@ -213,11 +213,11 @@ public class AetherStubDownloader implements StubDownloader {
 		catch (IllegalStateException ise) {
 			throw ise;
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			throw new IllegalStateException(
 					"Exception occurred while trying to download a stub for group [" + stubsGroup + "] module ["
 							+ stubsModule + "] and classifier [" + classifier + "] in " + this.remoteRepos,
-					e);
+					ex);
 		}
 	}
 
@@ -262,8 +262,8 @@ public class AetherStubDownloader implements StubDownloader {
 				log.debug("Resolved version range is [" + rangeResult + "]");
 			}
 		}
-		catch (VersionRangeResolutionException e) {
-			throw new IllegalStateException("Cannot resolve version range", e);
+		catch (VersionRangeResolutionException ex) {
+			throw new IllegalStateException("Cannot resolve version range", ex);
 		}
 		if (rangeResult.getHighestVersion() == null) {
 			throw new IllegalArgumentException(

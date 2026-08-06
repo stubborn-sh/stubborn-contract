@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import sh.stubborn.contract.stubrunner.StubsMode;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.stubrunner.util.StubsParser;
 
 /**
@@ -51,23 +51,23 @@ public class StubRunnerOptionsBuilder {
 
 	private Integer maxPortValue = 15000;
 
-	private StubResource stubRepositoryRoot;
+	private @Nullable StubResource stubRepositoryRoot;
 
 	private String stubsClassifier = "stubs";
 
-	private String username;
+	private @Nullable String username;
 
-	private String password;
+	private @Nullable String password;
 
-	private StubRunnerOptions.StubRunnerProxyOptions stubRunnerProxyOptions;
+	private StubRunnerOptions.@Nullable StubRunnerProxyOptions stubRunnerProxyOptions;
 
 	private boolean stubsPerConsumer = false;
 
-	private String consumerName;
+	private @Nullable String consumerName;
 
-	private String mappingsOutputFolder;
+	private @Nullable String mappingsOutputFolder;
 
-	private StubsMode stubsMode;
+	private @Nullable StubsMode stubsMode;
 
 	private boolean deleteStubsAfterTest = true;
 
@@ -79,7 +79,7 @@ public class StubRunnerOptionsBuilder {
 
 	private Class httpServerStubConfigurer = HttpServerStubConfigurer.NoOpHttpServerStubConfigurer.class;
 
-	private String serverId;
+	private @Nullable String serverId;
 
 	public StubRunnerOptionsBuilder() {
 	}
@@ -151,7 +151,7 @@ public class StubRunnerOptionsBuilder {
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withStubRepositoryRoot(StubResource stubRepositoryRoot) {
+	public StubRunnerOptionsBuilder withStubRepositoryRoot(@Nullable StubResource stubRepositoryRoot) {
 		this.stubRepositoryRoot = stubRepositoryRoot;
 		return this;
 	}
@@ -202,9 +202,9 @@ public class StubRunnerOptionsBuilder {
 		this.stubsPerConsumer = options.isStubsPerConsumer();
 		this.consumerName = options.getConsumerName();
 		this.mappingsOutputFolder = options.getMappingsOutputFolder();
-		this.stubConfigurations = options.dependencies != null ? new ArrayList<>(options.dependencies)
+		this.stubConfigurations = (options.dependencies != null) ? new ArrayList<>(options.dependencies)
 				: new ArrayList<>();
-		this.stubIdsToPortMapping = options.stubIdsToPortMapping != null ? options.stubIdsToPortMapping
+		this.stubIdsToPortMapping = (options.stubIdsToPortMapping != null) ? options.stubIdsToPortMapping
 				: new LinkedHashMap<>();
 		this.deleteStubsAfterTest = options.isDeleteStubsAfterTest();
 		this.generateStubs = options.isGenerateStubs();
@@ -215,7 +215,7 @@ public class StubRunnerOptionsBuilder {
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withMappingsOutputFolder(String mappingsOutputFolder) {
+	public StubRunnerOptionsBuilder withMappingsOutputFolder(@Nullable String mappingsOutputFolder) {
 		this.mappingsOutputFolder = mappingsOutputFolder;
 		return this;
 	}
@@ -288,12 +288,12 @@ public class StubRunnerOptionsBuilder {
 		this.stubIdsToPortMapping.putAll(stubIdsToPortMapping);
 	}
 
-	public StubRunnerOptionsBuilder withUsername(final String username) {
+	public StubRunnerOptionsBuilder withUsername(final @Nullable String username) {
 		this.username = username;
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withPassword(final String password) {
+	public StubRunnerOptionsBuilder withPassword(final @Nullable String password) {
 		this.password = password;
 		return this;
 	}
@@ -308,7 +308,7 @@ public class StubRunnerOptionsBuilder {
 		return this;
 	}
 
-	public StubRunnerOptionsBuilder withConsumerName(String consumerName) {
+	public StubRunnerOptionsBuilder withConsumerName(@Nullable String consumerName) {
 		this.consumerName = consumerName;
 		return this;
 	}

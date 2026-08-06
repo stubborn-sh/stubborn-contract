@@ -36,7 +36,7 @@ class ToFileContractsTransformerTests {
 		File input = new File("src/test/resources/dsl");
 		String fqn = YamlContractConverter.class.getName();
 		List<File> files = new ToFileContractsTransformer().storeContractsAsFiles(input.getAbsolutePath(), fqn,
-				tmpDir.toFile().getAbsolutePath());
+				this.tmpDir.toFile().getAbsolutePath());
 		assertThat(files).hasSize(1);
 		assertThat(files.get(0).getName()).endsWith(".yml");
 	}

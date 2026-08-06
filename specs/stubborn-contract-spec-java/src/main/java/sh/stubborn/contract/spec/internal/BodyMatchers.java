@@ -105,17 +105,17 @@ public class BodyMatchers {
 			return false;
 		}
 		BodyMatchers that = (BodyMatchers) o;
-		return Objects.equals(matchers, that.matchers);
+		return Objects.equals(this.matchers, that.matchers);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(matchers);
+		return Objects.hash(this.matchers);
 	}
 
 	@Override
 	public String toString() {
-		return "BodyMatchers{" + "\nmatchers=" + matchers + '}';
+		return "BodyMatchers{" + "\nmatchers=" + this.matchers + '}';
 	}
 
 	/**

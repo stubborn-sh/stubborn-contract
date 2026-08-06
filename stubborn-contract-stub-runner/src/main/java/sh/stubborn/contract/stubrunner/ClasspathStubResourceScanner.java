@@ -31,6 +31,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -157,9 +158,9 @@ class ClasspathStubResourceScanner {
 				}
 			}
 		}
-		catch (IOException e) {
+		catch (IOException ex) {
 			if (log.isTraceEnabled()) {
-				log.trace("Could not scan jar [" + jarPath + "]: " + e.getMessage());
+				log.trace("Could not scan jar [" + jarPath + "]: " + ex.getMessage());
 			}
 		}
 		return result;
@@ -177,8 +178,8 @@ class ClasspathStubResourceScanner {
 			return result;
 		}
 		int lastSep = pattern.lastIndexOf('/', wildcardIndex - 1);
-		String baseDir = lastSep > 0 ? pattern.substring(0, lastSep) : ".";
-		String glob = lastSep > 0 ? pattern.substring(lastSep + 1) : pattern;
+		String baseDir = (lastSep > 0) ? pattern.substring(0, lastSep) : ".";
+		String glob = (lastSep > 0) ? pattern.substring(lastSep + 1) : pattern;
 		Path root = Path.of(baseDir);
 		return walkDirectory(root, root, glob);
 	}
@@ -236,7 +237,7 @@ class ClasspathStubResourceScanner {
 
 			@Override
 			public String getFilename() {
-				return path.getFileName() != null ? path.getFileName().toString() : null;
+				return Objects.requireNonNull(path.getFileName()).toString();
 			}
 
 			@Override

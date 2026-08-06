@@ -28,4 +28,4 @@ include::../../../src/test/projects/spring-boot-groovy/src/test/groovy/hello/Bas
 
 === Project source code
 
-https://github.com/spring-cloud/spring-cloud-contract/tree/{github-tag}/spring-cloud-contract-tools/stubborn-maven-plugin/src/test/projects/spring-boot-groovy
+https://github.com/stubborn-sh/stubborn-contract/tree/{github-tag}/stubborn-contract-tools/stubborn-contract-maven-plugin/src/test/projects/spring-boot-groovy

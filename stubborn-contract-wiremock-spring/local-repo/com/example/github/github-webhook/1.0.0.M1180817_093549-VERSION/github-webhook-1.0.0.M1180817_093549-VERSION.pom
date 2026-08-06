@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.example.github</groupId>
+	<artifactId>github-webhook</artifactId>
+	<version>1.0.0.M1180817_093549-VERSION</version>
+	<packaging>jar</packaging>
+
+	<name>github-webhook</name>
+	<description>GitHub WebHook Source</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.3.RELEASE</version>
+		<relativePath/>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<spring-cloud-contract.version>2.0.0.RELEASE</spring-cloud-contract.version>
+		<spring-cloud-bom.version>Finchley.RELEASE</spring-cloud-bom.version>
+		<maven-surefire.version>2.20</maven-surefire.version>
+		<!-- [PIPELINE] -->
+		<distribution.management.release.id>artifactory-local</distribution.management.release.id>
+		<!-- [PIPELINE] -->
+		<distribution.management.snapshot.url>http://localhost:8081/artifactory/libs-snapshot-local</distribution.management.snapshot.url>
+		<distribution.management.release.url>http://localhost:8081/artifactory/libs-release-local</distribution.management.release.url>
+		<!-- [PIPELINE] -->
+		<repo.with.binaries>http://localhost:8081/artifactory/libs-release-local</repo.with.binaries>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<!-- To parse the input JSON in compile time -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!-- To parse the input JSON in compile time -->
+		<dependency>
+			<groupId>com.toomuchcoding.jsonassert</groupId>
+			<artifactId>jsonassert</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-test-support</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-contract-verifier</artifactId>
+			<version>${spring-cloud-contract.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>spring-mock-mvc</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud-bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- [PIPELINE] -->
+	<distributionManagement>
+		<repository>
+			<id>${distribution.management.release.id}</id>
+			<name>Spring Milestone Repository</name>
+			<url>${distribution.management.release.url}</url>
+		</repository>
+		<snapshotRepository>
+			<id>${distribution.management.release.id}</id>
+			<name>Spring Snapshot Repository</name>
+			<url>${distribution.management.snapshot.url}</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${maven-surefire.version}</version>
+						<configuration>
+							<failIfNoTests>true</failIfNoTests>
+							<includes>
+								<include>**/*Tests.java</include>
+								<include>**/*Test.java</include>
+							</includes>
+							<excludes>
+								<exclude>**/smoke/**</exclude>
+								<exclude>**/e2e/**</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.springframework.cloud</groupId>
+						<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+						<version>${spring-cloud-contract.version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<baseClassForTests>com.example.contract.BaseClass</baseClassForTests>
+							<basePackageForTests>com.example.contracttests</basePackageForTests>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!-- [PIPELINE] -->
+		<profile>
+			<id>apicompatibility</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${maven-surefire.version}</version>
+						<configuration>
+							<failIfNoTests>true</failIfNoTests>
+							<includes>
+								<include>**/contracttests/**/*Tests.java</include>
+								<include>**/contracttests/**/*Test.java</include>
+							</includes>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.springframework.cloud</groupId>
+						<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+						<version>${spring-cloud-contract.version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<contractsRepositoryUrl>${repo.with.binaries}</contractsRepositoryUrl>
+							<contractsMode>REMOTE</contractsMode>
+							<contractDependency>
+								<groupId>${project.groupId}</groupId>
+								<artifactId>${project.artifactId}</artifactId>
+								<classifier>stubs</classifier>
+								<version>${latest.production.version}</version>
+							</contractDependency>
+							<contractsPath>/</contractsPath>
+							<baseClassForTests>com.example.contract.BaseClass</baseClassForTests>
+							<basePackageForTests>com.example.contracttests</basePackageForTests>
+							<contractsSnapshotCheckSkip>true</contractsSnapshotCheckSkip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!-- [PIPELINE] -->
+		<profile>
+			<id>smoke</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${maven-surefire.version}</version>
+						<configuration>
+							<failIfNoTests>true</failIfNoTests>
+							<includes>
+								<include>smoke/**/*Tests.java</include>
+								<include>smoke/**/*Test.java</include>
+							</includes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!-- [PIPELINE] -->
+		<profile>
+			<id>e2e</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>${maven-surefire.version}</version>
+						<configuration>
+							<failIfNoTests>true</failIfNoTests>
+							<includes>
+								<include>e2e/**/*Tests.java</include>
+								<include>e2e/**/*Test.java</include>
+							</includes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>spring</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<repositories>
+				<repository>
+					<id>spring-snapshots</id>
+					<name>Spring Snapshots</name>
+					<url>https://repo.spring.io/snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>spring-milestones</id>
+					<name>Spring Milestones</name>
+					<url>https://repo.spring.io/milestone</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>spring-releases</id>
+					<name>Spring Releases</name>
+					<url>https://repo.spring.io/release</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>spring-snapshots</id>
+					<name>Spring Snapshots</name>
+					<url>https://repo.spring.io/snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>spring-milestones</id>
+					<name>Spring Milestones</name>
+					<url>https://repo.spring.io/milestone</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>spring-releases</id>
+					<name>Spring Releases</name>
+					<url>https://repo.spring.io/release</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+	</profiles>
+</project>

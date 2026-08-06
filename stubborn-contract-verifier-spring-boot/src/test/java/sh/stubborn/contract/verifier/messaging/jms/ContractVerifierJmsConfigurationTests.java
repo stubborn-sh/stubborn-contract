@@ -32,24 +32,21 @@ class ContractVerifierJmsConfigurationTests {
 		.withConfiguration(AutoConfigurations.of(ContractVerifierJmsConfiguration.class));
 
 	@Test
-	public void shouldCreateBeansByDefault() {
-		this.contextRunner.run((context) -> {
-			assertThat(context.getBeansOfType(ContractVerifierJmsHelper.class)).hasSize(1);
-		});
+	void shouldCreateBeansByDefault() {
+		this.contextRunner
+			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierJmsHelper.class)).hasSize(1));
 	}
 
 	@Test
-	public void shouldNotCreateBeansWhenDisabled() {
-		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.jms.enabled=false").run((context) -> {
-			assertThat(context.getBeansOfType(ContractVerifierJmsHelper.class)).hasSize(0);
-		});
+	void shouldNotCreateBeansWhenDisabled() {
+		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.jms.enabled=false")
+			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierJmsHelper.class)).hasSize(0));
 	}
 
 	@Test
-	public void shouldCreateBeansWhenExplicitlyEnabled() {
-		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.jms.enabled=true").run((context) -> {
-			assertThat(context.getBeansOfType(ContractVerifierJmsHelper.class)).hasSize(1);
-		});
+	void shouldCreateBeansWhenExplicitlyEnabled() {
+		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.jms.enabled=true")
+			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierJmsHelper.class)).hasSize(1));
 	}
 
 }

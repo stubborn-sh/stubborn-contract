@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.maven.api.plugin.testing.MojoExtension;
@@ -49,7 +50,7 @@ abstract class AbstractMojoIntegrationTests {
 	}
 
 	void setupBuildPaths(AbstractMojo mojo, Path targetDir) throws Exception {
-		Path projectDir = targetDir.getParent();
+		Path projectDir = Objects.requireNonNull(targetDir.getParent(), "targetDir must have a parent");
 		MavenXpp3Reader reader = new MavenXpp3Reader();
 		Model model = reader.read(Files.newBufferedReader(projectDir.resolve("pom.xml")));
 		MavenProject project = new MavenProject(model);

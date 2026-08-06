@@ -21,7 +21,10 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class BookDeleted implements Serializable {
 
-	public String bookName;
+	/**
+	 * Name of the deleted book.
+	 */
+	private String bookName;
 
 	public BookDeleted(String bookName) {
 		this.bookName = bookName;
@@ -34,7 +37,7 @@ public class BookDeleted implements Serializable {
 		return this.bookName;
 	}
 
-	void setBookName(String bookName) {
+	public void setBookName(String bookName) {
 		this.bookName = bookName;
 	}
 

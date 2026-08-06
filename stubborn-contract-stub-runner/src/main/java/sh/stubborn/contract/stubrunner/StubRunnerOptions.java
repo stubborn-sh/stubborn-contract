@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import sh.stubborn.contract.stubrunner.StubsMode;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Technical options related to running StubRunner
@@ -55,7 +55,7 @@ public class StubRunnerOptions {
 	/**
 	 * root URL from where the JAR with stub mappings will be downloaded.
 	 */
-	final StubResource stubRepositoryRoot;
+	final @Nullable StubResource stubRepositoryRoot;
 
 	/**
 	 * stub definition classifier.
@@ -72,19 +72,19 @@ public class StubRunnerOptions {
 	/**
 	 * Optional username for authorization header.
 	 */
-	final String username;
+	final @Nullable String username;
 
 	/**
 	 * Optional password for authorization header.
 	 */
-	final String password;
+	final @Nullable String password;
 
 	final StubsMode stubsMode;
 
 	/**
 	 * Optional proxy settings.
 	 */
-	private final StubRunnerProxyOptions stubRunnerProxyOptions;
+	private final @Nullable StubRunnerProxyOptions stubRunnerProxyOptions;
 
 	/**
 	 * Configuration for an HTTP server stub class that allows to perform additional HTTP
@@ -100,14 +100,14 @@ public class StubRunnerOptions {
 	/**
 	 * Name of the consumer. If not set should default to {@code spring.application.name}.
 	 */
-	private String consumerName;
+	private @Nullable String consumerName;
 
 	/**
 	 * For debugging purposes you can output the registered mappings to a given folder.
 	 * Each HTTP server stub will have its own subfolder where all the mappings will get
 	 * stored.
 	 */
-	private String mappingsOutputFolder;
+	private @Nullable String mappingsOutputFolder;
 
 	/**
 	 * If set to {@code false} will NOT delete stubs from a temporary folder after running
@@ -134,21 +134,21 @@ public class StubRunnerOptions {
 	private Map<String, String> properties;
 
 	/**
-	 *
+	 * Optional server id used to resolve credentials from Maven settings.
 	 */
-	final String serverId;
+	final @Nullable String serverId;
 
-	StubRunnerOptions(Integer minPortValue, Integer maxPortValue, StubResource stubRepositoryRoot, StubsMode stubsMode,
-			String stubsClassifier, Collection<StubConfiguration> dependencies,
-			Map<StubConfiguration, Integer> stubIdsToPortMapping, String username, String password,
-			final StubRunnerProxyOptions stubRunnerProxyOptions, boolean stubsPerConsumer, String consumerName,
-			String mappingsOutputFolder, boolean deleteStubsAfterTest, boolean generateStubs, boolean failOnNoStubs,
-			Map<String, String> properties, Class<? extends HttpServerStubConfigurer> httpServerStubConfigurer,
-			String serverId) {
+	StubRunnerOptions(Integer minPortValue, Integer maxPortValue, @Nullable StubResource stubRepositoryRoot,
+			@Nullable StubsMode stubsMode, String stubsClassifier, Collection<StubConfiguration> dependencies,
+			Map<StubConfiguration, Integer> stubIdsToPortMapping, @Nullable String username, @Nullable String password,
+			final @Nullable StubRunnerProxyOptions stubRunnerProxyOptions, boolean stubsPerConsumer,
+			@Nullable String consumerName, @Nullable String mappingsOutputFolder, boolean deleteStubsAfterTest,
+			boolean generateStubs, boolean failOnNoStubs, Map<String, String> properties,
+			Class<? extends HttpServerStubConfigurer> httpServerStubConfigurer, @Nullable String serverId) {
 		this.minPortValue = minPortValue;
 		this.maxPortValue = maxPortValue;
 		this.stubRepositoryRoot = stubRepositoryRoot;
-		this.stubsMode = stubsMode != null ? stubsMode : StubsMode.CLASSPATH;
+		this.stubsMode = (stubsMode != null) ? stubsMode : StubsMode.CLASSPATH;
 		this.stubsClassifier = stubsClassifier;
 		this.dependencies = dependencies;
 		this.stubIdsToPortMapping = stubIdsToPortMapping;
@@ -168,8 +168,8 @@ public class StubRunnerOptions {
 
 	public static StubRunnerOptions fromSystemProps() {
 		StubRunnerOptionsBuilder builder = new StubRunnerOptionsBuilder()
-			.withMinPort(Integer.valueOf(System.getProperty("stubborn.contract.stubrunner.port.range.min", "10000")))
-			.withMaxPort(Integer.valueOf(System.getProperty("stubborn.contract.stubrunner.port.range.max", "15000")))
+			.withMinPort(Integer.parseInt(System.getProperty("stubborn.contract.stubrunner.port.range.min", "10000")))
+			.withMaxPort(Integer.parseInt(System.getProperty("stubborn.contract.stubrunner.port.range.max", "15000")))
 			.withStubRepositoryRoot(
 					ResourceResolver.resource(System.getProperty("stubborn.contract.stubrunner.repository.root", "")))
 			.withStubsMode(System.getProperty("stubborn.contract.stubrunner.stubs-mode", "LOCAL"))
@@ -216,14 +216,14 @@ public class StubRunnerOptions {
 		Set<String> propertyNames = properties.stringPropertyNames();
 		propertyNames.stream()
 			// stubborn.contract.stubrunner.properties.foo.bar=baz
-			.filter(s -> s.toLowerCase(Locale.ROOT).startsWith("stubborn.contract.stubrunner.properties"))
+			.filter((s) -> s.toLowerCase(Locale.ROOT).startsWith("stubborn.contract.stubrunner.properties"))
 			// foo.bar=baz
-			.forEach(s -> map.put(s.substring("stubborn.contract.stubrunner.properties".length() + 1),
+			.forEach((s) -> map.put(s.substring("stubborn.contract.stubrunner.properties".length() + 1),
 					System.getProperty(s)));
 		return map;
 	}
 
-	public Integer port(StubConfiguration stubConfiguration) {
+	public @Nullable Integer port(StubConfiguration stubConfiguration) {
 		if (this.stubIdsToPortMapping != null) {
 			return this.stubIdsToPortMapping.get(stubConfiguration);
 		}
@@ -248,7 +248,7 @@ public class StubRunnerOptions {
 		return this.stubIdsToPortMapping;
 	}
 
-	public StubResource getStubRepositoryRoot() {
+	public @Nullable StubResource getStubRepositoryRoot() {
 		return this.stubRepositoryRoot;
 	}
 
@@ -259,14 +259,14 @@ public class StubRunnerOptions {
 		try {
 			return this.stubRepositoryRoot.getURI().toString();
 		}
-		catch (FileNotFoundException f) {
+		catch (FileNotFoundException ex) {
 			if (log.isDebugEnabled()) {
-				log.debug("File not found", f);
+				log.debug("File not found", ex);
 			}
 			return "";
 		}
-		catch (IOException e) {
-			throw new IllegalStateException(e);
+		catch (IOException ex) {
+			throw new IllegalStateException(ex);
 		}
 	}
 
@@ -278,19 +278,19 @@ public class StubRunnerOptions {
 		return this.stubsClassifier;
 	}
 
-	public String getUsername() {
+	public @Nullable String getUsername() {
 		return this.username;
 	}
 
-	public String getPassword() {
+	public @Nullable String getPassword() {
 		return this.password;
 	}
 
-	public StubRunnerProxyOptions getStubRunnerProxyOptions() {
+	public @Nullable StubRunnerProxyOptions getStubRunnerProxyOptions() {
 		return this.stubRunnerProxyOptions;
 	}
 
-	public StubRunnerProxyOptions getProxyOptions() {
+	public @Nullable StubRunnerProxyOptions getProxyOptions() {
 		return this.stubRunnerProxyOptions;
 	}
 
@@ -298,7 +298,7 @@ public class StubRunnerOptions {
 		return this.stubsPerConsumer;
 	}
 
-	public String getConsumerName() {
+	public @Nullable String getConsumerName() {
 		return this.consumerName;
 	}
 
@@ -306,7 +306,7 @@ public class StubRunnerOptions {
 		return this.mappingsOutputFolder != null && !this.mappingsOutputFolder.isBlank();
 	}
 
-	public String getMappingsOutputFolder() {
+	public @Nullable String getMappingsOutputFolder() {
 		return this.mappingsOutputFolder;
 	}
 
@@ -326,7 +326,7 @@ public class StubRunnerOptions {
 		return this.properties;
 	}
 
-	public String getServerId() {
+	public @Nullable String getServerId() {
 		return this.serverId;
 	}
 
@@ -346,8 +346,8 @@ public class StubRunnerOptions {
 				+ '\'' + '}';
 	}
 
-	private String obfuscate(String string) {
-		return string != null && !string.isBlank() ? "****" : "";
+	private String obfuscate(@Nullable String string) {
+		return (string != null && !string.isBlank()) ? "****" : "";
 	}
 
 	/**

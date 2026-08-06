@@ -1,0 +1,44 @@
+package com.example;
+
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.response.Response;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;
+import static io.restassured.RestAssured.*;
+
+@SuppressWarnings("rawtypes")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
+
+	@Test
+	@Disabled
+	public void validate_contract() throws Exception {
+		// given:
+			RequestSpecification request = given();
+
+
+		// when:
+			Response response = given().spec(request)
+					.get("/resp/cookie");
+
+		// then:
+			assertThat(response.statusCode()).isEqualTo(200);
+			assertThat(response.cookie("session")).isNotNull();
+			assertThat(response.cookie("session")).isEqualTo("abc123");
+
+		// and:
+			DocumentContext parsedJson = JsonPath.parse(response.getBody().asString());
+			assertThatJson(parsedJson).field("['id']").isEqualTo(1);
+	}
+
+}
+

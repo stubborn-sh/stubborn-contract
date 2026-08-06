@@ -32,10 +32,9 @@ class ContractVerifierIntegrationConfigurationTests {
 		.withConfiguration(AutoConfigurations.of(ContractVerifierIntegrationConfiguration.class));
 
 	@Test
-	public void shouldCreateBeansWhenOnClasspath() {
-		this.contextRunner.run((context) -> {
-			assertThat(context.getBeansOfType(ContractVerifierHelper.class)).hasSize(1);
-		});
+	void shouldCreateBeansWhenOnClasspath() {
+		this.contextRunner
+			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierHelper.class)).hasSize(1));
 	}
 
 }

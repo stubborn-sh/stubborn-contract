@@ -18,14 +18,30 @@ package sh.stubborn.contract.stubrunner.spring;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Objects;
 
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TrustSelfSignedStrategy;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.assertj.core.api.BDDAssertions;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration;
+import sh.stubborn.contract.stubrunner.StubFinder;
+import sh.stubborn.contract.stubrunner.StubNotFoundException;
+import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStubAccessor;
+import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStubConfigurer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -34,12 +50,6 @@ import org.springframework.cloud.test.TestSocketUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
-
-import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration;
-import sh.stubborn.contract.stubrunner.StubFinder;
-import sh.stubborn.contract.stubrunner.StubNotFoundException;
-import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStubAccessor;
-import sh.stubborn.contract.stubrunner.provider.wiremock.WireMockHttpServerStubConfigurer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,7 +74,7 @@ class StubRunnerConfigurationTests {
 	int fraudDetectionServerPortWithGroupId;
 
 	@Value("${foo}")
-	Integer foo;
+	@Nullable Integer foo;
 
 	@BeforeAll
 	static void setupSpec() {
@@ -129,7 +139,7 @@ class StubRunnerConfigurationTests {
 
 	@Test
 	void shouldBeAbleToInterpolateARunningStubInThePassedTestProperty() {
-		int fraudPort = this.stubFinder.findAllRunningStubs().getPort("fraudDetectionServer");
+		int fraudPort = Objects.requireNonNull(this.stubFinder.findAllRunningStubs().getPort("fraudDetectionServer"));
 		assertThat(fraudPort).isPositive();
 		assertThat(this.environment.getProperty("foo", Integer.class)).isEqualTo(fraudPort);
 		assertThat(this.environment.getProperty("fooWithGroup", Integer.class)).isEqualTo(fraudPort);
@@ -138,7 +148,7 @@ class StubRunnerConfigurationTests {
 
 	@Test
 	void shouldBeAbleToRetrieveThePortOfARunningStubViaAnAnnotation() {
-		int fraudPort = this.stubFinder.findAllRunningStubs().getPort("fraudDetectionServer");
+		int fraudPort = Objects.requireNonNull(this.stubFinder.findAllRunningStubs().getPort("fraudDetectionServer"));
 		assertThat(fraudPort).isPositive();
 		assertThat(this.fraudDetectionServerPort).isEqualTo(fraudPort);
 		assertThat(this.fraudDetectionServerPortWithGroupId).isEqualTo(fraudPort);
@@ -151,7 +161,18 @@ class StubRunnerConfigurationTests {
 	}
 
 	private static String readUrl(String url) throws Exception {
-		return new String(new URL(url).openStream().readAllBytes()).trim();
+		try (CloseableHttpClient client = HttpClients.custom()
+			.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+				.setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+					.setSslContext(
+							new SSLContextBuilder().loadTrustMaterial(null, TrustSelfSignedStrategy.INSTANCE).build())
+					.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+					.build())
+				.build())
+			.build()) {
+			return client.execute(new HttpGet(url),
+					(response) -> new String(response.getEntity().getContent().readAllBytes()).trim());
+		}
 	}
 
 	@Configuration

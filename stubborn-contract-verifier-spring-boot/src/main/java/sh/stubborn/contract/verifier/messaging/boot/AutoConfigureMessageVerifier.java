@@ -25,8 +25,9 @@ import java.lang.annotation.Target;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 
 /**
- * @author Dave Syer
+ * Annotation that enables auto-configuration of the contract verifier messaging beans.
  *
+ * @author Dave Syer
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

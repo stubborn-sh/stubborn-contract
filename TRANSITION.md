@@ -5,7 +5,7 @@ Stubborn Contract is the official continuation of Spring Cloud Contract, led by
 
 **Current status:** `0.1.0-SNAPSHOT` is live on Maven Central snapshots with `sh.stubborn`
 coordinates, Spring Boot 4.x support, and a modular layout. See the
-[Migration Guide](docs/migration-from-spring-cloud-contract.md) to switch.
+[Migration Guide](docs/migration/from-spring-cloud-contract.md) to switch.
 
 - **What happened?** Spring Cloud Contract transitioned away from the Spring Cloud
   portfolio. This repository is its new home, led by the original creator.

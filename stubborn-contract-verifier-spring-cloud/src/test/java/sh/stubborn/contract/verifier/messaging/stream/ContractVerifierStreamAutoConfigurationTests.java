@@ -17,11 +17,11 @@
 package sh.stubborn.contract.verifier.messaging.stream;
 
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
-import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,7 +34,7 @@ class ContractVerifierStreamAutoConfigurationTests {
 		.withConfiguration(AutoConfigurations.of(ContractVerifierStreamAutoConfiguration.class));
 
 	@Test
-	public void shouldCreateBeansByDefault() {
+	void shouldCreateBeansByDefault() {
 		this.contextRunner.run((context) -> {
 			assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(1);
 			assertThat(context.getBeansOfType(MessageVerifierSender.class)).hasSize(1);
@@ -42,7 +42,7 @@ class ContractVerifierStreamAutoConfigurationTests {
 	}
 
 	@Test
-	public void shouldNotCreateBeansWhenDisabled() {
+	void shouldNotCreateBeansWhenDisabled() {
 		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.stream.enabled=false").run((context) -> {
 			assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(0);
 			assertThat(context.getBeansOfType(MessageVerifierSender.class)).hasSize(0);
@@ -50,7 +50,7 @@ class ContractVerifierStreamAutoConfigurationTests {
 	}
 
 	@Test
-	public void shouldCreateBeansWhenExplicitlyEnabled() {
+	void shouldCreateBeansWhenExplicitlyEnabled() {
 		this.contextRunner.withPropertyValues("stubborn.contract.stubrunner.stream.enabled=true").run((context) -> {
 			assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(1);
 			assertThat(context.getBeansOfType(MessageVerifierSender.class)).hasSize(1);

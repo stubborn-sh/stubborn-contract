@@ -1,0 +1,41 @@
+package com.example
+
+import com.jayway.jsonpath.DocumentContext
+import com.jayway.jsonpath.JsonPath
+import spock.lang.Specification
+import spock.lang.Ignore
+import spock.lang.Stepwise
+import io.restassured.module.mockmvc.specification.MockMvcRequestSpecification
+import io.restassured.response.ResponseOptions
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*
+import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.*
+
+@SuppressWarnings("rawtypes")
+@Stepwise
+class ContractTestSpec extends Specification {
+
+	@Ignore
+	def validate_contract() throws Exception {
+		given:
+			MockMvcRequestSpecification request = given()
+					.header("X-Trace", "abc")
+
+		when:
+			ResponseOptions response = given().spec(request)
+					.get("/items/1")
+
+		then:
+			response.statusCode() == 200
+			response.header("X-Reply") == 'def'
+
+		and:
+			DocumentContext parsedJson = JsonPath.parse(response.body.asString())
+			assertThatJson(parsedJson).field("['id']").isEqualTo(1)
+			assertThatJson(parsedJson).field("['name']").isEqualTo("widget")
+	}
+
+}
+

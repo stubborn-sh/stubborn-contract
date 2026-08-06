@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
@@ -29,6 +30,9 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
 /**
+ * Sends messages by resolving the target {@link MessageChannel} from the application
+ * context.
+ *
  * @author Marcin Grzejszczak
  */
 class StreamStubMessageSender implements MessageVerifierSender<Message<?>> {
@@ -39,35 +43,38 @@ class StreamStubMessageSender implements MessageVerifierSender<Message<?>> {
 
 	private final ContractVerifierStreamMessageBuilder builder = new ContractVerifierStreamMessageBuilder();
 
-	private BeanFactoryChannelResolver resolver;
+	private @Nullable BeanFactoryChannelResolver resolver;
 
 	StreamStubMessageSender(ApplicationContext context) {
 		this.context = context;
 	}
 
 	@Override
-	public <T> void send(T payload, Map<String, Object> headers, String destination, YamlContract contract) {
-		send(this.builder.create(payload, headers), destination, contract);
+	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
+		send(this.builder.create(payload, (headers != null) ? headers : Map.of()), destination, contract);
 	}
 
 	@Override
-	public void send(Message<?> message, String destination, YamlContract contract) {
+	public void send(Message<?> message, String destination, @Nullable YamlContract contract) {
 		try {
 			MessageChannel messageChannel = resolver().resolveDestination(destination);
 			messageChannel.send(message);
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			log.error("Exception occurred while trying to send a message [" + message + "] "
-					+ "to a channel with name [" + destination + "]", e);
-			throw e;
+					+ "to a channel with name [" + destination + "]", ex);
+			throw ex;
 		}
 	}
 
 	private BeanFactoryChannelResolver resolver() {
-		if (this.resolver == null) {
-			this.resolver = context.getBean(BeanFactoryChannelResolver.class);
+		BeanFactoryChannelResolver channelResolver = this.resolver;
+		if (channelResolver == null) {
+			channelResolver = this.context.getBean(BeanFactoryChannelResolver.class);
+			this.resolver = channelResolver;
 		}
-		return this.resolver;
+		return channelResolver;
 	}
 
 }

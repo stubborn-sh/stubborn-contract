@@ -44,7 +44,7 @@ class StubRunnerReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 
 	StubRunnerReactiveDiscoveryClient(ReactiveDiscoveryClient delegate, StubFinder stubFinder,
 			StubMapperProperties stubMapperProperties) {
-		this.delegate = delegate instanceof StubRunnerDiscoveryClient ? noOpDiscoveryClient() : delegate;
+		this.delegate = (delegate instanceof StubRunnerDiscoveryClient) ? noOpDiscoveryClient() : delegate;
 		if (log.isDebugEnabled()) {
 			log.debug("Will delegate calls to discovery service [" + this.delegate + "] if a stub is not found");
 		}
@@ -70,9 +70,9 @@ class StubRunnerReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 		try {
 			return this.delegate.description();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			if (log.isDebugEnabled()) {
-				log.debug("Failed to fetch description from delegate", e);
+				log.debug("Failed to fetch description from delegate", ex);
 			}
 		}
 		return "";
@@ -80,7 +80,7 @@ class StubRunnerReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 
 	@Override
 	public Flux<ServiceInstance> getInstances(String serviceId) {
-		return Flux.just(client()).flatMapIterable(c -> c.getInstances(serviceId));
+		return Flux.just(client()).flatMapIterable((c) -> c.getInstances(serviceId));
 	}
 
 	private StubRunnerDiscoveryClient client() {
@@ -95,25 +95,6 @@ class StubRunnerReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 	@Override
 	public int getOrder() {
 		return this.delegate.getOrder();
-	}
-
-}
-
-class StubRunnerNoOpReactiveDiscoveryClient implements ReactiveDiscoveryClient {
-
-	@Override
-	public String description() {
-		return "Spring Cloud Stub Runner No-op ReactiveDiscoveryClient";
-	}
-
-	@Override
-	public Flux<ServiceInstance> getInstances(String serviceId) {
-		return Flux.empty();
-	}
-
-	@Override
-	public Flux<String> getServices() {
-		return Flux.empty();
 	}
 
 }

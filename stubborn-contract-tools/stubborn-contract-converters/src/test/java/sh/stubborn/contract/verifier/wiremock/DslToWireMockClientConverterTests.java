@@ -22,12 +22,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.github.tomakehurst.wiremock.matching.RegexPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -49,13 +51,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DslToWireMockClientConverterTests {
 
 	@TempDir
-	Path tmpDir;
+	@Nullable Path tmpDir;
+
+	private Path tmpDir() {
+		return Objects.requireNonNull(this.tmpDir);
+	}
 
 	@Test
 	void should_convert_dsl_file_to_wiremock_json(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl1.groovy");
+		Path file = tmpDir().resolve("dsl1.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -86,7 +92,7 @@ class DslToWireMockClientConverterTests {
 	void should_convert_dsl_file_to_wiremock_json_with_byte_arrays(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl1.groovy");
+		Path file = tmpDir().resolve("dsl1.groovy");
 		Files.writeString(file, """
 				[
 				sh.stubborn.contract.spec.Contract.make {
@@ -143,7 +149,7 @@ class DslToWireMockClientConverterTests {
 	void should_convert_dsl_file_with_list_of_contracts_to_wiremock_jsons(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl1_list.groovy");
+		Path file = tmpDir().resolve("dsl1_list.groovy");
 		Files.writeString(file, """
 				(1..2).collect { int index ->
 					sh.stubborn.contract.spec.Contract.make {
@@ -185,7 +191,7 @@ class DslToWireMockClientConverterTests {
 	@Test
 	void should_not_convert_if_contract_is_messaging_related(WireMockRuntimeInfo wm) throws Exception {
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl1_list.groovy");
+		Path file = tmpDir().resolve("dsl1_list.groovy");
 		Files.writeString(file, """
 				(1..2).collect { int index ->
 					sh.stubborn.contract.spec.Contract.make {
@@ -204,7 +210,7 @@ class DslToWireMockClientConverterTests {
 	void should_creation_of_delayed_stub_responses_be_possible(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl-delay.groovy");
+		Path file = tmpDir().resolve("dsl-delay.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -236,7 +242,7 @@ class DslToWireMockClientConverterTests {
 	void should_convert_dsl_file_with_a_nested_list_to_wiremock_json(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl2.groovy");
+		Path file = tmpDir().resolve("dsl2.groovy");
 		Files.writeString(file,
 				"""
 						sh.stubborn.contract.spec.Contract.make {
@@ -344,7 +350,7 @@ class DslToWireMockClientConverterTests {
 	void should_create_stub_with_map_inside_list(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl-mapinlist.groovy");
+		Path file = tmpDir().resolve("dsl-mapinlist.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -391,7 +397,7 @@ class DslToWireMockClientConverterTests {
 			throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl-dynamic.groovy");
+		Path file = tmpDir().resolve("dsl-dynamic.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -426,7 +432,7 @@ class DslToWireMockClientConverterTests {
 	void should_convert_dsl_to_wiremock_to_show_it_in_the_docs(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl_from_docs.groovy");
+		Path file = tmpDir().resolve("dsl_from_docs.groovy");
 		Files.writeString(file,
 				"""
 						sh.stubborn.contract.spec.Contract.make {
@@ -502,7 +508,7 @@ class DslToWireMockClientConverterTests {
 	void should_convert_dsl_to_wiremock_with_stub_matchers(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl_from_docs.groovy");
+		Path file = tmpDir().resolve("dsl_from_docs.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -635,7 +641,7 @@ class DslToWireMockClientConverterTests {
 	void should_convert_dsl_to_wiremock_with_stub_matchers_with_docs_example(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl_from_docs.groovy");
+		Path file = tmpDir().resolve("dsl_from_docs.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					priority 1
@@ -718,7 +724,7 @@ class DslToWireMockClientConverterTests {
 	void should_not_escape_any_java_chars_in_the_javascript_wiremock_stub(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl_from_docs.groovy");
+		Path file = tmpDir().resolve("dsl_from_docs.groovy");
 		Files.writeString(file,
 				"""
 						sh.stubborn.contract.spec.Contract.make {
@@ -813,7 +819,7 @@ class DslToWireMockClientConverterTests {
 	void should_properly_convert_regex_for_headers(WireMockRuntimeInfo wm) throws Exception {
 		String url = "http://localhost:" + wm.getHttpPort();
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl_from_docs.groovy");
+		Path file = tmpDir().resolve("dsl_from_docs.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -868,7 +874,7 @@ class DslToWireMockClientConverterTests {
 	@Test
 	void should_create_wiremock_json_with_no_duplicate_metadata_fields(WireMockRuntimeInfo wm) throws Exception {
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("stub_mapping_duplicate.groovy");
+		Path file = tmpDir().resolve("stub_mapping_duplicate.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -918,7 +924,7 @@ class DslToWireMockClientConverterTests {
 	@Test
 	void should_convert_dsl_file_to_wiremock_json_with_array(WireMockRuntimeInfo wm) throws Exception {
 		DslToWireMockClientConverter converter = new DslToWireMockClientConverter();
-		Path file = tmpDir.resolve("dsl1656.groovy");
+		Path file = tmpDir().resolve("dsl1656.groovy");
 		Files.writeString(file, """
 				sh.stubborn.contract.spec.Contract.make {
 					request {
@@ -981,9 +987,9 @@ class DslToWireMockClientConverterTests {
 			stubMapping.getRequest()
 				.getBodyPatterns()
 				.stream()
-				.filter(p -> p instanceof RegexPattern)
-				.map(p -> (RegexPattern) p)
-				.forEach(p -> Pattern.compile(p.getValue()));
+				.filter((p) -> p instanceof RegexPattern)
+				.map((p) -> (RegexPattern) p)
+				.forEach((p) -> Pattern.compile(p.getValue()));
 		}
 		assertThat(mappingDefinition).doesNotContain("sh.stubborn.contract.spec.internal");
 		return stubMapping;

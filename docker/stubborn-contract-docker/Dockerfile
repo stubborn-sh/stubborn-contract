@@ -18,11 +18,11 @@ RUN chmod +r+x /usr/local/bin/sdkman-wrapper.sh
 
 # provide output & contract directories and change owner to scc
 RUN mkdir -p /contracts
-RUN mkdir -p /spring-cloud-contract-output
-RUN mkdir -p /spring-cloud-contract
+RUN mkdir -p /stubborn-contract-output
+RUN mkdir -p /stubborn-contract
 RUN chown -R scc:scc /contracts
-RUN chown -R scc:scc /spring-cloud-contract-output /spring-cloud-contract
-RUN chown -R scc:scc /spring-cloud-contract
+RUN chown -R scc:scc /stubborn-contract-output /stubborn-contract
+RUN chown -R scc:scc /stubborn-contract
 
 USER scc
 RUN curl -s https://get.sdkman.io/ | bash
@@ -33,8 +33,8 @@ ENV JAVA_HOME /home/scc/.sdkman/candidates/java/current/
 ENV PATH "${PATH}:${JAVA_HOME}/bin"
 
 # Spring Cloud Contract
-COPY --chown=scc:scc project /spring-cloud-contract/
-WORKDIR /spring-cloud-contract/
+COPY --chown=scc:scc project /stubborn-contract/
+WORKDIR /stubborn-contract/
 
 # Let's copy the downloaded deps to .m2 and the gradle cache
 COPY --chown=scc:scc target/maven_dependencies /home/scc/.m2/repository/

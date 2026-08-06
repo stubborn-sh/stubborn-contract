@@ -17,11 +17,11 @@
 package sh.stubborn.contract.stubrunner;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,27 +53,27 @@ class GitStubDownloaderPropertiesTests {
 
 			@Override
 			public URL getURL() {
-				return null;
+				throw new UnsupportedOperationException();
 			}
 
 			@Override
 			public File getFile() {
-				return null;
+				throw new UnsupportedOperationException();
 			}
 
 			@Override
-			public InputStream getInputStream() {
+			public @Nullable InputStream getInputStream() {
 				return null;
 			}
 
 			@Override
 			public String getFilename() {
-				return null;
+				return "";
 			}
 
 			@Override
 			public String getDescription() {
-				return null;
+				return "";
 			}
 		};
 	}

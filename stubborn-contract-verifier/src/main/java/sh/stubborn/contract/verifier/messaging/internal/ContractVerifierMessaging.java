@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.messaging.internal;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,14 +57,14 @@ public class ContractVerifierMessaging<M> {
 		if (contract != null) {
 			setMessageType(contract, ContractVerifierMessageMetadata.MessageType.INPUT);
 		}
-		this.sender.send(message.getPayload(), message.getHeaders(), destination, contract);
+		this.sender.send(Objects.requireNonNull(message.getPayload()), message.getHeaders(), destination, contract);
 	}
 
 	public void send(ContractVerifierMessage message, String destination) {
 		send(message, destination, null);
 	}
 
-	public ContractVerifierMessage receive(String destination, @Nullable YamlContract contract) {
+	public @Nullable ContractVerifierMessage receive(String destination, @Nullable YamlContract contract) {
 		if (contract != null) {
 			setMessageType(contract, ContractVerifierMessageMetadata.MessageType.OUTPUT);
 		}
@@ -75,7 +76,7 @@ public class ContractVerifierMessaging<M> {
 				new ContractVerifierMessageMetadata(output));
 	}
 
-	public ContractVerifierMessage receive(String destination) {
+	public @Nullable ContractVerifierMessage receive(String destination) {
 		return receive(destination, null);
 	}
 
@@ -83,7 +84,7 @@ public class ContractVerifierMessaging<M> {
 		return new ContractVerifierMessage(payload, headers);
 	}
 
-	protected ContractVerifierMessage convert(M receive) {
+	protected @Nullable ContractVerifierMessage convert(@Nullable M receive) {
 		return new ContractVerifierMessage(receive, null);
 	}
 

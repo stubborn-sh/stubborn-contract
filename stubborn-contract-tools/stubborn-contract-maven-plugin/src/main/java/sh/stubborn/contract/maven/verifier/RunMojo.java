@@ -45,6 +45,7 @@ import org.springframework.util.StringUtils;
  * @author Eddú Meléndez
  */
 @Mojo(name = "run", requiresProject = false, requiresDependencyResolution = ResolutionScope.RUNTIME)
+@SuppressWarnings("NullAway.Init")
 public class RunMojo extends AbstractMojo {
 
 	private final LocalStubRunner localStubRunner;
@@ -112,7 +113,8 @@ public class RunMojo extends AbstractMojo {
 	private MavenSession mavenSession;
 
 	/**
-	 *
+	 * The server id from the Maven settings used to resolve credentials for downloading
+	 * stubs.
 	 */
 	@Parameter(property = "spring.cloud.contract.verifier.server-id")
 	private String serverId;
@@ -149,8 +151,8 @@ public class RunMojo extends AbstractMojo {
 			try {
 				batchStubRunner.close();
 			}
-			catch (IOException e) {
-				throw new MojoExecutionException("Fail to close batch stub runner", e);
+			catch (IOException ex) {
+				throw new MojoExecutionException("Fail to close batch stub runner", ex);
 			}
 		}
 	}

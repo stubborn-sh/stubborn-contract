@@ -23,7 +23,6 @@ import com.github.tomakehurst.wiremock.extension.ResponseTransformerV2;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.Response;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
-
 import sh.stubborn.contract.verifier.dsl.wiremock.DefaultResponseTransformer;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockExtensions;
 

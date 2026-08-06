@@ -16,6 +16,8 @@
 
 package sh.stubborn.contract.maven.verifier;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Represents a single mapping of regex on package where contracts reside to the FQN of
  * the base test class.
@@ -25,11 +27,11 @@ package sh.stubborn.contract.maven.verifier;
  */
 public class BaseClassMapping {
 
-	private String contractPackageRegex;
+	private @Nullable String contractPackageRegex;
 
-	private String baseClassFQN;
+	private @Nullable String baseClassFQN;
 
-	public String getContractPackageRegex() {
+	public @Nullable String getContractPackageRegex() {
 		return this.contractPackageRegex;
 	}
 
@@ -37,7 +39,7 @@ public class BaseClassMapping {
 		this.contractPackageRegex = contractPackageRegex;
 	}
 
-	public String getBaseClassFQN() {
+	public @Nullable String getBaseClassFQN() {
 		return this.baseClassFQN;
 	}
 
@@ -54,18 +56,18 @@ public class BaseClassMapping {
 			return false;
 		}
 		BaseClassMapping that = (BaseClassMapping) o;
-		if (this.contractPackageRegex != null ? !this.contractPackageRegex.equals(that.contractPackageRegex)
-				: that.contractPackageRegex != null) {
+		if ((this.contractPackageRegex != null) ? !this.contractPackageRegex.equals(that.contractPackageRegex)
+				: (that.contractPackageRegex != null)) {
 			return false;
 		}
-		return this.baseClassFQN != null ? this.baseClassFQN.equals(that.baseClassFQN) : that.baseClassFQN == null;
+		return (this.baseClassFQN != null) ? this.baseClassFQN.equals(that.baseClassFQN) : (that.baseClassFQN == null);
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = this.contractPackageRegex != null ? this.contractPackageRegex.hashCode() : 0;
-		result = 31 * result + (this.baseClassFQN != null ? this.baseClassFQN.hashCode() : 0);
+		int result = (this.contractPackageRegex != null) ? this.contractPackageRegex.hashCode() : 0;
+		result = 31 * result + ((this.baseClassFQN != null) ? this.baseClassFQN.hashCode() : 0);
 		return result;
 	}
 

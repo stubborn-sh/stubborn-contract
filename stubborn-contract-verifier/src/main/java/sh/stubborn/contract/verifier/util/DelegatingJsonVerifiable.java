@@ -17,12 +17,14 @@
 package sh.stubborn.contract.verifier.util;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.toomuchcoding.jsonassert.JsonVerifiable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.text.StringEscapeUtils;
+import org.jspecify.annotations.Nullable;
+import sh.stubborn.jsonassert.JsonVerifiable;
 
 /**
  * Implementation of the {@link MethodBufferingJsonVerifiable} that contains a list of
@@ -43,7 +45,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 
 	final LinkedList<String> methodsBuffer;
 
-	final Object valueToCheck;
+	final @Nullable Object valueToCheck;
 
 	DelegatingJsonVerifiable(JsonVerifiable delegate, LinkedList<String> methodsBuffer, Object valueToCheck) {
 		this.delegate = delegate;
@@ -68,14 +70,14 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 		return stringValue.replaceAll("\"", "\\\\\"");
 	}
 
-	static String wrapValueWithQuotes(Object value) {
+	static @Nullable String wrapValueWithQuotes(Object value) {
 		if (value == null) {
 			return null;
 		}
-		return value instanceof String ? "\"" + stringWithEscapedQuotes(value) + "\"" : value.toString();
+		return (value instanceof String) ? "\"" + stringWithEscapedQuotes(value) + "\"" : value.toString();
 	}
 
-	private void appendMethodWithValue(String methodName, Object value) {
+	private void appendMethodWithValue(String methodName, @Nullable Object value) {
 		this.methodsBuffer.offer("." + methodName + "(" + value + ")");
 	}
 
@@ -96,7 +98,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 
 	@Override
 	public MethodBufferingJsonVerifiable field(Object value) {
-		Object valueToPut = value instanceof ShouldTraverse ? ((ShouldTraverse) value).value : value;
+		Object valueToPut = (value instanceof ShouldTraverse) ? ((ShouldTraverse) value).value : value;
 		Object wrappedValue = wrapInBrackets(valueToPut);
 		DelegatingJsonVerifiable verifiable = new DelegatingJsonVerifiable(this.delegate.field(wrappedValue),
 				this.methodsBuffer, value);
@@ -113,9 +115,9 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 	public MethodBufferingJsonVerifiable field(String... strings) {
 		MethodBufferingJsonVerifiable verifiable = null;
 		for (String string : strings) {
-			verifiable = verifiable == null ? field(string) : verifiable.field(string);
+			verifiable = (verifiable != null) ? verifiable.field(string) : field(string);
 		}
-		return verifiable;
+		return Objects.requireNonNull(verifiable);
 	}
 
 	@Override
@@ -205,8 +207,8 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 			readyToCheck.methodsBuffer.offer(".value()");
 		}
 		else {
-			readyToCheck.appendMethodWithValue("isEqualTo", value instanceof Long ? String.valueOf(value).concat("L")
-					: (value == null ? null : String.valueOf(value)));
+			readyToCheck.appendMethodWithValue("isEqualTo", (value instanceof Long) ? String.valueOf(value).concat("L")
+					: ((value != null) ? String.valueOf(value) : null));
 		}
 		return readyToCheck;
 	}
@@ -301,7 +303,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 	}
 
 	@Override
-	public Object valueBeforeChecking() {
+	public @Nullable Object valueBeforeChecking() {
 		return this.valueToCheck;
 	}
 

@@ -24,6 +24,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @SuppressWarnings("serial")
 public class BookReturned implements Serializable {
 
+	/**
+	 * Name of the returned book.
+	 */
 	public final String bookName;
 
 	@JsonCreator

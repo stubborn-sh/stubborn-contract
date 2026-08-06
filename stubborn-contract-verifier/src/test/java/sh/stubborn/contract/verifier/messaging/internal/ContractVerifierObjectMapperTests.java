@@ -68,7 +68,7 @@ class ContractVerifierObjectMapperTests {
 		then(result).isEqualTo("{\"foo\":\"bar\"}".getBytes());
 	}
 
-	static class MyClass {
+	public static class MyClass {
 
 		private final String foo;
 

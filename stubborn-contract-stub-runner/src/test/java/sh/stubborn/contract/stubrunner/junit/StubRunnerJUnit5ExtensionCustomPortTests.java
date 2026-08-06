@@ -54,7 +54,7 @@ class StubRunnerJUnit5ExtensionCustomPortTests {
 		try {
 			return StubRunnerJUnit5ExtensionCustomPortTests.class.getResource("/m2repo/repository/").toURI().toString();
 		}
-		catch (Exception e) {
+		catch (Exception ex) {
 			return "";
 		}
 	}

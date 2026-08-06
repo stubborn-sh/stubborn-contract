@@ -48,7 +48,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-verifier</artifactId>
+			<artifactId>stubborn-contract-starter-verifier</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -85,7 +85,7 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-spec-kotlin</artifactId>
+			<artifactId>stubborn-contract-spec-kotlin</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -105,17 +105,21 @@
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-contract-stub-runner-boot</artifactId>
+			<artifactId>stubborn-contract-stub-runner-app</artifactId>
+			<!-- Not managed by the stubborn-contract-dependencies BOM (it is a repackaged
+			     executable, excluded from Central publishing), so pin the reactor version
+			     explicitly. This module bakes the standalone stub-runner app into the image. -->
+			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-stub-runner</artifactId>
+			<artifactId>stubborn-contract-starter-stub-runner</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-starter-contract-stub-runner-jetty</artifactId>
+			<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -169,6 +173,32 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>${exec-maven-plugin.version}</version>
 				<executions>
+					<!--
+					  Maven is the single source of truth for the Docker image's versions, but
+					  project/gradle.properties carries CONCRETE values (not ${...} placeholders)
+					  because the image's Gradle build reads that file across several invocations
+					  where Maven-filtered values do not reliably reach every reader. To keep the
+					  concrete file honest, this drift check runs in the validate phase and fails
+					  the build if any of verifierVersion / springBootVersion / camelVersion in the
+					  file disagrees with the Maven-resolved project.version / spring-boot.version /
+					  camel.version.
+					-->
+					<execution>
+						<id>check-gradle-versions</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>${project.basedir}/../../scripts/docker/check-gradle-versions.sh</executable>
+							<arguments>
+								<argument>${project.basedir}/project/gradle.properties</argument>
+								<argument>${project.version}</argument>
+								<argument>${spring-boot.version}</argument>
+								<argument>${camel.version}</argument>
+							</arguments>
+						</configuration>
+					</execution>
 					<execution>
 						<id>gradle</id>
 						<phase>package</phase>

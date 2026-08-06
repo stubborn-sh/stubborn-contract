@@ -17,11 +17,17 @@
 package sh.stubborn.contract.stubrunner.spring.cloud;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.stubrunner.StubFinder;
+import sh.stubborn.contract.stubrunner.StubsMode;
+import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -34,12 +40,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
-
-import sh.stubborn.contract.stubrunner.StubFinder;
-import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
-import sh.stubborn.contract.stubrunner.StubsMode;
-import sh.stubborn.contract.stubrunner.spring.StubRunnerProperties;
-import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,8 +75,9 @@ class StubRunnerStubsPerConsumerTests {
 		this.stubFinder.trigger("return_book_for_bar");
 		Message<?> receivedMessage = this.messaging.receive("output");
 		assertThat(receivedMessage).isNotNull();
-		assertThat(receivedMessage.getPayload()).isEqualTo("{\"bookName\":\"foo_for_bar\"}".getBytes());
-		assertThat(receivedMessage.getHeaders().get("BOOK-NAME")).isEqualTo("foo_for_bar");
+		Message<?> message = Objects.requireNonNull(receivedMessage);
+		assertThat(message.getPayload()).isEqualTo("{\"bookName\":\"foo_for_bar\"}".getBytes());
+		assertThat(message.getHeaders().get("BOOK-NAME")).isEqualTo("foo_for_bar");
 	}
 
 	@Test

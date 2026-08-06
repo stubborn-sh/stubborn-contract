@@ -18,20 +18,15 @@ package sh.stubborn.contract.verifier.dsl.wiremock;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.matching.MatchResult;
 import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
-import net.javacrumbs.jsonunit.assertj.JsonAssertions;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.assertj.core.api.Assertions;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
-import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Provides custom matching for WireMock's stub requests.
@@ -83,101 +78,6 @@ public class SpringCloudContractRequestMatcher extends RequestMatcherExtension {
 	@Override
 	public String getName() {
 		return NAME;
-	}
-
-}
-
-class RequestMatcherFactory {
-
-	private final List<RequestMatcher> matchers;
-
-	RequestMatcherFactory(List<RequestMatcher> matchers) {
-		this.matchers = matchers;
-	}
-
-	RequestMatcher pick(String tool) {
-		return this.matchers.stream()
-			.filter((m) -> m.isApplicable(tool))
-			.findFirst()
-			.orElse(new NotMatchingRequestMatcher());
-	}
-
-}
-
-interface RequestMatcher {
-
-	MatchResult match(List<YamlContract> contracts, Request request, Parameters parameters);
-
-	default boolean assertThat(Runnable runnable) {
-		try {
-			runnable.run();
-			return true;
-		}
-		catch (Exception | AssertionError er) {
-			return false;
-		}
-	}
-
-	default boolean isApplicable(String tool) {
-		return false;
-	}
-
-}
-
-class NotMatchingRequestMatcher implements RequestMatcher {
-
-	@Override
-	public MatchResult match(List<YamlContract> contracts, Request request, Parameters parameters) {
-		return MatchResult.noMatch();
-	}
-
-	@Override
-	public boolean isApplicable(String tool) {
-		return true;
-	}
-
-}
-
-class GraphQlMatcher implements RequestMatcher {
-
-	static final String NAME = "graphql";
-
-	private static final Log log = LogFactory.getLog(GraphQlMatcher.class);
-
-	private final JsonMapper objectMapper = new JsonMapper();
-
-	@Override
-	public MatchResult match(List<YamlContract> contracts, Request request, Parameters parameters) {
-		YamlContract contract = contracts.get(0);
-		// TODO: What if the body is in files?
-		Map body = (Map) contract.request.body;
-		try {
-			Map jsonBodyFromContract = body;
-			Map jsonBodyFromRequest = this.objectMapper.readerForMapOf(Object.class).readValue(request.getBody());
-			String query = (String) jsonBodyFromContract.get("query");
-			String queryFromRequest = (String) jsonBodyFromRequest.get("query");
-			Map variables = (Map) jsonBodyFromContract.get("variables");
-			Map variablesFromRequest = (Map) jsonBodyFromRequest.get("variables");
-			String operationName = (String) jsonBodyFromContract.get("operationName");
-			String operationNameFromRequest = (String) jsonBodyFromRequest.get("operationName");
-			boolean queryMatches = assertThat(
-					() -> Assertions.assertThat(query).isEqualToIgnoringWhitespace(queryFromRequest));
-			boolean variablesMatch = assertThat(
-					() -> JsonAssertions.assertThatJson(variables).isEqualTo(variablesFromRequest));
-			boolean operationMatches = StringUtils.equals(operationName, operationNameFromRequest);
-			return MatchResult.of(queryMatches && variablesMatch && operationMatches);
-		}
-		catch (Exception ex) {
-			if (log.isWarnEnabled()) {
-				log.warn("An exception occurred while trying to parse the graphql entries", ex);
-			}
-			return MatchResult.noMatch();
-		}
-	}
-
-	@Override
-	public boolean isApplicable(String tool) {
-		return NAME.equals(tool);
 	}
 
 }

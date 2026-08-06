@@ -86,7 +86,7 @@ public final class HttpMethods {
 		}
 
 		public String getMethodName() {
-			return methodName;
+			return this.methodName;
 		}
 
 	}
