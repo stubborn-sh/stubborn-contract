@@ -1,0 +1,42 @@
+name: Shell Script Tests
+
+# Syntax-checks every shell script under scripts/ and runs the BATS suite that
+# covers the logic extracted out of the workflow YAMLs (changed-modules
+# detection, release version handling, docker version drift, ...). Keeping that
+# logic in scripts/ with BATS coverage is the repo convention: workflows call
+# scripts, scripts are tested here.
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/**'
+      - 'test/bats/**'
+      - '.github/workflows/script-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'scripts/**'
+      - 'test/bats/**'
+      - '.github/workflows/script-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bats:
+    name: Shell Script BATS Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+
+      - name: Install bats
+        run: sudo apt-get update && sudo apt-get install -y bats
+
+      - name: Syntax-check all scripts
+        run: find scripts -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
+
+      - name: Run BATS suite
+        run: bats test/bats
