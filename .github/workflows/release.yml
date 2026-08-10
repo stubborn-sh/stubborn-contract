@@ -88,31 +88,17 @@ jobs:
 
       - name: Tag release & push
         if: ${{ !inputs.dryRun }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "Release ${{ inputs.version }}"
-          git tag "v${{ inputs.version }}"
-          git push origin main "v${{ inputs.version }}"
+        run: scripts/release/tag-and-push.sh "${{ inputs.version }}"
 
       - name: Create GitHub Release
         if: ${{ !inputs.dryRun }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create "v${{ inputs.version }}" \
-            --title "v${{ inputs.version }}" \
-            --generate-notes
+        run: scripts/release/create-github-release.sh "${{ inputs.version }}"
 
       - name: Set next SNAPSHOT version
+        # Routed through set-release-version.sh (not a bare versions:set) so the
+        # Docker gradle.properties and parent refs stay in sync with the poms —
+        # otherwise the docker drift check fails on the next main build.
         if: ${{ !inputs.dryRun }}
-        run: |
-          ./mvnw versions:set -DnewVersion=${{ inputs.next-snapshot }} \
-            -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress
-          ./mvnw versions:set -DnewVersion=${{ inputs.next-snapshot }} \
-            -DprocessAllModules=true -DgenerateBackupPoms=false --no-transfer-progress \
-            -f stubborn-contract-build/pom.xml
-          git add -A
-          git commit -m "Back to ${{ inputs.next-snapshot }}"
-          git push origin main
+        run: scripts/release/back-to-snapshot.sh "${{ inputs.next-snapshot }}"
