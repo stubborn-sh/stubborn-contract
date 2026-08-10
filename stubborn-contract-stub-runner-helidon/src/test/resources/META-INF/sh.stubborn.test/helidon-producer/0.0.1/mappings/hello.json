@@ -1,0 +1,15 @@
+{
+  "id": "a1f0c2e4-0001-4b12-adc9-a05fcf6a4e10",
+  "request": {
+    "url": "/hello",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"greeting\":\"hello from stubborn\"}"
+  },
+  "uuid": "a1f0c2e4-0001-4b12-adc9-a05fcf6a4e10"
+}

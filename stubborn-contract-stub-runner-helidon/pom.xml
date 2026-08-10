@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-contract-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>stubborn-contract-stub-runner-helidon</artifactId>
+	<packaging>jar</packaging>
+	<name>Stubborn Contract Stub Runner Helidon</name>
+	<description>Helidon MicroProfile consumer-side stub runner integration for Stubborn Contract</description>
+	<properties>
+		<helidon.version>4.2.0</helidon.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.helidon</groupId>
+				<artifactId>helidon-bom</artifactId>
+				<version>${helidon.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-stub-runner</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!--
+		  The integration is delivered as a JUnit 5 extension, so it compiles against the
+		  Jupiter extension SPI. Consumers running @HelidonTest already bring JUnit 5, so
+		  the dependency is optional to avoid forcing a version on them.
+		-->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<!-- test -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-wiremock</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>
