@@ -42,7 +42,7 @@ cd ../consumer && ./mvnw test
 | `stubborn-contract-xmlassert` | XML assertion helpers |
 | `specs/stubborn-contract-spec-java` | Java DSL for writing contracts |
 | `specs/stubborn-contract-spec-groovy` | Groovy DSL for writing contracts |
-| `stubborn-contract-verifier` | Contract verifier core — test generator |
+| `stubborn-contract-verifier` | Contract verifier core — test generator + **Spring-free messaging abstractions** (`MessageVerifierSender<M>`/`MessageVerifierReceiver<M>`, `ContractVerifierMessage`), generic over the message type `M` |
 | `stubborn-contract-stub-runner` | Stub runner core |
 | `stubborn-contract-wiremock` | WireMock core (no Spring) |
 | `stubborn-contract-converters` | Contract format converters (YAML/Java/Groovy) |
@@ -51,7 +51,7 @@ cd ../consumer && ./mvnw test
 
 | Module | Description |
 |--------|-------------|
-| `stubborn-contract-verifier-spring` | Messaging abstractions (ContractVerifierMessage, MessageVerifierSender/Receiver) |
+| `stubborn-contract-verifier-spring` | Spring messaging **backends** that implement the core abstractions (JMS, AMQP, Camel, Spring Integration, Spring Cloud Stream, Avro/Kafka) |
 | `stubborn-contract-stub-runner-app` | Spring Framework stub runner integration |
 | `stubborn-contract-wiremock-spring` | Spring MVC/RestTemplate WireMock helpers |
 
