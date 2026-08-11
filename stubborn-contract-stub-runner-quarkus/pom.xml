@@ -16,13 +16,14 @@
 
 	<properties>
 		<!--
-		  Quarkus 3.15 is an LTS line. We deliberately do NOT import the quarkus-bom: it would
-		  re-manage transitive versions across this whole module (notably downgrading
+		  Pinned to the latest Quarkus release. We deliberately do NOT import the quarkus-bom: it
+		  would re-manage transitive versions across this whole module (notably downgrading
 		  jackson-annotations below what the stub runner's embedded WireMock requires). Since we
-		  only compile against a single Quarkus interface, pinning that one artifact's version is
-		  both sufficient and safer.
+		  only compile against a single Quarkus interface
+		  (io.quarkus.test.common.QuarkusTestResourceLifecycleManager, stable across the whole 3.x
+		  line), pinning that one artifact's version is both sufficient and safer.
 		-->
-		<quarkus.version>3.15.1</quarkus.version>
+		<quarkus.version>3.38.1</quarkus.version>
 	</properties>
 
 	<dependencies>
