@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.messaging.ContractMessage;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
@@ -85,6 +86,9 @@ public class ContractVerifierMessaging<M> {
 	}
 
 	protected @Nullable ContractVerifierMessage convert(@Nullable M receive) {
+		if (receive instanceof ContractMessage message) {
+			return new ContractVerifierMessage(message.getPayload(), message.getHeaders());
+		}
 		return new ContractVerifierMessage(receive, null);
 	}
 

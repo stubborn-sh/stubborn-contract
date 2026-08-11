@@ -16,17 +16,25 @@
 
 package sh.stubborn.messaging.kafka;
 
+import java.io.Closeable;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,58 +42,106 @@ import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
-
-class StubbornKafkaMessageVerifier implements MessageVerifierSender<Message<?>>, MessageVerifierReceiver<Message<?>> {
+/**
+ * A Spring-free {@link MessageVerifierSender}/{@link MessageVerifierReceiver} for Apache
+ * Kafka, built directly on the {@code kafka-clients}
+ * {@link KafkaProducer}/{@link KafkaConsumer}. It carries no Spring dependency (no
+ * {@code KafkaTemplate}), so it can back contract verification from any JVM runtime —
+ * plain JUnit, Quarkus, Micronaut, Helidon — as well as the Spring integration that
+ * builds on top of it.
+ *
+ * <p>
+ * String (de)serialization is used for both keys and values: contract payloads are JSON
+ * text and the generator compares them as text, so a
+ * {@link StringSerializer}/{@link StringDeserializer} pair is the faithful,
+ * transport-neutral choice. Headers are carried as UTF-8 encoded record headers.
+ *
+ * @author Marcin Grzejszczak
+ * @see ContractVerifierKafkaHelper
+ */
+public class StubbornKafkaMessageVerifier
+		implements MessageVerifierSender<KafkaMessage>, MessageVerifierReceiver<KafkaMessage>, Closeable {
 
 	private static final Logger log = LoggerFactory.getLogger(StubbornKafkaMessageVerifier.class);
 
-	@SuppressWarnings("rawtypes")
-	private final KafkaTemplate kafkaTemplate;
+	private final String bootstrapServers;
 
-	private final StubbornKafkaProperties properties;
+	private final Duration defaultReceiveTimeout;
 
-	@SuppressWarnings("rawtypes")
-	StubbornKafkaMessageVerifier(KafkaTemplate kafkaTemplate, StubbornKafkaProperties properties) {
-		this.kafkaTemplate = kafkaTemplate;
-		this.properties = properties;
+	private final Producer<String, String> producer;
+
+	/**
+	 * Creates a verifier against the given Kafka broker with a default receive timeout of
+	 * five seconds.
+	 * @param bootstrapServers the Kafka {@code bootstrap.servers} value (for example the
+	 * address of a Testcontainers Kafka broker)
+	 */
+	public StubbornKafkaMessageVerifier(String bootstrapServers) {
+		this(bootstrapServers, Duration.ofSeconds(5));
+	}
+
+	/**
+	 * Creates a verifier against the given Kafka broker.
+	 * @param bootstrapServers the Kafka {@code bootstrap.servers} value
+	 * @param defaultReceiveTimeout the timeout applied by the no-timeout {@code receive}
+	 * overloads
+	 */
+	public StubbornKafkaMessageVerifier(String bootstrapServers, Duration defaultReceiveTimeout) {
+		this.bootstrapServers = bootstrapServers;
+		this.defaultReceiveTimeout = defaultReceiveTimeout;
+		this.producer = new KafkaProducer<>(producerProperties(), new StringSerializer(), new StringSerializer());
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void send(Message<?> message, String destination, @Nullable YamlContract contract) {
-		log.info("Sending message to Kafka topic '{}': {}", destination, message.getPayload());
-		this.kafkaTemplate.send(destination, message.getPayload());
+	public void send(KafkaMessage message, String destination, @Nullable YamlContract contract) {
+		sendRecord(message.getPayload(), message.getHeaders(), destination);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 			@Nullable YamlContract contract) {
-		log.info("Sending message to Kafka topic '{}': {}", destination, payload);
-		this.kafkaTemplate.send(destination, payload);
+		sendRecord(payload, headers, destination);
+	}
+
+	private void sendRecord(@Nullable Object payload, @Nullable Map<String, Object> headers, String destination) {
+		String value = (payload != null) ? payload.toString() : null;
+		ProducerRecord<String, String> record = new ProducerRecord<>(destination, value);
+		if (headers != null) {
+			headers.forEach((key, headerValue) -> {
+				if (headerValue != null) {
+					record.headers().add(key, headerValue.toString().getBytes(StandardCharsets.UTF_8));
+				}
+			});
+		}
+		log.info("Sending message to Kafka topic '{}': {}", destination, value);
+		try {
+			this.producer.send(record).get(this.defaultReceiveTimeout.toMillis(), TimeUnit.MILLISECONDS);
+			this.producer.flush();
+		}
+		catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			throw new IllegalStateException("Interrupted while sending to Kafka topic '" + destination + "'", ex);
+		}
+		catch (Exception ex) {
+			throw new IllegalStateException("Failed to send to Kafka topic '" + destination + "'", ex);
+		}
 	}
 
 	@Override
-	public @Nullable Message<?> receive(String destination, long timeout, TimeUnit timeUnit,
+	public @Nullable KafkaMessage receive(String destination, long timeout, TimeUnit timeUnit,
 			@Nullable YamlContract contract) {
 		long timeoutMs = timeUnit.toMillis(timeout);
 		log.info("Receiving message from Kafka topic '{}' with timeout {}ms", destination, timeoutMs);
-		Properties consumerProps = buildConsumerProperties();
-		try (KafkaConsumer<String, Object> consumer = new KafkaConsumer<>(consumerProps)) {
+		try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties(),
+				new StringDeserializer(), new StringDeserializer())) {
 			consumer.subscribe(Collections.singletonList(destination));
 			long deadline = System.currentTimeMillis() + timeoutMs;
 			while (System.currentTimeMillis() < deadline) {
 				long remaining = Math.max(deadline - System.currentTimeMillis(), 100L);
-				ConsumerRecords<String, Object> records = consumer.poll(Duration.ofMillis(remaining));
-				for (ConsumerRecord<String, Object> record : records) {
+				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(remaining));
+				for (ConsumerRecord<String, String> record : records) {
 					log.info("Received message from '{}': {}", destination, record.value());
-					MessageBuilder<Object> builder = MessageBuilder.withPayload(record.value());
-					record.headers().forEach((header) -> builder.setHeader(header.key(), new String(header.value())));
-					builder.setHeaderIfAbsent("contentType", "application/json");
-					return builder.build();
+					return toMessage(record);
 				}
 			}
 		}
@@ -94,29 +150,37 @@ class StubbornKafkaMessageVerifier implements MessageVerifierSender<Message<?>>,
 	}
 
 	@Override
-	public @Nullable Message<?> receive(String destination, @Nullable YamlContract contract) {
-		return receive(destination, this.properties.getReceiveTimeout().toSeconds(), TimeUnit.SECONDS, contract);
+	public @Nullable KafkaMessage receive(String destination, @Nullable YamlContract contract) {
+		return receive(destination, this.defaultReceiveTimeout.toSeconds(), TimeUnit.SECONDS, contract);
 	}
 
-	@SuppressWarnings("unchecked")
-	private Properties buildConsumerProperties() {
-		Object bootstrapServersRaw = this.kafkaTemplate.getProducerFactory()
-			.getConfigurationProperties()
-			.getOrDefault("bootstrap.servers", "localhost:9092");
-		String bootstrapServers;
-		if (bootstrapServersRaw instanceof Collection<?> col) {
-			bootstrapServers = String.join(",", col.stream().map(Object::toString).toList());
+	private KafkaMessage toMessage(ConsumerRecord<String, String> record) {
+		Map<String, Object> headers = new LinkedHashMap<>();
+		for (Header header : record.headers()) {
+			headers.put(header.key(), new String(header.value(), StandardCharsets.UTF_8));
 		}
-		else {
-			bootstrapServers = bootstrapServersRaw.toString();
-		}
+		headers.putIfAbsent("contentType", "application/json");
+		return new KafkaMessage(record.value(), headers);
+	}
+
+	private Properties producerProperties() {
 		Properties props = new Properties();
-		props.put("bootstrap.servers", bootstrapServers);
-		props.put("group.id", "stubborn-contract-verifier-" + System.nanoTime());
-		props.put("auto.offset.reset", "earliest");
-		props.put("key.deserializer", StringDeserializer.class.getName());
-		props.put("value.deserializer", StringDeserializer.class.getName());
+		props.put("bootstrap.servers", this.bootstrapServers);
+		props.put("acks", "all");
 		return props;
+	}
+
+	private Properties consumerProperties() {
+		Properties props = new Properties();
+		props.put("bootstrap.servers", this.bootstrapServers);
+		props.put("group.id", "stubborn-contract-verifier-" + UUID.randomUUID());
+		props.put("auto.offset.reset", "earliest");
+		return props;
+	}
+
+	@Override
+	public void close() {
+		this.producer.close();
 	}
 
 }
