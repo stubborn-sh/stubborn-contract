@@ -56,8 +56,17 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * {@link StringSerializer}/{@link StringDeserializer} pair is the faithful,
  * transport-neutral choice. Headers are carried as UTF-8 encoded record headers.
  *
+ * <p>
+ * The consumer is deliberately precise so a real-broker (Testcontainers) round-trip is
+ * deterministic rather than flaky: a fresh, uniquely named consumer group is created per
+ * {@code receive} with {@code auto.offset.reset=earliest} (the message is produced before
+ * {@code receive} is called, so the consumer must be able to read from the start of the
+ * partition), auto-commit is disabled (no background offset commits to race with the
+ * poll), and {@code isolation.level=read_committed} so only fully written records are
+ * surfaced. Testcontainers topics are single-partition, so the first polled record is the
+ * earliest produced — a stable positional guarantee.
+ *
  * @author Marcin Grzejszczak
- * @see ContractVerifierKafkaHelper
  */
 public class StubbornKafkaMessageVerifier
 		implements MessageVerifierSender<KafkaMessage>, MessageVerifierReceiver<KafkaMessage>, Closeable {
@@ -173,8 +182,17 @@ public class StubbornKafkaMessageVerifier
 	private Properties consumerProperties() {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", this.bootstrapServers);
+		// Unique group per receive: never rejoin an existing group, so no committed
+		// offsets or consumer-group state can hide a freshly produced record.
 		props.put("group.id", "stubborn-contract-verifier-" + UUID.randomUUID());
+		// The record is produced before receive() runs, so the consumer must be able to
+		// read from the beginning of the partition rather than only new records.
 		props.put("auto.offset.reset", "earliest");
+		// No background offset commits to race with the poll loop; positioning is fully
+		// determined by auto.offset.reset above.
+		props.put("enable.auto.commit", "false");
+		// Only surface fully written records, never records from an aborted transaction.
+		props.put("isolation.level", "read_committed");
 		return props;
 	}
 
