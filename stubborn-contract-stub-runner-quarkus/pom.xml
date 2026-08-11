@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-contract-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>stubborn-contract-stub-runner-quarkus</artifactId>
+	<packaging>jar</packaging>
+	<name>Stubborn Contract Stub Runner Quarkus</name>
+	<description>Quarkus test-resource integration for Stubborn Contract Stub Runner (consumer side)</description>
+
+	<properties>
+		<!--
+		  Pinned to the latest Quarkus release. We deliberately do NOT import the quarkus-bom: it
+		  would re-manage transitive versions across this whole module (notably downgrading
+		  jackson-annotations below what the stub runner's embedded WireMock requires). Since we
+		  only compile against a single Quarkus interface
+		  (io.quarkus.test.common.QuarkusTestResourceLifecycleManager, stable across the whole 3.x
+		  line), pinning that one artifact's version is both sufficient and safer.
+		-->
+		<quarkus.version>3.38.1</quarkus.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-stub-runner</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!--
+		  Provides the compile-time contract io.quarkus.test.common.QuarkusTestResourceLifecycleManager
+		  (and its nested TestInjector). We only compile against the interface — the consumer's
+		  Quarkus test harness supplies the full runtime. All transitives are excluded on purpose:
+		  quarkus-test-common otherwise drags the whole Quarkus deployment/bootstrap tree (and a
+		  conflicting Jackson), none of which the adapter needs. Marked provided so it never leaks
+		  onto a consumer's classpath.
+		-->
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-test-common</artifactId>
+			<version>${quarkus.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- test -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>
