@@ -14,6 +14,10 @@
 	<name>Stubborn Contract Stub Runner Micronaut</name>
 	<description>Micronaut Test integration for Stubborn Contract Stub Runner (consumer side)</description>
 	<properties>
+		<!-- Latest Micronaut 4.x. We intentionally stay on the 4.x line: Micronaut 5.0 raised the
+		     Java baseline to 25, which would break this project's Java 17 baseline and force Java 25
+		     on every consumer. Micronaut 4.x remains supported on Java 17/21, so 4.10.x is the
+		     latest version compatible with the supported runtimes. -->
 		<micronaut.version>4.10.17</micronaut.version>
 	</properties>
 	<dependencyManagement>
