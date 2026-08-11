@@ -69,13 +69,16 @@ class StubbornKafkaMessageVerifierTests {
 	}
 
 	@Test
-	void helperExposesPayloadAndHeadersAsContractVerifierMessage() {
+	void contractVerifierMessagingPreservesPayloadAndHeadersViaContractMessage() {
 		try (StubbornKafkaMessageVerifier verifier = verifier()) {
-			ContractVerifierKafkaHelper helper = new ContractVerifierKafkaHelper(verifier, verifier);
+			// No per-transport helper: the base ContractVerifierMessaging preserves
+			// headers
+			// because KafkaMessage is a ContractMessage.
+			ContractVerifierMessaging<KafkaMessage> messaging = new ContractVerifierMessaging<>(verifier, verifier);
 
-			helper.send(helper.create("{\"id\":42}", Map.of("kafka_messageKey", "k1")), "helper-topic", null);
+			messaging.send(messaging.create("{\"id\":42}", Map.of("kafka_messageKey", "k1")), "helper-topic", null);
 
-			ContractVerifierMessage received = Objects.requireNonNull(helper.receive("helper-topic"),
+			ContractVerifierMessage received = Objects.requireNonNull(messaging.receive("helper-topic"),
 					"expected a message on 'helper-topic'");
 
 			assertThat(received.getPayload()).isEqualTo("{\"id\":42}");

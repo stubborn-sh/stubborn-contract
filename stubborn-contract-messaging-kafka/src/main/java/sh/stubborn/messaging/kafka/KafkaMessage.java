@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
+import sh.stubborn.contract.verifier.messaging.ContractMessage;
 
 /**
  * A minimal, Spring-free carrier for a Kafka record's payload and headers.
@@ -29,12 +30,14 @@ import org.jspecify.annotations.Nullable;
  * {@link StubbornKafkaMessageVerifier} (both {@code MessageVerifierSender<KafkaMessage>}
  * and {@code MessageVerifierReceiver<KafkaMessage>}), deliberately independent of
  * {@code org.springframework.messaging.Message} so the core messaging building block
- * carries no Spring dependency. {@code ContractVerifierKafkaHelper} converts it to/from
- * the generator's {@code ContractVerifierMessage}, preserving headers.
+ * carries no Spring dependency. As a {@link ContractMessage}, its payload and headers are
+ * preserved automatically when {@code ContractVerifierMessaging} converts a received
+ * record to the generator's {@code ContractVerifierMessage} — no per-transport helper
+ * required.
  *
  * @author Marcin Grzejszczak
  */
-public final class KafkaMessage {
+public final class KafkaMessage implements ContractMessage {
 
 	private final @Nullable Object payload;
 
@@ -55,6 +58,7 @@ public final class KafkaMessage {
 	 * Returns the record payload.
 	 * @return the payload, possibly {@code null}
 	 */
+	@Override
 	public @Nullable Object getPayload() {
 		return this.payload;
 	}
@@ -63,6 +67,7 @@ public final class KafkaMessage {
 	 * Returns the (defensively copied) record headers.
 	 * @return the headers, never {@code null}
 	 */
+	@Override
 	public Map<String, Object> getHeaders() {
 		return this.headers;
 	}
