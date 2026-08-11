@@ -17,11 +17,9 @@
 package sh.stubborn.contract.migration;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.properties.Assertions;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
-
-import static org.openrewrite.properties.Assertions.properties;
-import static org.openrewrite.yaml.Assertions.yaml;
 
 class MigrateStubRunnerPropertiesTests implements RewriteTest {
 
@@ -32,7 +30,7 @@ class MigrateStubRunnerPropertiesTests implements RewriteTest {
 
 	@Test
 	void renamesStubRunnerKeysInProperties() {
-		rewriteRun(properties("""
+		rewriteRun(Assertions.properties("""
 				spring.cloud.contract.stubrunner.ids=com.example:my-service:+:stubs
 				spring.cloud.contract.stubrunner.stubs-mode=LOCAL
 				spring.cloud.contract.stubrunner.repository-root=stubs://classpath:/
@@ -47,7 +45,7 @@ class MigrateStubRunnerPropertiesTests implements RewriteTest {
 	void renamesStubRunnerKeysInYaml() {
 		// ChangePropertyKey relocates the key in flattened dotted form, which Spring's
 		// relaxed binding reads identically to the nested form.
-		rewriteRun(yaml("""
+		rewriteRun(org.openrewrite.yaml.Assertions.yaml("""
 				spring:
 				  cloud:
 				    contract:
@@ -64,7 +62,7 @@ class MigrateStubRunnerPropertiesTests implements RewriteTest {
 	@Test
 	void leavesOtherSpringCloudContractPropertiesUntouched() {
 		// Only the stubrunner subset is renamed; verifier/other keys are preserved.
-		rewriteRun(properties("""
+		rewriteRun(Assertions.properties("""
 				spring.cloud.contract.verifier.base-package-for-tests=com.example.contracts
 				spring.cloud.contract.stubrunner.ids=com.example:my-service:+:stubs
 				""", """
@@ -75,7 +73,7 @@ class MigrateStubRunnerPropertiesTests implements RewriteTest {
 
 	@Test
 	void leavesUnrelatedYamlSubtreeUntouched() {
-		rewriteRun(yaml("""
+		rewriteRun(org.openrewrite.yaml.Assertions.yaml("""
 				spring:
 				  cloud:
 				    contract:
