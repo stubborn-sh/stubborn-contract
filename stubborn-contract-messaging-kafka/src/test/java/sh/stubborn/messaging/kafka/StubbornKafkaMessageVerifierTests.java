@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StubbornKafkaMessageVerifierTests {
 
 	@Container
-	private static final KafkaContainer KAFKA = new KafkaContainer(DockerImageName.parse("apache/kafka:3.9.0"));
+	private static final KafkaContainer KAFKA = new KafkaContainer(DockerImageName.parse("apache/kafka:3.8.1"));
 
 	private static StubbornKafkaMessageVerifier verifier() {
 		return new StubbornKafkaMessageVerifier(KAFKA.getBootstrapServers());
