@@ -14,7 +14,10 @@
 	<name>Stubborn Contract Stub Runner Helidon</name>
 	<description>Helidon MicroProfile consumer-side stub runner integration for Stubborn Contract</description>
 	<properties>
-		<helidon.version>4.2.0</helidon.version>
+		<!-- Latest Helidon 4.x. All of Helidon 4.x requires Java 21+; this module compiles on
+		     Java 17 only because it declares no Helidon compile/runtime dependencies (the BOM is
+		     imported for dependency management only). Consumers running @HelidonTest need Java 21+. -->
+		<helidon.version>4.5.2</helidon.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
