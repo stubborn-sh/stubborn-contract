@@ -14,6 +14,7 @@ recipeList:
   - sh.stubborn.contract.migration.UpdateMavenDependencies
   - sh.stubborn.contract.migration.UpdateGradleDependencies
   - sh.stubborn.contract.migration.RenameJavaPackages
+  - sh.stubborn.contract.migration.MigrateStubRunnerProperties
   - sh.stubborn.contract.migration.DropJUnit4Support
 
 ---
@@ -165,6 +166,31 @@ recipeList:
       oldPackageName: com.toomuchcoding.xmlassert
       newPackageName: sh.stubborn.xmlassert
       recursive: true
+
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: sh.stubborn.contract.migration.MigrateStubRunnerProperties
+displayName: Migrate deprecated Stub Runner property prefix to the canonical one
+description: >-
+  Renames the deprecated Stub Runner property prefix
+  spring.cloud.contract.stubrunner.* to its canonical stubborn.contract.stubrunner.*
+  equivalent in Spring Boot application.properties and application.yml/yaml files.
+  The legacy prefix still resolves at runtime via StubRunnerPropertiesMigrator, but it
+  emits deprecation warnings and is slated for removal in the next major release; this
+  recipe removes the warnings by rewriting the keys. Every other spring.cloud.contract.*
+  property is intentionally left untouched (only the stubrunner subset is renamed).
+tags:
+  - spring-cloud-contract
+  - stubborn-contract
+  - properties
+recipeList:
+  - org.openrewrite.properties.ChangePropertyKey:
+      oldPropertyKey: spring\.cloud\.contract\.stubrunner\.(.+)
+      newPropertyKey: stubborn.contract.stubrunner.$1
+      regex: true
+  - org.openrewrite.yaml.ChangePropertyKey:
+      oldPropertyKey: spring.cloud.contract.stubrunner
+      newPropertyKey: stubborn.contract.stubrunner
 
 ---
 type: specs.openrewrite.org/v1beta/recipe
