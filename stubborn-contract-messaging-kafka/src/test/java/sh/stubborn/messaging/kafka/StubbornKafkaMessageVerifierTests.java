@@ -27,6 +27,7 @@ import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
