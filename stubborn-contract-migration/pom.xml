@@ -44,6 +44,18 @@
 			<artifactId>rewrite-gradle</artifactId>
 			<version>${openrewrite.version}</version>
 		</dependency>
+		<!-- rewrite-properties + rewrite-yaml back the Stub Runner property-key migration
+		     (org.openrewrite.{properties,yaml}.ChangePropertyKey) in application.properties/yml. -->
+		<dependency>
+			<groupId>org.openrewrite</groupId>
+			<artifactId>rewrite-properties</artifactId>
+			<version>${openrewrite.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openrewrite</groupId>
+			<artifactId>rewrite-yaml</artifactId>
+			<version>${openrewrite.version}</version>
+		</dependency>
 		<!-- test -->
 		<dependency>
 			<groupId>org.openrewrite</groupId>
