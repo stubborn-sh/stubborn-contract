@@ -68,7 +68,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Kotlin (for stubborn-contract-extras/spec-kotlin) -->
-		<kotlin.version>2.2.21</kotlin.version>
+		<kotlin.version>2.4.10</kotlin.version>
 		<!-- Test dependencies -->
 		<archunit.version>1.4.2</archunit.version>
 
