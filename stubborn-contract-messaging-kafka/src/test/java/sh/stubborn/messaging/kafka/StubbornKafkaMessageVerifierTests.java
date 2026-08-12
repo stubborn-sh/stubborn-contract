@@ -18,6 +18,7 @@ package sh.stubborn.messaging.kafka;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -33,13 +34,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Round-trips a message through a real Kafka broker (started with Testcontainers) to
  * prove the Spring-free {@link StubbornKafkaMessageVerifier} sends and receives payload +
- * headers, and that {@link ContractVerifierKafkaHelper} surfaces both to the generator's
- * {@link ContractVerifierMessage}.
+ * headers, and that the base {@link ContractVerifierMessaging} surfaces both to the
+ * generator's {@link ContractVerifierMessage} (because {@code KafkaMessage} is a
+ * {@code ContractMessage}).
  *
  * <p>
  * This is the real-broker lane: no Spring, no mock transport — the actual
  * {@code kafka-clients} producer/consumer code path is exercised. It requires Docker, so
  * it runs in CI.
+ *
+ * <p>
+ * Each test uses a unique topic so the shared broker cannot leak a record from one test
+ * into another — the "very precise sender and receiver" property the real-broker lane
+ * relies on to stay deterministic.
  *
  * @author Marcin Grzejszczak
  */
@@ -55,13 +62,13 @@ class StubbornKafkaMessageVerifierTests {
 
 	@Test
 	void sendsAndReceivesPayloadAndHeaders() {
+		String topic = uniqueTopic("round-trip");
 		try (StubbornKafkaMessageVerifier verifier = verifier()) {
-			verifier.send(new KafkaMessage("{\"message\":\"hello\"}", Map.of("X-Custom-Header", "custom-value")),
-					"round-trip-topic", null);
+			verifier.send(new KafkaMessage("{\"message\":\"hello\"}", Map.of("X-Custom-Header", "custom-value")), topic,
+					null);
 
-			KafkaMessage received = Objects.requireNonNull(
-					verifier.receive("round-trip-topic", 15, TimeUnit.SECONDS, null),
-					"expected a message on 'round-trip-topic'");
+			KafkaMessage received = Objects.requireNonNull(verifier.receive(topic, 15, TimeUnit.SECONDS, null),
+					"expected a message on '" + topic + "'");
 
 			assertThat(received.getPayload()).isEqualTo("{\"message\":\"hello\"}");
 			assertThat(received.getHeaders()).containsEntry("X-Custom-Header", "custom-value");
@@ -70,20 +77,24 @@ class StubbornKafkaMessageVerifierTests {
 
 	@Test
 	void contractVerifierMessagingPreservesPayloadAndHeadersViaContractMessage() {
+		String topic = uniqueTopic("helper");
 		try (StubbornKafkaMessageVerifier verifier = verifier()) {
 			// No per-transport helper: the base ContractVerifierMessaging preserves
-			// headers
-			// because KafkaMessage is a ContractMessage.
+			// headers because KafkaMessage is a ContractMessage.
 			ContractVerifierMessaging<KafkaMessage> messaging = new ContractVerifierMessaging<>(verifier, verifier);
 
-			messaging.send(messaging.create("{\"id\":42}", Map.of("kafka_messageKey", "k1")), "helper-topic", null);
+			messaging.send(messaging.create("{\"id\":42}", Map.of("kafka_messageKey", "k1")), topic, null);
 
-			ContractVerifierMessage received = Objects.requireNonNull(messaging.receive("helper-topic"),
-					"expected a message on 'helper-topic'");
+			ContractVerifierMessage received = Objects.requireNonNull(messaging.receive(topic),
+					"expected a message on '" + topic + "'");
 
 			assertThat(received.getPayload()).isEqualTo("{\"id\":42}");
 			assertThat(received.getHeader("kafka_messageKey")).isEqualTo("k1");
 		}
+	}
+
+	private static String uniqueTopic(String prefix) {
+		return prefix + "-" + UUID.randomUUID();
 	}
 
 }
