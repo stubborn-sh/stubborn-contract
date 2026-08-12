@@ -66,8 +66,8 @@ class StubRunnerSpringCloudZookeeperAutoConfigurationSpec {
 
 	@BeforeAll
 	static void setupSpec() {
-		System.clearProperty("spring.cloud.contract.stubrunner.stubs.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.stubs.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.stubs.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.stubs.classifier");
 	}
 
 	@AfterAll

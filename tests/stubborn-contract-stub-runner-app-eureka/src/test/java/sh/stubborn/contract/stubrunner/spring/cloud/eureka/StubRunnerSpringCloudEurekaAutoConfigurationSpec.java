@@ -66,7 +66,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 // TODO: Speed up this test somehow (move it out of Spring Cloud Contract core to samples)
 @SpringBootTest(classes = StubRunnerSpringCloudEurekaAutoConfigurationSpec.Config.class,
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		properties = { "spring.cloud.contract.stubrunner.cloud.eureka.enabled=true",
+		properties = { "stubborn.contract.stubrunner.cloud.eureka.enabled=true",
 				"stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=false", "eureka.client.enabled=true",
 				"eureka.client.restclient.enabled=false", "eureka.client.webclient.enabled=false",
 				"eureka.client.jersey.enabled=false", "debug=true", "eureka.instance.leaseRenewalIntervalInSeconds=1",
@@ -91,10 +91,10 @@ class StubRunnerSpringCloudEurekaAutoConfigurationSpec {
 
 	@BeforeAll
 	static void setupSpec() {
-		System.clearProperty("spring.cloud.contract.stubrunner.stubs.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.stubs.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.stubs.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.stubs.classifier");
 		eurekaServer = SpringApplication.run(EurekaServer.class,
-				"--spring.cloud.contract.stubrunner.cloud.eureka.enabled=true",
+				"--stubborn.contract.stubrunner.cloud.eureka.enabled=true",
 				"--stubborn.contract.stubrunner.cloud.stubbed.discovery.enabled=false", "--eureka.client.enabled=true",
 				"--server.port=8761", "--spring.profiles.active=eureka",
 				// Fast propagation so a registered instance is discoverable within ~1-2s
@@ -108,8 +108,8 @@ class StubRunnerSpringCloudEurekaAutoConfigurationSpec {
 
 	@AfterAll
 	static void cleanupSpec() {
-		System.clearProperty("spring.cloud.contract.stubrunner.stubs.repository.root");
-		System.clearProperty("spring.cloud.contract.stubrunner.stubs.classifier");
+		System.clearProperty("stubborn.contract.stubrunner.stubs.repository.root");
+		System.clearProperty("stubborn.contract.stubrunner.stubs.classifier");
 	}
 
 	@Test
