@@ -69,6 +69,14 @@ jobs:
         run: |
           MODULES="${{ needs.detect-changes.outputs.modules }}"
           echo "Building modules: $MODULES (plus dependents)"
+          # First install the whole reactor without tests. --also-make-dependents pulls in
+          # modules that depend on the changed ones (for example stub-runner-app when a
+          # -spring-boot module changes), but neither --also-make nor
+          # --also-make-dependents builds those dependents' OWN dependencies (for example
+          # spec-kotlin). Installing every module first makes all inter-module snapshots
+          # resolvable; checkstyle/enforcer/format still run here on every module.
+          ./mvnw install -DskipTests --no-transfer-progress -q
+          # Then build and run tests for just the changed modules and their dependents.
           ./mvnw clean install --no-transfer-progress \
             --projects "$MODULES" \
             --also-make \
