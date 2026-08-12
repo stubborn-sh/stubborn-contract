@@ -33,9 +33,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Round-trips a message through a real RabbitMQ broker (started with Testcontainers) to
- * prove the Spring-free {@link StubbornRabbitMessageVerifier} sends and receives payload
- * + headers, and that the base {@link ContractVerifierMessaging} surfaces both to the
- * generator's {@link ContractVerifierMessage} (because {@code RabbitMessage} is a
+ * prove the Spring-free {@link StubbornRabbitMessageVerifierSender} and
+ * {@link StubbornRabbitMessageVerifierReceiver} send and receive payload + headers, and
+ * that the base {@link ContractVerifierMessaging} surfaces both to the generator's
+ * {@link ContractVerifierMessage} (because {@code RabbitMessage} is a
  * {@code ContractMessage}).
  *
  * <p>
@@ -44,9 +45,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Docker, so it runs in CI.
  *
  * <p>
- * Each test uses a unique queue so the shared broker cannot leak a message from one test
- * into another — the "very precise sender and receiver" property the real-broker lane
- * relies on to stay deterministic.
+ * Sender and receiver are independent objects (as they are independent beans), and each
+ * test uses a unique queue so the shared broker cannot leak a message from one test into
+ * another — the "very precise sender and receiver" property the real-broker lane relies
+ * on to stay deterministic.
  *
  * @author Marcin Grzejszczak
  */
@@ -57,18 +59,23 @@ class StubbornRabbitMessageVerifierTests {
 	private static final RabbitMQContainer RABBIT = new RabbitMQContainer(
 			DockerImageName.parse("rabbitmq:3.13-management-alpine"));
 
-	private static StubbornRabbitMessageVerifier verifier() {
-		return new StubbornRabbitMessageVerifier(RABBIT.getAmqpUrl());
+	private static StubbornRabbitMessageVerifierSender sender() {
+		return new StubbornRabbitMessageVerifierSender(RABBIT.getAmqpUrl());
+	}
+
+	private static StubbornRabbitMessageVerifierReceiver receiver() {
+		return new StubbornRabbitMessageVerifierReceiver(RABBIT.getAmqpUrl());
 	}
 
 	@Test
 	void sendsAndReceivesPayloadAndHeaders() {
 		String queue = uniqueQueue("round-trip");
-		try (StubbornRabbitMessageVerifier verifier = verifier()) {
-			verifier.send(new RabbitMessage("{\"message\":\"hello\"}", Map.of("X-Custom-Header", "custom-value")),
-					queue, null);
+		try (StubbornRabbitMessageVerifierSender sender = sender();
+				StubbornRabbitMessageVerifierReceiver receiver = receiver()) {
+			sender.send(new RabbitMessage("{\"message\":\"hello\"}", Map.of("X-Custom-Header", "custom-value")), queue,
+					null);
 
-			RabbitMessage received = Objects.requireNonNull(verifier.receive(queue, 15, TimeUnit.SECONDS, null),
+			RabbitMessage received = Objects.requireNonNull(receiver.receive(queue, 15, TimeUnit.SECONDS, null),
 					"expected a message on '" + queue + "'");
 
 			assertThat(received.getPayload()).isEqualTo("{\"message\":\"hello\"}");
@@ -79,10 +86,12 @@ class StubbornRabbitMessageVerifierTests {
 	@Test
 	void contractVerifierMessagingPreservesPayloadAndHeadersViaContractMessage() {
 		String queue = uniqueQueue("helper");
-		try (StubbornRabbitMessageVerifier verifier = verifier()) {
+		try (StubbornRabbitMessageVerifierSender sender = sender();
+				StubbornRabbitMessageVerifierReceiver receiver = receiver()) {
 			// No per-transport helper: the base ContractVerifierMessaging preserves
-			// headers because RabbitMessage is a ContractMessage.
-			ContractVerifierMessaging<RabbitMessage> messaging = new ContractVerifierMessaging<>(verifier, verifier);
+			// headers
+			// because RabbitMessage is a ContractMessage.
+			ContractVerifierMessaging<RabbitMessage> messaging = new ContractVerifierMessaging<>(sender, receiver);
 
 			messaging.send(messaging.create("{\"id\":42}", Map.of("rabbit_routingKey", "k1")), queue, null);
 
