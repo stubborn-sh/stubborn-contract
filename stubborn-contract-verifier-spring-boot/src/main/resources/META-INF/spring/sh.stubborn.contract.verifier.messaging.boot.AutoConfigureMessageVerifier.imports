@@ -4,3 +4,4 @@ sh.stubborn.contract.verifier.messaging.jms.ContractVerifierJmsConfiguration
 sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration
 sh.stubborn.contract.verifier.messaging.avro.KafkaAvroContractVerifierConfiguration
 sh.stubborn.contract.verifier.messaging.kafka.ContractVerifierKafkaConfiguration
+sh.stubborn.contract.verifier.messaging.rabbit.ContractVerifierRabbitConfiguration

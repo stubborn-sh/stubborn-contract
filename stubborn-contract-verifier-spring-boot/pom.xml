@@ -66,6 +66,13 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<!-- Spring-free RabbitMQ MessageVerifier building block; the Spring auto-config below
+			     wires it as a bean. Optional: only needed when Rabbit messaging is used. -->
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-messaging-rabbit</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-core</artifactId>
 			<optional>true</optional>
