@@ -42,7 +42,7 @@ cd ../consumer && ./mvnw test
 | `stubborn-contract-xmlassert` | XML assertion helpers |
 | `specs/stubborn-contract-spec-java` | Java DSL for writing contracts |
 | `specs/stubborn-contract-spec-groovy` | Groovy DSL for writing contracts |
-| `stubborn-contract-verifier` | Contract verifier core — test generator + **Spring-free messaging abstractions** (`MessageVerifierSender<M>`/`MessageVerifierReceiver<M>`, `ContractVerifierMessage`), generic over the message type `M` |
+| `stubborn-contract-verifier` | Contract verifier core — test generator + **Spring-free messaging abstractions** (`MessageVerifierSender<M>`/`MessageVerifierReceiver<M>`, `ContractMessage`, `MessagePayloads` for text/binary payloads), generic over the message type `M` |
 | `stubborn-contract-stub-runner` | Stub runner core |
 | `stubborn-contract-wiremock` | WireMock core (no Spring) |
 | `stubborn-contract-converters` | Contract format converters (YAML/Java/Groovy) |
@@ -79,7 +79,10 @@ cd ../consumer && ./mvnw test
 | `stubborn-contract-build` | Parent POM (no spring-cloud-build) |
 | `stubborn-contract-migration` | OpenRewrite recipes for SCC → Stubborn migration |
 | `stubborn-contract-extras` | Kotlin DSL + Gradle plugin (designed for separate repo extraction) |
-| `stubborn-contract-messaging-kafka` | Kafka messaging support |
+| `stubborn-contract-messaging-kafka` | Spring-free Kafka `MessageVerifier` building block (independent sender/receiver, text + binary payloads) |
+| `stubborn-contract-messaging-rabbit` | Spring-free RabbitMQ (AMQP) `MessageVerifier` building block |
+| `stubborn-contract-messaging-jms` | Spring-free JMS `MessageVerifier` building block |
+| `stubborn-contract-messaging-tck` | Transport-neutral messaging conformance suite (text + binary parity) run by each building block against a real broker |
 
 ## Key conventions
 
@@ -101,7 +104,7 @@ cd ../consumer && ./mvnw test
 ## External services (mock in tests)
 
 - WireMock — used as a fake HTTP server in stub runner tests
-- Testcontainers (Kafka, Artemis) — used in messaging integration tests
+- Testcontainers (Kafka, RabbitMQ, Artemis) — used in messaging integration tests; JMS conformance uses an embedded in-VM Artemis broker
 - Eureka / Consul / Zookeeper — mocked in spring-cloud tier tests
 
 ## Snapshot repo (for consumers)

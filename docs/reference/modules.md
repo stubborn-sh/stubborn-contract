@@ -56,7 +56,7 @@ added on top, never a hard requirement of the engine.
 | `stubborn-contract-spec` | Aggregator for the contract specification API. |
 | `stubborn-contract-spec-java` | Java DSL for writing contracts (`Contract.make { … }` equivalents in Java). |
 | `stubborn-contract-spec-groovy` | Groovy DSL for writing contracts. |
-| `stubborn-contract-verifier` | **Runtime / shared library** of the verifier — the contract model, converters, matchers and stub-generation logic reused at both build time and test time. |
+| `stubborn-contract-verifier` | **Runtime / shared library** of the verifier — the contract model, converters, matchers and stub-generation logic reused at both build time and test time. Also hosts the Spring-free messaging abstractions (`MessageVerifierSender` / `MessageVerifierReceiver`, `ContractMessage`, `MessagePayloads`). |
 | `stubborn-contract-generator` | **Build-time test generator.** Renders the actual test source for each contract from [Handlebars](https://github.com/jknack/handlebars.java) templates (`com.github.jknack:handlebars`) — JUnit/JVM tests by default, Spock via a dedicated renderer. |
 | `stubborn-contract-stub-runner` | Stub runner core — downloads, unpacks and serves stubs. |
 | `stubborn-contract-wiremock` | WireMock integration core (no Spring). Registers the custom matchers. |
@@ -85,7 +85,7 @@ Depends on core plus `spring-web` / `spring-messaging` only — no Spring Boot.
 
 | Module | Purpose |
 |--------|---------|
-| `stubborn-contract-verifier-spring` | Messaging abstractions: `ContractVerifierMessage`, `MessageVerifierSender` / `MessageVerifierReceiver`. |
+| `stubborn-contract-verifier-spring` | Spring messaging **backends** — JMS, AMQP, Apache Camel, Spring Integration, Spring Cloud Stream and Avro/Kafka — that implement the core `MessageVerifierSender` / `MessageVerifierReceiver` abstractions. |
 | `stubborn-contract-stub-runner-app` | Spring Framework stub-runner integration. |
 | `stubborn-contract-wiremock-spring` | Spring MVC / RestTemplate / REST Docs WireMock helpers (`WireMockRestServiceServer`, `WireMockRestDocs`, `WireMockWebTestClient`). |
 

@@ -150,9 +150,9 @@ class OrderConsumerTest {
 
 ## Messaging backends
 
-The messaging abstractions (`ContractVerifierMessage`, `MessageVerifierSender` /
-`MessageVerifierReceiver`) live in `stubborn-contract-verifier-spring`. The concrete backends
-are auto-configured by `@AutoConfigureMessageVerifier` in
+The Spring-free messaging abstractions (`MessageVerifierSender` / `MessageVerifierReceiver`,
+`ContractMessage`) live in the core `stubborn-contract-verifier` module. The concrete Spring
+backends that implement them are auto-configured by `@AutoConfigureMessageVerifier` in
 `stubborn-contract-verifier-spring-boot`:
 
 | Backend | Where |
