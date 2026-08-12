@@ -64,43 +64,43 @@ public class RunMojo extends AbstractMojo {
 	/**
 	 * HTTP port for the WireMock server that serves stubs.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.http.port", defaultValue = "8080")
+	@Parameter(property = "stubborn.contract.verifier.http.port", defaultValue = "8080")
 	private int httpPort;
 
 	/**
 	 * Set this to "true" to bypass verifier execution.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.skip", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.skip", defaultValue = "false")
 	private boolean skip;
 
 	/**
 	 * Set this to "true" to bypass verifier test generation.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.skipTestOnly", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.skipTestOnly", defaultValue = "false")
 	private boolean skipTestOnly;
 
 	/**
 	 * List of stubs to be downloaded and ran in a colon separated Ivy notation.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.stubs")
+	@Parameter(property = "stubborn.contract.verifier.stubs", defaultValue = "${spring.cloud.contract.verifier.stubs}")
 	private String stubs;
 
 	/**
 	 * Minimal port at which the stub should start.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.http.minPort", defaultValue = "10000")
+	@Parameter(property = "stubborn.contract.verifier.http.minPort", defaultValue = "10000")
 	private int minPort;
 
 	/**
 	 * Maximal port at which the stub should start.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.http.maxPort", defaultValue = "15000")
+	@Parameter(property = "stubborn.contract.verifier.http.maxPort", defaultValue = "15000")
 	private int maxPort;
 
 	/**
 	 * Should the plugin wait for the user to press the key after starting the stubs.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.wait-for-key-pressed", defaultValue = "true")
+	@Parameter(property = "stubborn.contract.verifier.wait-for-key-pressed", defaultValue = "true")
 	private boolean waitForKeyPressed;
 
 	/**
@@ -116,7 +116,8 @@ public class RunMojo extends AbstractMojo {
 	 * The server id from the Maven settings used to resolve credentials for downloading
 	 * stubs.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.server-id")
+	@Parameter(property = "stubborn.contract.verifier.server-id",
+			defaultValue = "${spring.cloud.contract.verifier.server-id}")
 	private String serverId;
 
 	@Autowired
@@ -128,7 +129,7 @@ public class RunMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (this.skip || this.skipTestOnly) {
-			getLog().info("Skipping verifier execution: spring.cloud.contract.verifier.skip=" + this.skip);
+			getLog().info("Skipping verifier execution: stubborn.contract.verifier.skip=" + this.skip);
 			return;
 		}
 		BatchStubRunner batchStubRunner = null;

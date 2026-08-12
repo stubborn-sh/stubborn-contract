@@ -50,13 +50,13 @@ public class PushStubsToScmMojo extends AbstractMojo {
 	/**
 	 * Set this to "true" to bypass the whole Verifier execution.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.skip", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.skip", defaultValue = "false")
 	private boolean skip;
 
 	/**
 	 * Set this to "true" to bypass only JAR creation.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.publish-stubs-to-scm.skip", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.publish-stubs-to-scm.skip", defaultValue = "false")
 	private boolean taskSkip;
 
 	@Parameter(defaultValue = "${project}", readonly = true)
@@ -105,8 +105,8 @@ public class PushStubsToScmMojo extends AbstractMojo {
 	@Override
 	public void execute() {
 		if (this.skip || this.taskSkip) {
-			getLog().info("Skipping Spring Cloud Contract Verifier execution: spring.cloud.contract.verifier.skip="
-					+ this.skip + ", spring.cloud.contract.verifier.publish-stubs-to-scm.skip=" + this.taskSkip);
+			getLog().info("Skipping Stubborn Contract Verifier execution: stubborn.contract.verifier.skip=" + this.skip
+					+ ", stubborn.contract.verifier.publish-stubs-to-scm.skip=" + this.taskSkip);
 			return;
 		}
 		if (!StringUtils.hasText(this.contractsRepositoryUrl)

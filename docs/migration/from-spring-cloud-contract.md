@@ -195,6 +195,23 @@ Rename your properties now to avoid the warnings:
 
 All other `spring.cloud.contract.stubrunner.*` keys follow the same pattern.
 
+### Verifier properties
+
+The Maven plugin's verifier properties and the array size-assertion system property were also
+renamed from `spring.cloud.contract.verifier.*` to `stubborn.contract.verifier.*`:
+
+| Old | New |
+|-----|-----|
+| `-Dspring.cloud.contract.verifier.stubs` | `-Dstubborn.contract.verifier.stubs` |
+| `-Dspring.cloud.contract.verifier.skip` | `-Dstubborn.contract.verifier.skip` |
+| `spring.cloud.contract.verifier.assert.size` | `stubborn.contract.verifier.assert.size` |
+
+All other `spring.cloud.contract.verifier.*` keys follow the same pattern. Plugin
+`<configuration>` blocks are unaffected (they bind by parameter name, not by property). The
+`assert.size` system property still falls back to the legacy name with a one-off deprecation
+warning, and the `MigrateVerifierProperties` OpenRewrite recipe rewrites the keys in your
+Spring Boot configuration files.
+
 ---
 
 ## 8. WireMock stubs — backward compatible

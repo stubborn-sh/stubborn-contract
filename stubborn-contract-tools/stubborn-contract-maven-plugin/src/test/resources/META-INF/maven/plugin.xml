@@ -205,7 +205,7 @@ This parameter is only used when goal is executed outside of maven project.
       </parameters>
       <configuration>
         <contractDependency implementation="org.apache.maven.model.Dependency">${contractDependency}</contractDependency>
-        <contractsDirectory implementation="java.io.File" default-value="${project.basedir}/src/test/resources/contracts">${spring.cloud.contract.verifier.contractsDirectory}</contractsDirectory>
+        <contractsDirectory implementation="java.io.File" default-value="${project.basedir}/src/test/resources/contracts">${stubborn.contract.verifier.contractsDirectory}</contractsDirectory>
         <contractsMode implementation="sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode" default-value="CLASSPATH">${contractsMode}</contractsMode>
         <contractsPath implementation="java.lang.String">${contractsPath}</contractsPath>
         <contractsProperties implementation="java.util.Map">${contractsProperties}</contractsProperties>
@@ -225,7 +225,7 @@ This parameter is only used when goal is executed outside of maven project.
         <project implementation="org.apache.maven.project.MavenProject" default-value="${project}"/>
         <repoSession implementation="org.eclipse.aether.RepositorySystemSession" default-value="${repositorySystemSession}"/>
         <session implementation="org.apache.maven.execution.MavenSession" default-value="${session}"/>
-        <skip implementation="boolean" default-value="false">${spring.cloud.contract.verifier.skip}</skip>
+        <skip implementation="boolean" default-value="false">${stubborn.contract.verifier.skip}</skip>
         <source implementation="java.io.File" default-value="${basedir}">${contractsDirectory}</source>
         <stubsDirectory implementation="java.io.File" default-value="${project.build.directory}/stubs/"/>
       </configuration>
@@ -342,13 +342,13 @@ This parameter is only used when goal is executed outside of maven project.
         <classifier implementation="java.lang.String" default-value="stubs"/>
         <failOnNoContracts implementation="boolean" default-value="true">${failOnNoContracts}</failOnNoContracts>
         <incrementalContractStubsJar implementation="boolean" default-value="true">${incrementalContractStubsJar}</incrementalContractStubsJar>
-        <jarSkip implementation="boolean" default-value="false">${spring.cloud.contract.verifier.jar.skip}</jarSkip>
+        <jarSkip implementation="boolean" default-value="false">${stubborn.contract.verifier.jar.skip}</jarSkip>
         <mojoExecution implementation="org.apache.maven.plugin.MojoExecution" default-value="${mojoExecution}"/>
         <project implementation="org.apache.maven.project.MavenProject" default-value="${project}"/>
         <projectBuildDirectory implementation="java.io.File" default-value="${project.build.directory}"/>
         <projectFinalName implementation="java.lang.String" default-value="${project.build.finalName}"/>
         <session implementation="org.apache.maven.execution.MavenSession" default-value="${session}"/>
-        <skip implementation="boolean" default-value="false">${spring.cloud.contract.verifier.skip}</skip>
+        <skip implementation="boolean" default-value="false">${stubborn.contract.verifier.skip}</skip>
         <stubsDirectory implementation="java.io.File" default-value="${project.build.directory}/stubs">${stubsDirectory}</stubsDirectory>
       </configuration>
       <requirements>
@@ -634,10 +634,10 @@ This parameter is only used when goal is executed outside of maven project.
         </parameter>
       </parameters>
       <configuration>
-        <assertJsonSize implementation="boolean" default-value="false">${spring.cloud.contract.verifier.assert.size}</assertJsonSize>
+        <assertJsonSize implementation="boolean" default-value="false">${stubborn.contract.verifier.assert.size}</assertJsonSize>
         <baseClassMappings implementation="java.util.List">${baseClassMappings}</baseClassMappings>
         <contractDependency implementation="org.apache.maven.model.Dependency">${contractDependency}</contractDependency>
-        <contractsDirectory implementation="java.io.File" default-value="${project.basedir}/src/test/resources/contracts">${spring.cloud.contract.verifier.contractsDirectory}</contractsDirectory>
+        <contractsDirectory implementation="java.io.File" default-value="${project.basedir}/src/test/resources/contracts">${stubborn.contract.verifier.contractsDirectory}</contractsDirectory>
         <contractsMode implementation="sh.stubborn.contract.stubrunner.spring.StubRunnerProperties$StubsMode" default-value="CLASSPATH">${contractsMode}</contractsMode>
         <contractsPath implementation="java.lang.String">${contractsPath}</contractsPath>
         <contractsProperties implementation="java.util.Map">${contractsProperties}</contractsProperties>
@@ -659,7 +659,7 @@ This parameter is only used when goal is executed outside of maven project.
         <project implementation="org.apache.maven.project.MavenProject" default-value="${project}"/>
         <repoSession implementation="org.eclipse.aether.RepositorySystemSession" default-value="${repositorySystemSession}"/>
         <session implementation="org.apache.maven.execution.MavenSession" default-value="${session}"/>
-        <skip implementation="boolean" default-value="false">${spring.cloud.contract.verifier.skip}</skip>
+        <skip implementation="boolean" default-value="false">${stubborn.contract.verifier.skip}</skip>
         <testFramework implementation="sh.stubborn.contract.verifier.config.TestFramework" default-value="JUNIT5"/>
         <testMode implementation="sh.stubborn.contract.verifier.config.TestMode" default-value="MOCKMVC"/>
       </configuration>
@@ -819,8 +819,8 @@ Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to displa
         <outputDirectory implementation="java.io.File" default-value="${project.build.directory}/stubs">${stubsDirectory}</outputDirectory>
         <project implementation="org.apache.maven.project.MavenProject" default-value="${project}"/>
         <projectBuildDirectory implementation="java.io.File" default-value="${project.build.directory}"/>
-        <skip implementation="boolean" default-value="false">${spring.cloud.contract.verifier.skip}</skip>
-        <taskSkip implementation="boolean" default-value="false">${spring.cloud.contract.verifier.publish-stubs-to-scm.skip}</taskSkip>
+        <skip implementation="boolean" default-value="false">${stubborn.contract.verifier.skip}</skip>
+        <taskSkip implementation="boolean" default-value="false">${stubborn.contract.verifier.publish-stubs-to-scm.skip}</taskSkip>
       </configuration>
     </mojo>
     <mojo>
@@ -933,18 +933,18 @@ Call mvn stubborn-contract:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to displa
       </parameters>
       <configuration>
         <destination implementation="java.io.File" default-value="${basedir}">${stubsDirectory}</destination>
-        <httpPort implementation="int" default-value="8080">${spring.cloud.contract.verifier.http.port}</httpPort>
+        <httpPort implementation="int" default-value="8080">${stubborn.contract.verifier.http.port}</httpPort>
         <mavenSession implementation="org.apache.maven.execution.MavenSession" default-value="${session}"/>
-        <maxPort implementation="int" default-value="15000">${spring.cloud.contract.verifier.http.maxPort}</maxPort>
-        <minPort implementation="int" default-value="10000">${spring.cloud.contract.verifier.http.minPort}</minPort>
+        <maxPort implementation="int" default-value="15000">${stubborn.contract.verifier.http.maxPort}</maxPort>
+        <minPort implementation="int" default-value="10000">${stubborn.contract.verifier.http.minPort}</minPort>
         <repoSession implementation="org.eclipse.aether.RepositorySystemSession" default-value="${repositorySystemSession}"/>
-        <serverId implementation="java.lang.String">${spring.cloud.contract.verifier.server-id}</serverId>
-        <skip implementation="boolean" default-value="false">${spring.cloud.contract.verifier.skip}</skip>
-        <skipTestOnly implementation="boolean" default-value="false">${spring.cloud.contract.verifier.skipTestOnly}</skipTestOnly>
-        <stubs implementation="java.lang.String">${spring.cloud.contract.verifier.stubs}</stubs>
+        <serverId implementation="java.lang.String">${stubborn.contract.verifier.server-id}</serverId>
+        <skip implementation="boolean" default-value="false">${stubborn.contract.verifier.skip}</skip>
+        <skipTestOnly implementation="boolean" default-value="false">${stubborn.contract.verifier.skipTestOnly}</skipTestOnly>
+        <stubs implementation="java.lang.String">${stubborn.contract.verifier.stubs}</stubs>
         <stubsClassifier implementation="java.lang.String" default-value="stubs"/>
         <stubsDirectory implementation="java.io.File" default-value="${project.build.directory}/stubs/"/>
-        <waitForKeyPressed implementation="boolean" default-value="true">${spring.cloud.contract.verifier.wait-for-key-pressed}</waitForKeyPressed>
+        <waitForKeyPressed implementation="boolean" default-value="true">${stubborn.contract.verifier.wait-for-key-pressed}</waitForKeyPressed>
       </configuration>
     </mojo>
   </mojos>

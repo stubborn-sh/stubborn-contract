@@ -120,11 +120,11 @@ Given that structure, Stubborn Contract Verifier creates a test class named `def
 
 The `generateTests` plugin goal is assigned to be invoked in the phase called `generate-test-sources`. If you want it to be part of your build process, you need not do anything. If you want only to generate tests, invoke the `generateTests` goal.
 
-If you want to run stubs from Maven, call the `run` goal with the stubs to run as the `spring.cloud.contract.verifier.stubs` system property as follows:
+If you want to run stubs from Maven, call the `run` goal with the stubs to run as the `stubborn.contract.verifier.stubs` system property as follows:
 
 ```bash
 mvn sh.stubborn:stubborn-contract-maven-plugin:run \
--Dspring.cloud.contract.verifier.stubs="com.acme:service-name"
+-Dstubborn.contract.verifier.stubs="com.acme:service-name"
 ```
 
 ## Configure Plugin

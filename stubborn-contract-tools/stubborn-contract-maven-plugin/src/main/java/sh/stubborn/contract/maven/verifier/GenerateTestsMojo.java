@@ -66,7 +66,7 @@ public class GenerateTestsMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
 	private RepositorySystemSession repoSession;
 
-	@Parameter(property = "spring.cloud.contract.verifier.contractsDirectory",
+	@Parameter(property = "stubborn.contract.verifier.contractsDirectory",
 			defaultValue = "${project.basedir}/src/test/resources/contracts")
 	private File contractsDirectory;
 
@@ -122,7 +122,7 @@ public class GenerateTestsMojo extends AbstractMojo {
 	 * Incubating feature. You can check the size of JSON arrays. If not turned on
 	 * explicitly will be disabled.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.assert.size", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.assert.size", defaultValue = "false")
 	private boolean assertJsonSize;
 
 	/**
@@ -134,7 +134,7 @@ public class GenerateTestsMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", readonly = true)
 	private MavenProject project;
 
-	@Parameter(property = "spring.cloud.contract.verifier.skip", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.skip", defaultValue = "false")
 	private boolean skip;
 
 	@Parameter(property = "maven.test.skip", defaultValue = "false")
@@ -260,12 +260,11 @@ public class GenerateTestsMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (this.skip || this.mavenTestSkip) {
 			if (this.skip) {
-				getLog().info("Skipping Spring Cloud Contract Verifier execution: spring.cloud.contract.verifier.skip="
-						+ this.skip);
+				getLog().info(
+						"Skipping Stubborn Contract Verifier execution: stubborn.contract.verifier.skip=" + this.skip);
 			}
 			if (this.mavenTestSkip) {
-				getLog()
-					.info("Skipping Spring Cloud Contract Verifier execution: maven.test.skip=" + this.mavenTestSkip);
+				getLog().info("Skipping Stubborn Contract Verifier execution: maven.test.skip=" + this.mavenTestSkip);
 			}
 			return;
 		}

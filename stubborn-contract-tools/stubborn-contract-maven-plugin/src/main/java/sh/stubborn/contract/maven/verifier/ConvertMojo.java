@@ -67,7 +67,7 @@ public class ConvertMojo extends AbstractMojo {
 	 * Directory containing Spring Cloud Contract Verifier contracts written using the
 	 * GroovyDSL.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.contractsDirectory",
+	@Parameter(property = "stubborn.contract.verifier.contractsDirectory",
 			defaultValue = "${project.basedir}/src/test/resources/contracts")
 	private File contractsDirectory;
 
@@ -89,7 +89,7 @@ public class ConvertMojo extends AbstractMojo {
 	@Parameter(property = "stubsDirectory", defaultValue = "${basedir}")
 	private File destination;
 
-	@Parameter(property = "spring.cloud.contract.verifier.skip", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.skip", defaultValue = "false")
 	private boolean skip;
 
 	@Parameter(defaultValue = "${session}", readonly = true)
@@ -202,8 +202,7 @@ public class ConvertMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
 		if (this.skip) {
 			getLog().info(String.format(
-					"Skipping Spring Cloud Contract Verifier execution: spring.cloud.contract.verifier.skip=%s",
-					this.skip));
+					"Skipping Stubborn Contract Verifier execution: stubborn.contract.verifier.skip=%s", this.skip));
 			return;
 		}
 		String groupId = this.project.getGroupId();

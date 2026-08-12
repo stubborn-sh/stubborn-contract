@@ -62,13 +62,13 @@ class DocumentationReferenceTests {
 	private static final Pattern FQCN = Pattern.compile("sh\\.stubborn(?:\\.[a-z][a-z0-9]*)+\\.[A-Z][A-Za-z0-9_]*");
 
 	/**
-	 * The deprecated stub-runner Boot property / env-var prefix that docs must no longer
-	 * teach. Scoped to {@code stubrunner} because that is the family definitively renamed
-	 * to {@code stubborn.contract.stubrunner.*}; the Maven plugin's
-	 * {@code spring.cloud.contract.verifier.*} system properties were intentionally kept.
+	 * The deprecated Boot / Maven-plugin property and env-var prefixes that docs must no
+	 * longer teach. Both the {@code stubrunner} and {@code verifier} families were
+	 * renamed to {@code stubborn.contract.*}; only the migration guide (and lines
+	 * explicitly flagged legacy/deprecated) may still mention the old form.
 	 */
 	private static final Pattern LEGACY_PREFIX = Pattern
-		.compile("spring\\.cloud\\.contract\\.stubrunner\\.|SPRING_CLOUD_CONTRACT_STUBRUNNER_");
+		.compile("spring\\.cloud\\.contract\\.(stubrunner|verifier)\\.|SPRING_CLOUD_CONTRACT_(STUBRUNNER|VERIFIER)_");
 
 	private final Path repoRoot = repoRoot();
 
