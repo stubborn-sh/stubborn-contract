@@ -17,7 +17,6 @@
 package sh.stubborn.messaging.rabbit;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,6 +29,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
 /**
@@ -43,10 +43,12 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * The {@code destination} is treated as a <strong>queue</strong>: messages are published
  * through the AMQP default exchange ({@code ""}) with the queue name as the routing key,
  * which routes straight to the queue of that name. The queue is (idempotently) declared
- * before publishing. The body is the payload's text (UTF-8); headers travel as AMQP
- * message headers, stringified so behaviour matches the Kafka and JMS building blocks
- * (the transport-neutral payload-and-headers denominator on which cross-broker parity
- * rests).
+ * before publishing. The body is the payload's wire bytes — a text payload's UTF-8 bytes
+ * or a binary {@code byte[]} verbatim, decided once by {@code MessagePayloads} — and the
+ * {@code contentType} header carries the distinction so the receiver reconstructs the
+ * same form. Headers travel as AMQP message headers, stringified so behaviour matches the
+ * Kafka and JMS building blocks (the transport-neutral payload-and-headers denominator on
+ * which cross-broker parity rests).
  *
  * <p>
  * The sender is deliberately precise so a real-broker (Testcontainers) round-trip is
@@ -112,13 +114,20 @@ public final class StubbornRabbitMessageVerifierSender extends AbstractStubbornR
 	}
 
 	private void sendMessage(@Nullable Object payload, @Nullable Map<String, Object> headers, String destination) {
-		String body = (payload != null) ? payload.toString() : "";
-		log.info("Sending message to RabbitMQ queue '{}': {}", destination, body);
+		byte[] body = MessagePayloads.toByteArray(payload);
+		Map<String, Object> outHeaders = new LinkedHashMap<>();
+		if (headers != null) {
+			outHeaders.putAll(headers);
+		}
+		// Stamp the payload's form (text vs binary) so the receiver reconstructs it as
+		// the
+		// same type; a contract-provided contentType is never overridden.
+		outHeaders.putIfAbsent(MessagePayloads.CONTENT_TYPE_HEADER, MessagePayloads.defaultContentType(payload));
+		log.info("Sending message to RabbitMQ queue '{}' ({} bytes)", destination, body.length);
 		try (Channel channel = this.connection.createChannel()) {
 			channel.queueDeclare(destination, false, false, false, null);
 			channel.confirmSelect();
-			channel.basicPublish(DEFAULT_EXCHANGE, destination, propertiesFor(headers),
-					body.getBytes(StandardCharsets.UTF_8));
+			channel.basicPublish(DEFAULT_EXCHANGE, destination, propertiesFor(outHeaders), body);
 			if (!channel.waitForConfirms(this.defaultReceiveTimeout.toMillis())) {
 				throw new IllegalStateException("RabbitMQ broker nacked the message to queue '" + destination + "'");
 			}
@@ -132,16 +141,23 @@ public final class StubbornRabbitMessageVerifierSender extends AbstractStubbornR
 		}
 	}
 
-	private static AMQP.BasicProperties propertiesFor(@Nullable Map<String, Object> headers) {
+	private static AMQP.BasicProperties propertiesFor(Map<String, Object> headers) {
 		Map<String, Object> amqpHeaders = new LinkedHashMap<>();
-		if (headers != null) {
-			headers.forEach((key, value) -> {
-				if (value != null) {
-					amqpHeaders.put(key, value.toString());
-				}
-			});
+		headers.forEach((key, value) -> {
+			if (value != null) {
+				amqpHeaders.put(key, value.toString());
+			}
+		});
+		AMQP.BasicProperties.Builder builder = new AMQP.BasicProperties.Builder().headers(amqpHeaders);
+		// Mirror the payload's content type onto the native AMQP property too; the
+		// receiver
+		// reads it back from the carried header (see
+		// StubbornRabbitMessageVerifierReceiver).
+		Object contentType = headers.get(MessagePayloads.CONTENT_TYPE_HEADER);
+		if (contentType != null) {
+			builder.contentType(contentType.toString());
 		}
-		return new AMQP.BasicProperties.Builder().contentType("application/json").headers(amqpHeaders).build();
+		return builder.build();
 	}
 
 }

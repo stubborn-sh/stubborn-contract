@@ -168,6 +168,65 @@ are auto-configured by `@AutoConfigureMessageVerifier` in
 you add the relevant Spring Boot messaging starter and Stubborn wires the rest. See
 [Modules & Architecture](./modules) for how these sit in the tier model.
 
+## Spring-free building blocks (Kafka, RabbitMQ, JMS)
+
+Underneath the Spring auto-configuration, each broker has a **Spring-free building block** — a
+`MessageVerifierSender` and a `MessageVerifierReceiver` built directly on the broker client
+(no `KafkaTemplate` / `RabbitTemplate` / `JmsTemplate`). They carry no Spring dependency, so
+the same verifier drives contract verification from **any** JVM runtime — plain JUnit, Quarkus,
+Micronaut, Helidon — and the Spring integration simply builds on top of them.
+
+| Transport | Module | Sender / Receiver |
+|-----------|--------|-------------------|
+| Kafka | `stubborn-contract-messaging-kafka` | `StubbornKafkaMessageVerifierSender` / `…Receiver` |
+| RabbitMQ | `stubborn-contract-messaging-rabbit` | `StubbornRabbitMessageVerifierSender` / `…Receiver` |
+| JMS | `stubborn-contract-messaging-jms` | `StubbornJmsMessageVerifierSender` / `…Receiver` |
+
+The sender and receiver are **independent types** (not one class implementing both), so a project
+can override just the send side or just the receive side.
+
+```java
+var sender = new StubbornKafkaMessageVerifierSender(bootstrapServers);
+var receiver = new StubbornKafkaMessageVerifierReceiver(bootstrapServers);
+
+sender.send("{\"id\":42}", Map.of("contentType", "application/json"), "orders", null);
+KafkaMessage message = receiver.receive("orders", 15, TimeUnit.SECONDS, null);
+```
+
+### Text and binary payloads
+
+A contract payload is either **text** or **binary**, and the building blocks round-trip both
+faithfully:
+
+- A **`String`** payload (JSON, XML, plain text — the common contract body compared as text) is
+  sent as text and received back as a `String`. When a contract specifies no `contentType`, the
+  building blocks default it to `application/json`.
+- A **`byte[]`** payload (an Avro or Protobuf body compared byte-for-byte) is sent verbatim and
+  received back as a `byte[]`, with **no UTF-8 round-trip** to corrupt it. When a contract
+  specifies no `contentType`, the building blocks default it to `application/octet-stream`.
+
+The `contentType` header carries the text/binary distinction across the broker, so
+`send(bytes)` reconstructs to `byte[]` and `send(text)` to `String`. On the wire each transport
+uses its native binary carrier — Kafka a byte-array value serializer, RabbitMQ the raw AMQP body,
+JMS a `BytesMessage` (versus a `TextMessage` for text). The single source of truth for this
+convention is `MessagePayloads` in `stubborn-contract-verifier`.
+
+```java
+byte[] avro = encodeAvro(order);
+sender.send(avro, Map.of(), "orders-avro", null);        // sent as application/octet-stream
+KafkaMessage message = receiver.receive("orders-avro", 15, TimeUnit.SECONDS, null);
+assert message.getPayload() instanceof byte[];           // preserved verbatim
+```
+
+### Cross-transport parity (conformance TCK)
+
+`stubborn-contract-messaging-tck` holds a single transport-neutral conformance suite,
+`AbstractMessageVerifierConformanceTests`, that Kafka, RabbitMQ and JMS each run against a **real
+broker** (Testcontainers, or an embedded in-VM broker for JMS). It locks the same behaviour for
+every transport — payload and header preservation for **both** a text (JSON) payload and a
+binary (`byte[]`) payload — so the three building blocks stay interchangeable at the
+contract-verification level.
+
 ## See also
 
 - [HTTP Contracts](./http-contracts)

@@ -115,7 +115,10 @@ Adds `spring-boot-autoconfigure` and the concrete messaging backends.
 | `stubborn-contract-tools` | Houses `stubborn-contract-maven-plugin` and `stubborn-contract-converters`. |
 | `stubborn-contract-extras` | Kotlin DSL (`stubborn-contract-spec-kotlin`) and the Gradle plugins (`stubborn-contract-gradle-plugin`, id `sh.stubborn.contract`; `stubborn-contract-gradle-portal-plugin`). Designed to be extractable to a separate repo. |
 | `stubborn-contract-migration` | [OpenRewrite recipes](../migration/from-spring-cloud-contract) for migrating from Spring Cloud Contract. |
-| `stubborn-contract-messaging-kafka` | Kafka messaging support (`sh.stubborn.messaging.kafka`). |
+| `stubborn-contract-messaging-kafka` | Spring-free Kafka `MessageVerifier` building block (`sh.stubborn.messaging.kafka`). |
+| `stubborn-contract-messaging-rabbit` | Spring-free RabbitMQ (AMQP) `MessageVerifier` building block (`sh.stubborn.messaging.rabbit`). |
+| `stubborn-contract-messaging-jms` | Spring-free JMS `MessageVerifier` building block (`sh.stubborn.messaging.jms`). |
+| `stubborn-contract-messaging-tck` | Transport-neutral messaging conformance suite (text + binary parity) run by each building block against a real broker. |
 
 ## Module boundary rules
 

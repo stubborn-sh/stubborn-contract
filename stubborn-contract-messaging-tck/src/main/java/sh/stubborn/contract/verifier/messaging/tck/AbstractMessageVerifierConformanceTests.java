@@ -35,8 +35,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * A transport-neutral conformance suite (TCK) for the Spring-free messaging building
  * blocks. It asserts that a {@code MessageVerifierSender} /
  * {@code MessageVerifierReceiver} pair round-trips a message through a <strong>real
- * broker</strong> preserving payload and headers identically, so Kafka, RabbitMQ and JMS
- * all behave the same way at the contract-verification level.
+ * broker</strong> preserving payload and headers identically — both a
+ * <strong>text</strong> (JSON) payload, surfaced as a {@code String}, and a
+ * <strong>binary</strong> ({@code byte[]}) payload, surfaced verbatim as a {@code byte[]}
+ * — so Kafka, RabbitMQ and JMS all behave the same way at the contract-verification
+ * level.
  *
  * <p>
  * Each transport provides a thin subclass supplying a broker-bound sender and receiver
@@ -52,6 +55,15 @@ public abstract class AbstractMessageVerifierConformanceTests<M extends Contract
 
 	/** A JSON payload compared as text by the generator. */
 	protected static final String JSON_PAYLOAD = "{\"id\":\"42\",\"message\":\"hello\"}";
+
+	/**
+	 * A binary payload (an Avro/Protobuf body stands in for it) deliberately containing
+	 * bytes that are <em>not</em> valid UTF-8 ({@code 0xFF}, {@code 0xFE}, {@code 0x80}),
+	 * so a text-only round-trip would corrupt them — the test fails unless bytes are
+	 * preserved verbatim.
+	 */
+	protected static final byte[] BINARY_PAYLOAD = { 0x00, 0x01, 0x02, (byte) 0xFF, (byte) 0xFE, (byte) 0x80, 'h',
+			'i' };
 
 	/** A header key valid across Kafka, RabbitMQ and JMS (a valid JMS identifier). */
 	protected static final String HEADER_KEY = "X_Custom_Header";
@@ -94,6 +106,32 @@ public abstract class AbstractMessageVerifierConformanceTests<M extends Contract
 
 			assertThat(received.getPayload()).isEqualTo(JSON_PAYLOAD);
 			assertThat(received.getHeaders()).containsEntry(HEADER_KEY, HEADER_VALUE);
+		}
+		finally {
+			closeQuietly(sender);
+			closeQuietly(receiver);
+		}
+	}
+
+	@Test
+	void sends_and_receives_binary_payload_and_headers() {
+		String destination = uniqueDestination("conformance_bin");
+		MessageVerifierSender<M> sender = sender();
+		MessageVerifierReceiver<M> receiver = receiver();
+		try {
+			sender.send(message(BINARY_PAYLOAD, Map.of(HEADER_KEY, HEADER_VALUE)), destination, null);
+
+			M received = Objects.requireNonNull(receiver.receive(destination, 15, TimeUnit.SECONDS, null),
+					"expected a message on '" + destination + "'");
+
+			// A binary payload must round-trip as a byte[] preserving every byte — never
+			// decoded to a String (which would corrupt the non-UTF-8 bytes above).
+			assertThat(received.getPayload()).isInstanceOf(byte[].class);
+			assertThat((byte[]) received.getPayload()).isEqualTo(BINARY_PAYLOAD);
+			assertThat(received.getHeaders()).containsEntry(HEADER_KEY, HEADER_VALUE);
+			// A binary payload defaults to the octet-stream content type across all
+			// transports.
+			assertThat(received.getHeaders()).containsEntry("contentType", "application/octet-stream");
 		}
 		finally {
 			closeQuietly(sender);
