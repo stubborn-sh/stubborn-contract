@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.util;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 import groovy.lang.GString;
@@ -51,7 +52,15 @@ public class JsonToJsonPathsConverter {
 	/**
 	 * System property to enable size and order assertions on arrays.
 	 */
-	private static final String SIZE_ASSERTION_SYSTEM_PROP = "spring.cloud.contract.verifier.assert.size";
+	private static final String SIZE_ASSERTION_SYSTEM_PROP = "stubborn.contract.verifier.assert.size";
+
+	/**
+	 * Deprecated system property retained for backward compatibility with Spring Cloud
+	 * Contract; superseded by {@link #SIZE_ASSERTION_SYSTEM_PROP}.
+	 */
+	private static final String LEGACY_SIZE_ASSERTION_SYSTEM_PROP = "spring.cloud.contract.verifier.assert.size";
+
+	private static final AtomicBoolean LEGACY_SIZE_ASSERTION_WARNED = new AtomicBoolean();
 
 	private static final boolean SERVER_SIDE = false;
 
@@ -217,8 +226,29 @@ public class JsonToJsonPathsConverter {
 	// ========== Helper Methods ==========
 
 	private boolean shouldUseOrderedVerification() {
-		String systemProp = System.getProperty(SIZE_ASSERTION_SYSTEM_PROP);
+		String systemProp = sizeAssertionSystemProperty();
 		return (systemProp != null && Boolean.parseBoolean(systemProp)) || this.assertJsonSize;
+	}
+
+	/**
+	 * Resolves the array size/order assertion system property, preferring the canonical
+	 * {@code stubborn.contract.verifier.assert.size} and falling back to the deprecated
+	 * {@code spring.cloud.contract.verifier.assert.size} (logging a one-off warning) so
+	 * existing Spring Cloud Contract setups keep working.
+	 * @return the resolved property value, or {@code null} if neither is set
+	 */
+	private static @Nullable String sizeAssertionSystemProperty() {
+		String current = System.getProperty(SIZE_ASSERTION_SYSTEM_PROP);
+		if (current != null) {
+			return current;
+		}
+		String legacy = System.getProperty(LEGACY_SIZE_ASSERTION_SYSTEM_PROP);
+		if (legacy != null && LEGACY_SIZE_ASSERTION_WARNED.compareAndSet(false, true)) {
+			log.warn("The '" + LEGACY_SIZE_ASSERTION_SYSTEM_PROP + "' system property is deprecated; use '"
+					+ SIZE_ASSERTION_SYSTEM_PROP + "' instead. "
+					+ "The legacy property will be removed in the next major release.");
+		}
+		return legacy;
 	}
 
 	private boolean isRootElement(MethodBufferingJsonVerifiable key) {
