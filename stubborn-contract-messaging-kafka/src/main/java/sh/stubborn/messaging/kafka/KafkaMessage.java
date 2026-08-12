@@ -27,8 +27,10 @@ import sh.stubborn.contract.verifier.messaging.ContractMessage;
  *
  * <p>
  * It is the message type {@code M} of the Spring-free
- * {@link StubbornKafkaMessageVerifier} (both {@code MessageVerifierSender<KafkaMessage>}
- * and {@code MessageVerifierReceiver<KafkaMessage>}), deliberately independent of
+ * {@link StubbornKafkaMessageVerifierSender}
+ * ({@code MessageVerifierSender<KafkaMessage>}) and
+ * {@link StubbornKafkaMessageVerifierReceiver}
+ * ({@code MessageVerifierReceiver<KafkaMessage>}), deliberately independent of
  * {@code org.springframework.messaging.Message} so the core messaging building block
  * carries no Spring dependency. As a {@link ContractMessage}, its payload and headers are
  * preserved automatically when {@code ContractVerifierMessaging} converts a received

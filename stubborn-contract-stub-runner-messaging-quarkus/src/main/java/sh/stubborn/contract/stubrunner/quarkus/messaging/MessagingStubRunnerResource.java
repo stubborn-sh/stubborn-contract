@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.stubrunner.quarkus.StubRunnerResource;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
-import sh.stubborn.messaging.kafka.StubbornKafkaMessageVerifier;
+import sh.stubborn.messaging.kafka.StubbornKafkaMessageVerifierSender;
 import sh.stubborn.messaging.rabbit.StubbornRabbitMessageVerifierSender;
 
 /**
@@ -91,7 +91,7 @@ public class MessagingStubRunnerResource extends StubRunnerResource {
 
 	private static MessageVerifierSender<?> createSender(String transport, String brokerAddress) {
 		return switch (transport) {
-			case "kafka" -> new StubbornKafkaMessageVerifier(brokerAddress);
+			case "kafka" -> new StubbornKafkaMessageVerifierSender(brokerAddress);
 			case "rabbit" -> new StubbornRabbitMessageVerifierSender(brokerAddress);
 			default -> throw new IllegalArgumentException(
 					"Unsupported '" + TRANSPORT + "' value '" + transport + "'; expected 'kafka' or 'rabbit'.");
