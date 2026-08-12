@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-contract-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>stubborn-contract-stub-runner-messaging-quarkus</artifactId>
+	<packaging>jar</packaging>
+	<name>Stubborn Contract Stub Runner Messaging Quarkus</name>
+	<description>Quarkus test-resource messaging integration for Stubborn Contract Stub Runner (consumer side, real broker)</description>
+
+	<properties>
+		<!--
+		  Pinned to the same Quarkus release as the HTTP stub-runner-quarkus module, and for the
+		  same reason: we compile only against the stable
+		  io.quarkus.test.common.QuarkusTestResourceLifecycleManager contract (via the base
+		  StubRunnerResource) and deliberately do NOT import the quarkus-bom.
+		-->
+		<quarkus.version>3.38.1</quarkus.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<!-- The HTTP Quarkus lifecycle manager we extend with messaging. -->
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-stub-runner-quarkus</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- Spring-free messaging building blocks whose senders we feed into the stub runner. -->
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-messaging-kafka</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-messaging-rabbit</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!--
+		  Compile-time contract for the QuarkusTestResourceLifecycleManager supertype of the base
+		  StubRunnerResource. Excluded transitives + provided scope, exactly like the HTTP module,
+		  so nothing leaks onto a consumer's classpath.
+		-->
+		<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-test-common</artifactId>
+			<version>${quarkus.version}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jspecify</groupId>
+			<artifactId>jspecify</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- test -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<failIfNoTests>false</failIfNoTests>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
