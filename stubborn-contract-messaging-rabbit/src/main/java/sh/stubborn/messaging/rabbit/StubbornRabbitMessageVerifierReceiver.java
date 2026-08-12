@@ -32,6 +32,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 
 /**
@@ -43,10 +44,11 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
  *
  * <p>
  * The {@code destination} is treated as a <strong>queue</strong>, declared idempotently
- * before receiving. Received bodies are decoded as UTF-8 text; AMQP message headers are
- * surfaced as message headers (decoding {@code LongString} values), with a
- * {@code contentType} of {@code application/json} added when absent, so behaviour matches
- * the Kafka and JMS building blocks.
+ * before receiving. A received body is surfaced as a {@code String} (UTF-8) or a
+ * {@code byte[]} depending on the {@code contentType} header, mirroring what was sent;
+ * AMQP message headers are surfaced as message headers (decoding {@code LongString}
+ * values), with a {@code contentType} added when absent, so behaviour matches the Kafka
+ * and JMS building blocks.
  *
  * <p>
  * The receiver is deliberately precise so a real-broker (Testcontainers) round-trip is
@@ -143,8 +145,12 @@ public final class StubbornRabbitMessageVerifierReceiver extends AbstractStubbor
 		if (amqpHeaders != null) {
 			amqpHeaders.forEach((key, value) -> headers.put(key, decodeHeaderValue(value)));
 		}
-		headers.putIfAbsent("contentType", "application/json");
-		return new RabbitMessage(new String(response.getBody(), StandardCharsets.UTF_8), headers);
+		// Reconstruct the payload in the same form it was sent (text vs binary), decided
+		// by
+		// the contentType header, then default it if the publisher supplied none.
+		Object payload = MessagePayloads.fromWire(response.getBody(), headers);
+		headers.putIfAbsent(MessagePayloads.CONTENT_TYPE_HEADER, MessagePayloads.defaultContentType(payload));
+		return new RabbitMessage(payload, headers);
 	}
 
 	private static @Nullable Object decodeHeaderValue(@Nullable Object value) {

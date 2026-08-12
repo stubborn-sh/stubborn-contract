@@ -320,7 +320,6 @@ You can also define contracts in Java:
 
 ```java
 import sh.stubborn.contract.spec.Contract;
-import sh.stubborn.contract.spec.dsl.RequestResponseContract;
 
 class ContractConfig {
     Contract contract = Contract.make(c -> {

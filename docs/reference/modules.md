@@ -56,7 +56,7 @@ added on top, never a hard requirement of the engine.
 | `stubborn-contract-spec` | Aggregator for the contract specification API. |
 | `stubborn-contract-spec-java` | Java DSL for writing contracts (`Contract.make { … }` equivalents in Java). |
 | `stubborn-contract-spec-groovy` | Groovy DSL for writing contracts. |
-| `stubborn-contract-verifier` | **Runtime / shared library** of the verifier — the contract model, converters, matchers and stub-generation logic reused at both build time and test time. |
+| `stubborn-contract-verifier` | **Runtime / shared library** of the verifier — the contract model, converters, matchers and stub-generation logic reused at both build time and test time. Also hosts the Spring-free messaging abstractions (`MessageVerifierSender` / `MessageVerifierReceiver`, `ContractMessage`, `MessagePayloads`). |
 | `stubborn-contract-generator` | **Build-time test generator.** Renders the actual test source for each contract from [Handlebars](https://github.com/jknack/handlebars.java) templates (`com.github.jknack:handlebars`) — JUnit/JVM tests by default, Spock via a dedicated renderer. |
 | `stubborn-contract-stub-runner` | Stub runner core — downloads, unpacks and serves stubs. |
 | `stubborn-contract-wiremock` | WireMock integration core (no Spring). Registers the custom matchers. |
@@ -85,7 +85,7 @@ Depends on core plus `spring-web` / `spring-messaging` only — no Spring Boot.
 
 | Module | Purpose |
 |--------|---------|
-| `stubborn-contract-verifier-spring` | Messaging abstractions: `ContractVerifierMessage`, `MessageVerifierSender` / `MessageVerifierReceiver`. |
+| `stubborn-contract-verifier-spring` | Spring messaging **backends** — JMS, AMQP, Apache Camel, Spring Integration, Spring Cloud Stream and Avro/Kafka — that implement the core `MessageVerifierSender` / `MessageVerifierReceiver` abstractions. |
 | `stubborn-contract-stub-runner-app` | Spring Framework stub-runner integration. |
 | `stubborn-contract-wiremock-spring` | Spring MVC / RestTemplate / REST Docs WireMock helpers (`WireMockRestServiceServer`, `WireMockRestDocs`, `WireMockWebTestClient`). |
 
@@ -115,7 +115,10 @@ Adds `spring-boot-autoconfigure` and the concrete messaging backends.
 | `stubborn-contract-tools` | Houses `stubborn-contract-maven-plugin` and `stubborn-contract-converters`. |
 | `stubborn-contract-extras` | Kotlin DSL (`stubborn-contract-spec-kotlin`) and the Gradle plugins (`stubborn-contract-gradle-plugin`, id `sh.stubborn.contract`; `stubborn-contract-gradle-portal-plugin`). Designed to be extractable to a separate repo. |
 | `stubborn-contract-migration` | [OpenRewrite recipes](../migration/from-spring-cloud-contract) for migrating from Spring Cloud Contract. |
-| `stubborn-contract-messaging-kafka` | Kafka messaging support (`sh.stubborn.messaging.kafka`). |
+| `stubborn-contract-messaging-kafka` | Spring-free Kafka `MessageVerifier` building block (`sh.stubborn.messaging.kafka`). |
+| `stubborn-contract-messaging-rabbit` | Spring-free RabbitMQ (AMQP) `MessageVerifier` building block (`sh.stubborn.messaging.rabbit`). |
+| `stubborn-contract-messaging-jms` | Spring-free JMS `MessageVerifier` building block (`sh.stubborn.messaging.jms`). |
+| `stubborn-contract-messaging-tck` | Transport-neutral messaging conformance suite (text + binary parity) run by each building block against a real broker. |
 
 ## Module boundary rules
 

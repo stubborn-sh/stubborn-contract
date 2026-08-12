@@ -29,7 +29,7 @@ public class OpenApiContractConverter implements ContractConverter<OpenApiDocume
 }
 ```
 
-Register via `META-INF/services/sh.stubborn.contract.verifier.converter.ContractConverter` or `@Component` (Spring Boot auto-detection).
+Register via `META-INF/services/sh.stubborn.contract.spec.ContractConverter` or `@Component` (Spring Boot auto-detection).
 
 ## Custom stub strategy
 

@@ -19,6 +19,7 @@ package sh.stubborn.messaging.kafka;
 import java.io.Closeable;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -26,11 +27,13 @@ import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
 /**
@@ -40,11 +43,22 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * as well as the Spring integration that builds on top of it.
  *
  * <p>
- * String serialization is used for both keys and values: contract payloads are JSON text
- * and the generator compares them as text, so a {@link StringSerializer} is the faithful,
- * transport-neutral choice. Headers are carried as UTF-8 encoded record headers. Sends
- * are acknowledged by all in-sync replicas ({@code acks=all}) and awaited synchronously,
- * so a real-broker round-trip is deterministic rather than flaky.
+ * A Kafka record value is <strong>always {@code byte[]}</strong> at the protocol level,
+ * so the value serializer is a {@link ByteArraySerializer} and never switched per
+ * payload. A {@link org.apache.kafka.common.serialization.StringSerializer} is not a
+ * different wire form — it is exactly {@code value.getBytes(UTF_8)} — so for a text
+ * payload the bytes we publish are byte-for-byte identical to what a
+ * {@code StringSerializer} would emit, and a downstream consumer using a
+ * {@code StringDeserializer} decodes them unchanged. This one serde therefore carries
+ * both <strong>text</strong> and <strong>binary</strong> contract payloads faithfully — a
+ * JSON body as its UTF-8 bytes, an Avro/Protobuf {@code byte[]} verbatim — with no
+ * double-encoding. The payload's form (text vs binary) is decided once by
+ * {@link MessagePayloads} and the {@code contentType} header, not the serde, is what
+ * carries it across the broker so {@link StubbornKafkaMessageVerifierReceiver}
+ * reconstructs the same type. Keys are serialized as strings; headers are carried as
+ * UTF-8 encoded record headers. Sends are acknowledged by all in-sync replicas
+ * ({@code acks=all}) and awaited synchronously, so a real-broker round-trip is
+ * deterministic rather than flaky.
  *
  * @author Marcin Grzejszczak
  */
@@ -54,7 +68,7 @@ public final class StubbornKafkaMessageVerifierSender implements MessageVerifier
 
 	private final Duration sendTimeout;
 
-	private final Producer<String, String> producer;
+	private final Producer<String, byte[]> producer;
 
 	/**
 	 * Creates a sender against the given Kafka broker with a default send timeout of five
@@ -74,7 +88,7 @@ public final class StubbornKafkaMessageVerifierSender implements MessageVerifier
 	public StubbornKafkaMessageVerifierSender(String bootstrapServers, Duration sendTimeout) {
 		this.sendTimeout = sendTimeout;
 		this.producer = new KafkaProducer<>(producerProperties(bootstrapServers), new StringSerializer(),
-				new StringSerializer());
+				new ByteArraySerializer());
 	}
 
 	@Override
@@ -89,16 +103,23 @@ public final class StubbornKafkaMessageVerifierSender implements MessageVerifier
 	}
 
 	private void sendRecord(@Nullable Object payload, @Nullable Map<String, Object> headers, String destination) {
-		String value = (payload != null) ? payload.toString() : null;
-		ProducerRecord<String, String> record = new ProducerRecord<>(destination, value);
+		byte[] value = (payload != null) ? MessagePayloads.toByteArray(payload) : null;
+		Map<String, Object> outHeaders = new LinkedHashMap<>();
 		if (headers != null) {
-			headers.forEach((key, headerValue) -> {
-				if (headerValue != null) {
-					record.headers().add(key, headerValue.toString().getBytes(StandardCharsets.UTF_8));
-				}
-			});
+			outHeaders.putAll(headers);
 		}
-		log.info("Sending message to Kafka topic '{}': {}", destination, value);
+		// Stamp the payload's form (text vs binary) so the receiver reconstructs it as
+		// the
+		// same type; a contract-provided contentType is never overridden.
+		outHeaders.putIfAbsent(MessagePayloads.CONTENT_TYPE_HEADER, MessagePayloads.defaultContentType(payload));
+		ProducerRecord<String, byte[]> record = new ProducerRecord<>(destination, value);
+		outHeaders.forEach((key, headerValue) -> {
+			if (headerValue != null) {
+				record.headers().add(key, headerValue.toString().getBytes(StandardCharsets.UTF_8));
+			}
+		});
+		log.info("Sending message to Kafka topic '{}' ({} byte value)", destination,
+				(value != null) ? value.length : 0);
 		try {
 			this.producer.send(record).get(this.sendTimeout.toMillis(), TimeUnit.MILLISECONDS);
 			this.producer.flush();

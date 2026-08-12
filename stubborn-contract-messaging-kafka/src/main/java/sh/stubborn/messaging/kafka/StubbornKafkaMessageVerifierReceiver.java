@@ -30,11 +30,13 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 
 /**
@@ -89,16 +91,17 @@ public final class StubbornKafkaMessageVerifierReceiver implements MessageVerifi
 			@Nullable YamlContract contract) {
 		long timeoutMs = timeUnit.toMillis(timeout);
 		log.info("Receiving message from Kafka topic '{}' with timeout {}ms", destination, timeoutMs);
-		try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties(),
-				new StringDeserializer(), new StringDeserializer())) {
+		try (KafkaConsumer<String, byte[]> consumer = new KafkaConsumer<>(consumerProperties(),
+				new StringDeserializer(), new ByteArrayDeserializer())) {
 			consumer.subscribe(Collections.singletonList(destination));
 			long deadline = System.currentTimeMillis() + timeoutMs;
 			while (System.currentTimeMillis() < deadline) {
 				long remaining = Math.max(deadline - System.currentTimeMillis(), 100L);
-				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(remaining));
-				for (ConsumerRecord<String, String> record : records) {
-					log.info("Received message from '{}': {}", destination, record.value());
-					return toMessage(record);
+				ConsumerRecords<String, byte[]> records = consumer.poll(Duration.ofMillis(remaining));
+				for (ConsumerRecord<String, byte[]> record : records) {
+					KafkaMessage message = toMessage(record);
+					log.info("Received message from '{}': {}", destination, message.getPayload());
+					return message;
 				}
 			}
 		}
@@ -111,13 +114,18 @@ public final class StubbornKafkaMessageVerifierReceiver implements MessageVerifi
 		return receive(destination, this.defaultReceiveTimeout.toSeconds(), TimeUnit.SECONDS, contract);
 	}
 
-	private static KafkaMessage toMessage(ConsumerRecord<String, String> record) {
+	private static KafkaMessage toMessage(ConsumerRecord<String, byte[]> record) {
 		Map<String, Object> headers = new LinkedHashMap<>();
 		for (Header header : record.headers()) {
 			headers.put(header.key(), new String(header.value(), StandardCharsets.UTF_8));
 		}
-		headers.putIfAbsent("contentType", "application/json");
-		return new KafkaMessage(record.value(), headers);
+		byte[] value = record.value();
+		// Reconstruct the payload in the same form it was sent (text vs binary), decided
+		// by
+		// the contentType header, then default it if the producer supplied none.
+		Object payload = (value != null) ? MessagePayloads.fromWire(value, headers) : null;
+		headers.putIfAbsent(MessagePayloads.CONTENT_TYPE_HEADER, MessagePayloads.defaultContentType(payload));
+		return new KafkaMessage(payload, headers);
 	}
 
 	private Properties consumerProperties() {

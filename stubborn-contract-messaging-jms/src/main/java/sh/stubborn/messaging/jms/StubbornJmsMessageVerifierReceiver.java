@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import jakarta.jms.BytesMessage;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
@@ -32,6 +33,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 
 /**
@@ -42,10 +44,11 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
  * rather than a URI.
  *
  * <p>
- * The {@code destination} is treated as a <strong>queue</strong>. Received bodies are
- * read as text; JMS string properties are surfaced as message headers, with a
- * {@code contentType} of {@code application/json} added when absent, so behaviour matches
- * the Kafka and RabbitMQ building blocks.
+ * The {@code destination} is treated as a <strong>queue</strong>. A {@code TextMessage}
+ * is read as a {@code String} and a {@code BytesMessage} as a {@code byte[]}, mirroring
+ * what was sent; JMS string properties are surfaced as message headers, with a
+ * {@code contentType} added when absent, so behaviour matches the Kafka and RabbitMQ
+ * building blocks.
  *
  * <p>
  * The receiver is deliberately precise so a real-broker round-trip is deterministic
@@ -115,8 +118,18 @@ public final class StubbornJmsMessageVerifierReceiver extends AbstractStubbornJm
 			String name = (String) names.nextElement();
 			headers.put(name, message.getStringProperty(name));
 		}
-		headers.putIfAbsent("contentType", "application/json");
-		return new JmsMessage(message.getBody(String.class), headers);
+		Object payload = extractBody(message);
+		headers.putIfAbsent(MessagePayloads.CONTENT_TYPE_HEADER, MessagePayloads.defaultContentType(payload));
+		return new JmsMessage(payload, headers);
+	}
+
+	private static Object extractBody(Message message) throws JMSException {
+		if (message instanceof BytesMessage bytesMessage) {
+			byte[] body = new byte[(int) bytesMessage.getBodyLength()];
+			bytesMessage.readBytes(body);
+			return body;
+		}
+		return message.getBody(String.class);
 	}
 
 }

@@ -112,6 +112,7 @@
 		<module>stubborn-contract-messaging-kafka</module>
 		<module>stubborn-contract-messaging-rabbit</module>
 		<module>stubborn-contract-messaging-jms</module>
+		<module>stubborn-contract-messaging-tck</module>
 		<module>stubborn-contract-jsonassert</module>
 		<module>stubborn-contract-xmlassert</module>
 		<module>tests</module>
