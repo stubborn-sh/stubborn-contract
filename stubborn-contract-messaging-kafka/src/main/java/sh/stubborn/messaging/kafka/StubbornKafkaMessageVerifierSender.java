@@ -43,14 +43,22 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * as well as the Spring integration that builds on top of it.
  *
  * <p>
- * Keys are serialized as strings; record values are serialized as raw bytes (a
- * {@link ByteArraySerializer}) so both <strong>text</strong> and <strong>binary</strong>
- * contract payloads travel faithfully — a JSON body as its UTF-8 bytes, an Avro/Protobuf
- * {@code byte[]} verbatim. The payload's form is decided once by {@link MessagePayloads}
- * and the {@code contentType} header carries it across the broker (see
- * {@link StubbornKafkaMessageVerifierReceiver}). Headers are carried as UTF-8 encoded
- * record headers. Sends are acknowledged by all in-sync replicas ({@code acks=all}) and
- * awaited synchronously, so a real-broker round-trip is deterministic rather than flaky.
+ * A Kafka record value is <strong>always {@code byte[]}</strong> at the protocol level,
+ * so the value serializer is a {@link ByteArraySerializer} and never switched per
+ * payload. A {@link org.apache.kafka.common.serialization.StringSerializer} is not a
+ * different wire form — it is exactly {@code value.getBytes(UTF_8)} — so for a text
+ * payload the bytes we publish are byte-for-byte identical to what a
+ * {@code StringSerializer} would emit, and a downstream consumer using a
+ * {@code StringDeserializer} decodes them unchanged. This one serde therefore carries
+ * both <strong>text</strong> and <strong>binary</strong> contract payloads faithfully — a
+ * JSON body as its UTF-8 bytes, an Avro/Protobuf {@code byte[]} verbatim — with no
+ * double-encoding. The payload's form (text vs binary) is decided once by
+ * {@link MessagePayloads} and the {@code contentType} header, not the serde, is what
+ * carries it across the broker so {@link StubbornKafkaMessageVerifierReceiver}
+ * reconstructs the same type. Keys are serialized as strings; headers are carried as
+ * UTF-8 encoded record headers. Sends are acknowledged by all in-sync replicas
+ * ({@code acks=all}) and awaited synchronously, so a real-broker round-trip is
+ * deterministic rather than flaky.
  *
  * @author Marcin Grzejszczak
  */
