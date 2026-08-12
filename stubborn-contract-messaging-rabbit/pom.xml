@@ -50,6 +50,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-messaging-tck</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>

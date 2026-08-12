@@ -179,6 +179,11 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-contract-messaging-tck</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-contract-converters</artifactId>
 				<version>${project.version}</version>
 			</dependency>
