@@ -103,6 +103,7 @@
 		<module>stubborn-contract-stub-runner-spring-boot</module>
 		<module>stubborn-contract-stub-runner-spring-cloud</module>
 		<module>stubborn-contract-stub-runner-quarkus</module>
+		<module>stubborn-contract-stub-runner-messaging-quarkus</module>
 		<module>stubborn-contract-starters</module>
 		<module>stubborn-contract-tools</module>
 		<module>stubborn-contract-extras</module>

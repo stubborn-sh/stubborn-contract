@@ -28,10 +28,12 @@ import sh.stubborn.contract.stubrunner.BatchStubRunner;
 import sh.stubborn.contract.stubrunner.BatchStubRunnerFactory;
 import sh.stubborn.contract.stubrunner.RunningStubs;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
+import sh.stubborn.contract.stubrunner.StubDownloader;
 import sh.stubborn.contract.stubrunner.StubDownloaderBuilderProvider;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
+import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
 /**
  * A Quarkus {@link QuarkusTestResourceLifecycleManager} that boots the Stubborn Contract
@@ -131,10 +133,15 @@ public class StubRunnerResource implements QuarkusTestResourceLifecycleManager {
 	public Map<String, String> start() {
 		StubRunnerOptions options = buildOptions();
 		StubDownloaderBuilderProvider provider = new StubDownloaderBuilderProvider();
-		// Two-arg factory defaults the message verifier to the Spring-free
-		// NoOpStubMessages,
-		// so no messaging backend is required for consumer-side HTTP stubbing.
-		this.batchStubRunner = new BatchStubRunnerFactory(options, provider.get(options)).buildBatchStubRunner();
+		StubDownloader stubDownloader = provider.get(options);
+		MessageVerifierSender<?> sender = messageVerifierSender();
+		// Without a sender the factory defaults to the Spring-free NoOpStubMessages, so
+		// consumer-side HTTP stubbing needs no messaging backend. A subclass can supply a
+		// real sender (see the messaging Quarkus module) so a triggered stub message
+		// reaches a real broker.
+		BatchStubRunnerFactory factory = (sender != null) ? new BatchStubRunnerFactory(options, stubDownloader, sender)
+				: new BatchStubRunnerFactory(options, stubDownloader);
+		this.batchStubRunner = factory.buildBatchStubRunner();
 		RunningStubs runningStubs = this.batchStubRunner.runStubs();
 		Map<String, String> config = toConfig(runningStubs);
 		log.info("Started Stubborn Contract stub runner for Quarkus. Published config: {}", config);
@@ -171,6 +178,28 @@ public class StubRunnerResource implements QuarkusTestResourceLifecycleManager {
 		Class<?> valueType = runner.getClass();
 		testInjector.injectIntoFields(runner,
 				(field) -> field.getType() != Object.class && field.getType().isAssignableFrom(valueType));
+	}
+
+	/**
+	 * Supplies the messaging {@link MessageVerifierSender} used to send contract-defined
+	 * messages when a stub is triggered. The default is {@code null}, which keeps the
+	 * consumer-side HTTP behaviour (a Spring-free no-op messaging backend). Messaging
+	 * integrations (for example the Quarkus messaging module) override this to return a
+	 * real Kafka or RabbitMQ sender built from the {@link #initArg(String) init args}.
+	 * @return the sender to use, or {@code null} for no-op messaging
+	 */
+	protected @Nullable MessageVerifierSender<?> messageVerifierSender() {
+		return null;
+	}
+
+	/**
+	 * Returns the value of the named init arg, or {@code null} if it was not supplied.
+	 * This lets a subclass read the same configuration passed to the resource.
+	 * @param key the init arg name
+	 * @return the value, or {@code null} if absent
+	 */
+	protected @Nullable String initArg(String key) {
+		return this.initArgs.get(key);
 	}
 
 	private StubRunnerOptions buildOptions() {
