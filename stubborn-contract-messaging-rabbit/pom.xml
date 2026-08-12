@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-contract-parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>stubborn-contract-messaging-rabbit</artifactId>
+	<packaging>jar</packaging>
+	<name>Stubborn Messaging Rabbit</name>
+	<description>Spring-free RabbitMQ MessageVerifier building block for Stubborn Contract messaging tests</description>
+
+	<properties>
+		<!-- Core building block: ban Spring on the compile classpath (enforced by ban-spring-in-core). -->
+		<stubborn.no-spring.skip>false</stubborn.no-spring.skip>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-verifier</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Pure-Java AMQP client (not Spring AMQP), so this stays a Spring-free core module. -->
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>amqp-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jspecify</groupId>
+			<artifactId>jspecify</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- test: a real broker via Testcontainers (round-trip verified in CI) -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>rabbitmq</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<failIfNoTests>false</failIfNoTests>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
