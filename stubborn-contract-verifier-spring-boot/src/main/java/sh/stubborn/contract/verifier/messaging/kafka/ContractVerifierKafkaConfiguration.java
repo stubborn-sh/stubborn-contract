@@ -24,7 +24,8 @@ import sh.stubborn.contract.verifier.messaging.integration.ContractVerifierInteg
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
 import sh.stubborn.messaging.kafka.KafkaMessage;
-import sh.stubborn.messaging.kafka.StubbornKafkaMessageVerifier;
+import sh.stubborn.messaging.kafka.StubbornKafkaMessageVerifierReceiver;
+import sh.stubborn.messaging.kafka.StubbornKafkaMessageVerifierSender;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -35,37 +36,46 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
 
 /**
- * Spring-on-top wiring for the Spring-free Kafka {@link StubbornKafkaMessageVerifier}. It
- * exposes the verifier as the messaging
- * {@code MessageVerifierSender}/{@code MessageVerifierReceiver} and a
+ * Spring-on-top wiring for the Spring-free Kafka sender and receiver. It exposes them as
+ * the messaging {@code MessageVerifierSender}/{@code MessageVerifierReceiver} beans and a
  * {@link ContractVerifierMessaging} bean that a {@code @AutoConfigureMessageVerifier}
- * test picks up.
+ * test picks up. Sender and receiver are registered as independent beans, each guarded by
+ * its own {@code @ConditionalOnMissingBean}, so either can be overridden without
+ * disturbing the other — matching the JMS, Camel and Spring Integration backends.
  *
  * <p>
  * The Kafka broker address is taken from the application's {@link KafkaTemplate} (which
  * Spring Boot autoconfigures from {@code spring.kafka.*} or a {@code @ServiceConnection}
  * Testcontainers Kafka), so the same test setup used with Spring Kafka keeps working —
- * only the underlying verifier is now the Spring-free, plain {@code kafka-clients}
- * implementation.
+ * only the underlying verifiers are now the Spring-free, plain {@code kafka-clients}
+ * implementations.
  *
  * @author Marcin Grzejszczak
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({ KafkaTemplate.class, StubbornKafkaMessageVerifier.class })
+@ConditionalOnClass({ KafkaTemplate.class, StubbornKafkaMessageVerifierSender.class })
 @ConditionalOnProperty(name = "stubborn.contract.stubrunner.kafka.enabled", havingValue = "true", matchIfMissing = true)
 @AutoConfigureBefore({ ContractVerifierIntegrationConfiguration.class, NoOpContractVerifierAutoConfiguration.class })
 public class ContractVerifierKafkaConfiguration {
 
 	@Bean(destroyMethod = "close")
-	@ConditionalOnMissingBean({ MessageVerifierSender.class, MessageVerifierReceiver.class })
-	StubbornKafkaMessageVerifier stubbornKafkaMessageVerifier(KafkaTemplate<String, Object> kafkaTemplate) {
-		return new StubbornKafkaMessageVerifier(resolveBootstrapServers(kafkaTemplate));
+	@ConditionalOnMissingBean(MessageVerifierSender.class)
+	StubbornKafkaMessageVerifierSender stubbornKafkaMessageVerifierSender(KafkaTemplate<String, Object> kafkaTemplate) {
+		return new StubbornKafkaMessageVerifierSender(resolveBootstrapServers(kafkaTemplate));
+	}
+
+	@Bean(destroyMethod = "close")
+	@ConditionalOnMissingBean(MessageVerifierReceiver.class)
+	StubbornKafkaMessageVerifierReceiver stubbornKafkaMessageVerifierReceiver(
+			KafkaTemplate<String, Object> kafkaTemplate) {
+		return new StubbornKafkaMessageVerifierReceiver(resolveBootstrapServers(kafkaTemplate));
 	}
 
 	@Bean
 	@ConditionalOnMissingBean(ContractVerifierMessaging.class)
-	ContractVerifierMessaging<KafkaMessage> contractVerifierKafkaMessaging(StubbornKafkaMessageVerifier verifier) {
-		return new ContractVerifierMessaging<>(verifier, verifier);
+	ContractVerifierMessaging<KafkaMessage> contractVerifierKafkaMessaging(MessageVerifierSender<KafkaMessage> sender,
+			MessageVerifierReceiver<KafkaMessage> receiver) {
+		return new ContractVerifierMessaging<>(sender, receiver);
 	}
 
 	private static String resolveBootstrapServers(KafkaTemplate<String, Object> kafkaTemplate) {
