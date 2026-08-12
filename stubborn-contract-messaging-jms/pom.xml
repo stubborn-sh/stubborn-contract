@@ -38,15 +38,17 @@
 			<artifactId>jspecify</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- test: an embedded, in-VM ActiveMQ Artemis broker (round-trip verified in CI, no Docker) -->
+		<!-- test: an embedded, in-VM ActiveMQ Artemis broker (round-trip verified in CI, no Docker).
+		     artemis-server is the namespace-neutral broker core (EmbeddedActiveMQ); the client is the
+		     jakarta.jms variant (artemis-jakarta-client), matching this module's jakarta.jms API. -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>artemis-jms-server</artifactId>
+			<artifactId>artemis-server</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>artemis-jms-client</artifactId>
+			<artifactId>artemis-jakarta-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
