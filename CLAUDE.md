@@ -89,7 +89,7 @@ cd ../consumer && ./mvnw test
 - **Core modules MUST NOT import Spring.** Maven Enforcer (`ban-spring-in-core`) and ArchUnit (`CoreModuleArchTest`) both gate this.
 - **Use SLF4J (`org.slf4j.Logger/LoggerFactory`) in core modules,** not `org.apache.commons.logging`.
 - **Spring Java Format must pass** before committing. Run `./mvnw spring-javaformat:apply` after every Java edit.
-- **`spring.cloud.contract.*` Boot properties are NOT renamed** — preserved for backward compatibility.
+- **Stub-runner Boot properties were renamed to `stubborn.contract.stubrunner.*`.** The legacy `spring.cloud.contract.stubrunner.*` prefix still binds via `StubRunnerPropertiesMigrator` (deprecated, logs a warning) — keep that shim working.
 - **Existing SCC 5.x WireMock stubs work without modification** — `spring-cloud-contract` matcher alias is registered.
 
 ## Module boundary rules

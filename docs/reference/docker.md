@@ -115,7 +115,7 @@ $ docker run  --rm \
   -e "REPO_WITH_BINARIES_URL=${ARTIFACTORY_URL}" \
   -e "PROJECT_VERSION=${PROJECT_VERSION}" \
   -v "${CURRENT_DIR}/contracts/:/contracts:ro" \
-  -v "${CURRENT_DIR}/node_modules/spring-cloud-contract/output:/stubborn-contract-output/" \
+  -v "${CURRENT_DIR}/node_modules/stubborn-contract/output:/stubborn-contract-output/" \
   mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 # Kill app
@@ -131,7 +131,7 @@ Through bash scripts, the following happens:
 - The NodeJS application is started (on port `3000`).
 - The contract tests are generated through Docker, and tests are run against the running application.
   - The contracts are taken from `/contracts` folder.
-  - The output of the test is available under `node_modules/spring-cloud-contract/output`.
+  - The output of the test is available under `node_modules/stubborn-contract/output`.
 - The stubs are uploaded to Artifactory. You can find them in `http://localhost:8081/artifactory/libs-release-local/com/example/bookstore/0.0.1.RELEASE/`.
 
 ### Example of Usage via Messaging
@@ -289,7 +289,7 @@ docker run  --rm \
     -e "EXTERNAL_CONTRACTS_ARTIFACT_ID=${PROJECT_NAME}" \
     -e "EXTERNAL_CONTRACTS_GROUP_ID=${PROJECT_GROUP}" \
     -e "EXTERNAL_CONTRACTS_VERSION=${PROJECT_VERSION}" \
-    -v "${CURRENT_DIR}/build/spring-cloud-contract/output:/stubborn-contract-output/" \
+    -v "${CURRENT_DIR}/build/stubborn-contract/output:/stubborn-contract-output/" \
     mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 kill $APP_PID
@@ -310,7 +310,7 @@ Since the Stubborn Contract Stub Runner Docker Image uses the standalone version
 
 ### Environment Variables
 
-You can run the docker image and pass any of the common properties for JUnit and Spring as environment variables. The convention is that all the letters should be upper case. The dot (`.`) should be replaced with underscore (`_`) characters. For example, the `spring.cloud.contract.stubrunner.repositoryRoot` property should be represented as a `SPRING_CLOUD_CONTRACT_STUBRUNNER_REPOSITORY_ROOT` environment variable.
+You can run the docker image and pass any of the common properties for JUnit and Spring as environment variables. The convention is that all the letters should be upper case. The dot (`.`) should be replaced with underscore (`_`) characters. For example, the `stubborn.contract.stubrunner.repositoryRoot` property should be represented as a `STUBBORN_CONTRACT_STUBRUNNER_REPOSITORY_ROOT` environment variable. (The legacy `SPRING_CLOUD_CONTRACT_STUBRUNNER_*` form still binds via the deprecated property migrator, but `STUBBORN_CONTRACT_STUBRUNNER_*` is the canonical prefix.)
 
 In addition to those variables you can set the following ones:
 
@@ -333,9 +333,9 @@ $ STUBRUNNER_IDS="com.example:bookstore:0.0.1.RELEASE:stubs:9876"
 $ STUBRUNNER_REPOSITORY_ROOT="http://${APP_IP}:8081/artifactory/libs-release-local"
 # Run the docker with Stub Runner Boot
 $ docker run  --rm \
-    -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_IDS=${STUBRUNNER_IDS}" \
-    -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_REPOSITORY_ROOT=${STUBRUNNER_REPOSITORY_ROOT}" \
-    -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_STUBS_MODE=REMOTE" \
+    -e "STUBBORN_CONTRACT_STUBRUNNER_IDS=${STUBRUNNER_IDS}" \
+    -e "STUBBORN_CONTRACT_STUBRUNNER_REPOSITORY_ROOT=${STUBRUNNER_REPOSITORY_ROOT}" \
+    -e "STUBBORN_CONTRACT_STUBRUNNER_STUBS_MODE=REMOTE" \
     -p "${STUBRUNNER_PORT}:${STUBRUNNER_PORT}" \
     -p "9876:9876" \
     mgrzejszczak/stubborn-contract-stub-runner:"${SC_CONTRACT_DOCKER_VERSION}"
@@ -435,7 +435,7 @@ docker run  --rm \
     -e "EXTERNAL_CONTRACTS_ARTIFACT_ID=application" \
     -e "EXTERNAL_CONTRACTS_GROUP_ID=group" \
     -e "EXTERNAL_CONTRACTS_VERSION=0.0.1-SNAPSHOT" \
-    -v "${CURRENT_DIR}/build/spring-cloud-contract/output:/stubborn-contract-output/" \
+    -v "${CURRENT_DIR}/build/stubborn-contract/output:/stubborn-contract-output/" \
     mgrzejszczak/stubborn-contract:"${SC_CONTRACT_DOCKER_VERSION}"
 
 # Teardown
@@ -455,10 +455,10 @@ In order to trigger a stub message against running middleware, we can run Stub R
 ```bash
 $ docker run \
     -e "CAMEL_COMPONENT_RABBITMQ_ADDRESSES=172.18.0.1:5672" \ # (1)
-    -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_IDS=group:application:0.0.1-SNAPSHOT" \ # (2)
-    -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_REPOSITORY_ROOT=git://https://github.com/marcingrzejszczak/cdct_python_contracts.git" \ # (3)
+    -e "STUBBORN_CONTRACT_STUBRUNNER_IDS=group:application:0.0.1-SNAPSHOT" \ # (2)
+    -e "STUBBORN_CONTRACT_STUBRUNNER_REPOSITORY_ROOT=git://https://github.com/marcingrzejszczak/cdct_python_contracts.git" \ # (3)
     -e ADDITIONAL_OPTS="--thin.properties.dependencies.rabbitmq=org.apache.camel.springboot:camel-rabbitmq-starter:3.4.0" \ # (4)
-    -e "SPRING_CLOUD_CONTRACT_STUBRUNNER_STUBS_MODE=REMOTE" \ # (5)
+    -e "STUBBORN_CONTRACT_STUBRUNNER_STUBS_MODE=REMOTE" \ # (5)
     -v "${HOME}/.m2/:/home/scc/.m2:rw" \ # (6)
     -p 8750:8750 \ # (7)
     mgrzejszczak/stubborn-contract-stub-runner:latest # (8)
