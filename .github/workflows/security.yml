@@ -46,7 +46,7 @@ jobs:
 
       # Cache the NVD vulnerability database so runs after the first are fast.
       - name: Cache dependency-check data
-        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
           key: dependency-check-data-${{ runner.os }}-${{ github.run_id }}
