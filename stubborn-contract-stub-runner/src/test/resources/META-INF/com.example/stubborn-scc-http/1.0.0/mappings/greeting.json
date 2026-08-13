@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/greeting"
+  },
+  "response": {
+    "status": 200,
+    "body": "hello from the installed stubs jar",
+    "headers": {
+      "Content-Type": "text/plain"
+    }
+  }
+}

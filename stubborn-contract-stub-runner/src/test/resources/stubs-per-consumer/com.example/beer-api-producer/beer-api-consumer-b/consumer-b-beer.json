@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/beer-for-consumer-b"
+  },
+  "response": {
+    "status": 200,
+    "body": "beer for consumer b"
+  }
+}
