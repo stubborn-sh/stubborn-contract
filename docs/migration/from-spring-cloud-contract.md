@@ -29,9 +29,12 @@ The fastest path is to run the OpenRewrite recipe that automates steps 1–4 bel
   -Drewrite.activeRecipes=sh.stubborn.contract.migration.MigrateFromSpringCloudContract
 ```
 
-This composite recipe (`sh.stubborn.contract.migration.MigrateFromSpringCloudContract`) applies three sub-recipes:
-- `sh.stubborn.contract.migration.UpdateMavenDependencies` — replaces `org.springframework.cloud:spring-cloud-contract-*` GAVs (dependencies, the managed BOM, and the build plugin) with their `sh.stubborn:stubborn-*` equivalents
+This composite recipe (`sh.stubborn.contract.migration.MigrateFromSpringCloudContract`) applies six sub-recipes:
+- `sh.stubborn.contract.migration.UpdateMavenDependencies` — replaces `org.springframework.cloud:spring-cloud-contract-*` GAVs (dependencies, the managed BOM, and the Maven plugin) with their `sh.stubborn:stubborn-*` equivalents
+- `sh.stubborn.contract.migration.UpdateGradleDependencies` — the same coordinate and plugin-id swaps for Gradle builds (Groovy and Kotlin DSL)
 - `sh.stubborn.contract.migration.RenameJavaPackages` — renames `org.springframework.cloud.contract` → `sh.stubborn.contract`, and the assertion packages `com.toomuchcoding.jsonassert` → `sh.stubborn.jsonassert` and `com.toomuchcoding.xmlassert` → `sh.stubborn.xmlassert`
+- `sh.stubborn.contract.migration.MigrateStubRunnerProperties` — renames `spring.cloud.contract.stubrunner.*` configuration keys to `stubborn.contract.stubrunner.*`
+- `sh.stubborn.contract.migration.MigrateVerifierProperties` — renames `spring.cloud.contract.verifier.*` configuration keys to `stubborn.contract.verifier.*`
 - `sh.stubborn.contract.migration.DropJUnit4Support` — changes `StubRunnerRule` / `StubRunnerClassRule` (JUnit 4) to `StubRunnerExtension` (JUnit 5)
 
 After running, verify the changes and complete any remaining manual steps below.
