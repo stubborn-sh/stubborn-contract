@@ -116,7 +116,7 @@ class ClasspathStubResourceScanner {
 	}
 
 	private List<StubResource> walkDirectory(Path root, Path dir, String globPattern) throws IOException {
-		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + globPattern);
+		List<PathMatcher> matchers = toMatchers(globPattern);
 		List<StubResource> found = new ArrayList<>();
 		if (!Files.isDirectory(dir)) {
 			return found;
@@ -125,7 +125,7 @@ class ClasspathStubResourceScanner {
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 				Path relative = root.relativize(file);
-				if (matcher.matches(relative) || matcher.matches(file)) {
+				if (matchesAny(matchers, relative, file)) {
 					found.add(pathToResource(file));
 				}
 				return FileVisitResult.CONTINUE;
@@ -144,14 +144,14 @@ class ClasspathStubResourceScanner {
 
 	private List<StubResource> scanJar(String jarPath, String globPattern) {
 		List<StubResource> result = new ArrayList<>();
-		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + globPattern);
+		List<PathMatcher> matchers = toMatchers(globPattern);
 		try (JarFile jar = new JarFile(jarPath.replace("file:", ""))) {
 			Enumeration<JarEntry> entries = jar.entries();
 			while (entries.hasMoreElements()) {
 				JarEntry entry = entries.nextElement();
 				if (!entry.isDirectory()) {
 					Path entryPath = Path.of(entry.getName());
-					if (matcher.matches(entryPath)) {
+					if (matchesAny(matchers, entryPath)) {
 						URL url = new URL("jar:file:" + jar.getName() + "!/" + entry.getName());
 						result.add(urlToResource(url, entry.getName()));
 					}
@@ -211,6 +211,48 @@ class ClasspathStubResourceScanner {
 
 	private static String toGlob(String subPattern) {
 		return subPattern.startsWith("/") ? subPattern.substring(1) : subPattern;
+	}
+
+	/**
+	 * Builds the path matchers for a glob, emulating Spring's {@code AntPathMatcher}
+	 * semantics where {@code **} matches <em>zero</em> or more path segments.
+	 *
+	 * <p>
+	 * Java NIO's glob treats a {@code **} that is followed by a separator as matching
+	 * <em>at least one</em> segment, so a pattern such as
+	 * {@code contracts/com.example/artifact/}{@code **}{@code /*.*} would miss a stub
+	 * placed directly under {@code contracts/com.example/artifact/} — the exact layout
+	 * Spring Cloud Contract stubs are published in. To keep that layout resolvable (and
+	 * stay compatible with SCC), a second "collapsed" glob is added in which every
+	 * {@code **} segment is elided, covering the zero-directory case.
+	 * @param globPattern the original glob
+	 * @return one matcher for the original glob and, when it contains {@code **}, one
+	 * more for the collapsed (zero-directory) variant
+	 */
+	private static List<PathMatcher> toMatchers(String globPattern) {
+		List<String> globs = new ArrayList<>(2);
+		globs.add(globPattern);
+		String collapsed = globPattern.startsWith("**/") ? globPattern.substring("**/".length()) : globPattern;
+		collapsed = collapsed.replace("/**/", "/");
+		if (!collapsed.equals(globPattern)) {
+			globs.add(collapsed);
+		}
+		List<PathMatcher> matchers = new ArrayList<>(globs.size());
+		for (String glob : globs) {
+			matchers.add(FileSystems.getDefault().getPathMatcher("glob:" + glob));
+		}
+		return matchers;
+	}
+
+	private static boolean matchesAny(List<PathMatcher> matchers, Path... paths) {
+		for (PathMatcher matcher : matchers) {
+			for (Path path : paths) {
+				if (matcher.matches(path)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private static StubResource pathToResource(Path path) {

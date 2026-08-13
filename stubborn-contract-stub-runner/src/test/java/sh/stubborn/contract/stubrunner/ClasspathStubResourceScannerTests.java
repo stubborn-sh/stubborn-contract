@@ -79,6 +79,60 @@ class ClasspathStubResourceScannerTests {
 	}
 
 	@Test
+	void doubleStarMatchesFileDirectlyUnderTheDirectory(@TempDir Path dir) throws IOException {
+		// Spring Cloud Contract publishes stubs as contracts/<group>/<artifact>/<file>,
+		// i.e.
+		// the contract can sit directly under the artifact folder. Spring's
+		// AntPathMatcher
+		// treats the "**" in ".../**/*.*" as zero-or-more directories, so it still
+		// matches.
+		Path artifact = Files.createDirectories(dir.resolve("contracts/com.example/artifact"));
+		Files.createFile(artifact.resolve("shouldSendGreeting.yml"));
+
+		List<StubResource> resources = this.scanner.getResources(dir + "/contracts/com.example/artifact/**/*.*");
+
+		assertThat(resources).hasSize(1);
+		assertThat(resources.get(0).getFilename()).isEqualTo("shouldSendGreeting.yml");
+	}
+
+	@Test
+	void doubleStarMatchesFileNestedUnderTheDirectory(@TempDir Path dir) throws IOException {
+		// The other common SCC layout nests the contract in a contracts/ subfolder of the
+		// artifact: contracts/<group>/<artifact>/contracts/<file>. Both must resolve.
+		Path nested = Files.createDirectories(dir.resolve("contracts/com.example/artifact/contracts"));
+		Files.createFile(nested.resolve("shouldSendGreeting.yml"));
+
+		List<StubResource> resources = this.scanner.getResources(dir + "/contracts/com.example/artifact/**/*.*");
+
+		assertThat(resources).hasSize(1);
+		assertThat(resources.get(0).getFilename()).isEqualTo("shouldSendGreeting.yml");
+	}
+
+	@Test
+	void doubleStarMatchesBothDirectAndNestedFilesTogether(@TempDir Path dir) throws IOException {
+		Path artifact = Files.createDirectories(dir.resolve("mappings/com.example/artifact"));
+		Files.createFile(artifact.resolve("top.json"));
+		Path nested = Files.createDirectories(artifact.resolve("mappings"));
+		Files.createFile(nested.resolve("deep.json"));
+
+		List<StubResource> resources = this.scanner.getResources(dir + "/mappings/com.example/artifact/**/*.*");
+
+		assertThat(resources).hasSize(2);
+		assertThat(resources).extracting(StubResource::getFilename).containsExactlyInAnyOrder("top.json", "deep.json");
+	}
+
+	@Test
+	void leadingDoubleStarMatchesFileAtTheRoot(@TempDir Path dir) throws IOException {
+		Files.createFile(dir.resolve("root.json"));
+		Files.createFile(Files.createDirectories(dir.resolve("sub")).resolve("nested.json"));
+
+		List<StubResource> resources = this.scanner.getResources(dir + "/**/*.json");
+
+		assertThat(resources).extracting(StubResource::getFilename)
+			.containsExactlyInAnyOrder("root.json", "nested.json");
+	}
+
+	@Test
 	void noMatchReturnsEmptyList() throws IOException {
 		List<StubResource> resources = this.scanner.getResources("classpath*:**/no-such-file-ever-12345.xyz");
 		assertThat(resources).isEmpty();
