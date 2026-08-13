@@ -28,8 +28,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<spring.cloud.contract.verifier.contractsDirectory>module/src/test/contracts
-		</spring.cloud.contract.verifier.contractsDirectory>
+		<stubborn.contract.verifier.contractsDirectory>module/src/test/contracts
+		</stubborn.contract.verifier.contractsDirectory>
 	</properties>
 	<modules>
 		<module>module</module>

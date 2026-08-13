@@ -59,13 +59,13 @@ public class GenerateStubsMojo extends AbstractMojo {
 	/**
 	 * Set this to "true" to bypass the whole Verifier execution.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.skip", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.skip", defaultValue = "false")
 	private boolean skip;
 
 	/**
 	 * Set this to "true" to bypass only JAR creation.
 	 */
-	@Parameter(property = "spring.cloud.contract.verifier.jar.skip", defaultValue = "false")
+	@Parameter(property = "stubborn.contract.verifier.jar.skip", defaultValue = "false")
 	private boolean jarSkip;
 
 	@Inject
@@ -109,8 +109,8 @@ public class GenerateStubsMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (this.skip || this.jarSkip) {
-			getLog().info("Skipping Spring Cloud Contract Verifier execution: spring.cloud.contract.verifier.skip="
-					+ this.skip + ", spring.cloud.contract.verifier.jar.skip=" + this.jarSkip);
+			getLog().info("Skipping Stubborn Contract Verifier execution: stubborn.contract.verifier.skip=" + this.skip
+					+ ", stubborn.contract.verifier.jar.skip=" + this.jarSkip);
 			return;
 		}
 		else if (stubsOutputMissing(this.stubsDirectory) && !this.failOnNoContracts) {
