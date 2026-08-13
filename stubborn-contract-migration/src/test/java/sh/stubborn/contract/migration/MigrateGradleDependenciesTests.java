@@ -59,14 +59,22 @@ class MigrateGradleDependenciesTests {
 	}
 
 	@Test
-	void topLevelCompositeIncludesGradleMigration() {
+	void topLevelCompositeWiresEverySubRecipe() {
 		Recipe composite = this.environment
 			.activateRecipes("sh.stubborn.contract.migration.MigrateFromSpringCloudContract");
 
 		assertThat(composite.validateAll()).allSatisfy((validated) -> assertThat(validated.isValid()).isTrue());
 
+		// Lock the exact composition so dropping or renaming any migration step (Maven
+		// and
+		// Gradle coordinates, Java packages, both property families, JUnit 4) fails here.
 		List<String> subRecipeNames = composite.getRecipeList().stream().map(Recipe::getName).toList();
-		assertThat(subRecipeNames).contains("sh.stubborn.contract.migration.UpdateGradleDependencies");
+		assertThat(subRecipeNames).containsExactlyInAnyOrder("sh.stubborn.contract.migration.UpdateMavenDependencies",
+				"sh.stubborn.contract.migration.UpdateGradleDependencies",
+				"sh.stubborn.contract.migration.RenameJavaPackages",
+				"sh.stubborn.contract.migration.MigrateStubRunnerProperties",
+				"sh.stubborn.contract.migration.MigrateVerifierProperties",
+				"sh.stubborn.contract.migration.DropJUnit4Support");
 	}
 
 }
