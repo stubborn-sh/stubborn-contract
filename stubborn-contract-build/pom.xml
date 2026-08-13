@@ -136,7 +136,7 @@
 		  <optional>true</optional> in stubborn-contract-verifier) and our usage is limited to a few
 		  stable core APIs (CamelContext, Message, DefaultMessage), so the blast radius is low.
 		-->
-		<camel.version>4.21.0</camel.version>
+		<camel.version>4.22.0</camel.version>
 		<!--
 		  Netty is managed by the Spring Boot 4.1 BOM at 4.2.15.Final, which carries a batch of
 		  DoS / OCSP-bypass CVEs matched against the netty:netty CPE (CVE-2026-56820 [9.1],
