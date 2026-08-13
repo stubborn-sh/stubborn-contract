@@ -111,7 +111,7 @@
 		<dependency-check-maven.version>12.1.1</dependency-check-maven.version>
 		<error-prone.version>2.36.0</error-prone.version>
 		<nullaway.version>0.12.7</nullaway.version>
-		<jspecify.version>1.0.0</jspecify.version>
+		<jspecify.version>1.0.1</jspecify.version>
 
 		<!--
 		  Security-pinned third-party library versions. Defined here (the common build
