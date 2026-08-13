@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -147,7 +148,7 @@ class DocumentationReferenceTests {
 					continue;
 				}
 				// Allow lines that explicitly flag the prefix as legacy/deprecated.
-				String lower = line.toLowerCase();
+				String lower = line.toLowerCase(Locale.ROOT);
 				if (lower.contains("legacy") || lower.contains("deprecated")) {
 					continue;
 				}
@@ -221,7 +222,7 @@ class DocumentationReferenceTests {
 	private Set<String> declaredRewriteRecipes() {
 		Pattern recipeName = Pattern.compile("(?m)^\\s*name:\\s*(sh\\.stubborn[A-Za-z0-9_.]+)");
 		Set<String> names = new TreeSet<>();
-		for (Path yml : walk(this.repoRoot, path -> {
+		for (Path yml : walk(this.repoRoot, (path) -> {
 			String s = path.toString();
 			return s.contains("/META-INF/rewrite/") && (s.endsWith(".yml") || s.endsWith(".yaml"))
 					&& !s.contains("/target/");
@@ -235,7 +236,7 @@ class DocumentationReferenceTests {
 	}
 
 	private List<Path> markdownFiles() {
-		return walk(this.docsRoot, path -> {
+		return walk(this.docsRoot, (path) -> {
 			String s = path.toString();
 			return s.endsWith(".md") && !s.contains("/.vitepress/") && !s.contains("/target/")
 					&& !s.contains("/node_modules/");
@@ -243,7 +244,7 @@ class DocumentationReferenceTests {
 	}
 
 	private List<Path> sourceFiles() {
-		return walk(this.repoRoot, path -> {
+		return walk(this.repoRoot, (path) -> {
 			String s = path.toString();
 			return (s.endsWith(".java") || s.endsWith(".groovy")) && s.contains("/src/main/") && !s.contains("/target/")
 					&& !s.contains("/.claude/");
@@ -251,7 +252,7 @@ class DocumentationReferenceTests {
 	}
 
 	private List<Path> filesNamed(String name) {
-		return walk(this.repoRoot, path -> path.getFileName().toString().equals(name)
+		return walk(this.repoRoot, (path) -> path.getFileName().toString().equals(name)
 				&& !path.toString().contains("/target/") && !path.toString().contains("/.claude/"));
 	}
 
