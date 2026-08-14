@@ -87,9 +87,9 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 
 	private final ContentType contentType;
 
-	WireMockRequestStubStrategy(Contract groovyDsl, SingleContractMetadata singleContractMetadata) {
-		super(groovyDsl);
-		this.request = Objects.requireNonNull(groovyDsl.getRequest());
+	WireMockRequestStubStrategy(Contract contractDsl, SingleContractMetadata singleContractMetadata) {
+		super(contractDsl);
+		this.request = Objects.requireNonNull(contractDsl.getRequest());
 		this.contentType = contentType(singleContractMetadata);
 	}
 

@@ -48,16 +48,16 @@ public class WireMockStubStrategy {
 
 	private final String rootName;
 
-	private final Contract groovyDsl;
+	private final Contract contractDsl;
 
-	public WireMockStubStrategy(String rootName, ContractMetadata contract, Contract groovyDsl) {
+	public WireMockStubStrategy(String rootName, ContractMetadata contract, Contract contractDsl) {
 		this.rootName = rootName;
 		this.contract = contract;
-		SingleContractMetadata singleContractMetadata = Objects.requireNonNull(contract.forContract(groovyDsl));
-		this.wireMockRequestStubStrategy = new WireMockRequestStubStrategy(groovyDsl, singleContractMetadata);
-		this.wireMockResponseStubStrategy = new WireMockResponseStubStrategy(groovyDsl, singleContractMetadata);
-		this.priority = groovyDsl.getPriority();
-		this.groovyDsl = groovyDsl;
+		SingleContractMetadata singleContractMetadata = Objects.requireNonNull(contract.forContract(contractDsl));
+		this.wireMockRequestStubStrategy = new WireMockRequestStubStrategy(contractDsl, singleContractMetadata);
+		this.wireMockResponseStubStrategy = new WireMockResponseStubStrategy(contractDsl, singleContractMetadata);
+		this.priority = contractDsl.getPriority();
+		this.contractDsl = contractDsl;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class WireMockStubStrategy {
 		if (request == null || response == null) {
 			return null;
 		}
-		if (this.groovyDsl.getIgnored() || this.contract.getIgnored()) {
+		if (this.contractDsl.getIgnored() || this.contract.getIgnored()) {
 			return null;
 		}
 		if (this.contract.getOrder() != null) {
