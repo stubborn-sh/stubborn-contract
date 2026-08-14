@@ -30,9 +30,9 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.QueryParameter;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -111,7 +111,7 @@ public class ContractDslSnippetTests {
 		then(file("/contracts/index.groovy")).exists();
 		then(file("/stubs/index.json")).exists();
 		then(file("/index/dsl-contract.adoc")).exists();
-		Collection<Contract> parsedContracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
+		Collection<Contract> parsedContracts = GroovyContractConverter.convertAsCollection(new File("/"),
 				file("/contracts/index.groovy"));
 		Contract parsedContract = parsedContracts.iterator().next();
 		var request = Objects.requireNonNull(parsedContract.getRequest());
@@ -153,7 +153,7 @@ public class ContractDslSnippetTests {
 		then(file("/contracts/should_create_contract_template_and_doc_with_placeholder_names.groovy")).exists();
 		then(file("/stubs/should_create_contract_template_and_doc_with_placeholder_names.json")).exists();
 		then(file("/should_create_contract_template_and_doc_with_placeholder_names/dsl-contract.adoc")).exists();
-		Collection<Contract> parsedContracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
+		Collection<Contract> parsedContracts = GroovyContractConverter.convertAsCollection(new File("/"),
 				file("/contracts/should_create_contract_template_and_doc_with_placeholder_names.groovy"));
 		Contract parsedContract = parsedContracts.iterator().next();
 		var request = Objects.requireNonNull(parsedContract.getRequest());
@@ -182,7 +182,7 @@ public class ContractDslSnippetTests {
 
 		then(file("/contracts/empty.groovy")).exists();
 		then(file("/empty/dsl-contract.adoc")).exists();
-		Collection<Contract> parsedContracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
+		Collection<Contract> parsedContracts = GroovyContractConverter.convertAsCollection(new File("/"),
 				file("/contracts/empty.groovy"));
 		Contract parsedContract = parsedContracts.iterator().next();
 		var request = Objects.requireNonNull(parsedContract.getRequest());

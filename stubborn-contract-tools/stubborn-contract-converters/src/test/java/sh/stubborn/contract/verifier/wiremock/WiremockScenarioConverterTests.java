@@ -21,8 +21,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +35,7 @@ class WiremockScenarioConverterTests {
 		String content = converter
 			.convertContents("Test",
 					new ContractMetadata(dsl, false, 3, 0,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), dsl.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), dsl.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -51,7 +51,7 @@ class WiremockScenarioConverterTests {
 		String content = converter
 			.convertContents("Test",
 					new ContractMetadata(dsl, false, 3, 1,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), dsl.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), dsl.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -67,7 +67,7 @@ class WiremockScenarioConverterTests {
 		String content = converter
 			.convertContents("Test",
 					new ContractMetadata(dsl, false, 3, 2,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), dsl.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), dsl.toFile())))
 			.values()
 			.iterator()
 			.next();

@@ -24,8 +24,8 @@ import java.util.regex.Pattern;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.spec.internal.RegexProperty;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import org.springframework.util.StringUtils;
 
@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class WireMockToDslConverterTests {
 
 	private Contract fromGroovyDsl(String groovyDsl) {
-		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
+		Collection<Contract> contracts = GroovyContractConverter.convertAsCollection(new File("/"),
 				"sh.stubborn.contract.spec.Contract.make {\n" + groovyDsl + "\n}");
 		return contracts.iterator().next();
 	}
@@ -142,7 +142,7 @@ class WireMockToDslConverterTests {
 				}
 				""");
 		String groovyDsl = WireMockToDslConverter.fromWireMockStub(wireMockStub);
-		Contract actual = ContractVerifierDslConverter
+		Contract actual = GroovyContractConverter
 			.convertAsCollection(new File("/"), "sh.stubborn.contract.spec.Contract.make {\n" + groovyDsl + "\n}")
 			.iterator()
 			.next();

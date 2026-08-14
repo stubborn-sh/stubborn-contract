@@ -34,9 +34,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.skyscreamer.jsonassert.JSONAssert;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubMapping;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -76,7 +76,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -119,7 +119,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -167,7 +167,7 @@ class DslToWireMockClientConverterTests {
 				}
 				""");
 		Map<Contract, String> convertedContents = converter.convertContents("Test", new ContractMetadata(file, false, 0,
-				null, ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())));
+				null, GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())));
 		assertThat(convertedContents).hasSize(2);
 		List<String> values = List.copyOf(convertedContents.values());
 		JSONAssert.assertEquals(jsonResponse(1), values.get(0), false);
@@ -202,7 +202,7 @@ class DslToWireMockClientConverterTests {
 				}
 				""");
 		Map<Contract, String> convertedContents = converter.convertContents("Test", new ContractMetadata(file, false, 0,
-				null, ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())));
+				null, GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())));
 		assertThat(convertedContents).isEmpty();
 	}
 
@@ -226,7 +226,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -291,7 +291,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -375,7 +375,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -416,7 +416,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -463,7 +463,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -628,7 +628,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -679,7 +679,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -772,7 +772,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -842,7 +842,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -898,7 +898,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();
@@ -955,7 +955,7 @@ class DslToWireMockClientConverterTests {
 		String json = converter
 			.convertContents("Test",
 					new ContractMetadata(file, false, 0, null,
-							ContractVerifierDslConverter.convertAsCollection(new File("/"), file.toFile())))
+							GroovyContractConverter.convertAsCollection(new File("/"), file.toFile())))
 			.values()
 			.iterator()
 			.next();

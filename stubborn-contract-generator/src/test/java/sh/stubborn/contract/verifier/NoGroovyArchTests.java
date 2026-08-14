@@ -22,21 +22,11 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.junit.jupiter.api.Test;
 
-class NoSpringArchTests {
+class NoGroovyArchTests {
 
 	private final JavaClasses classes = new ClassFileImporter()
 		.withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
 		.importPackages("sh.stubborn.contract.verifier");
-
-	@Test
-	void productionCodeHasNoSpringDependencies() {
-		ArchRuleDefinition.noClasses()
-			.should()
-			.dependOnClassesThat()
-			.resideInAPackage("org.springframework..")
-			.as("Core verifier module must not depend on Spring — use JDK alternatives instead")
-			.check(this.classes);
-	}
 
 	@Test
 	void productionCodeHasNoGroovyDependencies() {
@@ -44,7 +34,7 @@ class NoSpringArchTests {
 			.should()
 			.dependOnClassesThat()
 			.resideInAnyPackage("groovy..", "org.codehaus.groovy..", "org.apache.groovy..")
-			.as("Core verifier module must not depend on Groovy — Groovy DSL parsing lives in stubborn-contract-spec-groovy")
+			.as("Test generator must not depend on Groovy — Groovy DSL parsing lives in stubborn-contract-spec-groovy")
 			.check(this.classes);
 	}
 

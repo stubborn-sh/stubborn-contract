@@ -21,6 +21,13 @@
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-spec</artifactId>
 		</dependency>
+		<!-- Provides the Groovy DSL ContractConverter (GroovyContractConverter),
+			discovered via the ServiceLoader SPI, so .groovy contracts can be read and
+			converted. The framework-agnostic verifier core carries no Groovy itself. -->
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-spec-groovy</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-verifier</artifactId>
@@ -28,14 +35,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.groovy</groupId>
-			<artifactId>groovy</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.groovy</groupId>
-			<artifactId>groovy-nio</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.wiremock</groupId>
