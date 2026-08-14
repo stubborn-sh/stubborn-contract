@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import groovy.json.JsonOutput;
 import groovy.lang.GString;
 import org.apache.commons.text.StringEscapeUtils;
 import sh.stubborn.contract.spec.internal.DslProperty;
@@ -31,6 +30,7 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.MapConverter;
+import tools.jackson.databind.json.JsonMapper;
 
 interface BodyParser extends BodyThen {
 
@@ -42,7 +42,7 @@ interface BodyParser extends BodyThen {
 	}
 
 	default String convertToJsonString(Object bodyValue) {
-		String json = JsonOutput.toJson(bodyValue);
+		String json = new JsonMapper().writeValueAsString(bodyValue);
 		json = convertUnicodeEscapesIfRequired(json);
 		return trimRepeatedQuotes(json);
 	}

@@ -19,8 +19,8 @@ package sh.stubborn.contract.verifier.util;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import groovy.json.StringEscapeUtils;
 import groovy.lang.GString;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.CanBeDynamic;
 import sh.stubborn.contract.spec.internal.DslProperty;
@@ -48,7 +48,7 @@ public final class BodyExtractor {
 	public static String extractTestValueFrom(@Nullable Object body) {
 		Object bodyValue = extractServerValueFromBody(body);
 		String json = new JsonMapper().writeValueAsString(bodyValue);
-		json = StringEscapeUtils.unescapeJavaScript(json);
+		json = StringEscapeUtils.unescapeEcmaScript(json);
 		return trimRepeatedQuotes(json);
 	}
 
@@ -61,7 +61,7 @@ public final class BodyExtractor {
 	public static String extractStubValueFrom(@Nullable Object body) {
 		Object bodyValue = extractClientValueFromBody(body);
 		String json = new JsonMapper().writeValueAsString(bodyValue);
-		json = StringEscapeUtils.unescapeJavaScript(json);
+		json = StringEscapeUtils.unescapeEcmaScript(json);
 		return trimRepeatedQuotes(json);
 	}
 

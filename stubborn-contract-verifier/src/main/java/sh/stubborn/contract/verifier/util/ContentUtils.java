@@ -26,8 +26,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import groovy.json.JsonException;
-import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
 import groovy.lang.GString;
 import groovy.xml.XmlSlurper;
@@ -47,6 +45,7 @@ import sh.stubborn.contract.spec.internal.MatchingStrategy;
 import sh.stubborn.contract.spec.internal.NamedProperty;
 import sh.stubborn.contract.spec.internal.OptionalProperty;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
@@ -134,7 +133,7 @@ public class ContentUtils {
 			log.trace("No content type provided so trying to parse as JSON");
 			return extractValueForJSON(bodyAsValue, valueProvider);
 		}
-		catch (JsonException ex) {
+		catch (JacksonException ex) {
 			// Not a JSON format
 			log.trace("Failed to parse as JSON - trying to parse as XML", ex);
 			try {
@@ -157,7 +156,7 @@ public class ContentUtils {
 			extractValueForJSON(bodyAsValue, GET_STUB_SIDE);
 			return ContentType.JSON;
 		}
-		catch (JsonException ex) {
+		catch (JacksonException ex) {
 			try {
 				getXmlSlurperWithDefaultErrorHandler()
 					.parseText(extractValueForXML(bodyAsValue, GET_STUB_SIDE).toString());
@@ -172,10 +171,10 @@ public class ContentUtils {
 
 	public static ContentType getClientContentType(String bodyAsValue) {
 		try {
-			new JsonSlurper().parseText(bodyAsValue);
+			JsonSlurperCompatibility.parse(bodyAsValue);
 			return ContentType.JSON;
 		}
-		catch (JsonException ex) {
+		catch (JacksonException ex) {
 			try {
 				getXmlSlurperWithDefaultErrorHandler().parseText(bodyAsValue);
 				return ContentType.XML;
@@ -289,7 +288,7 @@ public class ContentUtils {
 			transformed[i] = (result != null) ? result.toString() : null;
 		}
 		GString transformedString = new GStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
-		Object parsedJson = new JsonSlurper().parseText(transformedString.toString().replace("\\", "\\\\"));
+		Object parsedJson = JsonSlurperCompatibility.parse(transformedString.toString().replace("\\", "\\\\"));
 		return convertAllTemporaryRegexPlaceholdersBackToPatterns(parsedJson);
 	}
 
@@ -506,7 +505,7 @@ public class ContentUtils {
 
 	public static ContentType recognizeContentTypeFromContent(String string) {
 		try {
-			new JsonSlurper().parseText(string);
+			JsonSlurperCompatibility.parse(string);
 			return ContentType.JSON;
 		}
 		catch (Exception ignored) {
@@ -566,10 +565,10 @@ public class ContentUtils {
 		}
 		GString stringWithoutValues = new GStringImpl(transformed, (String[]) CloneUtils.clone(gstring.getStrings()));
 		try {
-			new JsonSlurper().parseText(stringWithoutValues.toString());
+			JsonSlurperCompatibility.parse(stringWithoutValues.toString());
 			return true;
 		}
-		catch (JsonException ex) {
+		catch (JacksonException ex) {
 			// Not JSON
 		}
 		return false;

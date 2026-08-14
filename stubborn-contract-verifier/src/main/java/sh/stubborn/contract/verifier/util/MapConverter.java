@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
 import groovy.lang.GString;
 import org.jspecify.annotations.Nullable;
@@ -68,7 +67,7 @@ public class MapConverter {
 	 */
 	public static final Closure<Object> JSON_PARSING_CLOSURE = new Closure<Object>(null) {
 		public Object doCall(Object it) {
-			return new JsonSlurper().parseText((String) it);
+			return JsonSlurperCompatibility.parse((String) it);
 		}
 	};
 
