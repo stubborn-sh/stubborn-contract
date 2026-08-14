@@ -73,7 +73,15 @@
 					<jvmTarget>${java.version}</jvmTarget>
 					<args combine.children="append">
 						<arg>-Xjvm-default=all</arg>
-						<arg>-Xbackend-threads=0</arg>
+						<!--
+							Backend codegen is kept single-threaded on purpose. The parallel
+							JVM IR backend (-Xbackend-threads=0, i.e. one thread per core) is
+							experimental and intermittently crashes with
+							ArrayIndexOutOfBoundsException in JvmIrCodegenFactory.invokeCodegen
+							(seen on JDK 17). This tiny module gains nothing from parallel
+							codegen, so we trade it for a deterministic build.
+						-->
+						<arg>-Xbackend-threads=1</arg>
 					</args>
 				</configuration>
 				<executions>
