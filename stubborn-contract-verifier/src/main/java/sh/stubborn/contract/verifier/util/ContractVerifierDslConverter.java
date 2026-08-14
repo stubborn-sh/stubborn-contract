@@ -28,6 +28,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -359,6 +360,28 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 					if (normalized != original) {
 						list.set(i, normalized);
 					}
+				}
+			}
+			return value;
+		}
+		if (value instanceof Collection) {
+			// Any other collection (e.g. the LinkedHashSet backing Headers / Cookies /
+			// QueryParameters) - cannot be indexed, so normalise each element and, only
+			// if
+			// an element reference actually changed (a GString was replaced), rebuild it
+			// in place preserving iteration order.
+			if (visited.put(value, value) == null) {
+				Collection<Object> collection = (Collection<Object>) value;
+				List<Object> normalized = new ArrayList<>(collection.size());
+				boolean changed = false;
+				for (Object original : collection) {
+					Object element = normalize(original, visited);
+					normalized.add(element);
+					changed = changed || element != original;
+				}
+				if (changed) {
+					collection.clear();
+					collection.addAll(normalized);
 				}
 			}
 			return value;
