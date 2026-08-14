@@ -19,24 +19,19 @@ package sh.stubborn.contract.verifier.util;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -51,7 +46,6 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
-import groovy.lang.GString;
 import groovy.lang.GroovyShell;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.jspecify.annotations.Nullable;
@@ -59,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
-import sh.stubborn.contract.spec.internal.DynamicStringImpl;
 
 /**
  * Converts a String or a Groovy or Java file into a {@link Contract}.
@@ -277,7 +270,6 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		else {
 			contracts = Collections.singletonList((Contract) object);
 		}
-		contracts.forEach(ContractVerifierDslConverter::normalizeContract);
 		return contracts;
 	}
 
@@ -295,159 +287,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		else {
 			contracts = withName(file, Collections.singletonList((Contract) object));
 		}
-		contracts.forEach(ContractVerifierDslConverter::normalizeContract);
 		return contracts;
-	}
-
-	/**
-	 * Normalises a parsed {@link Contract} at the Groovy parse boundary: every
-	 * {@code groovy.lang.GString} found anywhere in the contract's object graph is
-	 * structurally replaced with a pure-Java
-	 * {@link sh.stubborn.contract.spec.internal.DynamicStringImpl}, preserving the
-	 * interpolated values as-is (no client/server resolution, no stringification). This
-	 * lets the framework-agnostic core process Groovy-authored bodies without ever seeing
-	 * a {@code GString}.
-	 * @param contract the parsed contract to normalise in place
-	 */
-	private static void normalizeContract(@Nullable Contract contract) {
-		if (contract == null) {
-			return;
-		}
-		normalize(contract, new IdentityHashMap<>());
-	}
-
-	/**
-	 * Recursively normalises a value from the contract graph, replacing every
-	 * {@code GString} with a {@link DynamicStringImpl} while keeping the rest of the
-	 * structure (and the interpolated values) intact. Containers (maps, lists, arrays)
-	 * and model objects (package {@code sh.stubborn.contract.spec}) are walked in place;
-	 * everything else is returned unchanged.
-	 * @param value the value to normalise (may be {@code null})
-	 * @param visited identity set guarding against cycles
-	 * @return the normalised value (a new object only when a {@code GString} is replaced)
-	 */
-	@SuppressWarnings("NullAway")
-	private static @Nullable Object normalize(@Nullable Object value, Map<Object, Object> visited) {
-		if (value == null) {
-			return null;
-		}
-		if (value instanceof GString) {
-			GString gstring = (GString) value;
-			return new DynamicStringImpl(normalizeArray(gstring.getValues(), visited), gstring.getStrings());
-		}
-		if (value instanceof CharSequence) {
-			// String, DynamicStringImpl, StringBuilder, ... - already leaf values
-			return value;
-		}
-		if (value instanceof Map) {
-			if (visited.put(value, value) == null) {
-				for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet()) {
-					Object original = entry.getValue();
-					Object normalized = normalize(original, visited);
-					if (normalized != original) {
-						entry.setValue(normalized);
-					}
-				}
-			}
-			return value;
-		}
-		if (value instanceof List) {
-			if (visited.put(value, value) == null) {
-				List<Object> list = (List<Object>) value;
-				for (int i = 0; i < list.size(); i++) {
-					Object original = list.get(i);
-					Object normalized = normalize(original, visited);
-					if (normalized != original) {
-						list.set(i, normalized);
-					}
-				}
-			}
-			return value;
-		}
-		if (value instanceof Collection) {
-			// Any other collection (e.g. the LinkedHashSet backing Headers / Cookies /
-			// QueryParameters) - cannot be indexed, so normalise each element and, only
-			// if
-			// an element reference actually changed (a GString was replaced), rebuild it
-			// in place preserving iteration order.
-			if (visited.put(value, value) == null) {
-				Collection<Object> collection = (Collection<Object>) value;
-				List<Object> normalized = new ArrayList<>(collection.size());
-				boolean changed = false;
-				for (Object original : collection) {
-					Object element = normalize(original, visited);
-					normalized.add(element);
-					changed = changed || element != original;
-				}
-				if (changed) {
-					collection.clear();
-					collection.addAll(normalized);
-				}
-			}
-			return value;
-		}
-		if (value.getClass().isArray()) {
-			if (!value.getClass().getComponentType().isPrimitive() && visited.put(value, value) == null) {
-				Object[] array = (Object[]) value;
-				for (int i = 0; i < array.length; i++) {
-					array[i] = normalize(array[i], visited);
-				}
-			}
-			return value;
-		}
-		if (isModelObject(value)) {
-			if (visited.put(value, value) == null) {
-				walkModelObject(value, visited);
-			}
-			return value;
-		}
-		return value;
-	}
-
-	private static @Nullable Object[] normalizeArray(@Nullable Object[] values, Map<Object, Object> visited) {
-		if (values == null) {
-			return new Object[0];
-		}
-		@Nullable Object[] normalized = new @Nullable Object[values.length];
-		for (int i = 0; i < values.length; i++) {
-			normalized[i] = normalize(values[i], visited);
-		}
-		return normalized;
-	}
-
-	private static boolean isModelObject(Object value) {
-		return value.getClass().getName().startsWith("sh.stubborn.contract.spec.");
-	}
-
-	private static void walkModelObject(Object value, Map<Object, Object> visited) {
-		Class<?> clazz = value.getClass();
-		while (clazz != null && clazz.getName().startsWith("sh.stubborn.contract.spec.")) {
-			for (Field field : clazz.getDeclaredFields()) {
-				if (Modifier.isStatic(field.getModifiers()) || field.getType().isPrimitive()) {
-					continue;
-				}
-				try {
-					field.setAccessible(true);
-					Object fieldValue = field.get(value);
-					if (fieldValue == null) {
-						continue;
-					}
-					Object normalized = normalize(fieldValue, visited);
-					if (normalized != fieldValue) {
-						field.set(value, normalized);
-					}
-				}
-				catch (Exception ex) {
-					// Best effort - if a particular field cannot be read/written
-					// reflectively we simply leave it untouched.
-					if (LOG.isTraceEnabled()) {
-						LOG.trace("Could not normalise field [" + field.getName() + "] of ["
-								+ value.getClass().getName() + "]", ex);
-					}
-				}
-			}
-			clazz = clazz.getSuperclass();
-		}
 	}
 
 	private static boolean isACollectionOfContracts(Object object) {

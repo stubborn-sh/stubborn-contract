@@ -35,14 +35,17 @@ public class DslProperty<T extends @Nullable Object> implements Serializable {
 
 	private final @Nullable T serverValue;
 
+	@SuppressWarnings("unchecked")
 	public DslProperty(@Nullable T clientValue, @Nullable T serverValue) {
-		this.clientValue = clientValue;
-		this.serverValue = serverValue;
+		this.clientValue = (T) DynamicStrings.normalize(clientValue);
+		this.serverValue = (T) DynamicStrings.normalize(serverValue);
 	}
 
+	@SuppressWarnings("unchecked")
 	public DslProperty(@Nullable T singleValue) {
-		this.clientValue = singleValue;
-		this.serverValue = singleValue;
+		T normalized = (T) DynamicStrings.normalize(singleValue);
+		this.clientValue = normalized;
+		this.serverValue = normalized;
 	}
 
 	public boolean isSingleValue() {
