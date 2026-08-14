@@ -266,14 +266,14 @@ class StubRunnerExecutor implements StubFinder {
 		return labels;
 	}
 
-	private void sendMessage(Contract groovyDsl) {
-		OutputMessage outputMessage = groovyDsl.getOutputMessage();
+	private void sendMessage(Contract contractDsl) {
+		OutputMessage outputMessage = contractDsl.getOutputMessage();
 		if (outputMessage == null) {
 			return;
 		}
 		@Nullable DslProperty<?> body = outputMessage.getBody();
 		@Nullable Headers headers = outputMessage.getHeaders();
-		List<YamlContract> yamlContracts = this.yamlContractConverter.convertTo(Collections.singleton(groovyDsl));
+		List<YamlContract> yamlContracts = this.yamlContractConverter.convertTo(Collections.singleton(contractDsl));
 		YamlContract contract = yamlContracts.get(0);
 		setMessageType(contract, ContractVerifierMessageMetadata.MessageType.OUTPUT);
 
@@ -315,12 +315,12 @@ class StubRunnerExecutor implements StubFinder {
 		@Nullable DslProperty<String> sentTo = outputMessage.getSentTo();
 		if (sentTo == null) {
 			throw new IllegalStateException(
-					"Output message sentTo must not be null in contract: " + groovyDsl.getLabel());
+					"Output message sentTo must not be null in contract: " + contractDsl.getLabel());
 		}
 		String destination = sentTo.getClientValue();
 		if (destination == null) {
 			throw new IllegalStateException(
-					"Output message sentTo client value must not be null in contract: " + groovyDsl.getLabel());
+					"Output message sentTo client value must not be null in contract: " + contractDsl.getLabel());
 		}
 		this.messageVerifierSender.send(payload, headersMap, destination, contract);
 	}

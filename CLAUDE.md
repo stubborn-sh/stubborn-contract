@@ -41,8 +41,8 @@ cd ../consumer && ./mvnw test
 | `stubborn-contract-jsonassert` | JSON assertion helpers |
 | `stubborn-contract-xmlassert` | XML assertion helpers |
 | `specs/stubborn-contract-spec-java` | Java DSL for writing contracts |
-| `specs/stubborn-contract-spec-groovy` | Groovy DSL for writing contracts |
-| `stubborn-contract-verifier` | Contract verifier core — **Spring-free messaging abstractions** (`MessageVerifierSender<M>`/`MessageVerifierReceiver<M>`, `ContractMessage`, `MessagePayloads` for text/binary payloads), generic over the message type `M` |
+| `specs/stubborn-contract-spec-groovy` | Groovy DSL for writing contracts — **also the home of the Groovy DSL parser** (`GroovyContractConverter`), the only place `groovy.lang.GroovyShell` runs |
+| `stubborn-contract-verifier` | Contract verifier core — **Spring-free AND Groovy-free** production code; **Spring-free messaging abstractions** (`MessageVerifierSender<M>`/`MessageVerifierReceiver<M>`, `ContractMessage`, `MessagePayloads` for text/binary payloads), generic over the message type `M` |
 | `stubborn-contract-generator` | Build-time test generator (Handlebars rendering, golden-master guarded) — split out of the verifier |
 | `stubborn-contract-stub-runner` | Stub runner core |
 | `stubborn-contract-wiremock` | WireMock core (no Spring) |
@@ -95,6 +95,7 @@ cd ../consumer && ./mvnw test
 ## Key conventions
 
 - **Core modules MUST NOT import Spring.** Maven Enforcer (`ban-spring-in-core`) and ArchUnit (`NoSpringArchTests`, one per core module) both gate this.
+- **`verifier`, `generator` and `stub-runner` production code MUST NOT depend on Groovy.** The `productionCodeHasNoGroovyDependencies` ArchUnit gate (one per module) bans `groovy..`, `org.codehaus.groovy..` and `org.apache.groovy..`. Groovy DSL parsing lives ONLY in `spec-groovy` (`GroovyContractConverter`), discovered at runtime through the `ContractConverter` `ServiceLoader` SPI — same mechanism as `KotlinContractConverter`. A module that must read `.groovy` contracts puts `spec-groovy` on its classpath: `converters` does (compile scope), which cascades transitively to `stub-runner`, its starter, and the Maven/Gradle plugins; `docker` declares it directly. `.java` contracts are still parsed by `ContractVerifierDslConverter` in the verifier.
 - **Use SLF4J (`org.slf4j.Logger/LoggerFactory`) in core modules,** not `org.apache.commons.logging`.
 - **Spring Java Format must pass** before committing. Run `./mvnw spring-javaformat:apply` after every Java edit.
 - **Stub-runner Boot properties were renamed to `stubborn.contract.stubrunner.*`.** The legacy `spring.cloud.contract.stubrunner.*` prefix still binds via `StubRunnerPropertiesMigrator` (deprecated, logs a warning) — keep that shim working.

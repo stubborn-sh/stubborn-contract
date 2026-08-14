@@ -55,9 +55,9 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 
 	private final SingleContractMetadata contractMetadata;
 
-	WireMockResponseStubStrategy(Contract groovyDsl, SingleContractMetadata singleContractMetadata) {
-		super(groovyDsl);
-		this.response = Objects.requireNonNull(groovyDsl.getResponse());
+	WireMockResponseStubStrategy(Contract contractDsl, SingleContractMetadata singleContractMetadata) {
+		super(contractDsl);
+		this.response = Objects.requireNonNull(contractDsl.getResponse());
 		this.contentType = contentType(singleContractMetadata);
 		this.contractMetadata = singleContractMetadata;
 	}

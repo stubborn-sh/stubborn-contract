@@ -55,7 +55,7 @@ added on top, never a hard requirement of the engine.
 | `stubborn-contract-xmlassert` | XML assertion helpers (built on XmlUnit). |
 | `stubborn-contract-spec` | Aggregator for the contract specification API. |
 | `stubborn-contract-spec-java` | Java DSL for writing contracts (`Contract.make { … }` equivalents in Java). |
-| `stubborn-contract-spec-groovy` | Groovy DSL for writing contracts. |
+| `stubborn-contract-spec-groovy` | Groovy DSL for writing contracts, and the home of the Groovy DSL parser (`GroovyContractConverter`). It is the only module that runs `GroovyShell`; put it on the classpath — via `ServiceLoader` — to read `.groovy` contracts. The `verifier`, `generator` and `stub-runner` cores stay Groovy-free (enforced by a `productionCodeHasNoGroovyDependencies` ArchUnit gate). |
 | `stubborn-contract-verifier` | **Runtime / shared library** of the verifier — the contract model, converters, matchers and stub-generation logic reused at both build time and test time. Also hosts the Spring-free messaging abstractions (`MessageVerifierSender` / `MessageVerifierReceiver`, `ContractMessage`, `MessagePayloads`). |
 | `stubborn-contract-generator` | **Build-time test generator.** Renders the actual test source for each contract from [Handlebars](https://github.com/jknack/handlebars.java) templates (`com.github.jknack:handlebars`) — JUnit/JVM tests by default, Spock via a dedicated renderer. |
 | `stubborn-contract-stub-runner` | Stub runner core — downloads, unpacks and serves stubs. |

@@ -67,8 +67,8 @@ class ContractsToYaml {
 	private static final Map<MatchingType, YamlContract.StubMatcherType> STUB_MATCHER_TYPE = new HashMap<>();
 
 	/**
-	 * Null-safe bridge to ContentUtils.evaluateClientSideContentType. The Groovy
-	 * implementation uses null-safe ?. navigation, so null headers/body returns UNKNOWN.
+	 * Null-safe bridge to ContentUtils.evaluateClientSideContentType. Null headers or
+	 * body resolve to UNKNOWN.
 	 * @param headers the headers to evaluate, may be {@code null}
 	 * @param body the body to evaluate, may be {@code null}
 	 * @return the resolved content type
