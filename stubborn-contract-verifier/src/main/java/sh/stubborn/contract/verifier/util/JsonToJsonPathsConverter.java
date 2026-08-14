@@ -21,12 +21,12 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
-import groovy.lang.GString;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
+import sh.stubborn.contract.spec.internal.DynamicString;
 import sh.stubborn.jsonassert.JsonAssertion;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -262,8 +262,8 @@ public class JsonToJsonPathsConverter {
 		if (json instanceof String) {
 			return ((String) json).isEmpty();
 		}
-		if (json instanceof GString) {
-			return ((GString) json).toString().isEmpty();
+		if (json instanceof DynamicString) {
+			return ((DynamicString) json).toString().isEmpty();
 		}
 		if (json instanceof Map) {
 			return ((Map<?, ?>) json).isEmpty();

@@ -27,9 +27,9 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import groovy.lang.GString;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.Nullable;
+import sh.stubborn.contract.spec.internal.DynamicString;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.QueryParameter;
@@ -189,7 +189,7 @@ public final class TestSideRequestTemplateModel {
 			return null;
 		}
 		Object bodyValue = extractServerValueFromBody(body);
-		if (bodyValue instanceof GString || bodyValue instanceof String) {
+		if (bodyValue instanceof DynamicString || bodyValue instanceof String) {
 			return bodyValue.toString();
 		}
 		else if (bodyValue instanceof FromFileProperty) {
@@ -199,8 +199,8 @@ public final class TestSideRequestTemplateModel {
 	}
 
 	private static Object extractServerValueFromBody(Object bodyValue) {
-		if (bodyValue instanceof GString) {
-			bodyValue = ContentUtils.extractValue((GString) bodyValue, ContentUtils.GET_TEST_SIDE_FUNCTION);
+		if (bodyValue instanceof DynamicString) {
+			bodyValue = ContentUtils.extractValue((DynamicString) bodyValue, ContentUtils.GET_TEST_SIDE_FUNCTION);
 		}
 		else {
 			bodyValue = MapConverter.transformValues(bodyValue, ContentUtils.GET_TEST_SIDE_FUNCTION);

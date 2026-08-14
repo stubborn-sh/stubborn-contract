@@ -24,9 +24,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import groovy.lang.Closure;
-import groovy.lang.GString;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.DslProperty;
+import sh.stubborn.contract.spec.internal.DynamicString;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
 import sh.stubborn.contract.verifier.template.TemplateProcessor;
@@ -196,9 +196,9 @@ public class MapConverter {
 				Object dslValue = clientSide ? dslProperty.getClientValue() : dslProperty.getServerValue();
 				return (dslValue != null) ? getClientOrServerSideValues(dslValue, clientSide, parsingFunction) : null;
 			}
-			else if (val instanceof GString) {
+			else if (val instanceof DynamicString) {
 				ContentType type = new MapConverter().templateProcessor.containsJsonPathTemplateEntry(
-						ContentUtils.extractValueForGString((GString) val, ContentUtils.GET_TEST_SIDE).toString())
+						ContentUtils.extractValueForGString((DynamicString) val, ContentUtils.GET_TEST_SIDE).toString())
 								? ContentType.TEXT : null;
 				Function<Object, @Nullable Object> innerFunction = (v) -> {
 					if (v instanceof DslProperty) {
@@ -208,7 +208,7 @@ public class MapConverter {
 					}
 					return v;
 				};
-				return ContentUtils.extractValue((GString) val, type, innerFunction);
+				return ContentUtils.extractValue((DynamicString) val, type, innerFunction);
 			}
 			else if (val instanceof FromFileProperty) {
 				return ((FromFileProperty) val).isByte() ? ((FromFileProperty) val).asBytes()

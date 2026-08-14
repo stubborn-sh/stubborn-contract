@@ -30,9 +30,9 @@ import com.github.tomakehurst.wiremock.extension.Extension;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
-import groovy.lang.GString;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.DynamicString;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Request;
 import sh.stubborn.contract.spec.internal.Response;
@@ -119,8 +119,8 @@ class WireMockResponseStubStrategy extends BaseWireMockStubStrategy {
 			else if (body instanceof List) {
 				builder.withBody(parseBody((List<?>) body, this.contentType));
 			}
-			else if (body instanceof GString) {
-				builder.withBody(parseBody((GString) body, this.contentType));
+			else if (body instanceof DynamicString) {
+				builder.withBody(parseBody((DynamicString) body, this.contentType));
 			}
 			else {
 				builder.withBody(parseBody(body, this.contentType));

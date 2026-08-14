@@ -73,7 +73,10 @@ interface GroovyBodyParser extends BodyParser {
 
 	@Override
 	default String quotedEscapedLongText(Object text) {
-		return "'''" + text.toString() + "'''";
+		// A literal backslash (e.g. from a regex such as \d inside an optional body) must
+		// be doubled to survive a Groovy triple-quoted string; otherwise the generated
+		// test fails to compile with "Unexpected character: '\'".
+		return "'''" + text.toString().replace("\\", "\\\\") + "'''";
 	}
 
 	@Override

@@ -27,16 +27,16 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 
 import groovy.lang.Closure;
-import groovy.lang.GString;
 import groovy.xml.XmlSlurper;
 import org.apache.commons.text.StringEscapeUtils;
-import org.codehaus.groovy.runtime.GStringImpl;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import sh.stubborn.contract.spec.internal.DslProperty;
+import sh.stubborn.contract.spec.internal.DynamicString;
+import sh.stubborn.contract.spec.internal.DynamicStringImpl;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Header;
@@ -102,19 +102,20 @@ public class ContentUtils {
 	}
 
 	/**
-	 * Due to the fact that we allow users to have a body with GString and different
+	 * Due to the fact that we allow users to have a body with DynamicString and different
 	 * values inside we need to be prepared that they pass regexps around both on client
 	 * and server side.
 	 *
 	 * In order to preserve the original JSON structure we need to convert the passed
 	 * Regex patterns to a temporary string, then convert all to a legitimate JSON
 	 * structure and then finally convert it back from string to a pattern.
-	 * @param bodyAsValue - GString with passed values
+	 * @param bodyAsValue - DynamicString with passed values
 	 * @param contentType - the content type of the body
 	 * @param valueProvider - provider of values either for server or client side
 	 * @return the JSON structure with replaced client / server side parts
 	 */
-	public static Object extractValue(GString bodyAsValue, @Nullable ContentType contentType, Closure valueProvider) {
+	public static Object extractValue(DynamicString bodyAsValue, @Nullable ContentType contentType,
+			Closure valueProvider) {
 		String asString = bodyAsValue.toString();
 		if (asString == null || asString.isBlank()) {
 			return bodyAsValue;
@@ -147,11 +148,12 @@ public class ContentUtils {
 		}
 	}
 
-	public static Object extractValue(GString bodyAsValue, @Nullable ContentType contentType, Function valueProvider) {
+	public static Object extractValue(DynamicString bodyAsValue, @Nullable ContentType contentType,
+			Function valueProvider) {
 		return extractValue(bodyAsValue, contentType, toClosure(valueProvider));
 	}
 
-	public static ContentType getClientContentType(GString bodyAsValue) {
+	public static ContentType getClientContentType(DynamicString bodyAsValue) {
 		try {
 			extractValueForJSON(bodyAsValue, GET_STUB_SIDE);
 			return ContentType.JSON;
@@ -186,8 +188,8 @@ public class ContentUtils {
 	}
 
 	public static ContentType getClientContentType(Object bodyAsValue) {
-		if (bodyAsValue instanceof GString) {
-			return getClientContentType((GString) bodyAsValue);
+		if (bodyAsValue instanceof DynamicString) {
+			return getClientContentType((DynamicString) bodyAsValue);
 		}
 		else if (bodyAsValue instanceof String) {
 			return getClientContentType((String) bodyAsValue);
@@ -250,7 +252,8 @@ public class ContentUtils {
 		}
 	}
 
-	public static GStringImpl extractValueForGString(GString bodyAsValue, Closure valueProvider) {
+	@SuppressWarnings("NullAway")
+	public static DynamicStringImpl extractValueForGString(DynamicString bodyAsValue, Closure valueProvider) {
 		Object[] values = bodyAsValue.getValues();
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
@@ -258,47 +261,53 @@ public class ContentUtils {
 			Object result = (it instanceof DslProperty) ? valueProvider.call(it) : it;
 			transformed[i] = (result != null) ? result.toString() : null;
 		}
-		return new GStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
+		return new DynamicStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 	}
 
-	public static Object extractValue(GString bodyAsValue, Function valueProvider) {
+	public static Object extractValue(DynamicString bodyAsValue, Function valueProvider) {
 		return extractValue(bodyAsValue, ContentType.UNKNOWN, toClosure(valueProvider));
 	}
 
-	public static Object extractValue(GString bodyAsValue, Closure valueProvider) {
+	public static Object extractValue(DynamicString bodyAsValue, Closure valueProvider) {
 		return extractValue(bodyAsValue, ContentType.UNKNOWN, valueProvider);
 	}
 
-	private static String extractValueForText(GString bodyAsValue, Closure valueProvider) {
+	@SuppressWarnings("NullAway")
+	private static String extractValueForText(DynamicString bodyAsValue, Closure valueProvider) {
 		Object[] values = bodyAsValue.getValues();
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
 			Object result = valueProvider.call(values[i]);
 			transformed[i] = (result != null) ? result.toString() : null;
 		}
-		GString transformedString = new GStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
+		DynamicString transformedString = new DynamicStringImpl(transformed,
+				(String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 		return transformedString.toString();
 	}
 
-	private static Object extractValueForJSON(GString bodyAsValue, Closure valueProvider) {
+	@SuppressWarnings("NullAway")
+	private static Object extractValueForJSON(DynamicString bodyAsValue, Closure valueProvider) {
 		Object[] values = bodyAsValue.getValues();
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
 			Object result = transformJSONStringValue(values[i], valueProvider);
 			transformed[i] = (result != null) ? result.toString() : null;
 		}
-		GString transformedString = new GStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
+		DynamicString transformedString = new DynamicStringImpl(transformed,
+				(String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 		Object parsedJson = JsonSlurperCompatibility.parse(transformedString.toString().replace("\\", "\\\\"));
 		return convertAllTemporaryRegexPlaceholdersBackToPatterns(parsedJson);
 	}
 
-	private static GStringImpl extractValueForXML(GString bodyAsValue, Closure valueProvider) {
+	@SuppressWarnings("NullAway")
+	private static DynamicStringImpl extractValueForXML(DynamicString bodyAsValue, Closure valueProvider) {
 		Object[] values = bodyAsValue.getValues();
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
 			transformed[i] = transformXMLStringValue(values[i], valueProvider);
 		}
-		GStringImpl impl = new GStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
+		DynamicStringImpl impl = new DynamicStringImpl(transformed,
+				(String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 		// try to convert it to XML
 		try {
 			getXmlSlurperWithDefaultErrorHandler().parseText(impl.toString());
@@ -481,7 +490,7 @@ public class ContentUtils {
 		}
 	}
 
-	public static ContentType recognizeContentTypeFromContent(GString gstring) {
+	public static ContentType recognizeContentTypeFromContent(DynamicString gstring) {
 		if (isJsonType(gstring)) {
 			return ContentType.JSON;
 		}
@@ -509,7 +518,7 @@ public class ContentUtils {
 			return ContentType.JSON;
 		}
 		catch (Exception ignored) {
-			if (isXmlType(new GStringImpl(new Object[] { string }, new String[] { "", "" }))) {
+			if (isXmlType(new DynamicStringImpl(new Object[] { string }, new String[] { "", "" }))) {
 				return ContentType.XML;
 			}
 			return ContentType.UNKNOWN;
@@ -531,8 +540,8 @@ public class ContentUtils {
 			}
 			object = property.isByte() ? property.asBytes() : property.asString();
 		}
-		if (object instanceof GString) {
-			return recognizeContentTypeFromContent((GString) object);
+		if (object instanceof DynamicString) {
+			return recognizeContentTypeFromContent((DynamicString) object);
 		}
 		else if (object instanceof Map) {
 			return recognizeContentTypeFromContent((Map) object);
@@ -552,18 +561,19 @@ public class ContentUtils {
 		return ContentType.UNKNOWN;
 	}
 
-	public static boolean isJsonType(GString gstring) {
-		if (gstring.isEmpty()) {
+	public static boolean isJsonType(DynamicString gstring) {
+		if (gstring.isEmptyValue()) {
 			return false;
 		}
 		Object[] values = gstring.getValues();
 		Object[] transformed = new Object[values.length];
 		for (int i = 0; i < values.length; i++) {
 			Object it = values[i];
-			transformed[i] = (it instanceof String || it instanceof GString) ? it.toString()
+			transformed[i] = (it instanceof String || it instanceof DynamicString) ? it.toString()
 					: StringEscapeUtils.escapeJson(it.toString());
 		}
-		GString stringWithoutValues = new GStringImpl(transformed, (String[]) CloneUtils.clone(gstring.getStrings()));
+		DynamicString stringWithoutValues = new DynamicStringImpl(transformed,
+				(String[]) CloneUtils.clone(gstring.getStrings()));
 		try {
 			JsonSlurperCompatibility.parse(stringWithoutValues.toString());
 			return true;
@@ -574,15 +584,16 @@ public class ContentUtils {
 		return false;
 	}
 
-	public static boolean isXmlType(GString gString) {
+	public static boolean isXmlType(DynamicString gString) {
 		Object[] values = gString.getValues();
 		Object[] transformed = new Object[values.length];
 		for (int i = 0; i < values.length; i++) {
 			Object it = values[i];
-			transformed[i] = (it instanceof String || it instanceof GString) ? it.toString()
+			transformed[i] = (it instanceof String || it instanceof DynamicString) ? it.toString()
 					: StringEscapeUtils.escapeXml11(it.toString());
 		}
-		GString stringWithoutValues = new GStringImpl(transformed, (String[]) CloneUtils.clone(gString.getStrings()));
+		DynamicString stringWithoutValues = new DynamicStringImpl(transformed,
+				(String[]) CloneUtils.clone(gString.getStrings()));
 		try {
 			getXmlSlurperWithDefaultErrorHandler().parseText(stringWithoutValues.toString());
 			return true;
