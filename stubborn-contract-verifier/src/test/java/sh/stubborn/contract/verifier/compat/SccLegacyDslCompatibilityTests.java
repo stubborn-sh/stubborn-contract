@@ -147,6 +147,70 @@ class SccLegacyDslCompatibilityTests {
 	}
 
 	@Test
+	void readsAGStringInterpolatedXmlBody() {
+		Contract contract = parseSingle(
+				"""
+						org.springframework.cloud.contract.spec.Contract.make {
+							request {
+								method 'POST'
+								url '/xml'
+								headers { header('Content-Type', 'application/xml') }
+								body('''<user><id>${value(consumer(regex('[0-9]+')), producer('123'))}</id><name>John</name></user>''')
+							}
+							response {
+								status 200
+							}
+						}
+						""");
+
+		String stubJson = toClientStubJson(contract);
+		assertThat(stubJson).contains("[0-9]+");
+		assertThat(stubJson).contains("John");
+	}
+
+	@Test
+	void readsAGStringInterpolatedUrl() {
+		Contract contract = parseSingle("""
+				org.springframework.cloud.contract.spec.Contract.make {
+					request {
+						method 'GET'
+						url value(consumer(regex('/users/[0-9]+')), producer('/users/42'))
+					}
+					response {
+						status 200
+						body('''{ "ok": true }''')
+					}
+				}
+				""");
+
+		String stubJson = toClientStubJson(contract);
+		assertThat(stubJson).contains("/users/[0-9]+");
+	}
+
+	@Test
+	void readsAGStringBodyWithMultipleInterpolatedValues() {
+		Contract contract = parseSingle(
+				"""
+						org.springframework.cloud.contract.spec.Contract.make {
+							request {
+								method 'POST'
+								url '/multi'
+								headers { contentType(applicationJson()) }
+								body('''{ "id": "${value(consumer(regex('[0-9]+')), producer('1'))}", "code": "${value(consumer(regex('[A-Z]{2}')), producer('AB'))}", "fixed": "x" }''')
+							}
+							response {
+								status 200
+							}
+						}
+						""");
+
+		String stubJson = toClientStubJson(contract);
+		assertThat(stubJson).contains("[0-9]+");
+		assertThat(stubJson).contains("[A-Z]{2}");
+		assertThat(stubJson).contains("fixed");
+	}
+
+	@Test
 	void readsBodyMatchersFromAnSccContract() {
 		Contract contract = parseSingle("""
 				org.springframework.cloud.contract.spec.Contract.make {
