@@ -42,10 +42,11 @@ cd ../consumer && ./mvnw test
 | `stubborn-contract-xmlassert` | XML assertion helpers |
 | `specs/stubborn-contract-spec-java` | Java DSL for writing contracts |
 | `specs/stubborn-contract-spec-groovy` | Groovy DSL for writing contracts |
-| `stubborn-contract-verifier` | Contract verifier core — test generator + **Spring-free messaging abstractions** (`MessageVerifierSender<M>`/`MessageVerifierReceiver<M>`, `ContractMessage`, `MessagePayloads` for text/binary payloads), generic over the message type `M` |
+| `stubborn-contract-verifier` | Contract verifier core — **Spring-free messaging abstractions** (`MessageVerifierSender<M>`/`MessageVerifierReceiver<M>`, `ContractMessage`, `MessagePayloads` for text/binary payloads), generic over the message type `M` |
+| `stubborn-contract-generator` | Build-time test generator (Handlebars rendering, golden-master guarded) — split out of the verifier |
 | `stubborn-contract-stub-runner` | Stub runner core |
 | `stubborn-contract-wiremock` | WireMock core (no Spring) |
-| `stubborn-contract-converters` | Contract format converters (YAML/Java/Groovy) |
+| `stubborn-contract-tools/stubborn-contract-converters` | Contract format converters (YAML/Java/Groovy) |
 
 ### Spring Framework tier (`-spring`)
 
@@ -70,6 +71,13 @@ cd ../consumer && ./mvnw test
 | `stubborn-contract-verifier-spring-cloud` | Spring Cloud Stream messaging verifier |
 | `stubborn-contract-stub-runner-spring-cloud` | Eureka/Consul/Zookeeper service discovery for stub runner |
 
+### Quarkus tier (framework-agnostic, no Spring)
+
+| Module | Description |
+|--------|-------------|
+| `stubborn-contract-stub-runner-quarkus` | CDI-free Quarkus stub-runner integration (`StubRunnerResource`, a `QuarkusTestResourceLifecycleManager`) |
+| `stubborn-contract-stub-runner-messaging-quarkus` | Quarkus stub-runner **with messaging** — publishes a triggered stub to a real broker (Kafka/RabbitMQ) via the Spring-free messaging building blocks |
+
 ### Infrastructure
 
 | Module | Description |
@@ -86,7 +94,7 @@ cd ../consumer && ./mvnw test
 
 ## Key conventions
 
-- **Core modules MUST NOT import Spring.** Maven Enforcer (`ban-spring-in-core`) and ArchUnit (`CoreModuleArchTest`) both gate this.
+- **Core modules MUST NOT import Spring.** Maven Enforcer (`ban-spring-in-core`) and ArchUnit (`NoSpringArchTests`, one per core module) both gate this.
 - **Use SLF4J (`org.slf4j.Logger/LoggerFactory`) in core modules,** not `org.apache.commons.logging`.
 - **Spring Java Format must pass** before committing. Run `./mvnw spring-javaformat:apply` after every Java edit.
 - **Stub-runner Boot properties were renamed to `stubborn.contract.stubrunner.*`.** The legacy `spring.cloud.contract.stubrunner.*` prefix still binds via `StubRunnerPropertiesMigrator` (deprecated, logs a warning) — keep that shim working.
@@ -119,4 +127,4 @@ cd ../consumer && ./mvnw test
 
 ## API compatibility
 
-Breaking changes to `public`/`protected` methods, constructors, or types in modules without a `-spring`, `-spring-boot`, or `-spring-cloud` suffix require an explicit `revapi` justification in the module's `pom.xml`. The `revapi-maven-plugin` runs on every PR for: `stubborn-contract-verifier`, `stubborn-contract-stub-runner`, `stubborn-contract-wiremock`, `stubborn-contract-converters`, `stubborn-contract-jsonassert`, `stubborn-contract-xmlassert`.
+Breaking changes to `public`/`protected` methods, constructors, or types in modules without a `-spring`, `-spring-boot`, or `-spring-cloud` suffix require an explicit `revapi` justification in the module's `pom.xml`. The `revapi-maven-plugin` runs on every PR for: `stubborn-contract-verifier`, `stubborn-contract-stub-runner`, `stubborn-contract-wiremock`, `stubborn-contract-generator`, `stubborn-contract-jsonassert`, `stubborn-contract-xmlassert`.
