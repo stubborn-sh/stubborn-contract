@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import groovy.lang.Closure;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.DynamicString;
@@ -59,15 +58,6 @@ public class MapConverter {
 		}
 		catch (JacksonException ex) {
 			throw new IllegalArgumentException("The current json [" + value + "] could not be deserialized");
-		}
-	};
-
-	/**
-	 * Generic {@link Closure} used to deserialize a json file.
-	 */
-	public static final Closure<Object> JSON_PARSING_CLOSURE = new Closure<Object>(null) {
-		public Object doCall(Object it) {
-			return JsonSlurperCompatibility.parse((String) it);
 		}
 	};
 
@@ -198,8 +188,8 @@ public class MapConverter {
 			}
 			else if (val instanceof DynamicString) {
 				ContentType type = new MapConverter().templateProcessor.containsJsonPathTemplateEntry(
-						ContentUtils.extractValueForGString((DynamicString) val, ContentUtils.GET_TEST_SIDE).toString())
-								? ContentType.TEXT : null;
+						ContentUtils.extractValueForGString((DynamicString) val, ContentUtils.GET_TEST_SIDE_FUNCTION)
+							.toString()) ? ContentType.TEXT : null;
 				Function<Object, @Nullable Object> innerFunction = (v) -> {
 					if (v instanceof DslProperty) {
 						Object dslV = clientSide ? ((DslProperty<?>) v).getClientValue()

@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.util;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,14 +25,15 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import groovy.lang.Closure;
-import groovy.xml.XmlSlurper;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import sh.stubborn.contract.spec.internal.DslProperty;
@@ -60,31 +62,11 @@ public class ContentUtils {
 
 	private static final Logger log = LoggerFactory.getLogger(ContentUtils.class);
 
-	public static final Closure GET_STUB_SIDE = new Closure<Object>(null) {
-		public @Nullable Object doCall(Object it) {
-			return (it instanceof DslProperty) ? ((DslProperty) it).getClientValue() : it;
-		}
-	};
+	public static final Function<Object, @Nullable Object> GET_STUB_SIDE_FUNCTION = (it) -> (it instanceof DslProperty)
+			? ((DslProperty) it).getClientValue() : it;
 
-	public static final Closure GET_TEST_SIDE = new Closure<Object>(null) {
-		public @Nullable Object doCall(Object it) {
-			return (it instanceof DslProperty) ? ((DslProperty) it).getServerValue() : it;
-		}
-	};
-
-	public static final Function GET_STUB_SIDE_FUNCTION = new Function() {
-		@Override
-		public Object apply(Object it) {
-			return GET_STUB_SIDE.call(it);
-		}
-	};
-
-	public static final Function GET_TEST_SIDE_FUNCTION = new Function() {
-		@Override
-		public Object apply(Object it) {
-			return GET_TEST_SIDE.call(it);
-		}
-	};
+	public static final Function<Object, @Nullable Object> GET_TEST_SIDE_FUNCTION = (it) -> (it instanceof DslProperty)
+			? ((DslProperty) it).getServerValue() : it;
 
 	private static final Pattern TEMPORARY_PATTERN_HOLDER = Pattern.compile(".*REGEXP>>(.*)<<.*");
 
@@ -115,7 +97,7 @@ public class ContentUtils {
 	 * @return the JSON structure with replaced client / server side parts
 	 */
 	public static Object extractValue(DynamicString bodyAsValue, @Nullable ContentType contentType,
-			Closure valueProvider) {
+			Function valueProvider) {
 		String asString = bodyAsValue.toString();
 		if (asString == null || asString.isBlank()) {
 			return bodyAsValue;
@@ -148,24 +130,18 @@ public class ContentUtils {
 		}
 	}
 
-	public static Object extractValue(DynamicString bodyAsValue, @Nullable ContentType contentType,
-			Function valueProvider) {
-		return extractValue(bodyAsValue, contentType, toClosure(valueProvider));
-	}
-
 	public static ContentType getClientContentType(DynamicString bodyAsValue) {
 		try {
-			extractValueForJSON(bodyAsValue, GET_STUB_SIDE);
+			extractValueForJSON(bodyAsValue, GET_STUB_SIDE_FUNCTION);
 			return ContentType.JSON;
 		}
 		catch (JacksonException ex) {
 			try {
-				getXmlSlurperWithDefaultErrorHandler()
-					.parseText(extractValueForXML(bodyAsValue, GET_STUB_SIDE).toString());
+				assertWellFormedXml(extractValueForXML(bodyAsValue, GET_STUB_SIDE_FUNCTION).toString());
 				return ContentType.XML;
 			}
 			catch (Exception ignored) {
-				extractValueForGString(bodyAsValue, GET_STUB_SIDE);
+				extractValueForGString(bodyAsValue, GET_STUB_SIDE_FUNCTION);
 				return ContentType.UNKNOWN;
 			}
 		}
@@ -178,7 +154,7 @@ public class ContentUtils {
 		}
 		catch (JacksonException ex) {
 			try {
-				getXmlSlurperWithDefaultErrorHandler().parseText(bodyAsValue);
+				assertWellFormedXml(bodyAsValue);
 				return ContentType.XML;
 			}
 			catch (Exception ignored) {
@@ -253,31 +229,27 @@ public class ContentUtils {
 	}
 
 	@SuppressWarnings("NullAway")
-	public static DynamicStringImpl extractValueForGString(DynamicString bodyAsValue, Closure valueProvider) {
+	public static DynamicStringImpl extractValueForGString(DynamicString bodyAsValue, Function valueProvider) {
 		Object[] values = bodyAsValue.getValues();
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
 			Object it = values[i];
-			Object result = (it instanceof DslProperty) ? valueProvider.call(it) : it;
+			Object result = (it instanceof DslProperty) ? valueProvider.apply(it) : it;
 			transformed[i] = (result != null) ? result.toString() : null;
 		}
 		return new DynamicStringImpl(transformed, (String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 	}
 
 	public static Object extractValue(DynamicString bodyAsValue, Function valueProvider) {
-		return extractValue(bodyAsValue, ContentType.UNKNOWN, toClosure(valueProvider));
-	}
-
-	public static Object extractValue(DynamicString bodyAsValue, Closure valueProvider) {
 		return extractValue(bodyAsValue, ContentType.UNKNOWN, valueProvider);
 	}
 
 	@SuppressWarnings("NullAway")
-	private static String extractValueForText(DynamicString bodyAsValue, Closure valueProvider) {
+	private static String extractValueForText(DynamicString bodyAsValue, Function valueProvider) {
 		Object[] values = bodyAsValue.getValues();
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
-			Object result = valueProvider.call(values[i]);
+			Object result = valueProvider.apply(values[i]);
 			transformed[i] = (result != null) ? result.toString() : null;
 		}
 		DynamicString transformedString = new DynamicStringImpl(transformed,
@@ -286,7 +258,7 @@ public class ContentUtils {
 	}
 
 	@SuppressWarnings("NullAway")
-	private static Object extractValueForJSON(DynamicString bodyAsValue, Closure valueProvider) {
+	private static Object extractValueForJSON(DynamicString bodyAsValue, Function valueProvider) {
 		Object[] values = bodyAsValue.getValues();
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
@@ -300,7 +272,7 @@ public class ContentUtils {
 	}
 
 	@SuppressWarnings("NullAway")
-	private static DynamicStringImpl extractValueForXML(DynamicString bodyAsValue, Closure valueProvider) {
+	private static DynamicStringImpl extractValueForXML(DynamicString bodyAsValue, Function valueProvider) {
 		Object[] values = bodyAsValue.getValues();
 		@Nullable String[] transformed = new @Nullable String[values.length];
 		for (int i = 0; i < values.length; i++) {
@@ -309,16 +281,11 @@ public class ContentUtils {
 		DynamicStringImpl impl = new DynamicStringImpl(transformed,
 				(String[]) CloneUtils.clone(bodyAsValue.getStrings()));
 		// try to convert it to XML
-		try {
-			getXmlSlurperWithDefaultErrorHandler().parseText(impl.toString());
-		}
-		catch (IOException | SAXException ex) {
-			throw new IllegalStateException(ex);
-		}
+		assertWellFormedXml(impl.toString());
 		return impl;
 	}
 
-	protected static Object transformJSONStringValue(Object obj, Closure valueProvider) {
+	protected static Object transformJSONStringValue(Object obj, Function valueProvider) {
 		if (obj instanceof DslProperty) {
 			return transformJSONStringValue((DslProperty) obj, valueProvider);
 		}
@@ -334,44 +301,40 @@ public class ContentUtils {
 		return obj;
 	}
 
-	protected static Object transformJSONStringValue(DslProperty dslProperty, Closure valueProvider) {
-		return transformJSONStringValue(valueProvider.call(dslProperty), valueProvider);
+	protected static Object transformJSONStringValue(DslProperty dslProperty, Function valueProvider) {
+		return transformJSONStringValue(valueProvider.apply(dslProperty), valueProvider);
 	}
 
-	protected static Object transformJSONStringValue(Pattern pattern, Closure valueProvider) {
+	protected static Object transformJSONStringValue(Pattern pattern, Function valueProvider) {
 		return String.format(JSON_VALUE_PATTERN_FOR_REGEX, pattern.pattern());
 	}
 
-	protected static Object transformJSONStringValue(OptionalProperty optional, Closure valueProvider) {
+	protected static Object transformJSONStringValue(OptionalProperty optional, Function valueProvider) {
 		return String.format(JSON_VALUE_PATTERN_FOR_OPTIONAL, optional.value());
 	}
 
-	protected static Object transformJSONStringValue(ExecutionProperty property, Closure valueProvider) {
+	protected static Object transformJSONStringValue(ExecutionProperty property, Function valueProvider) {
 		return String.format(JSON_VALUE_PATTERN_FOR_EXECUTION, property.getExecutionCommand());
 	}
 
-	private static @Nullable String transformXMLStringValue(Object obj, Closure valueProvider) {
+	private static @Nullable String transformXMLStringValue(Object obj, Function valueProvider) {
 		if (obj instanceof DslProperty) {
 			// Mirror the original Groovy runtime-dispatch behaviour: resolve the
 			// dynamic value through the provider and XML-escape the result, rather
 			// than applying the JSON placeholder transformation.
-			return transformXMLStringValue(valueProvider.call(obj), valueProvider);
+			return transformXMLStringValue(valueProvider.apply(obj), valueProvider);
 		}
 		return StringEscapeUtils.escapeXml11(StringEscapeUtils.unescapeXml(obj.toString()));
 	}
 
 	protected static Object convertDslPropsToTemporaryRegexPatterns(Object parsedJson) {
-		return convertDslPropsToTemporaryRegexPatterns(parsedJson, MapConverter.JSON_PARSING_CLOSURE);
+		return convertDslPropsToTemporaryRegexPatterns(parsedJson, MapConverter.JSON_PARSING_FUNCTION);
 	}
 
-	protected static Object convertDslPropsToTemporaryRegexPatterns(Object parsedJson, Closure parsingClosure) {
-		return MapConverter.transformValues(parsedJson, (value) -> transformJSONStringValue(value, GET_TEST_SIDE),
-				(str) -> parsingClosure.call(str));
-	}
-
-	protected static Object convertDslPropsToTemporaryRegexPatterns(Object parsedJson, Function parsingFunction) {
-		return MapConverter.transformValues(parsedJson, (value) -> transformJSONStringValue(value, GET_TEST_SIDE),
-				parsingFunction);
+	protected static Object convertDslPropsToTemporaryRegexPatterns(Object parsedJson,
+			Function<String, Object> parsingFunction) {
+		return MapConverter.transformValues(parsedJson,
+				(value) -> transformJSONStringValue(value, GET_TEST_SIDE_FUNCTION), parsingFunction);
 	}
 
 	private static Object convertAllTemporaryRegexPlaceholdersBackToPatterns(Object parsedJson) {
@@ -434,13 +397,14 @@ public class ContentUtils {
 		return matcher.group(1);
 	}
 
-	public static ContentType recognizeContentTypeFromHeader(@Nullable Headers headers, Closure<Object> closure) {
+	public static ContentType recognizeContentTypeFromHeader(@Nullable Headers headers,
+			Function<@Nullable Object, @Nullable Object> closure) {
 		Header header = (headers != null) ? headers.getEntries()
 			.stream()
 			.filter((it) -> "Content-Type".equals(it.getName()) || "contentType".equals(it.getName()))
 			.findFirst()
 			.orElse(null) : null;
-		Object closureResult = closure.call(header);
+		Object closureResult = closure.apply(header);
 		String content = (closureResult != null) ? closureResult.toString() : null;
 		if (content != null && content.contains("json")) {
 			return ContentType.JSON;
@@ -464,19 +428,13 @@ public class ContentUtils {
 	}
 
 	public static ContentType recognizeContentTypeFromHeader(@Nullable Headers headers) {
-		return recognizeContentTypeFromHeader(headers, new Closure<Object>(null) {
-			public @Nullable Object doCall(Object header) {
-				return (header != null) ? ((Header) header).getClientValue() : null;
-			}
-		});
+		return recognizeContentTypeFromHeader(headers,
+				(header) -> (header != null) ? ((Header) header).getClientValue() : null);
 	}
 
 	public static ContentType recognizeContentTypeFromTestHeader(Headers headers) {
-		return recognizeContentTypeFromHeader(headers, new Closure<Object>(null) {
-			public @Nullable Object doCall(Object header) {
-				return (header != null) ? ((Header) header).getServerValue() : null;
-			}
-		});
+		return recognizeContentTypeFromHeader(headers,
+				(header) -> (header != null) ? ((Header) header).getServerValue() : null);
 	}
 
 	public static MatchingStrategy.Type getEqualsTypeFromContentType(ContentType contentType) {
@@ -595,7 +553,7 @@ public class ContentUtils {
 		DynamicString stringWithoutValues = new DynamicStringImpl(transformed,
 				(String[]) CloneUtils.clone(gString.getStrings()));
 		try {
-			getXmlSlurperWithDefaultErrorHandler().parseText(stringWithoutValues.toString());
+			assertWellFormedXml(stringWithoutValues.toString());
 			return true;
 		}
 		catch (Exception ignored) {
@@ -616,35 +574,16 @@ public class ContentUtils {
 	}
 
 	public static String getGroovyMultipartFileParameterContent(String propertyName, NamedProperty propertyValue,
-			Closure<String> bytesFromFile) {
+			Function<FromFileProperty, String> bytesFromFile) {
 		return "'" + propertyName + "', " + namedPropertyName(propertyValue, "'") + ", "
-				+ groovyNamedPropertyValue(propertyValue, "'", bytesFromFile)
+				+ namedPropertyValueForGroovy(propertyValue, "'", bytesFromFile)
 				+ namedContentTypeNameIfPresent(propertyValue, "'");
 	}
 
-	public static String getGroovyMultipartFileParameterContent(String propertyName, NamedProperty propertyValue,
-			Function<FromFileProperty, String> bytesFromFile) {
-		return "'" + propertyName + "', " + namedPropertyName(propertyValue, "'") + ", "
-				+ groovyNamedPropertyValue(propertyValue, "'", new Closure<String>(null) {
-					public String doCall(FromFileProperty property) {
-						return bytesFromFile.apply(property);
-					}
-				}) + namedContentTypeNameIfPresent(propertyValue, "'");
-	}
-
 	public static String getJavaMultipartFileParameterContent(String propertyName, NamedProperty propertyValue,
 			Function<FromFileProperty, String> bytesFromFile) {
-		return getJavaMultipartFileParameterContent(propertyName, propertyValue, new Closure<String>(null) {
-			public String doCall(FromFileProperty property) {
-				return bytesFromFile.apply(property);
-			}
-		});
-	}
-
-	public static String getJavaMultipartFileParameterContent(String propertyName, NamedProperty propertyValue,
-			Closure<String> bytesFromFile) {
 		return "\"" + StringEscapeUtils.escapeJava(propertyName) + "\", " + namedPropertyName(propertyValue, "\"")
-				+ ", " + javaNamedPropertyValue(propertyValue, "\"", bytesFromFile)
+				+ ", " + namedPropertyValueForJava(propertyValue, "\"", bytesFromFile)
 				+ namedContentTypeNameIfPresent(propertyValue, "\"");
 	}
 
@@ -666,7 +605,8 @@ public class ContentUtils {
 		return ", " + contentType;
 	}
 
-	public static String groovyNamedPropertyValue(NamedProperty property, String quote, Closure<String> bytesFromFile) {
+	public static String namedPropertyValueForGroovy(NamedProperty property, String quote,
+			Function<FromFileProperty, String> bytesFromFile) {
 		DslProperty valueProperty = Objects.requireNonNull(property.getValue());
 		Object serverValue = valueProperty.getServerValue();
 		if (serverValue instanceof ExecutionProperty) {
@@ -679,14 +619,15 @@ public class ContentUtils {
 		else if (serverValue instanceof FromFileProperty) {
 			FromFileProperty fromFileProperty = (FromFileProperty) serverValue;
 			if (fromFileProperty.isByte()) {
-				return (String) bytesFromFile.call(fromFileProperty);
+				return bytesFromFile.apply(fromFileProperty);
 			}
 			return "[" + joinBytes(fromFileProperty.asBytes()) + "] as byte[]";
 		}
 		return quote + StringEscapeUtils.escapeJava(Objects.requireNonNull(serverValue).toString()) + quote + ".bytes";
 	}
 
-	public static String javaNamedPropertyValue(NamedProperty property, String quote, Closure<String> bytesFromFile) {
+	public static String namedPropertyValueForJava(NamedProperty property, String quote,
+			Function<FromFileProperty, String> bytesFromFile) {
 		DslProperty valueProperty = Objects.requireNonNull(property.getValue());
 		Object serverValue = valueProperty.getServerValue();
 		if (serverValue instanceof ExecutionProperty) {
@@ -699,7 +640,7 @@ public class ContentUtils {
 		else if (serverValue instanceof FromFileProperty) {
 			FromFileProperty fromFileProperty = (FromFileProperty) serverValue;
 			if (fromFileProperty.isByte()) {
-				return (String) bytesFromFile.call(fromFileProperty);
+				return bytesFromFile.apply(fromFileProperty);
 			}
 			return "new byte[] {" + joinBytes(fromFileProperty.asBytes()) + "}";
 		}
@@ -735,30 +676,36 @@ public class ContentUtils {
 	}
 
 	/**
-	 * Creates new {@link XmlSlurper} with default error handler.
-	 * @return the {@link XmlSlurper} with default error handler
+	 * Asserts that the given text is well-formed XML by parsing it with a JDK
+	 * {@link DocumentBuilder}. The parsed result is discarded; the method only exists for
+	 * its side effect of throwing on malformed input.
+	 * @param xml the candidate XML text
+	 * @throws IllegalStateException if the text is not well-formed XML
 	 */
-	public static XmlSlurper getXmlSlurperWithDefaultErrorHandler() {
+	static void assertWellFormedXml(String xml) {
 		try {
-			XmlSlurper xmlSlurper = new XmlSlurper();
-			xmlSlurper.setErrorHandler(new DefaultHandler());
-			return xmlSlurper;
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			// Harden against XML External Entity (XXE) attacks: the parser is only used
+			// to
+			// check well-formedness, so external entity resolution must be switched off.
+			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			factory.setXIncludeAware(false);
+			factory.setExpandEntityReferences(false);
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			builder.setErrorHandler(new DefaultHandler());
+			builder.parse(new InputSource(new StringReader(xml)));
 		}
-		catch (ParserConfigurationException | SAXException ex) {
+		catch (ParserConfigurationException | SAXException | IOException ex) {
 			throw new IllegalStateException(ex);
 		}
 	}
 
 	private static boolean isNotTemplate(String content) {
 		return !new HandlebarsTemplateProcessor().containsTemplateEntry(content);
-	}
-
-	private static Closure<Object> toClosure(Function valueProvider) {
-		return new Closure<Object>(null) {
-			public @Nullable Object doCall(Object it) {
-				return valueProvider.apply(it);
-			}
-		};
 	}
 
 }
