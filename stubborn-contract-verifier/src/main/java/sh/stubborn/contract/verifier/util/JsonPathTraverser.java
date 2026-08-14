@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import groovy.lang.GString;
+import sh.stubborn.contract.spec.internal.DynamicString;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.OptionalProperty;
 
@@ -260,8 +260,8 @@ class JsonPathTraverser {
 		if (converted instanceof OptionalProperty) {
 			return key.matches(((OptionalProperty) converted).optionalPattern());
 		}
-		if (converted instanceof GString) {
-			return key.matches(RegexpBuilders.buildGStringRegexpForTestSide((GString) converted));
+		if (converted instanceof DynamicString) {
+			return key.matches(RegexpBuilders.buildGStringRegexpForTestSide((DynamicString) converted));
 		}
 		if (converted instanceof ExecutionProperty) {
 			return key;

@@ -73,7 +73,36 @@ interface GroovyBodyParser extends BodyParser {
 
 	@Override
 	default String quotedEscapedLongText(Object text) {
-		return "'''" + text.toString() + "'''";
+		return "'''" + escapeInvalidGroovyStringEscapes(text.toString()) + "'''";
+	}
+
+	/**
+	 * Doubles only those backslashes that do <em>not</em> start a valid Groovy string
+	 * escape, so a literal backslash from a regex (e.g. {@code \d} inside an optional
+	 * body) survives a triple-quoted string — otherwise the generated test fails to
+	 * compile with {@code "Unexpected character: '\'"} — while genuine escapes such as
+	 * {@code \n} that the body already carries are left untouched.
+	 * @param text the text to embed in a Groovy triple-quoted string
+	 * @return the text with invalid-escape backslashes doubled
+	 */
+	default String escapeInvalidGroovyStringEscapes(String text) {
+		StringBuilder builder = new StringBuilder(text.length());
+		for (int i = 0; i < text.length(); i++) {
+			char current = text.charAt(i);
+			if (current == '\\') {
+				char next = (i + 1 < text.length()) ? text.charAt(i + 1) : '\0';
+				// Groovy string escapes are b, t, n, f, r, the quotes, backslash, dollar
+				// and
+				// the unicode escape prefix. Anything else after a backslash (e.g. a
+				// regex
+				// d, dot, s or w) is a literal backslash and must be doubled.
+				if ("btnfr\"'\\$u".indexOf(next) < 0) {
+					builder.append('\\');
+				}
+			}
+			builder.append(current);
+		}
+		return builder.toString();
 	}
 
 	@Override

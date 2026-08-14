@@ -30,13 +30,13 @@ import com.github.tomakehurst.wiremock.extension.TemplateHelperProviderExtension
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.spec.internal.RegexPatterns;
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsEscapeHelper;
 import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsJsonPathHelper;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.AssertionUtil;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.cloud.test.TestSocketUtils;
@@ -1671,9 +1671,7 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 		File request = new File(WireMockGroovyDslTests.class.getResource("/body_builder/request.pdf").getFile());
 		File response = new File(WireMockGroovyDslTests.class.getResource("/body_builder/response.pdf").getFile());
 		File file = new File(WireMockGroovyDslTests.class.getResource("/body_builder/worksWithPdf.groovy").getFile());
-		Contract contract = ContractVerifierDslConverter.convertAsCollection(file.getParentFile(), file)
-			.iterator()
-			.next();
+		Contract contract = GroovyContractConverter.convertAsCollection(file.getParentFile(), file).iterator().next();
 		String json = toWireMockClientJsonStub(contract);
 		int port = TestSocketUtils.findAvailableTcpPort();
 		WireMockServer server = new WireMockServer(config().port(port));

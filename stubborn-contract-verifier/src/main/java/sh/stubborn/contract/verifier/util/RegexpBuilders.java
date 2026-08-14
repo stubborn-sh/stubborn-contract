@@ -24,11 +24,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import groovy.lang.GString;
 import org.apache.commons.text.StringEscapeUtils;
-import org.codehaus.groovy.runtime.GStringImpl;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.DslProperty;
+import sh.stubborn.contract.spec.internal.DynamicString;
+import sh.stubborn.contract.spec.internal.DynamicStringImpl;
 import sh.stubborn.contract.spec.util.RegexpUtils;
 
 /**
@@ -59,20 +59,20 @@ public final class RegexpBuilders {
 		else if (o instanceof Pattern) {
 			return buildGStringRegexpForStubSide((Pattern) o);
 		}
-		else if (o instanceof GString) {
-			return buildGStringRegexpForStubSide((GString) o);
+		else if (o instanceof DynamicString) {
+			return buildGStringRegexpForStubSide((DynamicString) o);
 		}
 		return escapeSpecialRegexChars(o.toString());
 	}
 
 	/**
-	 * Converts the {@link GString} passed values into their stub side String
+	 * Converts the {@link DynamicString} passed values into their stub side String
 	 * representations.
 	 * @param gString value to convert
 	 * @return stub side String representation
 	 */
-	static String buildGStringRegexpForStubSide(GString gString) {
-		return new GStringImpl(
+	static String buildGStringRegexpForStubSide(DynamicString gString) {
+		return new DynamicStringImpl(
 				Stream.of(gString.getValues())
 					.map(RegexpBuilders::buildGStringRegexpForStubSide)
 					.map((s) -> (Object) s)
@@ -102,13 +102,13 @@ public final class RegexpBuilders {
 	}
 
 	/**
-	 * Converts the {@link GString} passed values into their test side String
+	 * Converts the {@link DynamicString} passed values into their test side String
 	 * representations.
 	 * @param gString value to convert
 	 * @return test side String representation
 	 */
-	public static String buildGStringRegexpForTestSide(GString gString) {
-		return new GStringImpl(
+	public static String buildGStringRegexpForTestSide(DynamicString gString) {
+		return new DynamicStringImpl(
 				Stream.of(gString.getValues())
 					.map(RegexpBuilders::buildGStringRegexpForTestSide)
 					.map((s) -> (Object) s)
@@ -131,7 +131,7 @@ public final class RegexpBuilders {
 		return RegexpUtils.escapeSpecialRegexChars(str);
 	}
 
-	public static String buildJSONRegexpMatch(GString gString) {
+	public static String buildJSONRegexpMatch(DynamicString gString) {
 		return buildJSONRegexpMatch(ContentUtils.extractValue(gString, ContentType.JSON, CLIENT_VALUE_EXTRACTOR));
 	}
 

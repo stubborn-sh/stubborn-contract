@@ -37,7 +37,7 @@ response:
 ```
 
 ```groovy [Groovy DSL]
-import org.springframework.cloud.contract.spec.Contract
+import sh.stubborn.contract.spec.Contract
 
 Contract.make {
     description "Should return a fraud check result"

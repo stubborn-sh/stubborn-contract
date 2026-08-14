@@ -33,6 +33,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
 import sh.stubborn.contract.spec.internal.MatchingType;
 import sh.stubborn.contract.spec.internal.NamedProperty;
@@ -40,7 +41,6 @@ import sh.stubborn.contract.spec.internal.QueryParameters;
 import sh.stubborn.contract.spec.internal.RegexPatterns;
 import sh.stubborn.contract.spec.internal.RegexProperty;
 import sh.stubborn.contract.spec.internal.Url;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 import sh.stubborn.contract.verifier.util.MapConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -753,7 +753,7 @@ class YamlContractConverterTests {
 	void should_convert_http_dsl_to_yaml() {
 		File ymlWithRest = yamlFile("contract.yml");
 		assertThat(this.converter.isAccepted(ymlWithRest)).isTrue();
-		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
+		Collection<Contract> contracts = GroovyContractConverter.convertAsCollection(new File("/"),
 				"import sh.stubborn.contract.spec.Contract\n" + "Contract.make {\n" + "  request {\n"
 						+ "    inProgress()\n" + "    url('/foo')\n" + "    method('PUT')\n" + "    headers {\n"
 						+ "      header('foo', 'bar')\n" + "    }\n" + "    cookies {\n"
@@ -804,7 +804,7 @@ class YamlContractConverterTests {
 	void should_convert_multiple_messaging_dsls_to_yaml() {
 		File ymlMessagingMethod = yamlFile("contract_message_method.yml");
 		assertThat(this.converter.isAccepted(ymlMessagingMethod)).isTrue();
-		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
+		Collection<Contract> contracts = GroovyContractConverter.convertAsCollection(new File("/"),
 				"import sh.stubborn.contract.spec.Contract\n" + "[Contract.make {\n" + "  input {\n"
 						+ "    description('Some description')\n" + "    label('some_label')\n"
 						+ "    triggeredBy('bookReturnedTriggered()')\n" + "  }\n" + "  outputMessage {\n"
@@ -840,7 +840,7 @@ class YamlContractConverterTests {
 	void should_convert_messaging_dsl_with_input_triggered_by_method_to_yaml() {
 		File ymlMessagingMethod = yamlFile("contract_message_method.yml");
 		assertThat(this.converter.isAccepted(ymlMessagingMethod)).isTrue();
-		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(new File("/"),
+		Collection<Contract> contracts = GroovyContractConverter.convertAsCollection(new File("/"),
 				"import sh.stubborn.contract.spec.Contract\n" + "Contract.make {\n" + "  input {\n"
 						+ "    description('Some description')\n" + "    label('some_label')\n"
 						+ "    triggeredBy('bookReturnedTriggered()')\n" + "  }\n" + "  outputMessage {\n"
@@ -862,7 +862,7 @@ class YamlContractConverterTests {
 	void should_convert_messaging_with_a_message_dsl_to_yaml() {
 		File ymlMessagingMatchers = yamlFile("contract_message_matchers.yml");
 		assertThat(this.converter.isAccepted(ymlMessagingMatchers)).isTrue();
-		Collection<Contract> contracts = ContractVerifierDslConverter
+		Collection<Contract> contracts = GroovyContractConverter
 			.convertAsCollection(new File("/"), "import sh.stubborn.contract.spec.Contract\n"
 					+ "import static sh.stubborn.contract.spec.internal.RegexPatterns.*\n" + "Contract.make {\n"
 					+ "  name('fooo')\n" + "  label('card_rejected')\n" + "  ignored()\n" + "  inProgress()\n"
@@ -994,7 +994,7 @@ class YamlContractConverterTests {
 	@Test
 	void should_convert_contract_with_body_as_bytes() {
 		File groovyBytes = resourceFile("/body_builder/worksWithPdf.groovy");
-		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(groovyBytes);
+		Collection<Contract> contracts = GroovyContractConverter.convertAsCollection(groovyBytes);
 		Collection<YamlContract> yamlContracts = this.converter.convertTo(contracts);
 		assertThat(yamlContracts).hasSize(1);
 		YamlContract yamlContract = yamlContracts.iterator().next();

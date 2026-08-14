@@ -1,0 +1,56 @@
+# git-cliff configuration — https://git-cliff.org
+# Generates CHANGELOG.md sections from the conventional-commit history.
+# The curated 0.1.0 entry is preserved; new releases are prepended above it.
+
+[changelog]
+header = """
+# Changelog
+
+All notable changes to Stubborn Contract are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+\n
+"""
+body = """
+{% if version %}\
+## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+## [Unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | upper_first }}
+{% for commit in commits %}\
+- {{ commit.message | split(pat="\n") | first | upper_first | trim }}\
+{% if commit.remote.pr_number %} (#{{ commit.remote.pr_number }}){% endif %}
+{% endfor %}\
+{% endfor %}\n
+"""
+trim = true
+# Keep everything already written below the newest generated section (the curated 0.1.0 entry).
+footer = ""
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+protect_breaking_commits = true
+filter_commits = false
+tag_pattern = "v[0-9]*"
+topo_order = false
+sort_commits = "newest"
+# Drop merge commits and release-bookkeeping noise from the changelog.
+skip_tags = "v0.0.*"
+commit_parsers = [
+  { message = "^Merge ", skip = true },
+  { message = "^release:", skip = true },
+  { message = "^feat", group = "🚀 Features" },
+  { message = "^messaging", group = "🚀 Features" },
+  { message = "^fix", group = "🐛 Bug Fixes" },
+  { message = "^migration", group = "♻️ Migration" },
+  { message = "^docs", group = "📚 Documentation" },
+  { message = "^test", group = "✅ Tests" },
+  { message = "^build\\(deps", group = "⬆️ Dependencies" },
+  { message = "^(build|ci|chore|refactor|perf|style)", group = "🏗️ Build & CI" },
+  { message = ".*", group = "🔧 Other" },
+]

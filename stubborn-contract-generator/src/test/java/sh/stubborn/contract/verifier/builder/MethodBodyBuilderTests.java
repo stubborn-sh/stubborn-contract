@@ -33,6 +33,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.spec.internal.RegexPatterns;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
@@ -40,7 +41,6 @@ import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubVerifier;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 import sh.stubborn.contract.verifier.util.SyntaxChecker;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -663,8 +663,7 @@ class MethodBodyBuilderTests implements WireMockStubVerifier {
 			throws Exception {
 		applyBuilder(framework, mode);
 		File root = new File("src/test/resources/body_builder/");
-		Contract contractDsl = ContractVerifierDslConverter
-			.convertAsCollection(root, new File(root, "worksWithPdf.groovy"))
+		Contract contractDsl = GroovyContractConverter.convertAsCollection(root, new File(root, "worksWithPdf.groovy"))
 			.stream()
 			.findFirst()
 			.get();

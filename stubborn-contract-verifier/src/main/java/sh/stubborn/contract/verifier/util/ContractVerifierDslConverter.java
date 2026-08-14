@@ -46,8 +46,6 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 
-import groovy.lang.GroovyShell;
-import org.codehaus.groovy.control.CompilerConfiguration;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +53,7 @@ import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractConverter;
 
 /**
- * Converts a String or a Groovy or Java file into a {@link Contract}.
+ * Converts a Java file into a {@link Contract}.
  *
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
@@ -77,25 +75,6 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 
 	private static final JavaCompiler COMPILER = ToolProvider.getSystemJavaCompiler();
 
-	public static Collection<Contract> convertAsCollection(File rootFolder, String dsl) {
-		ClassLoader classLoader = ContractVerifierDslConverter.class.getClassLoader();
-		try {
-			ClassLoader urlCl = updatedClassLoader(rootFolder, classLoader);
-			Object object = groovyShell(urlCl, rootFolder).evaluate(dsl);
-			return listOfContracts(object);
-		}
-		catch (DslParseException ex) {
-			throw ex;
-		}
-		catch (Exception ex) {
-			LOG.error("Exception occurred while trying to evaluate the contract", ex);
-			throw new DslParseException(ex);
-		}
-		finally {
-			Thread.currentThread().setContextClassLoader(classLoader);
-		}
-	}
-
 	public static Collection<Contract> convertAsCollection(File dsl) {
 		return convertAsCollection(dsl.getParentFile(), dsl);
 	}
@@ -103,8 +82,8 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 	public static Collection<Contract> convertAsCollection(File rootFolder, File dsl) {
 		ClassLoader classLoader = ContractVerifierDslConverter.class.getClassLoader();
 		try {
-			ClassLoader urlCl = updatedClassLoader(rootFolder, classLoader);
-			Object object = toObject(urlCl, rootFolder, dsl);
+			updatedClassLoader(rootFolder, classLoader);
+			Object object = toObject(rootFolder, dsl);
 			return listOfContracts(dsl, object);
 		}
 		catch (DslParseException ex) {
@@ -138,7 +117,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		Thread.currentThread().setContextClassLoader(urlCl);
 	}
 
-	private static @Nullable Object toObject(ClassLoader cl, File rootFolder, File dsl) throws IOException {
+	private static @Nullable Object toObject(File rootFolder, File dsl) throws IOException {
 		if (isJava(dsl)) {
 			try {
 				return parseJavaFile(rootFolder, dsl);
@@ -151,7 +130,10 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 				return null;
 			}
 		}
-		return groovyShell(cl, rootFolder).evaluate(dsl);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("File [" + dsl + "] is not a [.java] contract. This converter only handles [.java] files.");
+		}
+		return null;
 	}
 
 	private static @Nullable Object parseJavaFile(File rootFolder, File dsl) throws IllegalAccessException,
@@ -252,34 +234,21 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 		return fqn + classMatcher.group(1);
 	}
 
-	private static GroovyShell groovyShell(ClassLoader cl, File rootFolder) {
-		CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
-		compilerConfiguration.setSourceEncoding("UTF-8");
-		compilerConfiguration.setClasspathList(Collections.singletonList(rootFolder.getAbsolutePath()));
-		return new GroovyShell(cl, compilerConfiguration);
-	}
-
-	private static Collection<Contract> listOfContracts(Object object) {
-		if (object instanceof Collection) {
-			return (Collection<Contract>) object;
-		}
-		else if (!(object instanceof Contract)) {
-			throw new DslParseException("Contract is not returning a Contract or list of Contracts");
-		}
-		return Collections.singletonList((Contract) object);
-	}
-
 	private static Collection<Contract> listOfContracts(File file, @Nullable Object object) {
+		Collection<Contract> contracts;
 		if (object == null) {
 			return Collections.emptyList();
 		}
 		else if (isACollectionOfContracts(object)) {
-			return withName(file, (Collection<Contract>) object);
+			contracts = withName(file, (Collection<Contract>) object);
 		}
 		else if (!(object instanceof Contract)) {
 			throw new DslParseException("Contract is not returning a Contract or list of Contracts");
 		}
-		return withName(file, Collections.singletonList((Contract) object));
+		else {
+			contracts = withName(file, Collections.singletonList((Contract) object));
+		}
+		return contracts;
 	}
 
 	private static boolean isACollectionOfContracts(Object object) {
@@ -302,8 +271,7 @@ public class ContractVerifierDslConverter implements ContractConverter<Collectio
 
 	@Override
 	public boolean isAccepted(File file) {
-		return file.getName().endsWith(".groovy") || file.getName().endsWith(".gvy")
-				|| file.getName().endsWith(".java");
+		return file.getName().endsWith(".java");
 	}
 
 	@Override

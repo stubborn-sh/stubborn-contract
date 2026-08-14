@@ -38,7 +38,6 @@ import com.github.tomakehurst.wiremock.matching.RequestPattern;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
-import groovy.lang.GString;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.Contract;
@@ -47,6 +46,7 @@ import sh.stubborn.contract.spec.internal.BodyMatcher;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
 import sh.stubborn.contract.spec.internal.ClientDslProperty;
 import sh.stubborn.contract.spec.internal.DslProperty;
+import sh.stubborn.contract.spec.internal.DynamicString;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
 import sh.stubborn.contract.spec.internal.MatchingType;
@@ -359,8 +359,8 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	private Object getUrlIfGstring(Object clientSide) {
-		if (clientSide instanceof GString) {
-			if (Arrays.stream(((GString) clientSide).getValues()).anyMatch((it) -> {
+		if (clientSide instanceof DynamicString) {
+			if (Arrays.stream(((DynamicString) clientSide).getValues()).anyMatch((it) -> {
 				Object value = getStubSideValue(it);
 				return value instanceof Pattern || value instanceof RegexProperty;
 			})) {
@@ -469,8 +469,8 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	private MatchingStrategy getMatchingStrategy(Object bodyValue) {
-		if (bodyValue instanceof GString) {
-			return this.getMatchingStrategy((GString) bodyValue);
+		if (bodyValue instanceof DynamicString) {
+			return this.getMatchingStrategy((DynamicString) bodyValue);
 		}
 		else if (bodyValue instanceof MatchingStrategy) {
 			return this.getMatchingStrategy((MatchingStrategy) bodyValue);
@@ -491,7 +491,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 		return getMatchingStrategyIncludingContentType(matchingStrategy);
 	}
 
-	private MatchingStrategy getMatchingStrategy(GString gString) {
+	private MatchingStrategy getMatchingStrategy(DynamicString gString) {
 		if (gString == null) {
 			return new MatchingStrategy("", MatchingStrategy.Type.EQUAL_TO);
 		}
@@ -503,7 +503,7 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	private Object getStringFromGString(Object object) {
-		return (object instanceof GString) ? object.toString() : object;
+		return (object instanceof DynamicString) ? object.toString() : object;
 	}
 
 	private MatchingStrategy tryToFindMachingStrategy(Object bodyValue) {
@@ -526,8 +526,8 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 		else if (value instanceof List) {
 			newMatchingStrategy = new MatchingStrategy(parseBody((List<?>) value, contentType), type);
 		}
-		else if (value instanceof GString) {
-			newMatchingStrategy = new MatchingStrategy(parseBody((GString) value, contentType), type);
+		else if (value instanceof DynamicString) {
+			newMatchingStrategy = new MatchingStrategy(parseBody((DynamicString) value, contentType), type);
 		}
 		else {
 			newMatchingStrategy = new MatchingStrategy(parseBody(Objects.requireNonNull(value), contentType), type);
@@ -554,8 +554,8 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 	}
 
 	private boolean containsPattern(@Nullable Object o) {
-		if (o instanceof GString) {
-			return containsPattern(((GString) o).getValues());
+		if (o instanceof DynamicString) {
+			return containsPattern(((DynamicString) o).getValues());
 		}
 		else if (o instanceof Map) {
 			return containsPattern(((Map<?, ?>) o).entrySet());

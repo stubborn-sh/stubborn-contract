@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import groovy.json.JsonOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jspecify.annotations.Nullable;
@@ -45,6 +44,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessageMetadata;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 import sh.stubborn.contract.verifier.util.BodyExtractor;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Runs stubs for a particular {@link StubServer}.
@@ -298,11 +298,11 @@ class StubRunnerExecutor implements StubFinder {
 		else {
 			Object clientValue = (body != null) ? body.getClientValue() : null;
 			if (clientValue != null) {
-				payload = JsonOutput.toJson(BodyExtractor.extractClientValueFromBody(clientValue));
+				payload = new JsonMapper().writeValueAsString(BodyExtractor.extractClientValueFromBody(clientValue));
 			}
 			else {
-				// No body — serialize as JSON null (matches JsonOutput.toJson(null)
-				// behavior)
+				// No body — serialize as JSON null (matches the previous
+				// JsonOutput.toJson(null) behavior)
 				payload = "null";
 			}
 		}

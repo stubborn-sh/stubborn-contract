@@ -17,10 +17,10 @@
 package sh.stubborn.contract.verifier.util;
 
 import org.junit.jupiter.api.Test;
-import org.xml.sax.helpers.DefaultHandler;
 import sh.stubborn.contract.spec.internal.DslProperty;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ContentUtilsTests {
 
@@ -37,9 +37,10 @@ class ContentUtilsTests {
 	}
 
 	@Test
-	void should_return_xml_slurper_with_default_error_handler() throws Exception {
-		groovy.xml.XmlSlurper xmlSlurper = ContentUtils.getXmlSlurperWithDefaultErrorHandler();
-		assertThat(xmlSlurper.getErrorHandler()).isInstanceOf(DefaultHandler.class);
+	void should_assert_well_formed_xml() {
+		ContentUtils.assertWellFormedXml("<root><child>text</child></root>");
+		assertThatThrownBy(() -> ContentUtils.assertWellFormedXml("<root><child>text</root>"))
+			.isInstanceOf(IllegalStateException.class);
 	}
 
 }

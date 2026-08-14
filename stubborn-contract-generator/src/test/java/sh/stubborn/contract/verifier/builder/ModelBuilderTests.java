@@ -26,12 +26,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -384,7 +384,7 @@ class ModelBuilderTests {
 		File file = Files.createTempFile(this.tmpDir, "contract", ".groovy").toFile();
 		Files.write(file.toPath(), contractDsl.getBytes());
 		Collection<ContractMetadata> contracts = Collections.singletonList(new ContractMetadata(file.toPath(), false, 1,
-				null, ContractVerifierDslConverter.convertAsCollection(new File("/"), file)));
+				null, GroovyContractConverter.convertAsCollection(new File("/"), file)));
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.JUNIT5);
 		properties.setTestMode(TestMode.MOCKMVC);
@@ -405,7 +405,7 @@ class ModelBuilderTests {
 		// via the context classloader; a matching resource lives at the test classpath
 		// root.
 		Collection<ContractMetadata> contracts = Collections.singletonList(new ContractMetadata(file.toPath(), false, 1,
-				null, ContractVerifierDslConverter.convertAsCollection(new File("/"), file)));
+				null, GroovyContractConverter.convertAsCollection(new File("/"), file)));
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(TestFramework.JUNIT5);
 		properties.setTestMode(TestMode.MOCKMVC);
@@ -424,7 +424,7 @@ class ModelBuilderTests {
 		File file = Files.createTempFile(this.tmpDir, "contract", ".groovy").toFile();
 		Files.write(file.toPath(), CONTRACT.getBytes());
 		return Collections.singletonList(new ContractMetadata(file.toPath(), ignored, 1, null,
-				ContractVerifierDslConverter.convertAsCollection(new File("/"), file)));
+				GroovyContractConverter.convertAsCollection(new File("/"), file)));
 	}
 
 }

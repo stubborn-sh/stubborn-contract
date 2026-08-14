@@ -38,4 +38,14 @@ class NoSpringArchTests {
 			.check(this.classes);
 	}
 
+	@Test
+	void productionCodeHasNoGroovyDependencies() {
+		ArchRuleDefinition.noClasses()
+			.should()
+			.dependOnClassesThat()
+			.resideInAnyPackage("groovy..", "org.codehaus.groovy..", "org.apache.groovy..")
+			.as("Core stub-runner module must not depend on Groovy — Groovy DSL parsing lives in stubborn-contract-spec-groovy")
+			.check(this.classes);
+	}
+
 }

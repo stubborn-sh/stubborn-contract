@@ -42,7 +42,7 @@ A contract can contain the following top-level elements:
 You can add a description to your contract:
 
 ```groovy
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
     description("""
         some interesting description
     """)
@@ -55,7 +55,7 @@ org.springframework.cloud.contract.spec.Contract.make {
 If provided, the name is used to generate the test method name:
 
 ```groovy
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
     name("some_special_name")
     // ...
 }
@@ -66,7 +66,7 @@ org.springframework.cloud.contract.spec.Contract.make {
 If you want to ignore a contract, you can set the value of `ignored` to `true` in the contract definition:
 
 ```groovy
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
     ignored()
     // ...
 }
@@ -77,7 +77,7 @@ org.springframework.cloud.contract.spec.Contract.make {
 If a contract is in progress, on the producer side, tests are not generated, but the stub is generated. See the [how-to guide on marking contracts in progress](../howto/mark-in-progress).
 
 ```groovy
-org.springframework.cloud.contract.spec.Contract.make {
+sh.stubborn.contract.spec.Contract.make {
     inProgress()
     // ...
 }

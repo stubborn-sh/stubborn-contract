@@ -23,10 +23,10 @@ import java.util.Objects;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import groovy.lang.GString;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.ContractTemplate;
 import sh.stubborn.contract.spec.internal.DslProperty;
+import sh.stubborn.contract.spec.internal.DynamicString;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.Headers;
 import sh.stubborn.contract.verifier.template.HandlebarsTemplateProcessor;
@@ -201,10 +201,10 @@ abstract class BaseWireMockStubStrategy {
 	 * @param contentType the content type
 	 * @return the String version of the body
 	 */
-	String parseBody(GString value, ContentType contentType) {
+	String parseBody(DynamicString value, ContentType contentType) {
 		Object processedValue = ContentUtils.extractValue(value, contentType,
 				(o) -> Objects.requireNonNull((o instanceof DslProperty) ? ((DslProperty<?>) o).getClientValue() : o));
-		if (processedValue instanceof GString) {
+		if (processedValue instanceof DynamicString) {
 			return parseBody(processedValue.toString(), contentType);
 		}
 		return parseBody(processedValue, contentType);
@@ -224,7 +224,7 @@ abstract class BaseWireMockStubStrategy {
 		try {
 			if (value instanceof Map) {
 				Object convertedMap = MapConverter.transformValues(value,
-						(v) -> (v instanceof GString) ? ((GString) v).toString() : v);
+						(v) -> (v instanceof DynamicString) ? ((DynamicString) v).toString() : v);
 				String jsonOutput = new JsonMapper().writeValueAsString(convertedMap);
 				return jsonOutput.replaceAll("\\\\\\\\\\\\", "\\\\");
 			}

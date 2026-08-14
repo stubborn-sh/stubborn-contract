@@ -19,11 +19,11 @@ package sh.stubborn.contract.verifier.util;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import groovy.json.StringEscapeUtils;
-import groovy.lang.GString;
+import org.apache.commons.text.StringEscapeUtils;
 import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.spec.internal.CanBeDynamic;
 import sh.stubborn.contract.spec.internal.DslProperty;
+import sh.stubborn.contract.spec.internal.DynamicString;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
 import sh.stubborn.contract.spec.internal.RegexProperty;
 import tools.jackson.databind.json.JsonMapper;
@@ -48,7 +48,7 @@ public final class BodyExtractor {
 	public static String extractTestValueFrom(@Nullable Object body) {
 		Object bodyValue = extractServerValueFromBody(body);
 		String json = new JsonMapper().writeValueAsString(bodyValue);
-		json = StringEscapeUtils.unescapeJavaScript(json);
+		json = StringEscapeUtils.unescapeEcmaScript(json);
 		return trimRepeatedQuotes(json);
 	}
 
@@ -61,7 +61,7 @@ public final class BodyExtractor {
 	public static String extractStubValueFrom(@Nullable Object body) {
 		Object bodyValue = extractClientValueFromBody(body);
 		String json = new JsonMapper().writeValueAsString(bodyValue);
-		json = StringEscapeUtils.unescapeJavaScript(json);
+		json = StringEscapeUtils.unescapeEcmaScript(json);
 		return trimRepeatedQuotes(json);
 	}
 
@@ -70,9 +70,9 @@ public final class BodyExtractor {
 	}
 
 	public static @Nullable Object extractServerValueFromBody(@Nullable Object bodyValue) {
-		if (bodyValue instanceof GString) {
+		if (bodyValue instanceof DynamicString) {
 			Function<Object, @Nullable Object> serverSide = (v) -> ((DslProperty<?>) v).getServerValue();
-			return ContentUtils.extractValue((GString) bodyValue, serverSide);
+			return ContentUtils.extractValue((DynamicString) bodyValue, serverSide);
 		}
 		if (bodyValue == null) {
 			return null;
@@ -86,9 +86,9 @@ public final class BodyExtractor {
 		if (bodyValue == null) {
 			return null;
 		}
-		if (bodyValue instanceof GString) {
+		if (bodyValue instanceof DynamicString) {
 			Function<Object, @Nullable Object> clientSide = (v) -> ((DslProperty<?>) v).getClientValue();
-			return ContentUtils.extractValue((GString) bodyValue, clientSide);
+			return ContentUtils.extractValue((DynamicString) bodyValue, clientSide);
 		}
 		else if (bodyValue instanceof DslProperty) {
 			return extractClientValueFromBody(((DslProperty<?>) bodyValue).getClientValue());
