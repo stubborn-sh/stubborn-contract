@@ -31,12 +31,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubVerifier;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 import sh.stubborn.contract.verifier.util.SyntaxChecker;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -192,7 +192,7 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 	}
 
 	private static Contract parseContract(String groovyDsl) {
-		return ContractVerifierDslConverter
+		return GroovyContractConverter
 			.convertAsCollection(new File("/"), "import sh.stubborn.contract.spec.Contract\n" + groovyDsl)
 			.iterator()
 			.next();

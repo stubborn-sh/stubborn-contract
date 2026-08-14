@@ -148,6 +148,11 @@
 			<artifactId>jackson-dataformat-yaml</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-spec-groovy</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.wiremock</groupId>
 			<artifactId>wiremock-jetty12</artifactId>
 			<scope>test</scope>

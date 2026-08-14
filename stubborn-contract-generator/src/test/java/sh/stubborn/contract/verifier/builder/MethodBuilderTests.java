@@ -20,9 +20,9 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.file.SingleContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +30,7 @@ class MethodBuilderTests {
 
 	@Test
 	void should_map_create_valid_method_name_from_file_name_containing_illegal_chars() {
-		Contract contractDsl = ContractVerifierDslConverter
+		Contract contractDsl = GroovyContractConverter
 			.convertAsCollection(new File("/"),
 					"sh.stubborn.contract.spec.Contract.make {\n" + "request { method 'GET'; urlPath '/foo' }\n"
 							+ "response { status OK(); body(foo: 'foo'); headers { contentType(applicationJson()) } }\n"

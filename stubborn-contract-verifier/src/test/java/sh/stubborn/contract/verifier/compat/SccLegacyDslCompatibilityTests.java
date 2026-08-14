@@ -24,10 +24,10 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.spec.internal.RegexProperty;
 import sh.stubborn.contract.verifier.dsl.wiremock.WireMockStubStrategy;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,7 +53,7 @@ class SccLegacyDslCompatibilityTests {
 	File rootFolder;
 
 	private Contract parseSingle(String groovyDsl) {
-		Collection<Contract> contracts = ContractVerifierDslConverter.convertAsCollection(this.rootFolder, groovyDsl);
+		Collection<Contract> contracts = GroovyContractConverter.convertAsCollection(this.rootFolder, groovyDsl);
 		assertThat(contracts).hasSize(1);
 		return contracts.iterator().next();
 	}

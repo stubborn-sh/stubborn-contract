@@ -28,10 +28,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 import sh.stubborn.contract.verifier.util.SyntaxChecker;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +63,7 @@ class MessagingMethodBodyBuilderTests {
 	}
 
 	private Contract contractFromGroovy(String groovyDsl) {
-		return ContractVerifierDslConverter.convertAsCollection(new File("/"), groovyDsl).iterator().next();
+		return GroovyContractConverter.convertAsCollection(new File("/"), groovyDsl).iterator().next();
 	}
 
 	private ContractMetadata contractMetadata(Contract contractDsl) {

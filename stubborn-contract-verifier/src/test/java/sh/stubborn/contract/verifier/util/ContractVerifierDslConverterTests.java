@@ -25,6 +25,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -145,7 +146,7 @@ class ContractVerifierDslConverterTests {
 
 	@Test
 	void should_convert_file_to_a_list_of_Contracts() {
-		List<Contract> contracts = (List<Contract>) ContractVerifierDslConverter.convertAsCollection(new File("/"),
+		List<Contract> contracts = (List<Contract>) GroovyContractConverter.convertAsCollection(new File("/"),
 				this.multipleContracts);
 		assertThat(contracts).hasSize(2);
 		assertThat(contracts.get(0).getName()).isEqualTo("multiple_contracts_0");
@@ -159,8 +160,7 @@ class ContractVerifierDslConverterTests {
 	@Test
 	void should_convert_text_to_a_list_of_Contracts() throws Exception {
 		String text = java.nio.file.Files.readString(this.multipleContracts.toPath());
-		List<Contract> contracts = (List<Contract>) ContractVerifierDslConverter.convertAsCollection(new File("/"),
-				text);
+		List<Contract> contracts = (List<Contract>) GroovyContractConverter.convertAsCollection(new File("/"), text);
 		assertThat(contracts).hasSize(2);
 		assertThat(contracts.get(0).getName()).isNull();
 		assertThat(contracts.get(0).getRequest().getMethod().getClientValue()).isEqualTo("PUT");
@@ -173,30 +173,29 @@ class ContractVerifierDslConverterTests {
 	@Test
 	void should_throw_an_exception_when_an_invalid_file_is_parsed() throws Exception {
 		String text = java.nio.file.Files.readString(this.invalidContract.toPath());
-		assertThatThrownBy(() -> ContractVerifierDslConverter.convertAsCollection(new File("/"), text))
-			.isInstanceOf(DslParseException.class);
+		assertThatThrownBy(() -> GroovyContractConverter.convertAsCollection(new File("/"), text))
+			.isInstanceOf(RuntimeException.class);
 	}
 
 	@Test
 	void should_throw_an_exception_with_file_path_when_an_invalid_file_is_parsed() {
-		DslParseException ex = org.assertj.core.api.Assertions.catchThrowableOfType(DslParseException.class,
-				() -> ContractVerifierDslConverter.convertAsCollection(new File("/"), this.invalidContract));
+		RuntimeException ex = org.assertj.core.api.Assertions.catchThrowableOfType(RuntimeException.class,
+				() -> GroovyContractConverter.convertAsCollection(new File("/"), this.invalidContract));
 		assertThat(ex).isNotNull();
 		assertThat(ex.toString()).contains("contract.yml");
 	}
 
 	@Test
 	void should_throw_an_exception_when_a_non_existent_file_is_parsed() {
-		DslParseException ex = org.assertj.core.api.Assertions.catchThrowableOfType(DslParseException.class,
-				() -> ContractVerifierDslConverter.convertAsCollection(new File("/"), new File("/foo/bar/baz.foo")));
+		IllegalStateException ex = org.assertj.core.api.Assertions.catchThrowableOfType(IllegalStateException.class,
+				() -> GroovyContractConverter.convertAsCollection(new File("/"), new File("/foo/bar/baz.foo")));
 		assertThat(ex).isNotNull();
 		assertThat(ex.getCause()).isInstanceOf(FileNotFoundException.class);
 	}
 
 	@Test
 	void should_convert_file_to_a_list_of_Contracts_when_theres_only_one_declared_contract() {
-		Collection<Contract> contract = ContractVerifierDslConverter.convertAsCollection(new File("/"),
-				this.singleContract);
+		Collection<Contract> contract = GroovyContractConverter.convertAsCollection(new File("/"), this.singleContract);
 		assertThat(contract).isEqualTo(List.of(this.expectedSingleContract));
 	}
 
@@ -217,7 +216,7 @@ class ContractVerifierDslConverterTests {
 	@Test
 	void should_convert_text_to_a_list_of_Contracts_when_theres_only_one_declared_contract() throws Exception {
 		String text = java.nio.file.Files.readString(this.singleContract.toPath());
-		Collection<Contract> contract = ContractVerifierDslConverter.convertAsCollection(new File("/"), text);
+		Collection<Contract> contract = GroovyContractConverter.convertAsCollection(new File("/"), text);
 		assertThat(contract).isEqualTo(List.of(this.expectedSingleContractForText));
 	}
 

@@ -29,11 +29,11 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.config.TestMode;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -263,7 +263,7 @@ class TestGenerationGoldenMasterTests {
 		properties.setGeneratedTestResourcesDir(this.tmp);
 
 		ContractMetadata contract = new ContractMetadata(contractFile.toPath(), true, 1, 2,
-				ContractVerifierDslConverter.convertAsCollection(new File("/"), contractFile));
+				GroovyContractConverter.convertAsCollection(new File("/"), contractFile));
 		return new ModelBasedTestGenerator().buildClass(properties, List.of(contract), "com/example",
 				new SingleTestGenerator.GeneratedClassData("ContractTest", "com.example", contractFile.toPath()));
 	}

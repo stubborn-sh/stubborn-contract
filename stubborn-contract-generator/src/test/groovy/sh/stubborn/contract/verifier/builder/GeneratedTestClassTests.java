@@ -30,10 +30,10 @@ import org.assertj.core.api.BDDAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import sh.stubborn.contract.verifier.config.TestFramework;
 import sh.stubborn.contract.verifier.file.ContractMetadata;
-import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
 
 public class GeneratedTestClassTests {
 
@@ -152,7 +152,7 @@ public class GeneratedTestClassTests {
 		configProperties.setTestFramework(TestFramework.JUNIT5);
 		Collection<ContractMetadata> contracts = Collections.singletonList(
 				new ContractMetadata(this.file.toPath(), true, 1, 2,
-						ContractVerifierDslConverter.convertAsCollection(new File("/"), this.file)));
+						GroovyContractConverter.convertAsCollection(new File("/"), this.file)));
 		String includedDirectoryRelativePath = "some/path";
 		String convertedClassName = "fooBar";
 		String packageName = "test";
