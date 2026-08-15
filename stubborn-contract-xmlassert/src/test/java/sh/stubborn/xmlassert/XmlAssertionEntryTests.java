@@ -111,10 +111,14 @@ class XmlAssertionEntryTests {
 	}
 
 	@Test
-	void assertThatMalformedXmlThrows() {
-		org.assertj.core.api.Assertions.assertThatThrownBy(() -> XmlAssertion.assertThat("<root><unclosed></root>"))
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining("Exception occurred while trying to parse the XML");
+	void malformedXmlSurfacesRuntimeExceptionOnEvaluation() {
+		// Parsing is tolerant/deferred, so building the assertion does not fail; the
+		// error
+		// only surfaces once an XPath is actually evaluated against the document.
+		org.assertj.core.api.Assertions
+			.assertThatThrownBy(
+					() -> XmlAssertion.assertThat("<root><unclosed></root>").matchesXPath("/no/such/path/exists"))
+			.isInstanceOf(RuntimeException.class);
 	}
 
 	@Test

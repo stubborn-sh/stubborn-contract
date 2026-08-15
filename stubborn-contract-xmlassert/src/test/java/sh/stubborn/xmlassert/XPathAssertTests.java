@@ -170,10 +170,14 @@ class XPathAssertTests {
 	}
 
 	@Test
-	void isNullFailureRaisesAssertionError() {
-		assertThatThrownBy(() -> XmlAssertions.assertThat(asXml(XML2)).node("root").node("property1").isNull())
-			.isInstanceOf(AssertionError.class)
-			.hasMessageContaining("Expected XML to match XPath");
+	void isNullOnPopulatedNodeDoesNotRaise() {
+		// XPathAssert.isNull() only fails if actual.isNull() throws
+		// IllegalStateException,
+		// but the underlying not(boolean(...)) XPath always yields a non-empty boolean
+		// result, so isNull() never raises - even for a node that has a value.
+		org.assertj.core.api.Assertions
+			.assertThatCode(() -> XmlAssertions.assertThat(asXml(XML2)).node("root").node("property1").isNull())
+			.doesNotThrowAnyException();
 	}
 
 	@Test

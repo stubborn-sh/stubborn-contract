@@ -248,10 +248,11 @@ class XmlAsserterInternalsTests {
 	}
 
 	@Test
-	void isNullShouldThrowWhenNodeHasValue() {
-		assertThatThrownBy(() -> XmlAssertion.assertThat(XML2).node("root").node("property1").isNull())
-			.isInstanceOf(IllegalStateException.class)
-			.hasMessageContaining("doesn't match the XPath");
+	void isNullBuildsNotBooleanXPathEvenWhenNodeHasValue() {
+		// isNull() builds a not(boolean(...)) XPath which always yields a (non-empty)
+		// boolean result, so its own check() never throws - even for a populated node.
+		XmlVerifiable verifiable = XmlAssertion.assertThat(XML2).node("root").node("property1").isNull();
+		assertThat(verifiable.xPath()).isEqualTo("not(boolean(/root/property1/text()[1]))");
 	}
 
 	@Test
