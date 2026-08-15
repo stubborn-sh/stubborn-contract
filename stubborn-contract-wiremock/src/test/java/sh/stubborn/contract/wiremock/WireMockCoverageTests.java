@@ -16,14 +16,18 @@
 
 package sh.stubborn.contract.wiremock;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * Asserts the return values of the thin WireMock wrappers so the null-return mutations
- * are killed.
+ * Asserts the return values and the utility-class constructors of the thin WireMock
+ * wrappers.
  *
  * @author Marcin Grzejszczak
  */
@@ -41,6 +45,21 @@ class WireMockCoverageTests {
 	@Test
 	void optionsShouldReturnAFreshConfiguration() {
 		assertThat(WireMockSpring.options()).isNotNull();
+	}
+
+	@Test
+	void utilityClassConstructorShouldThrow() throws Exception {
+		Constructor<WireMockStubMapping> ctor = WireMockStubMapping.class.getDeclaredConstructor();
+		ctor.setAccessible(true);
+		assertThatThrownBy(ctor::newInstance).isInstanceOf(InvocationTargetException.class)
+			.hasCauseInstanceOf(IllegalStateException.class);
+	}
+
+	@Test
+	void wireMockSpringShouldBeSubclassable() {
+		WireMockSpring subclass = new WireMockSpring() {
+		};
+		assertThat(subclass).isNotNull();
 	}
 
 }
