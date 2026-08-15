@@ -46,8 +46,8 @@ public class AmqpMessagingApplication {
 	}
 
 	@Bean
-	public MessageConverter messageConverter(JsonMapper jsonMapper) {
-		final JacksonJsonMessageConverter jsonMessageConverter = new JacksonJsonMessageConverter(jsonMapper);
+	public MessageConverter messageConverter() {
+		final JacksonJsonMessageConverter jsonMessageConverter = new JacksonJsonMessageConverter(new JsonMapper());
 		jsonMessageConverter.setCreateMessageIds(true);
 		// The contract's outputMessage carries a __TypeId__ header pointing at the
 		// original Spring Cloud Contract package. Map that stale id onto the local
