@@ -98,6 +98,8 @@
 		<exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
 		<gmavenplus-plugin.version>4.2.1</gmavenplus-plugin.version>
 		<jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+		<pitest-maven.version>1.20.3</pitest-maven.version>
+		<pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
 		<spring-javaformat.version>0.0.47</spring-javaformat.version>
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
 		<build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
@@ -176,6 +178,26 @@
 		  module keeps its own local plexus-utils.version (4.0.x) for its Groovy tooling needs.
 		-->
 		<plexus-utils.version>3.6.1</plexus-utils.version>
+
+		<!--
+		  Quality gates (see docs/quality-gates.md). WARN mode until the test backfill
+		  lands, then flipped to blocking:
+		    - jacoco.haltOnFailure -> true
+		    - pitest.mutationThreshold -> 90
+		  JaCoCo aggregate line + branch coverage floor (fraction, 0.80 = 80%). The
+		  jacoco-check execution is managed here (pluginManagement) but only runs when a
+		  jacoco plugin declaration is active — i.e. under the -Psonar profile (root pom)
+		  or the CI coverage job — so it never forces coverage instrumentation into the
+		  normal build.
+		-->
+		<jacoco.line.min>0.80</jacoco.line.min>
+		<jacoco.branch.min>0.80</jacoco.branch.min>
+		<jacoco.haltOnFailure>false</jacoco.haltOnFailure>
+		<!--
+		  PIT mutation-coverage floor (percent). 0 = warn mode now; raised to 90 once the
+		  test backfill lands. Applied per changed core class by the mutation-diff CI gate.
+		-->
+		<pitest.mutationThreshold>0</pitest.mutationThreshold>
 
 		<!--
 		  Core module gate: set to false in Spring-agnostic core modules to ban
@@ -412,6 +434,74 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>${jacoco-maven-plugin.version}</version>
+					<configuration>
+						<haltOnFailure>${jacoco.haltOnFailure}</haltOnFailure>
+					</configuration>
+					<executions>
+						<!--
+						  Coverage gate. Only runs when a jacoco plugin declaration is active
+						  (the -Psonar profile in the root pom, or the CI coverage job) since
+						  pluginManagement executions do not activate the plugin on their own.
+						  Bound to verify; -Psonar binds prepare-agent + report at test, so a
+						  full verify/install run with -Psonar produces data then checks it.
+						-->
+						<execution>
+							<id>jacoco-check</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>check</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<rule>
+										<element>BUNDLE</element>
+										<limits>
+											<limit>
+												<counter>LINE</counter>
+												<value>COVEREDRATIO</value>
+												<minimum>${jacoco.line.min}</minimum>
+											</limit>
+											<limit>
+												<counter>BRANCH</counter>
+												<value>COVEREDRATIO</value>
+												<minimum>${jacoco.branch.min}</minimum>
+											</limit>
+										</limits>
+									</rule>
+								</rules>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<!--
+				  PIT mutation testing. Managed here; each of the 12 core gate modules
+				  declares the plugin (no version/config) to inherit this. targetClasses /
+				  targetTests are intentionally NOT set so PIT defaults to the module's own
+				  ${project.groupId}.* (sh.stubborn.*) per module. Invoked via
+				  org.pitest:pitest-maven:mutationCoverage (see docs/quality-gates.md and the
+				  mutation-diff CI job).
+				-->
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<version>${pitest-maven.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.pitest</groupId>
+							<artifactId>pitest-junit5-plugin</artifactId>
+							<version>${pitest-junit5-plugin.version}</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<outputFormats>
+							<param>HTML</param>
+							<param>CSV</param>
+						</outputFormats>
+						<timestampedReports>false</timestampedReports>
+						<failWhenNoMutations>false</failWhenNoMutations>
+						<mutationThreshold>${pitest.mutationThreshold}</mutationThreshold>
+						<coverageThreshold>0</coverageThreshold>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>io.spring.javaformat</groupId>
