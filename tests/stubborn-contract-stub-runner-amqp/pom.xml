@@ -31,8 +31,16 @@
 			<artifactId>stubborn-contract-verifier</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.amqp</groupId>
-			<artifactId>spring-rabbit</artifactId>
+			<!-- Brings spring-rabbit AND triggers Boot's RabbitAutoConfiguration, which
+			     provides the ConnectionFactory / RabbitAdmin the app's RabbitTemplate and
+			     listener containers autowire. Raw spring-rabbit alone compiles but leaves
+			     no auto-configured ConnectionFactory, failing context load. -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-json</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
