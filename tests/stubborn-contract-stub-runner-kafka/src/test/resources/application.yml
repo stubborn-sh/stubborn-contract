@@ -6,8 +6,8 @@ stubborn.contract.stubrunner:
     enabled: true
 spring:
   kafka:
-    # bootstrap-servers is supplied by the @DynamicPropertySource pointing at the
-    # Testcontainers Kafka broker (see KafkaStubRunnerSpec).
+    # bootstrap-servers is supplied by the @DynamicPropertySource in KafkaStubRunnerSpec,
+    # pointing at the Testcontainers Kafka broker.
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
