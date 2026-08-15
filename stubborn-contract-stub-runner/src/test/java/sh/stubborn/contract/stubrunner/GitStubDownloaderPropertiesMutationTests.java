@@ -69,6 +69,22 @@ class GitStubDownloaderPropertiesMutationTests {
 	}
 
 	@Test
+	void blankGitPropertiesFallBackToDefaultsAndOptions() {
+		StubResource resource = new GitResource("git://https://example.com/repo.git");
+		// blank git.* properties must be treated as absent (isBlank branch), falling back
+		StubRunnerOptions options = new StubRunnerOptionsBuilder().withUsername("optuser")
+			.withPassword("optpass")
+			.withProperties(Map.of("git.username", "  ", "git.password", "  ", "git.branch", "  ",
+					"git.ensure-git-suffix", "  "))
+			.build();
+		GitStubDownloaderProperties props = new GitStubDownloaderProperties(resource, options);
+		assertThat(props.username).isEqualTo("optuser");
+		assertThat(props.password).isEqualTo("optpass");
+		assertThat(props.branch).isEqualTo("master");
+		assertThat(props.ensureGitSuffix).isTrue();
+	}
+
+	@Test
 	void shouldKeepFullAddressForGitAtUrl() {
 		StubResource resource = new GitResource("git://git@github.com/foo/bar.git");
 		GitStubDownloaderProperties props = new GitStubDownloaderProperties(resource,
