@@ -45,6 +45,32 @@
 	</suppress>
 
 	<!--
+	  CVE-2026-66299 (CVSS 7.5) — Apache Tomcat embedded, flagged on tomcat-embed-core 11.0.24.
+	  No fixed Tomcat 11.0.x is published on Maven Central yet (11.0.24 is the latest; the pin in
+	  stubborn-contract-dependencies is already at that ceiling), so there is nothing to bump to.
+	  Reachability is build-time / test only, never a consumer's runtime:
+	    * stubborn-contract-maven-plugin pulls spring-boot-starter-web at COMPILE scope, but that
+	      runs only inside the producer's build (plugin realm), not the shipped app.
+	    * stubborn-contract-stub-runner-spring-cloud declares starter-web at TEST scope.
+	    * stubborn-contract-stub-runner-spring-boot declares starter-web as <optional>true</optional>,
+	      so Tomcat is NOT transitive to consumers of that artifact.
+	  The stub runner serves HTTP stubs via WireMock/Jetty, not Tomcat — the embedded servlet
+	  container is never on the stub-serving path.
+	  REMOVE THIS SUPPRESSION and bump ${tomcat.version} once Apache publishes a fixed Tomcat
+	  11.0.x (11.0.25+).
+	-->
+	<suppress>
+		<notes><![CDATA[
+			Tomcat embedded reaches this build only as a build-time (maven-plugin) / test-scope /
+			optional dependency — never a consumer runtime dep — and the stub runner serves over
+			WireMock/Jetty, not Tomcat. No fixed Tomcat 11.0.x is on Central yet (11.0.24 is latest).
+			Remove and bump the pin once 11.0.25+ ships.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/.*$</packageUrl>
+		<cve>CVE-2026-66299</cve>
+	</suppress>
+
+	<!--
 	  FALSE POSITIVE: org.apache.camel:camel-kafka is the Camel *Kafka component* (the Camel
 	  connector for Kafka), NOT Apache Kafka itself. dependency-check auto-generates the CPE
 	  cpe:2.3:a:apache:kafka for it because of the "apache" + "kafka" tokens, so every

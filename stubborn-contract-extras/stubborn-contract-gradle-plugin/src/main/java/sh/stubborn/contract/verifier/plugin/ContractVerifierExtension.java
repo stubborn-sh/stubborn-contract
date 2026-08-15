@@ -693,9 +693,11 @@ public class ContractVerifierExtension implements Serializable {
 
 		@Override
 		public String toString() {
+			// Never emit the password in cleartext — it would surface in Gradle --info/--debug logs.
+			String maskedPassword = (password.getOrNull() != null) ? "****" : null;
 			return "ContractRepository{" + "repositoryUrl=" + repositoryUrl.getOrNull() + ", username="
-					+ username.getOrNull() + ", password=" + password.getOrNull() + ", proxyPort="
-					+ proxyPort.getOrNull() + ", proxyHost=" + proxyHost.getOrNull() + '}';
+					+ username.getOrNull() + ", password=" + maskedPassword + ", proxyPort=" + proxyPort.getOrNull()
+					+ ", proxyHost=" + proxyHost.getOrNull() + '}';
 		}
 
 	}

@@ -61,7 +61,9 @@ import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 @AutoConfigureStubRunner
 @DisabledOnOs(OS.WINDOWS)
 @EmbeddedKafka(topics = { "input", "input2", "output", "delete" })
-@Disabled("TODO: Migrate to middleware based approach")
+@Disabled("Legacy embedded-broker spec superseded by real-broker coverage - the "
+		+ "stubborn-contract-messaging-tck conformance suite and the broker-backed consumer ITs "
+		+ "(stubborn samples). Kept until migrated to the Testcontainers/middleware approach.")
 class KafkaStubRunnerSpec {
 
 	private static final Logger log = LoggerFactory.getLogger(KafkaStubRunnerSpec.class);

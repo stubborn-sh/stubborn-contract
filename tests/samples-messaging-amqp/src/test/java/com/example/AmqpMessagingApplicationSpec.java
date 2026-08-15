@@ -36,7 +36,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 // Context configuration would end up in base class
 @AutoConfigureMessageVerifier
 @SpringBootTest(classes = AmqpMessagingApplication.class, properties = "stubborn.contract.stubrunner.amqp.enabled=true")
-@Disabled("TODO: Migrate to middleware based approach")
+@Disabled("Legacy embedded-broker spec superseded by real-broker coverage - the "
+		+ "stubborn-contract-messaging-tck conformance suite and the broker-backed consumer ITs "
+		+ "(stubborn samples). Kept until migrated to the Testcontainers/middleware approach.")
 class AmqpMessagingApplicationSpec {
 
 	// ALL CASES

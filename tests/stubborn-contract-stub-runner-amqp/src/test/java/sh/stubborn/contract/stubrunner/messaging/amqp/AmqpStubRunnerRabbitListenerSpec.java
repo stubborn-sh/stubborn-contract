@@ -30,7 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureStubRunner
 @SpringBootTest(classes = AmqpMessagingApplication.class)
 @ActiveProfiles("listener")
-@Disabled("TODO: Migrate to middleware based approach")
+@Disabled("Legacy embedded-broker spec superseded by real-broker coverage - the "
+		+ "stubborn-contract-messaging-tck conformance suite and the broker-backed consumer ITs "
+		+ "(stubborn samples). Kept until migrated to the Testcontainers/middleware approach.")
 class AmqpStubRunnerRabbitListenerSpec {
 
 	@Autowired

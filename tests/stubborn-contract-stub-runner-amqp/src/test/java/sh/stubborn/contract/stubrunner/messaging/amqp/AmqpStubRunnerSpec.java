@@ -31,7 +31,9 @@ import static org.mockito.BDDMockito.then;
 
 @AutoConfigureStubRunner
 @SpringBootTest(classes = AmqpMessagingApplication.class)
-@Disabled("TODO: Migrate to middleware based approach")
+@Disabled("Legacy embedded-broker spec superseded by real-broker coverage - the "
+		+ "stubborn-contract-messaging-tck conformance suite and the broker-backed consumer ITs "
+		+ "(stubborn samples). Kept until migrated to the Testcontainers/middleware approach.")
 class AmqpStubRunnerSpec {
 
 	@Autowired
