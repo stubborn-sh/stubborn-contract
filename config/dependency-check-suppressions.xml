@@ -71,6 +71,27 @@
 	</suppress>
 
 	<!--
+	  CVE-2025-67721 (CVSS 6.3) — io.airlift:aircompressor 0.27. Pulled in only as a
+	  build-time transitive of the Maven plugin's Avro/Confluent toolchain
+	  (io.confluent:kafka-avro-serializer -> avro -> aircompressor); it is not on any
+	  consumer's runtime classpath. The score (6.3) is below the project's
+	  failBuildOnCVSS=7.0 policy — the gate trips only because dependency-check has no
+	  CVSSv3 score for this CVE and treats the unscored record as failing. The version is
+	  set by the transitive chain, not by us. REMOVE once the Avro/Confluent chain resolves
+	  a fixed aircompressor, or once the CVE carries a scored-below-7.0 record.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			aircompressor is a build-time-only transitive of the Maven plugin's Avro/Confluent
+			toolchain, never a consumer runtime dependency. CVSS 6.3 (below the 7.0 fail policy);
+			flagged only because the CVE has no CVSSv3 score. Remove when the transitive chain
+			updates aircompressor.
+		]]></notes>
+		<packageUrl regex="true">^pkg:maven/io\.airlift/aircompressor@.*$</packageUrl>
+		<cve>CVE-2025-67721</cve>
+	</suppress>
+
+	<!--
 	  FALSE POSITIVE: org.apache.camel:camel-kafka is the Camel *Kafka component* (the Camel
 	  connector for Kafka), NOT Apache Kafka itself. dependency-check auto-generates the CPE
 	  cpe:2.3:a:apache:kafka for it because of the "apache" + "kafka" tokens, so every
