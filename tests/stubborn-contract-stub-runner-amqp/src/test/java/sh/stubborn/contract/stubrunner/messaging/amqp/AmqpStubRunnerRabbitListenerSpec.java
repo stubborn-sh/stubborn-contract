@@ -16,24 +16,44 @@
 
 package sh.stubborn.contract.stubrunner.messaging.amqp;
 
-import org.junit.jupiter.api.Disabled;
+import java.time.Duration;
+
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import sh.stubborn.contract.stubrunner.StubTrigger;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AutoConfigureStubRunner
+@AutoConfigureMessageVerifier
 @SpringBootTest(classes = AmqpMessagingApplication.class)
 @ActiveProfiles("listener")
-@Disabled("Legacy embedded-broker spec superseded by real-broker coverage - the "
-		+ "stubborn-contract-messaging-tck conformance suite and the broker-backed consumer ITs "
-		+ "(stubborn samples). Kept until migrated to the Testcontainers/middleware approach.")
+@Testcontainers
 class AmqpStubRunnerRabbitListenerSpec {
+
+	@Container
+	private static final RabbitMQContainer RABBIT = new RabbitMQContainer(
+			DockerImageName.parse("rabbitmq:3.13-management-alpine"));
+
+	@DynamicPropertySource
+	static void rabbitProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.rabbitmq.host", RABBIT::getHost);
+		registry.add("spring.rabbitmq.port", RABBIT::getAmqpPort);
+		registry.add("spring.rabbitmq.username", RABBIT::getAdminUsername);
+		registry.add("spring.rabbitmq.password", RABBIT::getAdminPassword);
+	}
 
 	@Autowired
 	StubTrigger stubTrigger;
@@ -45,9 +65,13 @@ class AmqpStubRunnerRabbitListenerSpec {
 	void shouldTriggerStubAmqpMessageConsumedByAnnotatedListener() {
 		this.stubTrigger.trigger("contract-test.person.created.event");
 
-		Person person = this.messageSubscriber.getPerson();
-		assertThat(person).isNotNull();
-		assertThat(person).extracting(Person::getName).isNotNull();
+		// The stub-runner Rabbit backend publishes to a real broker, so the annotated
+		// listener receives the Person asynchronously.
+		Awaitility.await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
+			Person person = this.messageSubscriber.getPerson();
+			assertThat(person).isNotNull();
+			assertThat(person).extracting(Person::getName).isNotNull();
+		});
 	}
 
 }

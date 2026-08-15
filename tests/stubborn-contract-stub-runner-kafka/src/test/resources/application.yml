@@ -2,9 +2,12 @@ stubborn.contract.stubrunner:
   repository-root: stubs:classpath:/stubs/
   ids: my:stubs
   stubs-mode: remote
+  kafka:
+    enabled: true
 spring:
   kafka:
-    bootstrap-servers: ${spring.embedded.kafka.brokers}
+    # bootstrap-servers is supplied by the @DynamicPropertySource pointing at the
+    # Testcontainers Kafka broker (see KafkaStubRunnerSpec).
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -16,6 +19,7 @@ spring:
       properties:
         "spring.json.trusted.packages": "*"
       group-id: ${random.value}
+      auto-offset-reset: earliest
 server:
   port: 0
 debug: true

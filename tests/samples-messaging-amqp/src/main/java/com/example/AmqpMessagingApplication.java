@@ -18,8 +18,10 @@ package com.example;
 
 import tools.jackson.databind.json.JsonMapper;
 
-import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -55,8 +57,23 @@ public class AmqpMessagingApplication {
 	}
 
 	@Bean
-	public Exchange testExchange() {
+	public TopicExchange testExchange() {
 		return new TopicExchange("test-exchange");
+	}
+
+	// The Spring-free Rabbit verifier receiver reads from a QUEUE named after the
+	// destination ("test-exchange") on the AMQP default exchange, so a queue of that name
+	// must be bound to the topic exchange the publisher targets (routing key
+	// "routingkey"). Declared non-durable/non-exclusive/non-auto-delete to match the
+	// receiver's idempotent queue declaration.
+	@Bean
+	public Queue testExchangeQueue() {
+		return new Queue("test-exchange", false, false, false);
+	}
+
+	@Bean
+	public Binding testExchangeBinding(Queue testExchangeQueue, TopicExchange testExchange) {
+		return BindingBuilder.bind(testExchangeQueue).to(testExchange).with("routingkey");
 	}
 
 	@Bean

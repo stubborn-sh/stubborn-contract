@@ -28,6 +28,26 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 		<dependency>
+			<!-- Spring-free Kafka MessageVerifier building block; provides the
+			     StubbornKafka sender/receiver that ContractVerifierKafkaConfiguration
+			     wires as beans. It is declared optional in verifier-spring-boot, so it
+			     must be pulled in explicitly here. -->
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-messaging-kafka</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers-kafka</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>

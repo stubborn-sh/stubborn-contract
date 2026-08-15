@@ -17,11 +17,13 @@
 package sh.stubborn.contract.stubrunner.spring.cloud;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.BDDAssertions;
-import org.junit.jupiter.api.Disabled;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.StubsMode;
@@ -44,7 +46,9 @@ import org.springframework.web.client.RestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = StubRunnerStubsPerConsumerWithConsumerNameTests.Config.class,
-		properties = { "stubborn.contract.stubrunner.jms.enabled=false" })
+		properties = { "stubborn.contract.stubrunner.jms.enabled=false", "spring.cloud.function.definition=bookHandler",
+				"spring.cloud.stream.bindings.bookHandler-in-0.destination=output",
+				"spring.cloud.stream.bindings.bookHandler-out-0.destination=outputToAssertBook" })
 @AutoConfigureStubRunner(ids = "sh.stubborn.contract.verifier.stubs:producerWithMultipleConsumers",
 		repositoryRoot = "classpath:m2repo/repository/", consumerName = "foo-consumer", stubsMode = StubsMode.REMOTE,
 		stubsPerConsumer = true)
@@ -71,18 +75,16 @@ class StubRunnerStubsPerConsumerWithConsumerNameTests {
 			.isInstanceOf(org.springframework.web.client.HttpClientErrorException.NotFound.class);
 	}
 
-	@Disabled("Stubs-per-consumer HTTP filtering is verified above; the Spring Cloud Stream "
-			+ "functional-binding messaging round-trip is not yet wired — the contract destination "
-			+ "'output' is not bound to the function's 'output-in-0'/'output-out-0' bindings, so the "
-			+ "triggered message never reaches the receiver. Tracked as a follow-up.")
 	@Test
 	void shouldTriggerAMessageByLabelFromProperConsumer() {
 		this.stubFinder.trigger("return_book_for_foo");
-		Message<?> receivedMessage = this.messaging.receive("output");
-		assertThat(receivedMessage).isNotNull();
-		Message<?> message = Objects.requireNonNull(receivedMessage);
-		assertThat(message.getPayload()).isEqualTo("{\"bookName\":\"foo_for_foo\"}".getBytes());
-		assertThat(message.getHeaders().get("BOOK-NAME")).isEqualTo("foo_for_foo");
+		Awaitility.await().untilAsserted(() -> {
+			Message<?> receivedMessage = this.messaging.receive("outputToAssertBook");
+			assertThat(receivedMessage).isNotNull();
+			Message<?> message = Objects.requireNonNull(receivedMessage);
+			assertThat(bookName(message.getPayload())).isEqualTo("foo_for_foo");
+			assertThat(message.getHeaders().get("BOOK-NAME")).isEqualTo("foo_for_foo");
+		});
 	}
 
 	@Test
@@ -92,13 +94,28 @@ class StubRunnerStubsPerConsumerWithConsumerNameTests {
 			.hasMessageContaining("No label with name [return_book_for_bar] was found");
 	}
 
+	private static String bookName(Object payload) {
+		try {
+			String json = (payload instanceof byte[] bytes) ? new String(bytes, StandardCharsets.UTF_8)
+					: (payload instanceof String string) ? string : new ObjectMapper().writeValueAsString(payload);
+			return new ObjectMapper().readTree(json).get("bookName").asText();
+		}
+		catch (Exception ex) {
+			throw new IllegalStateException("Could not read bookName from payload [" + payload + "]", ex);
+		}
+	}
+
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration(TestChannelBinderConfiguration.class)
 	static class Config {
 
+		// Identity function bridging the contract's 'output' destination to
+		// 'outputToAssertBook'; deliberately not named after any destination so it does
+		// not
+		// shadow the destination-name bean lookup in the messaging backend.
 		@Bean
-		Function<Object, Object> output() {
+		Function<String, String> bookHandler() {
 			return (o) -> o;
 		}
 

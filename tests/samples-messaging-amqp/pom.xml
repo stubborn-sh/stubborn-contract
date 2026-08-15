@@ -46,6 +46,26 @@
 			<artifactId>awaitility</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<!-- Spring-free RabbitMQ MessageVerifier building block; provides the
+			     StubbornRabbit sender/receiver that ContractVerifierRabbitConfiguration
+			     wires as beans. It is declared optional in verifier-spring-boot, so it
+			     must be pulled in explicitly here. -->
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-messaging-rabbit</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>rabbitmq</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

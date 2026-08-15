@@ -16,11 +16,10 @@
 
 package sh.stubborn.contract.stubrunner.messaging.amqp;
 
+import java.util.Map;
+
 import tools.jackson.databind.json.JsonMapper;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -30,6 +29,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter;
+import org.springframework.amqp.support.converter.DefaultJacksonJavaTypeMapper;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.SpringApplication;
@@ -49,6 +49,14 @@ public class AmqpMessagingApplication {
 	public MessageConverter messageConverter(JsonMapper jsonMapper) {
 		final JacksonJsonMessageConverter jsonMessageConverter = new JacksonJsonMessageConverter(jsonMapper);
 		jsonMessageConverter.setCreateMessageIds(true);
+		// The contract's outputMessage carries a __TypeId__ header pointing at the
+		// original Spring Cloud Contract package. Map that stale id onto the local
+		// Person so the JSON body still deserializes on this side of a real broker.
+		DefaultJacksonJavaTypeMapper typeMapper = new DefaultJacksonJavaTypeMapper();
+		typeMapper.setTrustedPackages("*");
+		typeMapper.setIdClassMapping(
+				Map.of("org.springframework.cloud.contract.stubrunner.messaging.amqp.Person", Person.class));
+		jsonMessageConverter.setJavaTypeMapper(typeMapper);
 		final ContentTypeDelegatingMessageConverter messageConverter = new ContentTypeDelegatingMessageConverter(
 				jsonMessageConverter);
 		messageConverter.addDelegate(MessageProperties.CONTENT_TYPE_JSON, jsonMessageConverter);
@@ -74,11 +82,14 @@ public class AmqpMessagingApplication {
 
 		// tag::amqp_binding[]
 
+		// The stub-runner Rabbit backend publishes the contract's outputMessage to a
+		// queue named after its sentTo destination ("contract-test.exchange") through the
+		// AMQP default exchange, so the listener consumes that queue directly. Declared
+		// with the same parameters the sender uses (non-durable, non-exclusive,
+		// non-auto-delete) so the sender's idempotent redeclare does not conflict.
 		@Bean
-		Binding binding() {
-			return BindingBuilder.bind(new Queue("test.queue"))
-				.to(new DirectExchange("contract-test.exchange"))
-				.with("#");
+		Queue contractTestQueue() {
+			return new Queue("contract-test.exchange", false, false, false);
 		}
 		// end::amqp_binding[]
 
@@ -88,7 +99,7 @@ public class AmqpMessagingApplication {
 				MessageListenerAdapter listenerAdapter) {
 			SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 			container.setConnectionFactory(connectionFactory);
-			container.setQueueNames("test.queue");
+			container.setQueueNames("contract-test.exchange");
 			container.setMessageListener(listenerAdapter);
 
 			return container;
@@ -106,6 +117,13 @@ public class AmqpMessagingApplication {
 	@EnableRabbit
 	@Profile("listener")
 	static class RabbitListenerConfig {
+
+		// Same queue as the adapter profile: the stub-runner Rabbit backend delivers the
+		// triggered message to a queue named after the contract's sentTo destination.
+		@Bean
+		Queue contractTestQueue() {
+			return new Queue("contract-test.exchange", false, false, false);
+		}
 
 		@Bean
 		MessageSubscriberRabbitListener messageSubscriberRabbitLister() {
