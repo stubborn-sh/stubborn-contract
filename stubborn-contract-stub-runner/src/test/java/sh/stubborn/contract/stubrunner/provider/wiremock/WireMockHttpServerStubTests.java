@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfiguration;
 import sh.stubborn.contract.stubrunner.HttpServerStubConfigurer;
@@ -75,7 +74,6 @@ class WireMockHttpServerStubTests {
 		}
 	}
 
-	@Disabled("There's sth wrong with SLF4J versions")
 	@Test
 	void shouldMakeWireMockPrintOutLogsOnInfo() {
 		WireMockHttpServerStub mappingDescriptor = (WireMockHttpServerStub) new WireMockHttpServerStub()

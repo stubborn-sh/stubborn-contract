@@ -25,10 +25,9 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.groovy.util.Maps;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.GroovyContractConverter;
 import sh.stubborn.contract.spec.internal.Header;
@@ -36,9 +35,12 @@ import sh.stubborn.contract.spec.internal.QueryParameter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -58,33 +60,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Marcin Grzejszczak
  */
-// FIXME: 5.0.0 restdocs dropped junit 4
-// @RunWith(SpringRunner.class)
-// @SpringBootTest(classes = ContractDslSnippetTests.Config.class)
-// JUnit4 support will be removed with 5.0.0
-@Ignore
+@ExtendWith(RestDocumentationExtension.class)
+@SpringBootTest(classes = ContractDslSnippetTests.Config.class)
 public class ContractDslSnippetTests {
 
 	private static final String OUTPUT = "target/generated-snippets";
-
-	@Rule
-	// public JUnitRestDocumentation restDocumentation = new
-	// JUnitRestDocumentation(OUTPUT);
 
 	MockMvc mockMvc;
 
 	@Autowired
 	WebApplicationContext context;
 
-	@Before
-	// NullAway: documentationConfiguration requires a non-null (JSpecify @NonNull)
-	// RestDocumentationContextProvider, but this @Ignore'd test intentionally passes a
-	// placeholder null while the real provider stays commented out. Suppress to preserve
-	// the exact placeholder behavior without introducing a real provider.
-	@SuppressWarnings("NullAway")
-	public void setUp() {
+	@BeforeEach
+	void setUp(RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-			.apply(documentationConfiguration(null/* this.restDocumentation */).snippets()
+			.apply(documentationConfiguration(restDocumentation).snippets()
 				.withAdditionalDefaults(new WireMockSnippet()))
 			.build();
 	}
