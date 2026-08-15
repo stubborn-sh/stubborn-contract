@@ -501,6 +501,14 @@
 						<failWhenNoMutations>false</failWhenNoMutations>
 						<mutationThreshold>${pitest.mutationThreshold}</mutationThreshold>
 						<coverageThreshold>0</coverageThreshold>
+						<!-- ArchUnit boundary tests (NoSpringArchTests, NoGroovyArchTests, ...) verify
+						     architecture, not behaviour: they kill no mutants and their whole-classpath
+						     scan does not survive PIT's isolated harness ("did not pass without mutation").
+						     Exclude them from mutation runs. -->
+						<excludedTestClasses>
+							<param>*ArchTests</param>
+							<param>*ArchTest</param>
+						</excludedTestClasses>
 						<!-- DEFAULTS minus VOID_METHOD_CALLS: the only surviving void-call mutations here
 						     are removals of logging/trace side-effect calls (logOverridingWarning),
 						     equivalent by construction. All other DEFAULTS mutators are kept. -->
