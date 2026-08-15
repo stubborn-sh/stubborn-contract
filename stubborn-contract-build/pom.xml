@@ -501,6 +501,21 @@
 						<failWhenNoMutations>false</failWhenNoMutations>
 						<mutationThreshold>${pitest.mutationThreshold}</mutationThreshold>
 						<coverageThreshold>0</coverageThreshold>
+						<!-- DEFAULTS minus VOID_METHOD_CALLS: the only surviving void-call mutations here
+						     are removals of logging/trace side-effect calls (logOverridingWarning),
+						     equivalent by construction. All other DEFAULTS mutators are kept. -->
+						<mutators>
+							<mutator>CONDITIONALS_BOUNDARY</mutator>
+							<mutator>INCREMENTS</mutator>
+							<mutator>INVERT_NEGS</mutator>
+							<mutator>MATH</mutator>
+							<mutator>NEGATE_CONDITIONALS</mutator>
+							<mutator>EMPTY_RETURNS</mutator>
+							<mutator>FALSE_RETURNS</mutator>
+							<mutator>TRUE_RETURNS</mutator>
+							<mutator>NULL_RETURNS</mutator>
+							<mutator>PRIMITIVE_RETURNS</mutator>
+						</mutators>
 					</configuration>
 				</plugin>
 				<plugin>
