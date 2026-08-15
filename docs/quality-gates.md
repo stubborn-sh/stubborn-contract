@@ -116,3 +116,37 @@ Once the test backfill lands, make the gates enforcing:
 1. `stubborn-contract-build/pom.xml`: set `<jacoco.haltOnFailure>true</jacoco.haltOnFailure>`.
 2. `stubborn-contract-build/pom.xml`: set `<pitest.mutationThreshold>90</pitest.mutationThreshold>`.
 3. `.github/workflows/quality-gates.yaml`: remove `continue-on-error: true` from both jobs.
+
+## Backfill progress
+
+Gate targets: **80% line + 80% branch** coverage and **90% mutation** (killable) per module.
+
+| Module | Line | Branch | Mutation | Status |
+|--------|------|--------|----------|--------|
+| stubborn-contract-jsonassert | 94.1% | 91.2% | 92.2% | ✅ done |
+| stubborn-contract-xmlassert | 93.7% | 95.3% | 94.5% | ✅ done |
+| stubborn-contract-wiremock | 100% | 100% | 100% | ✅ done |
+| specs/stubborn-contract-spec-java | — | — | — | ⬜ pending (transitively-tested; ~4% own line) |
+| specs/stubborn-contract-spec-groovy | — | — | — | ⬜ pending (Groovy — verify PIT support) |
+| stubborn-contract-verifier | 68% | 56% | — | ⬜ pending (largest, ~4900 lines) |
+| stubborn-contract-generator | — | — | — | ⬜ pending |
+| stubborn-contract-stub-runner | — | — | — | ⬜ pending |
+| stubborn-contract-tools/stubborn-contract-converters | — | — | — | ⬜ pending (needs -am build; tests use spec-groovy) |
+| stubborn-contract-messaging-kafka | — | — | — | ⬜ pending (broker integration — unit tests only) |
+| stubborn-contract-messaging-rabbit | — | — | — | ⬜ pending |
+| stubborn-contract-messaging-jms | — | — | — | ⬜ pending |
+
+## Per-module backfill playbook (proven on the 3 done modules)
+
+1. Baseline: `./mvnw -q clean test-compile org.pitest:pitest-maven:mutationCoverage -pl <module>` (build deps with `-am` first if offline resolution fails). Read `<module>/target/pit-reports/mutations.csv` for survivors.
+2. Write tests targeting the survivors. Key techniques learned:
+   - **PIT does not compile** — always run `test-compile` (not just the goal) or a stale suite is scored.
+   - **NullAway runs on tests**: a test that passes `null` to `@NonNull` params needs a class-level `@SuppressWarnings("NullAway")`.
+   - **Assert real evaluation, not just built paths**: for the assert DSLs, `matchesJsonPath` / `matchesXPath` evaluate against the parsed document; the path-builder accessors (`jsonPath()`/`xPath()`) do not, so they can't kill cache/parse mutants.
+   - **Utility-class boilerplate**: cover a throwing private constructor by reflection and an abstract class by an anonymous subclass, or line coverage stalls.
+3. Verify: re-run PIT (≥90% killable) and `./mvnw -Psonar test -pl <module>` then check `target/site/jacoco/jacoco.csv` (≥80% line + branch). Iterate survivors.
+4. Commit the module green.
+
+## Equivalent-mutant policy
+
+`VOID_METHOD_CALLS` is excluded from the mutator set (parent POM) because its only survivors here are removals of logging/trace side-effect calls (equivalent by construction). Remaining survivors after that are typically dead code after an always-throwing `failWithMessage()` and unreachable else-branches — genuine equivalents that the ≥90% killable-mutation figure tolerates.
