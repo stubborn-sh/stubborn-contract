@@ -13,6 +13,28 @@
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Spec Kotlin</name>
 	<description>Stubborn Contract Spec Kotlin</description>
+	<dependencyManagement>
+		<dependencies>
+			<!--
+				Align ALL Kotlin artifacts (stdlib, compiler-embeddable and the
+				kotlin-scripting-* host/impl jars) to the shipping ${kotlin.version}.
+				Without this, Spring Boot's dependency management pins most Kotlin
+				artifacts to its own (older) Kotlin version while the explicitly
+				versioned scripting jars resolve to ${kotlin.version}, mixing 2.3.x
+				and 2.4.x scripting classes on the classpath. That skew breaks the
+				.kts scripting host at runtime with a NoSuchMethodError on
+				JvmScriptCachingKt.getDisableCompilationCache. Importing the
+				kotlin-bom for ${kotlin.version} keeps every Kotlin jar in lockstep.
+			-->
+			<dependency>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-bom</artifactId>
+				<version>${kotlin.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
