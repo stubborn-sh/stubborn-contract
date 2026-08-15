@@ -95,6 +95,7 @@
 		-->
 		<central.autoPublish>false</central.autoPublish>
 		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+		<cyclonedx-maven-plugin.version>2.9.3</cyclonedx-maven-plugin.version>
 		<exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
 		<gmavenplus-plugin.version>4.2.1</gmavenplus-plugin.version>
 		<jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
@@ -728,6 +729,32 @@ ${stubborn.groovy.transform.imports}
 			<id>release</id>
 			<build>
 				<plugins>
+					<!--
+					  CycloneDX SBOM: attach a Software Bill of Materials to every published
+					  artifact. makeBom runs at 'package' (before the GPG 'sign' at 'verify'),
+					  so the SBOM (…-cyclonedx.json) is attached, signed, and deployed to Maven
+					  Central alongside the JAR. Only active for release/publish builds so normal
+					  PR/dev builds are unaffected.
+					-->
+					<plugin>
+						<groupId>org.cyclonedx</groupId>
+						<artifactId>cyclonedx-maven-plugin</artifactId>
+						<version>${cyclonedx-maven-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>make-sbom</id>
+								<phase>package</phase>
+								<goals>
+									<goal>makeBom</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<projectType>library</projectType>
+							<outputFormat>json</outputFormat>
+							<skipNotDeployed>true</skipNotDeployed>
+						</configuration>
+					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>

@@ -82,6 +82,9 @@ JVM projects, re-architected around a framework-agnostic core.
 
 ### Security
 - Credentials are never emitted in `toString()` (obfuscated) or logs.
+- Every published artifact ships a signed CycloneDX SBOM
+  (`<artifact>-<version>-cyclonedx.json`) deployed to Maven Central alongside the
+  JAR.
 - SpotBugs + FindSecBugs, Error Prone + NullAway, CodeQL, and OWASP
   dependency-check wired into CI.
 
