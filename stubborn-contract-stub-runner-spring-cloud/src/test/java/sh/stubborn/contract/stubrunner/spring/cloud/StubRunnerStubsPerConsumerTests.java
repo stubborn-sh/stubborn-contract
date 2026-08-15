@@ -48,7 +48,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureStubRunner(ids = "sh.stubborn.contract.verifier.stubs:producerWithMultipleConsumers",
 		repositoryRoot = "classpath:m2repo/repository/", stubsMode = StubsMode.REMOTE, stubsPerConsumer = true)
 @ActiveProfiles("streamconsumer")
-@Disabled("TODO: verify stubs per consumer stream test")
 class StubRunnerStubsPerConsumerTests {
 
 	@Autowired
@@ -66,10 +65,15 @@ class StubRunnerStubsPerConsumerTests {
 		RestTemplate template = new RestTemplate();
 		ResponseEntity<String> entity = template.getForEntity(stubUrl + "/bar-consumer", String.class);
 		assertThat(entity.getStatusCode().value()).isEqualTo(200);
-		ResponseEntity<String> notFound = template.getForEntity(stubUrl + "/foo-consumer", String.class);
-		assertThat(notFound.getStatusCode().value()).isEqualTo(404);
+		// the not-matching consumer's stub is not served — RestTemplate throws on the 404
+		BDDAssertions.thenThrownBy(() -> template.getForEntity(stubUrl + "/foo-consumer", String.class))
+			.isInstanceOf(org.springframework.web.client.HttpClientErrorException.NotFound.class);
 	}
 
+	@Disabled("Stubs-per-consumer HTTP filtering is verified above; the Spring Cloud Stream "
+			+ "functional-binding messaging round-trip is not yet wired — the contract destination "
+			+ "'output' is not bound to the function's 'output-in-0'/'output-out-0' bindings, so the "
+			+ "triggered message never reaches the receiver. Tracked as a follow-up.")
 	@Test
 	void shouldTriggerAMessageByLabelFromProperConsumer() {
 		this.stubFinder.trigger("return_book_for_bar");
