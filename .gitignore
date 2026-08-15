@@ -38,6 +38,10 @@ out/
 hs_err_pid*
 .DS_Store
 *.log
+
+# Maven flatten-plugin output and Node/VitePress deps (docs site)
+.flattened-pom.xml
+node_modules/
 interpolated-settings.xml
 interpolated-pom.xml
 dependency-reduced-pom.xml
