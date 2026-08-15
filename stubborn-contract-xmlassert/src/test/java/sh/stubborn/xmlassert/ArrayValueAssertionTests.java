@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * {@code isEqualTo}/{@code matches} overload, {@code node} wrapping, {@code hasSize} and
  * the {@code isAssertingAValueInArray} flag.
  */
+@SuppressWarnings("NullAway")
 class ArrayValueAssertionTests {
 
 	static final String STRING_LIST = """
@@ -177,6 +178,22 @@ class ArrayValueAssertionTests {
 		XmlArrayVerifiable array = (XmlArrayVerifiable) XmlAssertion.assertThat(ERRORS).node("root").array("errors");
 		XmlVerifiable contained = array.contains("property");
 		assertThat(contained.isAssertingAValueInArray()).isTrue();
+	}
+
+	@Test
+	void primitiveIsEqualToNullBooleanBuildsTextPredicate() {
+		// On a primitive array (checkingPrimitiveType == true) a null Boolean flows
+		// through
+		// isEqualTo(String.valueOf(value)) == isEqualTo("null") and builds a
+		// [text()='null']
+		// predicate. If the checkingPrimitiveType branch is negated it would instead
+		// route to
+		// super.isEqualTo(Boolean) -> isNull(), producing a not(boolean(...)) expression.
+		XmlVerifiable verifiable = XPathBuilder.builder("<root><x>1</x></root>")
+			.node("root")
+			.array("x")
+			.isEqualTo((Boolean) null);
+		assertThat(verifiable.xPath()).isEqualTo("/root/x[text()='null']");
 	}
 
 }

@@ -48,6 +48,8 @@ class XmlAssertionEntryTests {
 		assertThat(cached.xpathBuilder).isNotNull();
 		assertThat(cached.xmlAsString).contains("<root>").contains("<a>1</a>").contains("</root>");
 		assertThat(cached.xmlAsString).doesNotContain("\n").doesNotContain("\r");
+		// OMIT_XML_DECLARATION is set, so the serialized form must not carry the prolog.
+		assertThat(cached.xmlAsString).doesNotContain("<?xml");
 	}
 
 	@Test
@@ -90,12 +92,28 @@ class XmlAssertionEntryTests {
 	}
 
 	@Test
-	void assertThatStringParsesThenReusesCache() {
-		String xml = "<uniqueCacheRoot><child>value</child></uniqueCacheRoot>";
-		String first = XmlAssertion.assertThat(xml).node("uniqueCacheRoot").node("child").xPath();
-		String second = XmlAssertion.assertThat(xml).node("uniqueCacheRoot").node("child").xPath();
-		assertThat(first).isEqualTo("/uniqueCacheRoot/child");
-		assertThat(second).isEqualTo(first);
+	void bddXmlAssertionsVerifiableEntry() {
+		XmlVerifiable verifiable = XmlAssertion.assertThat(XML2);
+		XPathAssert result = BDDXmlAssertions.then(verifiable);
+		assertThat(result).isNotNull();
+	}
+
+	@Test
+	void assertThatStringParsesOnCacheMissThenReusesOnCacheHit() {
+		// Deliberately unique so the FIRST call is a guaranteed cache miss: the document
+		// must actually be parsed (cachedObjects == null && !empty(xml)) for the
+		// following
+		// matchesXPath to evaluate. If either condition in assertThat(String), or the
+		// empty() predicate, is mutated, the parse is skipped and matchesXPath throws.
+		String xml = "<cacheEmptyProbe><child>value</child></cacheEmptyProbe>";
+		XmlAssertion.assertThat(xml).matchesXPath("/cacheEmptyProbe[child='value']"); // cache
+																						// miss
+																						// ->
+																						// parses
+		XmlAssertion.assertThat(xml).matchesXPath("/cacheEmptyProbe[child='value']"); // cache
+																						// hit
+																						// ->
+																						// reuses
 	}
 
 	@Test

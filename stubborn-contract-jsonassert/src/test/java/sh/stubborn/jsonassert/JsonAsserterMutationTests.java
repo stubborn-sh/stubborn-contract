@@ -27,7 +27,11 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -402,6 +406,174 @@ class JsonAsserterMutationTests {
 		assertThat(JsonAssertions.assertThat(ctx)).isNotNull();
 		assertThat(BDDJsonAssertions.then(ctx)).isNotNull();
 		assertThatNoException().isThrownBy(() -> BDDJsonAssertions.then(ctx).field("a").isEqualTo("b"));
+	}
+
+	// --- Second pass: direct return-value assertions on the null / dispatch branches ---
+
+	@Test
+	void nullDelegatingMethodsShouldReturnNonNullIsNullAsserter() {
+		JsonVerifiable eqString = JsonPath.builder().field("a").isEqualTo((String) null);
+		assertThat(eqString).isNotNull();
+		assertThat(eqString.jsonPath()).isEqualTo("$[?(@.a == null)]");
+
+		JsonVerifiable eqObject = JsonPath.builder().field("a").isEqualTo((Object) null);
+		assertThat(eqObject).isNotNull();
+		assertThat(eqObject.jsonPath()).isEqualTo("$[?(@.a == null)]");
+
+		JsonVerifiable eqNumber = JsonPath.builder().field("a").isEqualTo((Number) null);
+		assertThat(eqNumber).isNotNull();
+		assertThat(eqNumber.jsonPath()).isEqualTo("$[?(@.a == null)]");
+
+		JsonVerifiable eqBoolean = JsonPath.builder().field("a").isEqualTo((Boolean) null);
+		assertThat(eqBoolean).isNotNull();
+		assertThat(eqBoolean.jsonPath()).isEqualTo("$[?(@.a == null)]");
+
+		JsonVerifiable matchesNull = JsonPath.builder().field("a").matches(null);
+		assertThat(matchesNull).isNotNull();
+		assertThat(matchesNull.jsonPath()).isEqualTo("$[?(@.a == null)]");
+
+		JsonVerifiable isNull = JsonPath.builder().field("a").isNull();
+		assertThat(isNull).isNotNull();
+		assertThat(isNull.jsonPath()).isEqualTo("$[?(@.a == null)]");
+	}
+
+	@Test
+	void objectDispatchMethodsShouldReturnNonNullAsserter() {
+		JsonVerifiable eqBoolean = JsonPath.builder().field("a").isEqualTo((Object) Boolean.TRUE);
+		assertThat(eqBoolean).isNotNull();
+		assertThat(eqBoolean.jsonPath()).isEqualTo("$[?(@.a == true)]");
+
+		JsonVerifiable eqPattern = JsonPath.builder().field("a").isEqualTo((Object) Pattern.compile("[0-9]+"));
+		assertThat(eqPattern).isNotNull();
+		assertThat(eqPattern.jsonPath()).isEqualTo("$[?(@.a =~ /[0-9]+/)]");
+
+		JsonVerifiable eqBooleanDirect = JsonPath.builder().field("a").isEqualTo(Boolean.FALSE);
+		assertThat(eqBooleanDirect).isNotNull();
+		assertThat(eqBooleanDirect.jsonPath()).isEqualTo("$[?(@.a == false)]");
+	}
+
+	@Test
+	void arrayValueAssertionsShouldReturnNonNullAsserter() {
+		JsonVerifiable eqString = JsonPath.builder().array("names").arrayField().isEqualTo("n1");
+		assertThat(eqString).isNotNull();
+		assertThat(eqString.jsonPath()).isEqualTo("$.names[?(@ == 'n1')]");
+
+		JsonVerifiable eqNumber = JsonPath.builder().array("nums").arrayField().isEqualTo(7);
+		assertThat(eqNumber).isNotNull();
+		assertThat(eqNumber.jsonPath()).isEqualTo("$.nums[?(@ == 7)]");
+
+		JsonVerifiable eqBoolean = JsonPath.builder().array("flags").arrayField().isEqualTo(true);
+		assertThat(eqBoolean).isNotNull();
+		assertThat(eqBoolean.jsonPath()).isEqualTo("$.flags[?(@ == true)]");
+
+		JsonVerifiable matches = JsonPath.builder().array("nums").arrayField().matches("[0-9]+");
+		assertThat(matches).isNotNull();
+		assertThat(matches.jsonPath()).isEqualTo("$.nums[?(@ =~ /[0-9]+/)]");
+
+		JsonVerifiable contains = JsonPath.builder().array("nums").arrayField().contains(7);
+		assertThat(contains).isNotNull();
+		assertThat(contains.jsonPath()).isEqualTo("$.nums[?(@ == 7)]");
+	}
+
+	// --- Second pass: JsonPathAssert builder returns asserted non-null and correct ---
+
+	@Test
+	void jsonPathAssertBuilderReturnsShouldBeNonNull() {
+		DocumentContext ctx = parse("{\"s\":\"abc\", \"n\":4, \"b\":true, \"list\":[\"a\",\"b\"]}");
+		// isEqualTo(String) success return (line 83)
+		assertThat(JsonAssertions.assertThat(ctx).field("s").isEqualTo("abc")).isNotNull();
+		// isEqualTo(Number) success return (line 97)
+		assertThat(JsonAssertions.assertThat(ctx).field("n").isEqualTo(4)).isNotNull();
+		// isInstanceOf success return (line 111)
+		assertThat(JsonAssertions.assertThat(ctx).field("n").isInstanceOf(Number.class)).isNotNull();
+		// matches success return (line 125)
+		assertThat(JsonAssertions.assertThat(ctx).field("s").matches("[a-z]+")).isNotNull();
+		// isEqualTo(Boolean) success return (line 139)
+		assertThat(JsonAssertions.assertThat(ctx).field("b").isEqualTo(true)).isNotNull();
+		// value() success return (line 153)
+		assertThat(JsonAssertions.assertThat(ctx).array("list").arrayField().value()).isNotNull();
+	}
+
+	// --- Second pass: JsonAssertion constructor caching / empty-body branches ---
+
+	@Test
+	void jsonAssertionShouldParseFreshNonEmptyBody() {
+		// unique, non-empty, valid body -> not cached -> empty() false -> parse + cache
+		String body = "{\"secondPassFreshKey\":\"v\"}";
+		assertThatNoException()
+			.isThrownBy(() -> JsonAssertion.assertThat(body).field("secondPassFreshKey").isEqualTo("v"));
+	}
+
+	@Test
+	void jsonAssertionShouldFallBackToEmptyObjectForBlankBodies() {
+		// blank bodies -> documentContext stays null -> parse("{}"); a real parse of the
+		// raw blank string would throw, so no-exception here proves the empty() guard
+		assertThat(JsonAssertion.assertThat("").jsonPath()).isEqualTo("$");
+		assertThat(JsonAssertion.assertThat("   ").jsonPath()).isEqualTo("$");
+		assertThat(JsonAssertion.assertThat("\n\t ").jsonPath()).isEqualTo("$");
+	}
+
+	@Test
+	void jsonAssertionShouldReuseCachedDocumentForRepeatedBody() {
+		// second call with the same body hits the cache (documentContext != null branch)
+		String body = "{\"secondPassCachedKey\":\"v\"}";
+		assertThatNoException()
+			.isThrownBy(() -> JsonAssertion.assertThat(body).field("secondPassCachedKey").isEqualTo("v"));
+		assertThatNoException()
+			.isThrownBy(() -> JsonAssertion.assertThat(body).field("secondPassCachedKey").isEqualTo("v"));
+	}
+
+	// --- Second pass: isObjectEmpty plain-java-List branch via POJO-backed context ---
+
+	@Test
+	void isEmptyShouldHandlePlainJavaListValues() {
+		Map<String, Object> model = new HashMap<>();
+		model.put("emptyList", new ArrayList<>());
+		model.put("fullList", new ArrayList<>(List.of("x")));
+		DocumentContext ctx = com.jayway.jsonpath.JsonPath.parse(model);
+		assertThatNoException().isThrownBy(() -> JsonAssertion.assertThat(ctx).field("emptyList").isEmpty());
+		assertThatThrownBy(() -> JsonAssertion.assertThat(ctx).field("fullList").isEmpty())
+			.isInstanceOf(IllegalStateException.class);
+	}
+
+	// --- Second pass: equals buffer comparison branch, exercised directly ---
+
+	@Test
+	void equalsShouldDistinguishByBufferAndFieldNameDirectly() {
+		DocumentContext ctx = parse("{}");
+		JsonAsserterConfiguration cfg = new JsonAsserterConfiguration();
+		LinkedList<String> buf = new LinkedList<>();
+		buf.offer("$");
+		LinkedList<String> otherBuf = new LinkedList<>();
+		otherBuf.offer("$");
+		otherBuf.offer(".a");
+		ReadyToCheckAsserter base = new ReadyToCheckAsserter(ctx, buf, "x", cfg);
+		ReadyToCheckAsserter sameBufferSameField = new ReadyToCheckAsserter(ctx, buf, "x", cfg);
+		ReadyToCheckAsserter sameBufferDiffField = new ReadyToCheckAsserter(ctx, buf, "y", cfg);
+		ReadyToCheckAsserter diffBuffer = new ReadyToCheckAsserter(ctx, otherBuf, "x", cfg);
+		assertThat(base.equals(sameBufferSameField)).isTrue();
+		assertThat(base.equals(sameBufferDiffField)).isFalse();
+		assertThat(base.equals(diffBuffer)).isFalse();
+	}
+
+	// --- Second pass: a non-empty body must actually be parsed. Kills the JsonAssertion
+	// cache/empty mutants (lines 33 and 41): they only surface through a real evaluated
+	// check, because a forced-empty or negated-cache body is parsed as "{}". ---
+
+	@Test
+	void nonEmptyBodyMustBeParsedForRealChecks() {
+		// Unique, previously-uncached, non-empty body: the successful check proves the
+		// body was genuinely parsed. Under any of the mutants the body becomes "{}", the
+		// field is absent and the check throws, failing this assertion.
+		String body = "{ \"mutationProbeField\" : \"mutationProbeValue\" }";
+		// matchesJsonPath evaluates against the parsed document (unlike the path
+		// builders).
+		// Under any cache/empty mutant the body is parsed as "{}", the path finds nothing
+		// and the check throws, failing this assertion.
+		assertThatNoException().isThrownBy(() -> JsonAssertion.assertThat(body)
+			.matchesJsonPath("$[?(@.mutationProbeField == 'mutationProbeValue')]"));
+		assertThatThrownBy(() -> JsonAssertion.assertThat(body).matchesJsonPath("$[?(@.absentField == 'nope')]"))
+			.isInstanceOf(IllegalStateException.class);
 	}
 
 }
