@@ -14,10 +14,12 @@ spring:
       properties:
         "spring.json.trusted.packages": "*"
     consumer:
+      # The stub-runner publishes the contract's output via the Spring-free StubbornKafka
+      # producer as raw JSON bytes with no Spring-Kafka type headers, so a JsonDeserializer
+      # would fail with a SerializationException. Consume the value as a String and parse
+      # the JSON in the test assertion instead.
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        "spring.json.trusted.packages": "*"
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       group-id: ${random.value}
       auto-offset-reset: earliest
 server:
