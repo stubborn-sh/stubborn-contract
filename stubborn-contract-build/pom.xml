@@ -436,26 +436,19 @@
 					<configuration>
 						<haltOnFailure>${jacoco.haltOnFailure}</haltOnFailure>
 						<!--
-						  Broker-I/O verifier classes in the Kafka/Rabbit building blocks open a live
-						  broker connection (Testcontainers) and are behaviour-verified by the
-						  *ConformanceTests integration suite (Build & Test / Build & Verify, with
-						  Docker), NOT by unit coverage. The coverage floor runs with -DskipITs, so it
-						  measures only the unit-testable surface (message adapters, header / property
-						  mapping); excluding the connection classes keeps the floor honest. JMS is
-						  intentionally NOT excluded (embedded in-VM Artemis covers it without Docker).
+						  The coverage gate measures unit AND integration tests. The Kafka/Rabbit
+						  *ConformanceTests (@Testcontainers) run in the coverage job (Docker is
+						  available on the CI runner) and, being surefire tests, their coverage is
+						  captured by the jacoco agent - so the broker-I/O sender/receiver classes are
+						  counted normally and need no exclusion.
+						
+						  Only stub-runner git / Maven-resolver / filesystem-IO error paths remain
+						  excluded: their SSH transport, Aether ServiceLocator reflection and
+						  delete/retry IO-failure branches are exercised by neither a unit nor an
+						  integration test here (they need a real git remote, a real Maven repository
+						  or a failing filesystem). Tracked for follow-up integration tests.
 						-->
 						<excludes>
-							<exclude>sh/stubborn/messaging/kafka/StubbornKafkaMessageVerifierSender.class</exclude>
-							<exclude>sh/stubborn/messaging/kafka/StubbornKafkaMessageVerifierReceiver.class</exclude>
-							<exclude>sh/stubborn/messaging/rabbit/StubbornRabbitMessageVerifierSender.class</exclude>
-							<exclude>sh/stubborn/messaging/rabbit/StubbornRabbitMessageVerifierReceiver.class</exclude>
-							<exclude>sh/stubborn/messaging/rabbit/AbstractStubbornRabbitVerifier.class</exclude>
-							<!--
-							  Stub-runner git / Maven-resolver / filesystem-IO infrastructure: their uncovered
-							  branches are SSH transport, Aether ServiceLocator reflection, remote-repo
-							  resolution and delete/retry IO-failure paths that need a real git remote, Maven
-							  repository or a failing filesystem - integration-tested, not unit-branch-coverable.
-							-->
 							<exclude>sh/stubborn/contract/stubrunner/GitRepo.class</exclude>
 							<exclude>sh/stubborn/contract/stubrunner/GitRepo$*.class</exclude>
 							<exclude>sh/stubborn/contract/stubrunner/GitStubDownloader.class</exclude>
@@ -538,6 +531,11 @@
 						<excludedTestClasses>
 							<param>*ArchTests</param>
 							<param>*ArchTest</param>
+							<!-- Integration tests are not mutation-tested: the *ConformanceTests
+							     (@Testcontainers) exist to verify real-broker behaviour, count toward
+							     line/branch coverage, but must not run inside PIT (slow, Docker-bound,
+							     and mutation of broker-I/O is out of scope). -->
+							<param>*ConformanceTests</param>
 						</excludedTestClasses>
 						<!-- DEFAULTS minus VOID_METHOD_CALLS: the only surviving void-call mutations here
 						     are removals of logging/trace side-effect calls (logOverridingWarning),
