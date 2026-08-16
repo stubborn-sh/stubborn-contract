@@ -25,6 +25,21 @@ set -euo pipefail
 
 BASE_REF="${1:-origin/main}"
 
+# True (exit 0) when the file's diff against BASE_REF contains at least one
+# added/removed line that is real code — i.e. not a Javadoc/block/line comment or
+# a blank line. Comment-only changes (e.g. adding @since tags) cannot alter
+# bytecode, so they must not drag a class into the mutation gate.
+is_code_change() {
+	local file="$1" body
+	body="$(git diff "${BASE_REF}...HEAD" -- "${file}" \
+		| grep -E '^[+-]' \
+		| grep -Ev '^(\+\+\+|---)' \
+		| sed -E 's/^[+-][[:space:]]*//' \
+		| grep -Ev '^([[:space:]]*$|\*|/\*\*|\*/|//)' \
+		|| true)"
+	[ -n "${body}" ]
+}
+
 # The 12 core, spring-less gate modules (paths relative to the repo root).
 GATE_MODULES=(
 	"stubborn-contract-jsonassert"
@@ -57,6 +72,8 @@ for module in "${GATE_MODULES[@]}"; do
 			"${module}/src/main/java/"*) ;;
 			*) continue ;;
 		esac
+		# Skip files whose change is Javadoc/comment-only — no bytecode impact.
+		is_code_change "${file}" || continue
 		# Strip everything up to and including src/main/java/, drop the .java
 		# suffix, and turn path separators into dots -> fully qualified class name.
 		fqcn="${file#*/src/main/java/}"

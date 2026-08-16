@@ -74,6 +74,10 @@ scripts/quality/coverage-report.sh --enforce  # exit non-zero if LINE<80 or BRAN
   `src/main/java/**.java` files to fully-qualified class names via
   `scripts/quality/changed-core-classes.sh`, and runs PIT per affected module with
   `-DtargetClasses=<changed classes>` and `-DmutationThreshold=90`.
+- Files whose diff is **Javadoc/comment-only** are excluded from the changed-class
+  set: they cannot alter bytecode, so they cannot affect mutation coverage. A
+  documentation-only PR therefore runs no mutation analysis rather than being
+  gated on the pre-existing coverage of the classes it happens to touch.
 
 The default `pitest.mutationThreshold` property is `0` (warn mode). The CI diff job
 overrides it to `90` on the command line so the real floor applies to changed classes
