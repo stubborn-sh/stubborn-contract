@@ -47,7 +47,7 @@ import tools.jackson.databind.json.JsonMapper;
 /**
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  */
 class JsonBodyVerificationBuilder implements BodyMethodGeneration, ClassVerifier {
 

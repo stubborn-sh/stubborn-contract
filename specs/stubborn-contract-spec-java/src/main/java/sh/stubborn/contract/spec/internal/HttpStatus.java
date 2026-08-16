@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
- * @since 2.0.0
+ * @since 1.0.0
  */
 public final class HttpStatus {
 
@@ -271,14 +271,14 @@ public final class HttpStatus {
 
 	/**
 	 * The HTTP {@code 413 Payload Too Large} status code.
-	 * @since 4.1* @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.11" >
+	 * @since 1.0.0* @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.11" >
 	 * HTTP/1.1: Semantics and Content, section 6.5.11</a>
 	 */
 	public static final int PAYLOAD_TOO_LARGE = 413;
 
 	/**
 	 * The HTTP {@code 414 URI Too Long} status code.
-	 * @since 4.1* @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.12" >
+	 * @since 1.0.0* @see <a href="https://tools.ietf.org/html/rfc7231#section-6.5.12" >
 	 * HTTP/1.1: Semantics and Content, section 6.5.12</a>
 	 */
 	public static final int URI_TOO_LONG = 414;

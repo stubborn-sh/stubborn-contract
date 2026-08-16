@@ -31,7 +31,7 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
  *
  * @author Olga Maciaszek-Sharma
  * @author Marcin Grzejszczak
- * @since 2.2.0
+ * @since 1.0.0
  */
 final class SingleMethodBuilder {
 

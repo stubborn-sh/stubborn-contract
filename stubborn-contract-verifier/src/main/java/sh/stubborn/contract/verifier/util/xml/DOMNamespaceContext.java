@@ -28,6 +28,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+/**
+ * {@link javax.xml.namespace.NamespaceContext} backed by the namespace declarations of a
+ * DOM node.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class DOMNamespaceContext implements NamespaceContext {
 
 	private final Map<String, String> namespaceMap = new HashMap<>();

@@ -38,7 +38,7 @@ import org.springframework.util.ReflectionUtils;
  * {@link WebTestClient} into a WireMock stub definition.
  *
  * @author Dave Syer
- *
+ * @since 1.0.0
  */
 public class ContractExchangeHandler extends WireMockVerifyHelper<EntityExchangeResult<?>, ContractExchangeHandler>
 		implements Consumer<EntityExchangeResult<byte[]>> {

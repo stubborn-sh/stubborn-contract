@@ -43,6 +43,7 @@ import org.springframework.core.io.UrlResource;
  * @author Dave Syer
  * @author Pei-Tang Huang
  * @author Hunhee Jung
+ * @since 1.0.0
  */
 public class ResourcesFileSource implements FileSource {
 

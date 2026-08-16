@@ -51,6 +51,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * {@code producer.send}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class StubbornJmsMessageVerifierSender extends AbstractStubbornJmsVerifier
 		implements MessageVerifierSender<JmsMessage> {

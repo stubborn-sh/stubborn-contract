@@ -42,6 +42,7 @@ import sh.stubborn.contract.verifier.config.TestMode;
  * @author Marcin Grzejszczak
  * @author Anatoliy Balakirev
  * @author Shannon Pamperl
+ * @since 1.0.0
  */
 public class ContractVerifierExtension implements Serializable {
 

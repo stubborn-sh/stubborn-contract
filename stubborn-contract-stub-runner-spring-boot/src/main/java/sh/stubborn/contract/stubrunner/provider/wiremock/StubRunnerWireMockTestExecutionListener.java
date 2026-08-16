@@ -28,7 +28,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
  * Marks context to be restarted if at least one stub has a fixed port.
  *
  * @author Marcin Grzejszczak
- * @since 1.2.6
+ * @since 1.0.0
  */
 public final class StubRunnerWireMockTestExecutionListener extends AbstractTestExecutionListener {
 

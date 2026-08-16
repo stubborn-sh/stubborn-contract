@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * Special case of Patterns that we don't want to escape.
  *
  * @author Marcin Grzejszczak
- * @since 1.0.3
+ * @since 1.0.0
  */
 public class NotToEscapePattern extends DslProperty<Pattern> {
 

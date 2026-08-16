@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
  * Helper class that allows to build headers in a nice way.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class ContractVerifierMessagingUtil {
 

@@ -22,7 +22,7 @@ package sh.stubborn.contract.verifier.util.xml;
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
  * @author Chris Bono
- * @since 2.1.0
+ * @since 1.0.0
  */
 public interface XmlVerifiable extends IteratingOverArray, XmlReader {
 

@@ -31,7 +31,7 @@ import repackaged.nl.flotsam.xeger.Xeger;
  * Represents a regular expression property.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public class RegexProperty extends DslProperty implements CanBeDynamic {
 

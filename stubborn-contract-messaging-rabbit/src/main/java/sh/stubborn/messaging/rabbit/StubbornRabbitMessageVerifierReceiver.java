@@ -58,6 +58,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
  * is the earliest enqueued — a stable positional guarantee.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class StubbornRabbitMessageVerifierReceiver extends AbstractStubbornRabbitVerifier
 		implements MessageVerifierReceiver<RabbitMessage> {

@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * Contains cached objects that are memory consuming.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 class XmlCachedObjects {
 

@@ -23,6 +23,7 @@ import tools.jackson.databind.json.JsonMapper;
  * it.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class ContractVerifierObjectMapper {
 

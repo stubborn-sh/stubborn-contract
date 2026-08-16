@@ -50,6 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @param <M> the transport's message type
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public abstract class AbstractMessageVerifierConformanceTests<M extends ContractMessage> {
 

@@ -37,6 +37,7 @@ import groovy.lang.DelegatesTo;
  * </pre>
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  * @deprecated Use {@link sh.stubborn.contract.spec.Contract} instead.
  */
 @Deprecated

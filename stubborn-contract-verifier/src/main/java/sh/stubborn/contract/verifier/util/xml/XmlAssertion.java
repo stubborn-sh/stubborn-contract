@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * Entry point for assertions. Use the static factory method and you're ready to go!
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  * @see XmlVerifiable
  */
 public final class XmlAssertion {

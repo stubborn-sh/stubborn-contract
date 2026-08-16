@@ -20,6 +20,7 @@ package sh.stubborn.contract.stubrunner;
  * Stub resolution modes.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public enum StubsMode {
 

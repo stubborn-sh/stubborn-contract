@@ -14,7 +14,7 @@ import com.jayway.jsonpath.DocumentContext;
  * provided sequence.
  *
  * @author Marcin Grzejszczak
- * @since 0.2.0
+ * @since 1.0.0
  */
 public class JsonPathAssert extends AbstractAssert<JsonPathAssert, JsonVerifiable> {
 

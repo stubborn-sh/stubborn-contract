@@ -20,6 +20,7 @@ package sh.stubborn.contract.wiremock.restdocs;
  * Holds a single JSON path expression for rendering into the contract DSL template.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class JsonPaths {
 

@@ -40,7 +40,7 @@ import sh.stubborn.contract.verifier.converter.YamlContractConverter;
  *
  * @author Marcin Grzejszczak
  * @author Anatolii Zhmaiev
- * @since 2.1.0
+ * @since 1.0.0
  */
 public final class ContractScanner {
 

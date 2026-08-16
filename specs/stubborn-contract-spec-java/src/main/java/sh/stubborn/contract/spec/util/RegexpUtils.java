@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * Useful utility methods to work with regular expressions.
  *
  * @author Marcin Grzejszczak
- * @since 1.0.2
+ * @since 1.0.0
  */
 public final class RegexpUtils {
 

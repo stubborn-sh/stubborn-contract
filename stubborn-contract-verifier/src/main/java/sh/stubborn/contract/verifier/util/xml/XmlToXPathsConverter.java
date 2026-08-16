@@ -62,7 +62,7 @@ import sh.stubborn.contract.spec.internal.PathBodyMatcher;
  *
  * @author Olga Maciaszek-Sharma
  * @author Chris Bono
- * @since 2.1.0
+ * @since 1.0.0
  */
 public class XmlToXPathsConverter {
 

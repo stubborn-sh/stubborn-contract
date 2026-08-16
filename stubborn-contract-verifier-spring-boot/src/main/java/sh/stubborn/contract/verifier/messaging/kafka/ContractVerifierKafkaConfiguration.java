@@ -51,6 +51,7 @@ import org.springframework.kafka.core.KafkaTemplate;
  * implementations.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ KafkaTemplate.class, StubbornKafkaMessageVerifierSender.class })

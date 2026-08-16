@@ -4,7 +4,7 @@ package sh.stubborn.jsonassert;
  * Builder of JSON Paths.
  *
  * @author Marcin Grzejszczak
- * @since 0.3.0
+ * @since 1.0.0
  * @see JsonVerifiable
  * @see JsonAssertion
  */

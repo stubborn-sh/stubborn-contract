@@ -48,7 +48,7 @@ import org.springframework.util.StringUtils;
  * Contract Groovy DSL.
  *
  * @author Marcin Grzejszczak
- * @since 1.0.4
+ * @since 1.0.0
  */
 public class ContractDslSnippet extends TemplatedSnippet {
 

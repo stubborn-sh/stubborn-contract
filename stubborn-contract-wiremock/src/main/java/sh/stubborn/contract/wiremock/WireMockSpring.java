@@ -37,6 +37,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
  * test trust-store.
  *
  * @author Dave Syer
+ * @since 1.0.0
  */
 public abstract class WireMockSpring {
 

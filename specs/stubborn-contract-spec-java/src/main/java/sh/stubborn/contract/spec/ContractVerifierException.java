@@ -20,6 +20,7 @@ package sh.stubborn.contract.spec;
  * Exception thrown by Contract Verifier when verification fails.
  *
  * @author Jakub Kubrynski, codearte.io
+ * @since 1.0.0
  */
 public class ContractVerifierException extends RuntimeException {
 

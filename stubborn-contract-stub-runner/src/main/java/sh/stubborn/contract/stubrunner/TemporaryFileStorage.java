@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * Stores all generated temporary folders with stubs.
  *
  * @author Marcin Grzejszczak
- * @since 2.0.0
+ * @since 1.0.0
  */
 final class TemporaryFileStorage {
 

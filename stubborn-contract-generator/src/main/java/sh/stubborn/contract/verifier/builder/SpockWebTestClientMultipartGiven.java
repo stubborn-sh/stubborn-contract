@@ -27,6 +27,12 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
 import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.MapConverter;
 
+/**
+ * Builds the {@code given} block of a Spock WebTestClient test for a multipart request.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class SpockWebTestClientMultipartGiven implements Given, WebTestClientAcceptor {
 
 	private final BlockBuilder blockBuilder;

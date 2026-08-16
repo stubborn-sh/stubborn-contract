@@ -30,6 +30,7 @@ import sh.stubborn.contract.stubrunner.StubConfiguration;
  * Utility to parse string into a list of configuration of stubs.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class StubsParser {
 

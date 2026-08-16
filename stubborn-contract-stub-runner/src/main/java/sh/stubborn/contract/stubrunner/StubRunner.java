@@ -41,6 +41,7 @@ import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
  * current groupid and artifactid are matching the corresponding running stub.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class StubRunner implements StubRunning {
 

@@ -23,6 +23,7 @@ import java.util.Map;
  * Contract for triggering stub messages.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public interface StubTrigger {
 

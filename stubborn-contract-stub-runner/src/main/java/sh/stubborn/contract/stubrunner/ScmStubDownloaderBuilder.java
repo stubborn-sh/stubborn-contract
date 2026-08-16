@@ -25,7 +25,7 @@ import org.jspecify.annotations.Nullable;
  * Builds a {@link StubDownloader} to work with contracts and stubs from a SCM.
  *
  * @author Marcin Grzejszczak
- * @since 2.0.0
+ * @since 1.0.0
  */
 public final class ScmStubDownloaderBuilder implements StubDownloaderBuilder {
 

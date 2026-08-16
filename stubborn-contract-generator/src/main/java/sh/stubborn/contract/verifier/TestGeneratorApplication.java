@@ -19,6 +19,13 @@ package sh.stubborn.contract.verifier;
 import sh.stubborn.contract.verifier.config.ContractVerifierConfigProperties;
 import tools.jackson.databind.json.JsonMapper;
 
+/**
+ * Command-line entry point that generates contract verification tests from a set of
+ * contracts.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public final class TestGeneratorApplication {
 
 	private TestGeneratorApplication() {

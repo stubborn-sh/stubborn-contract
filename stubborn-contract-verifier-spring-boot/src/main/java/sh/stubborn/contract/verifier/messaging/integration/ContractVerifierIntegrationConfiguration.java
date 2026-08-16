@@ -39,6 +39,7 @@ import org.springframework.messaging.Message;
  * verification.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Message.class)

@@ -36,6 +36,8 @@ import org.apache.commons.lang3.StringUtils;
  * that is guaranteed to match the regular expression passed in.
  *
  * slight modifications by Marcin Grzejszczak
+ *
+ * @since 1.0.0
  */
 public class Xeger {
 

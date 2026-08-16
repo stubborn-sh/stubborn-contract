@@ -4,7 +4,7 @@ package sh.stubborn.xmlassert;
  * Builder of XPaths.
  *
  * @author Marcin Grzejszczak
- * @since 0.0.1
+ * @since 1.0.0
  * @see XmlVerifiable
  * @see XmlAssertion
  */

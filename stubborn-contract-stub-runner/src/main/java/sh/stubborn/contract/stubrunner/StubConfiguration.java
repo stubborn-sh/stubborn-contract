@@ -23,6 +23,7 @@ import java.util.Locale;
  * groupId:artifactId:version:classifier notation
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class StubConfiguration {
 

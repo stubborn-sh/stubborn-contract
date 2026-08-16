@@ -45,7 +45,7 @@ import org.jspecify.annotations.Nullable;
  * </ul>
  *
  * @author Marcin Grzejszczak
- * @since 1.1.1
+ * @since 1.0.0
  */
 public class ClasspathStubProvider implements StubDownloaderBuilder {
 

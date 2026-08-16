@@ -40,7 +40,7 @@ import tools.jackson.databind.ser.std.SimpleFilterProvider;
  * Helper class that allows to work with metadata.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public final class MetadataUtil {
 

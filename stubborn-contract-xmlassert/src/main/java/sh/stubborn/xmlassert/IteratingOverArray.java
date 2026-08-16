@@ -4,7 +4,7 @@ package sh.stubborn.xmlassert;
  * Helper interface describing the process of current iteration
  *
  * @author Marcin Grzejszczak
- * @since 0.0.1
+ * @since 1.0.0
  */
 public interface IteratingOverArray {
 

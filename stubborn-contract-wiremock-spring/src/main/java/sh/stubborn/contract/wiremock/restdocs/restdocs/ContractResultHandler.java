@@ -52,6 +52,7 @@ import org.springframework.util.StringUtils;
  * Converts a {@link MvcResult} to a WireMock response.
  *
  * @author Dave Syer
+ * @since 1.0.0
  */
 public class ContractResultHandler extends WireMockVerifyHelper<MvcResult, ContractResultHandler>
 		implements ResultHandler {

@@ -32,7 +32,7 @@ import sh.stubborn.contract.spec.internal.OptionalProperty;
  * index) and unordered (any matching) array verification.
  *
  * @author Marcin Grzejszczak
- * @since 5.1.0
+ * @since 1.0.0
  */
 class JsonPathTraverser {
 

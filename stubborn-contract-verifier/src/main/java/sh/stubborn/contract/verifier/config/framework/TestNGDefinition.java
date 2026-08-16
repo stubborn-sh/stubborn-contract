@@ -21,7 +21,7 @@ package sh.stubborn.contract.verifier.config.framework;
  * construction.
  *
  * @author André Hoffmann
- * @since 2.2.0
+ * @since 1.0.0
  */
 public class TestNGDefinition implements TestFrameworkDefinition {
 

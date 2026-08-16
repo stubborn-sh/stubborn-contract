@@ -22,6 +22,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
  * Builds a WireMock {@link StubMapping} from a mapping definition.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class WireMockStubMapping {
 

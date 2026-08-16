@@ -36,6 +36,7 @@ import org.springframework.util.StringUtils;
  * The generated stubs get committed to the SCM repo and pushed to origin.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @Mojo(name = "pushStubsToScm")
 @SuppressWarnings("NullAway.Init")

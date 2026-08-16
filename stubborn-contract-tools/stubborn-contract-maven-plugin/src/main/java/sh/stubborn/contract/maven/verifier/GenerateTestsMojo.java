@@ -52,6 +52,7 @@ import org.springframework.util.StringUtils;
  * producer side.
  *
  * @author Mariusz Smykula
+ * @since 1.0.0
  */
 @Mojo(name = "generateTests", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES,
 		requiresDependencyResolution = ResolutionScope.TEST)

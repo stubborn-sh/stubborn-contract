@@ -20,7 +20,7 @@ package sh.stubborn.contract.verifier.util.xml;
  * Builder of XPaths.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  * @see XmlVerifiable
  * @see XmlAssertion
  */

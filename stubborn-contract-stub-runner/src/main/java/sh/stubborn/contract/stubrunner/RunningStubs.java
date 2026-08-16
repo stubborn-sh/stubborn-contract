@@ -30,6 +30,7 @@ import org.jspecify.annotations.Nullable;
  * with the port on which its executed.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class RunningStubs {
 

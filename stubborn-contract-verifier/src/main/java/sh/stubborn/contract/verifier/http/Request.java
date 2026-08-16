@@ -33,7 +33,7 @@ import sh.stubborn.contract.spec.internal.HttpMethods;
  * Warning! This API is experimental and can change in time.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public class Request {
 

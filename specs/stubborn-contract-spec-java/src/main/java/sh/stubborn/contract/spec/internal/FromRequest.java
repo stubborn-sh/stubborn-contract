@@ -22,7 +22,7 @@ import sh.stubborn.contract.spec.ContractTemplate;
  * Helper class to reference the request body parameters.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public class FromRequest {
 

@@ -41,7 +41,7 @@ import org.springframework.core.env.MapPropertySource;
  * The old prefix will be removed in the next major release.
  *
  * @author Marcin Grzejszczak
- * @since 0.1.0
+ * @since 1.0.0
  */
 public class StubRunnerPropertiesMigrator implements EnvironmentPostProcessor {
 

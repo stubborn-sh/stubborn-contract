@@ -34,6 +34,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  *
  * @param <M> message type
  * @author Dave Syer
+ * @since 1.0.0
  */
 public class ContractVerifierMessaging<M> {
 

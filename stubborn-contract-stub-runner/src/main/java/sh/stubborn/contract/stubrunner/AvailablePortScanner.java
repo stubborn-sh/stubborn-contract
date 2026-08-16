@@ -93,6 +93,14 @@ class AvailablePortScanner {
 		}
 	}
 
+	/**
+	 * Callback invoked with an available port so that a value can be produced while the
+	 * port is held.
+	 *
+	 * @param <T> the value type produced while the port is held
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public interface PortCallback<T> {
 
 		T call(int port) throws IOException;

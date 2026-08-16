@@ -45,7 +45,7 @@ import tools.jackson.databind.json.JsonMapper;
  * tests.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public final class TestSideRequestTemplateModel {
 

@@ -38,6 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @param <T> result type
  * @param <S> stub type
  * @author Dave Syer
+ * @since 1.0.0
  */
 public abstract class WireMockVerifyHelper<T, S extends WireMockVerifyHelper<T, S>> {
 

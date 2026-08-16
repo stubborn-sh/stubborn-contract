@@ -31,7 +31,7 @@ import org.springframework.core.ResolvableType;
  * Stub Runner variant of the {@link LoadBalancerClientFactory}.
  *
  * @author Marcin Grzejszczak
- * @since 2.2.3
+ * @since 1.0.0
  */
 class StubRunnerLoadBalancerClientFactory extends LoadBalancerClientFactory implements Closeable {
 

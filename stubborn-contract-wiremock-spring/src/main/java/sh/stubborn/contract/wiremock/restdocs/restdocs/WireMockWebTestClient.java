@@ -43,6 +43,7 @@ package sh.stubborn.contract.wiremock.restdocs;
  * <code>verify().jsonPath(...)</code>.
  *
  * @author Dave Syer
+ * @since 1.0.0
  */
 public final class WireMockWebTestClient {
 

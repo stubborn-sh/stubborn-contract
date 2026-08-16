@@ -7,7 +7,7 @@ import org.assertj.core.api.BDDAssertions;
  * Entry point for {@link DocumentContext} {@link BDDAssertions}
  *
  * @author Marcin Grzejszczak
- * @since 0.2.0
+ * @since 1.0.0
  */
 public class BDDJsonAssertions extends BDDAssertions {
 

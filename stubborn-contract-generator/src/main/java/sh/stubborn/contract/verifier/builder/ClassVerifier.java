@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  */
 public interface ClassVerifier {
 

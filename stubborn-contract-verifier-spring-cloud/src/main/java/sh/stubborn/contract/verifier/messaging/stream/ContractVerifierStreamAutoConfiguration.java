@@ -42,6 +42,7 @@ import org.springframework.messaging.Message;
  * Auto-configuration for Spring Cloud Stream based contract verifier messaging.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Binder.class)

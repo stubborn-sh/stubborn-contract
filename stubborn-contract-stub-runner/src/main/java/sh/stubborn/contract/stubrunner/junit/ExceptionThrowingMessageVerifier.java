@@ -29,7 +29,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * provided.
  *
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  */
 class ExceptionThrowingMessageVerifier implements MessageVerifierSender<Object>, MessageVerifierReceiver<Object> {
 

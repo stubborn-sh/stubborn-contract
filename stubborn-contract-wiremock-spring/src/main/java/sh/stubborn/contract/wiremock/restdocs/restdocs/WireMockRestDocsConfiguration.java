@@ -30,6 +30,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentationConfigurer;
  * the restdocs path under "stubs".
  *
  * @author Dave Syer
+ * @since 1.0.0
  * @see WireMockRestDocs for a convenient entry point for customizing and asserting the
  * stub behaviour
  */

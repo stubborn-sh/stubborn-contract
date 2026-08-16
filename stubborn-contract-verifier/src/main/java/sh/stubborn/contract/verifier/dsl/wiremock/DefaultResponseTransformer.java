@@ -30,7 +30,7 @@ import sh.stubborn.contract.verifier.builder.handlebars.HandlebarsJsonPathHelper
  * set of handlebars helpers
  *
  * @author Marcin Grzejszczak
- * @since 1.2.0
+ * @since 1.0.0
  */
 public class DefaultResponseTransformer implements TemplateHelperProviderExtension {
 

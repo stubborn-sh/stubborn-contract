@@ -21,7 +21,7 @@ package sh.stubborn.contract.stubrunner;
  *
  * @param <T> type of the stub configuration
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public interface HttpServerStubConfigurer<T> {
 

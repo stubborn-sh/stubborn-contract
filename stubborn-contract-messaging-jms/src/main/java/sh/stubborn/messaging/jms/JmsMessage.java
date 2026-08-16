@@ -41,6 +41,7 @@ import sh.stubborn.contract.verifier.messaging.ContractMessage;
  * constraint the JMS specification places on any application setting message properties.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class JmsMessage implements ContractMessage {
 

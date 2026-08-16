@@ -30,7 +30,7 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  *
  * @param <T> - type of stub mapping
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public interface StubGenerator<T> {
 

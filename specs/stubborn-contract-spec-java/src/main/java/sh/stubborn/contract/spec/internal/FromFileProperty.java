@@ -27,7 +27,7 @@ import java.nio.file.Files;
  * Represents a property that will become a File content.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public class FromFileProperty implements Serializable {
 

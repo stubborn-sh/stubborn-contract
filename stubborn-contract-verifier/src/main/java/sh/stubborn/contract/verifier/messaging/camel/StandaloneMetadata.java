@@ -26,7 +26,7 @@ import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
  * Represents metadata for standalone communication.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public class StandaloneMetadata implements SpringCloudContractMetadata {
 

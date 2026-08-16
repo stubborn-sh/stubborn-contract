@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Holds the collection of query parameters used in a request URL.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class QueryParameters {
 
 	private List<QueryParameter> parameters = new LinkedList<QueryParameter>();

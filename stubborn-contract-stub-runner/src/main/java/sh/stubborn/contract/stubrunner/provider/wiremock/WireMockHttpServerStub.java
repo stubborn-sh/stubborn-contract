@@ -61,7 +61,7 @@ import sh.stubborn.contract.wiremock.WireMockSpring;
  * Abstraction over WireMock as a HTTP Server Stub.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public class WireMockHttpServerStub implements HttpServerStub {
 

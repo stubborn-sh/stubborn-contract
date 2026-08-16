@@ -36,6 +36,7 @@ import sh.stubborn.contract.stubrunner.util.StubsParser;
  *
  * @author Marcin Grzejszczak
  * @author Eddú Meléndez
+ * @since 1.0.0
  */
 public class StubRunnerOptionsBuilder {
 

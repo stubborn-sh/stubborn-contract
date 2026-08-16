@@ -43,7 +43,7 @@ import org.springframework.kafka.core.KafkaTemplate;
  * {@code org.apache.avro.specific.SpecificRecordBase} is on the classpath.
  *
  * @author Emanuel Trandafir
- * @since 4.2.0
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.apache.avro.specific.SpecificRecordBase")

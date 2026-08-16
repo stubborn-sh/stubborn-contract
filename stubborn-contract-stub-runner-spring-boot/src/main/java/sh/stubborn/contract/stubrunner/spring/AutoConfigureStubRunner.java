@@ -34,6 +34,7 @@ import org.springframework.boot.test.context.PropertyMapping;
  * Annotation that enables and configures the stub runner auto-configuration in tests.
  *
  * @author Dave Syer
+ * @since 1.0.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

@@ -20,7 +20,7 @@ package sh.stubborn.contract.verifier.util.xml;
  * Contract to match an array in a parsed XML via XPath.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public interface XmlArrayVerifiable extends XmlVerifiable {
 

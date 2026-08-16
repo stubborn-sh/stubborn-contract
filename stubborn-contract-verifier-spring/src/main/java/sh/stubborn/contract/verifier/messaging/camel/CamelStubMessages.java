@@ -41,6 +41,7 @@ import org.springframework.util.StringUtils;
  * {@link MessageVerifierReceiver} for contract testing.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class CamelStubMessages implements MessageVerifierSender<Message>, MessageVerifierReceiver<Message> {
 

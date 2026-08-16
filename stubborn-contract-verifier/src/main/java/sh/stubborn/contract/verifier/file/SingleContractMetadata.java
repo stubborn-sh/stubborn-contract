@@ -37,6 +37,12 @@ import sh.stubborn.contract.verifier.util.ContentType;
 import sh.stubborn.contract.verifier.util.ContentUtils;
 import sh.stubborn.contract.verifier.util.NamesUtil;
 
+/**
+ * Metadata describing a single contract contained within a contract file.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class SingleContractMetadata {
 
 	private static final Logger log = LoggerFactory.getLogger(SingleContractMetadata.class);

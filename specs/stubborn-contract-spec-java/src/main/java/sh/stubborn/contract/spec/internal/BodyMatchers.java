@@ -31,7 +31,7 @@ import groovy.lang.DelegatesTo;
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
  * @author Tim Ysewyn
- * @since 1.0.3
+ * @since 1.0.0
  */
 public class BodyMatchers {
 

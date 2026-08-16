@@ -4,7 +4,7 @@ package sh.stubborn.jsonassert;
  * Contract to read the value from a JSON basing on it.
  *
  * @author Marcin Grzejszczak
- * @since 0.4.0
+ * @since 1.0.0
  */
 public interface JsonReader {
 

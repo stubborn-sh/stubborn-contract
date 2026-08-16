@@ -22,6 +22,7 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
  * Utility for building WireMock stub mappings from JSON.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class WireMockStubMapping {
 

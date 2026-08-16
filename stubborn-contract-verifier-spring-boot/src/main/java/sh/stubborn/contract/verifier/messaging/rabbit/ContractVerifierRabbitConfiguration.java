@@ -54,6 +54,7 @@ import org.springframework.context.annotation.Configuration;
  * credentials, virtual host) so no connection detail is lost.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ RabbitTemplate.class, StubbornRabbitMessageVerifierSender.class })

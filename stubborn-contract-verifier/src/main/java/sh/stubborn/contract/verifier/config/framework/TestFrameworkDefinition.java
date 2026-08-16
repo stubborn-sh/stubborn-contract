@@ -21,7 +21,7 @@ package sh.stubborn.contract.verifier.config.framework;
  * construction.
  *
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  * @deprecated appropriate implementations of
  * <code>sh.stubborn.contract.verifier.builder.Visitor</code> should be used instead.
  */

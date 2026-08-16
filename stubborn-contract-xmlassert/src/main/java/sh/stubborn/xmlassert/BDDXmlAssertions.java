@@ -7,7 +7,7 @@ import org.w3c.dom.Document;
  * Entry point for {@link BDDAssertions}
  *
  * @author Marcin Grzejszczak
- * @since 0.0.1
+ * @since 1.0.0
  */
 public class BDDXmlAssertions extends BDDAssertions {
 

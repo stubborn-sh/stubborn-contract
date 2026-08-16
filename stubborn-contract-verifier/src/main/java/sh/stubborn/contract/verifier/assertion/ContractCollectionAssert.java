@@ -23,7 +23,7 @@ import java.util.Collection;
  *
  * @param <ELEMENT> type to assert
  * @author Marcin Grzejszczak
- * @since 3.1.0
+ * @since 1.0.0
  */
 public class ContractCollectionAssert<ELEMENT> extends org.assertj.core.api.CollectionAssert<ELEMENT> {
 

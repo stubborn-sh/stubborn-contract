@@ -27,6 +27,7 @@ import sh.stubborn.contract.verifier.converter.YamlContract;
  *
  * @param <U> the message type
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class NoOpStubMessages<U> implements sh.stubborn.contract.verifier.messaging.MessageVerifierSender<U>,
 		sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver<U> {

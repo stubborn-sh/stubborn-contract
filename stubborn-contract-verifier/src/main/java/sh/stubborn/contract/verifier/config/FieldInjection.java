@@ -32,6 +32,7 @@ import org.jspecify.annotations.Nullable;
  * and wire the collaborators through the test's base class.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public enum FieldInjection {
 

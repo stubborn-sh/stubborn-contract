@@ -32,7 +32,7 @@ import sh.stubborn.contract.verifier.converter.YamlContractConverter;
  * Provides custom matching for WireMock's stub requests.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public class SpringCloudContractRequestMatcher extends RequestMatcherExtension {
 

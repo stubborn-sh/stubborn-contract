@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
  * Builds an Aether-based {@link StubDownloader}.
  *
  * @author Marcin Grzejszczak
- * @since 2.0.0
+ * @since 1.0.0
  */
 public class AetherStubDownloaderBuilder implements StubDownloaderBuilder {
 

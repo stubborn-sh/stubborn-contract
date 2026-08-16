@@ -23,7 +23,7 @@ import java.util.Collection;
  * Describes an HTTP Server Stub.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public interface HttpServerStub {
 

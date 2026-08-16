@@ -23,6 +23,7 @@ import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
  * Manages lifecycle of multiple {@link StubRunner} instances.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  * @see StubRunner
  * @see BatchStubRunner
  */

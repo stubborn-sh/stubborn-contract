@@ -21,7 +21,7 @@ package sh.stubborn.contract.spec.internal;
  *
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
- * @since 1.1.2
+ * @since 1.0.0
  */
 public final class MessagingHeaders {
 

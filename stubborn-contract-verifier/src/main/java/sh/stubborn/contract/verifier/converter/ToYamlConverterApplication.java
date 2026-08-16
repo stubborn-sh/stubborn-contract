@@ -18,6 +18,12 @@ package sh.stubborn.contract.verifier.converter;
 
 import java.io.File;
 
+/**
+ * Command-line entry point that converts contracts into the YAML contract format.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public final class ToYamlConverterApplication {
 
 	private ToYamlConverterApplication() {

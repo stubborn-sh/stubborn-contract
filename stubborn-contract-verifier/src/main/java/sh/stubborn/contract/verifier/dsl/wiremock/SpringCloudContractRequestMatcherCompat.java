@@ -28,7 +28,7 @@ import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
  * those stubs continue to work side-by-side with new {@code "stubborn-contract"} stubs.
  *
  * @author Marcin Grzejszczak
- * @since 0.1.0
+ * @since 1.0.0
  */
 public class SpringCloudContractRequestMatcherCompat extends RequestMatcherExtension {
 

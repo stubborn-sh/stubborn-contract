@@ -52,6 +52,7 @@ import org.springframework.util.StringUtils;
  * Represents a snippet for a WireMock stub.
  *
  * @author Dave Syer
+ * @since 1.0.0
  */
 public class WireMockSnippet implements Snippet {
 

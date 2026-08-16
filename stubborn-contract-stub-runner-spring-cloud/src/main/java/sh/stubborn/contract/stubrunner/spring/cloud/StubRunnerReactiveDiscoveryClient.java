@@ -30,7 +30,7 @@ import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
  * started WireMock servers.
  *
  * @author Marcin Grzejszczak
- * @since 2.2.4
+ * @since 1.0.0
  */
 class StubRunnerReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 

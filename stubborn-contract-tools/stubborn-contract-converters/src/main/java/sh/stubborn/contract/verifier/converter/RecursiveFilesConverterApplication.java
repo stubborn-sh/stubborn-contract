@@ -20,6 +20,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Command-line entry point that recursively converts contract files into their stub
+ * representation.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public final class RecursiveFilesConverterApplication {
 
 	private RecursiveFilesConverterApplication() {

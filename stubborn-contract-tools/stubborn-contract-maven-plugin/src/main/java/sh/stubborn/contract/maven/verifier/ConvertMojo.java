@@ -47,6 +47,7 @@ import sh.stubborn.contract.verifier.converter.ToYamlConverter;
  * generated mappings.
  *
  * @author Mariusz Smykula
+ * @since 1.0.0
  */
 @Mojo(name = "convert", requiresProject = false, defaultPhase = LifecyclePhase.PROCESS_TEST_RESOURCES)
 @SuppressWarnings("NullAway.Init")

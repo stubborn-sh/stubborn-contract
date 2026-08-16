@@ -56,6 +56,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
  * earliest produced — a stable positional guarantee.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class StubbornKafkaMessageVerifierReceiver implements MessageVerifierReceiver<KafkaMessage>, Closeable {
 

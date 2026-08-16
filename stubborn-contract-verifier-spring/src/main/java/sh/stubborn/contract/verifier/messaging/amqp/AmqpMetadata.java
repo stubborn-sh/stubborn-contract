@@ -30,7 +30,7 @@ import org.springframework.amqp.core.MessageProperties;
  * Represents metadata for AMQP based communication.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public class AmqpMetadata implements SpringCloudContractMetadata {
 

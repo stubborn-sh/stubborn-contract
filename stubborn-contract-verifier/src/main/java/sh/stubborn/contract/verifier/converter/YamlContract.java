@@ -33,7 +33,7 @@ import sh.stubborn.contract.spec.Contract;
  *
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
- * @since 1.2.1
+ * @since 1.0.0
  */
 public class YamlContract {
 

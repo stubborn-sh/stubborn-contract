@@ -41,7 +41,7 @@ import tools.jackson.databind.json.JsonMapper;
  * @author Marcin Grzejszczak
  * @author Stessy Delcroix
  * @author Ravil Galeyev
- * @since 1.1.0
+ * @since 1.0.0
  */
 public class MapConverter {
 

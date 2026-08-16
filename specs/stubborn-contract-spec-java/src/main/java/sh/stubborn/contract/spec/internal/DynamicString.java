@@ -34,6 +34,7 @@ import org.jspecify.annotations.Nullable;
  * behaves exactly as it did against the original {@code GString}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public interface DynamicString extends CharSequence {
 

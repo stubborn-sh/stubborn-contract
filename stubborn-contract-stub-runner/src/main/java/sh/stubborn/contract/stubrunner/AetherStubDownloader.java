@@ -51,6 +51,7 @@ import sh.stubborn.contract.stubrunner.util.ZipCategory;
  *
  * @author Mariusz Smykula
  * @author Eddú Meléndez
+ * @since 1.0.0
  */
 public class AetherStubDownloader implements StubDownloader {
 

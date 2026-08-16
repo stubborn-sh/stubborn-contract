@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
  * independent of the message provider.
  *
  * @author Dave Syer
- *
+ * @since 1.0.0
  */
 public class ContractVerifierMessage {
 

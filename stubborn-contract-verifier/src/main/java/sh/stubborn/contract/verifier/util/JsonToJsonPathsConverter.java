@@ -42,6 +42,7 @@ import tools.jackson.databind.json.JsonMapper;
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
  * @author Olga Maciaszek-Sharma
+ * @since 1.0.0
  * @see JsonPathTraverser
  * @see JsonPathMatcherUtils
  */

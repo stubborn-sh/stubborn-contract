@@ -34,7 +34,7 @@ import org.springframework.cloud.loadbalancer.core.ReactorServiceInstanceLoadBal
  * Stub Runner variant of the {@link ReactorServiceInstanceLoadBalancer}.
  *
  * @author Marcin Grzejszczak
- * @since 2.2.3
+ * @since 1.0.0
  */
 class ContractReactorServiceInstanceLoadBalancer implements ReactorServiceInstanceLoadBalancer, LoadBalancerLifecycle {
 
