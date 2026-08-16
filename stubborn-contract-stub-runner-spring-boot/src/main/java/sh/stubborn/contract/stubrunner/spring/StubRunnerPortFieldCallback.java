@@ -26,6 +26,7 @@ import org.springframework.util.ReflectionUtils;
  * {@link StubRunnerPort} annotated field.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class StubRunnerPortFieldCallback implements ReflectionUtils.FieldCallback {
 

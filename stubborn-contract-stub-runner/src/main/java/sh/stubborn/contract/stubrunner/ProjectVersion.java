@@ -29,6 +29,7 @@ import org.jspecify.annotations.Nullable;
  * version;
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ProjectVersion implements Comparable<ProjectVersion>, Serializable {
 

@@ -69,6 +69,7 @@ import tools.jackson.dataformat.yaml.YAMLMapper;
  * @author Olga Maciaszek-Sharma
  * @author Tim Ysewyn
  * @author Stessy Delcroix
+ * @since 1.0.0
  */
 class YamlToContracts {
 

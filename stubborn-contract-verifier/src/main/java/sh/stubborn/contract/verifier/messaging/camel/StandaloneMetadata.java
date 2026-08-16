@@ -90,6 +90,8 @@ public class StandaloneMetadata implements SpringCloudContractMetadata {
 
 	/**
 	 * Message metadata.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class MessageMetadata {
 
@@ -111,6 +113,8 @@ public class StandaloneMetadata implements SpringCloudContractMetadata {
 
 	/**
 	 * Setup metadata.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class SetupMetadata {
 

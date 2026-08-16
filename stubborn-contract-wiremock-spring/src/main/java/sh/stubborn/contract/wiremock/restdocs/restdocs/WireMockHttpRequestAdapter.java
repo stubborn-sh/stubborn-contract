@@ -57,7 +57,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * Adapts a Spring {@link EntityExchangeResult} to the WireMock {@link Request} API.
  *
  * @author Dave Syer
- *
+ * @since 1.0.0
  */
 class WireMockHttpRequestAdapter implements Request {
 

@@ -42,6 +42,12 @@ public interface SingleTestGenerator {
 	String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData);
 
+	/**
+	 * Location and identity of a generated test class.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	class GeneratedClassData {
 
 		/**

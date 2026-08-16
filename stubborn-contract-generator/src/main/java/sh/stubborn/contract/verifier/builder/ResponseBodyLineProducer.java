@@ -42,6 +42,7 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
  * another.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 final class ResponseBodyLineProducer {
 

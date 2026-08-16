@@ -51,6 +51,7 @@ import org.jspecify.annotations.Nullable;
  * {@code import static ...;}) the generated class needs, captured from the legacy
  * generator in its original order; merged with the renderer's own imports at render time
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 record TestClassModel(String packageName, String className, @Nullable String baseClass, boolean spock,
 		List<AnnotationModel> classAnnotations, List<String> fields, List<TestMethodModel> methods,

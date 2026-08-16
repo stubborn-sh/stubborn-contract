@@ -45,6 +45,8 @@ public final class ContractVerifierMessagingUtil {
 
 	/**
 	 * A map with a fluent interface. Thanks to this, the generated tests look much nicer.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class ContractVerifierHeaders implements Map<String, Object> {
 

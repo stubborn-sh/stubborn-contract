@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
  * Taken from https://gist.github.com/skeller88/5eb73dc0090d4ff1249a.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 final class UrlHelper {
 

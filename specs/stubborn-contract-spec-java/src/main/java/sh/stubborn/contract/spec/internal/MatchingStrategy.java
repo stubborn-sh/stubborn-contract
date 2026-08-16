@@ -93,6 +93,12 @@ public class MatchingStrategy extends DslProperty {
 		return "MatchingStrategy{" + "type=" + this.type + ", jsonCompareMode=" + this.jsonCompareMode + '}';
 	}
 
+	/**
+	 * Kind of matching strategy applied to a value.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public enum Type {
 
 		/**

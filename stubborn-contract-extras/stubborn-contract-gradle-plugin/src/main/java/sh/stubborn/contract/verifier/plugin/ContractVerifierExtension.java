@@ -533,6 +533,12 @@ public class ContractVerifierExtension implements Serializable {
 		this.sourceSet.set(sourceSet);
 	}
 
+	/**
+	 * Coordinates of a stub dependency configured in the Gradle plugin.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class Dependency implements Serializable {
 
 		private final Property<String> groupId;
@@ -603,6 +609,12 @@ public class ContractVerifierExtension implements Serializable {
 
 	}
 
+	/**
+	 * Mapping between a contract package and its generated-test base class.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class BaseClassMapping implements Serializable {
 
 		private final MapProperty<String, String> baseClassMappings;
@@ -628,6 +640,12 @@ public class ContractVerifierExtension implements Serializable {
 
 	// This class is used as an input to the tasks, so all fields are marked as `@Input`
 	// to allow incremental build
+	/**
+	 * Configuration of the repository contracts are downloaded from.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class ContractRepository implements Serializable {
 
 		private final Property<String> repositoryUrl;
@@ -703,6 +721,12 @@ public class ContractVerifierExtension implements Serializable {
 
 	}
 
+	/**
+	 * Configuration for publishing stubs back to source control.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class PublishStubsToScm implements Serializable {
 
 		/**

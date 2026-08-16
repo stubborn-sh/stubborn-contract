@@ -20,6 +20,7 @@ package sh.stubborn.contract.stubrunner;
  * Exception thrown when message is not matched.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @SuppressWarnings("serial")
 class MessageNotMatchingException extends RuntimeException {

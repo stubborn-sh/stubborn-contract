@@ -353,6 +353,8 @@ public class StubRunnerOptions {
 
 	/**
 	 * Options for a proxy.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class StubRunnerProxyOptions {
 

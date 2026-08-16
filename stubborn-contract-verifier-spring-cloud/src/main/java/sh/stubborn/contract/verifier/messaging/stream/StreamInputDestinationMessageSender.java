@@ -32,6 +32,7 @@ import org.springframework.messaging.Message;
  * Sends messages to a Spring Cloud Stream test binder {@link InputDestination}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class StreamInputDestinationMessageSender implements MessageVerifierSender<Message<?>> {
 

@@ -50,6 +50,7 @@ import tools.jackson.databind.json.JsonMapper;
  * Runs stubs for a particular {@link StubServer}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class StubRunnerExecutor implements StubFinder {
 

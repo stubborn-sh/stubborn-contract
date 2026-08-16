@@ -90,6 +90,8 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 
 	/**
 	 * HTTP communication scheme.
+	 *
+	 * @since 1.0.0
 	 */
 	public enum Scheme {
 
@@ -116,6 +118,8 @@ public class ContractVerifierHttpMetaData implements SpringCloudContractMetadata
 
 	/**
 	 * Taken from OKHttp's Protocol {@link okhttp3.Protocol}.
+	 *
+	 * @since 1.0.0
 	 */
 	public enum Protocol {
 

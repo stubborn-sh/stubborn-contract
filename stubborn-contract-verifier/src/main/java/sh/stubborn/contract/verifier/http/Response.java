@@ -128,6 +128,8 @@ public class Response {
 
 	/**
 	 * Response builder.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class Builder {
 

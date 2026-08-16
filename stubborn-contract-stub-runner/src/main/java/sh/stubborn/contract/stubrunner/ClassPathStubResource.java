@@ -29,6 +29,7 @@ import java.util.Objects;
  * classpath-based stub resolution.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ClassPathStubResource implements StubResource {
 

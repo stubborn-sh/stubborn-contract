@@ -36,6 +36,7 @@ import org.apache.maven.shared.incremental.IncrementalBuildHelperRequest;
  * 4. Derived file still exists
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class LeftOverPrevention {
 

@@ -99,6 +99,8 @@ public final class KafkaAvroContractVerifierConfiguration {
 	 * runtime metadata — not part of the message payload. Without this mixin, Jackson
 	 * either fails on non-serializable types or includes Avro internals in the output,
 	 * causing false contract mismatches.
+	 *
+	 * @since 1.0.0
 	 */
 	@JsonIgnoreProperties({ "schema", "specificData", "classSchema", "conversion" })
 	interface IgnoreAvroMixin {

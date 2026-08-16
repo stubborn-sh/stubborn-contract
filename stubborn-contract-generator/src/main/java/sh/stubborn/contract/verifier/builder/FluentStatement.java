@@ -33,6 +33,7 @@ import java.util.List;
  * only line)
  * @param continuations the {@code .xxx(...)} lines that follow the head, in order
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 record FluentStatement(String head, List<String> continuations) {
 

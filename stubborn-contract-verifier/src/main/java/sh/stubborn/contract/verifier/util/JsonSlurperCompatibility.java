@@ -35,6 +35,7 @@ import tools.jackson.databind.json.JsonMapper;
  * previously caught {@code groovy.json.JsonException}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 final class JsonSlurperCompatibility {
 

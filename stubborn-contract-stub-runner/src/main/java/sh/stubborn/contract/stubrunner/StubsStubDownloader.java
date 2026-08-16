@@ -31,6 +31,7 @@ import org.jspecify.annotations.Nullable;
  * Concrete logic of picking stubs.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class StubsStubDownloader implements StubDownloader {
 

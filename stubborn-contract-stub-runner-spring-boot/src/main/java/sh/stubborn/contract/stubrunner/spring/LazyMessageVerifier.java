@@ -32,6 +32,7 @@ import org.springframework.beans.factory.BeanFactory;
  * beans, falling back to a no-op implementation when none are available.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @SuppressWarnings("unchecked")
 class LazyMessageVerifier implements MessageVerifierSender<Object>, MessageVerifierReceiver<Object> {

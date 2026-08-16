@@ -28,6 +28,7 @@ import org.springframework.messaging.Message;
  * Spring Cloud Stream specific {@link ContractVerifierMessaging} implementation.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ContractVerifierHelper extends ContractVerifierMessaging<Message<?>> {
 

@@ -58,6 +58,7 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
  * </ul>
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 final class RequestModelBuilder {
 

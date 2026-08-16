@@ -261,6 +261,12 @@ public class ContractFileScanner {
 		return new Builder();
 	}
 
+	/**
+	 * Builder for {@link ContractFileScanner} instances.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class Builder {
 
 		private @Nullable File baseDir;

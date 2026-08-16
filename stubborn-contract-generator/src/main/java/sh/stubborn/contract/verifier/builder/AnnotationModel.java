@@ -30,6 +30,7 @@ import org.jspecify.annotations.Nullable;
  * {@code "rawtypes"}, {@code MethodOrderer.MethodName.class} or {@code false}), or
  * {@code null} for a marker annotation with no members
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 record AnnotationModel(String type, String memberName, @Nullable String memberCode) {
 

@@ -49,6 +49,7 @@ import sh.stubborn.contract.verifier.template.TemplateProcessor;
  * stay captured verbatim from the legacy pipeline.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 final class ResponseModelBuilder {
 

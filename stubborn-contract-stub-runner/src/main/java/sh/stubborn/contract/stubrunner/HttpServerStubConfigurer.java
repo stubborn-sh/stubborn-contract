@@ -44,6 +44,8 @@ public interface HttpServerStubConfigurer<T> {
 
 	/**
 	 * Implementation that does nothing.
+	 *
+	 * @since 1.0.0
 	 */
 	class NoOpHttpServerStubConfigurer implements HttpServerStubConfigurer {
 

@@ -27,6 +27,7 @@ import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessagin
  * Camel specific {@link ContractVerifierMessaging} implementation.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ContractVerifierCamelHelper extends ContractVerifierMessaging<Message> {
 

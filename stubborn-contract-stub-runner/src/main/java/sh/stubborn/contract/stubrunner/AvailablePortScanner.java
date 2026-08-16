@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * Tries to execute a closure with an available port from the given range.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class AvailablePortScanner {
 

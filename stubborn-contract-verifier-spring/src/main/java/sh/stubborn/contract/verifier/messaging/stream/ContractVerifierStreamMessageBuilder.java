@@ -27,6 +27,7 @@ import org.springframework.messaging.support.MessageBuilder;
  * contract tests.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ContractVerifierStreamMessageBuilder {
 

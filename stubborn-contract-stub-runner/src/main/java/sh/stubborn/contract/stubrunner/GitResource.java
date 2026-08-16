@@ -28,6 +28,7 @@ import org.jspecify.annotations.Nullable;
  * Primitive version of a Git {@link StubResource}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class GitResource implements StubResource {
 

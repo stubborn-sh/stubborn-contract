@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+		"-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+		"https://checkstyle.org/dtds/configuration_1_3.dtd">
+<!--
+  Public-API Javadoc policy for Stubborn Contract.
+
+  Two rules, enforced on main sources only (see the dedicated execution in
+  stubborn-contract-build/pom.xml):
+
+    1. Every *public* type (class, interface, enum, record, annotation) must
+       carry a Javadoc comment.
+    2. Any documented type must declare an @since tag in that Javadoc.
+
+  Net effect: the published API is always documented and versioned, while
+  package-private and lower types are only required to declare @since if they
+  already have a Javadoc (checkstyle's WriteTag has no visibility scope, and its
+  missing-tag report is line-based so it cannot be narrowed with an xpath
+  suppression). "If you document a type, date it" is a reasonable house rule.
+-->
+<module name="Checker">
+	<property name="severity" value="error"/>
+	<property name="charset" value="UTF-8"/>
+	<module name="TreeWalker">
+		<!-- 1. Every public type must have a Javadoc comment. -->
+		<module name="MissingJavadocType">
+			<property name="scope" value="public"/>
+			<property name="tokens"
+					  value="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF"/>
+		</module>
+		<!-- 2. Any type that has a Javadoc must declare an @since tag. -->
+		<module name="WriteTag">
+			<property name="tag" value="@since"/>
+			<property name="tagFormat" value="\d.*"/>
+			<property name="tagSeverity" value="ignore"/>
+			<property name="severity" value="error"/>
+			<property name="tokens"
+					  value="INTERFACE_DEF, CLASS_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF"/>
+		</module>
+	</module>
+</module>

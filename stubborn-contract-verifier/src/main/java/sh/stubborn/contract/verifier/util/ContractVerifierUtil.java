@@ -162,6 +162,8 @@ public final class ContractVerifierUtil {
 
 	/**
 	 * A map with a fluent interface.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class ContractVerifierMap implements Map<Object, Object> {
 

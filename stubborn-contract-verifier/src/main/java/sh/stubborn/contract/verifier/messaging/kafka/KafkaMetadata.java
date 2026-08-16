@@ -123,6 +123,8 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 
 	/**
 	 * Kafka message metadata.
+	 *
+	 * @since 1.0.0
 	 */
 	public static final class MessageKafkaMetadata {
 
@@ -151,6 +153,8 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 
 	/**
 	 * Options related to connecting to the real broker.
+	 *
+	 * @since 1.0.0
 	 */
 	public static final class ConnectToBroker {
 

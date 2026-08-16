@@ -111,6 +111,12 @@ public final class MetadataUtil {
 			.build();
 	}
 
+	/**
+	 * Map of contract metadata entries keyed by name.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class MetadataMap implements Map<String, Object> {
 
 		private final Map<String, Object> delegate = new HashMap<>();

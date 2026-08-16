@@ -37,6 +37,7 @@ import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessagin
  * JMS specific {@link ContractVerifierMessaging} implementation.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ContractVerifierJmsHelper extends ContractVerifierMessaging<Message> {
 

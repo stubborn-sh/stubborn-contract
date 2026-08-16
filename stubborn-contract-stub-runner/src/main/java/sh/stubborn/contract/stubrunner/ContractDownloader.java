@@ -178,6 +178,8 @@ public class ContractDownloader {
 	/**
 	 * Holder for updated inclusion properties, which are calculated after jar with
 	 * contracts was downloaded / unpacked.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class InclusionProperties {
 

@@ -26,6 +26,7 @@ import org.apache.camel.support.DefaultMessage;
  * Builds Camel messages for contract verification.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ContractVerifierCamelMessageBuilder {
 

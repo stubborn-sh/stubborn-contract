@@ -43,6 +43,7 @@ import sh.stubborn.contract.verifier.util.NamesUtil;
  * it in.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ModelBuilder {
 
