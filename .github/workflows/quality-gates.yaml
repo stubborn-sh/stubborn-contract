@@ -2,11 +2,12 @@ name: Quality Gates
 
 # Coverage + mutation quality gates for the 12 "core, spring-less" modules.
 #
-# Both jobs run in WARN mode for now (continue-on-error: true) so failures are
-# visible but non-blocking. Once the test backfill lands they will be flipped to
-# blocking: remove continue-on-error here, set jacoco.haltOnFailure=true and
-# pitest.mutationThreshold=90 in stubborn-contract-build/pom.xml. See
-# docs/quality-gates.md.
+# Both jobs are BLOCKING: the test backfill has landed (aggregate line 91% /
+# branch 83% across the gate modules; see docs/quality-gates.md). The coverage
+# job runs to the `verify` phase so jacoco:check enforces the LINE >= 80% /
+# BRANCH >= 80% floor (jacoco.haltOnFailure=true), and the mutation job enforces
+# a 90% floor on changed core classes. To revert to warn mode, re-add
+# `continue-on-error: true` to both jobs.
 #
 # Java / Maven bootstrap mirrors .github/workflows/pr.yaml so dependency
 # resolution behaves identically.
@@ -31,7 +32,6 @@ jobs:
   coverage:
     name: Coverage (JaCoCo aggregate)
     runs-on: ubuntu-latest
-    continue-on-error: true # WARN mode — flip to blocking after test backfill
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
@@ -52,10 +52,12 @@ jobs:
           ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
 
       # -Psonar binds jacoco:prepare-agent + jacoco:report so each module writes
-      # target/site/jacoco/jacoco.csv. -am builds upstream reactor deps. The
-      # module list must stay in sync with the gate set (env.GATE_MODULES).
-      - name: Test gate modules with coverage
-        run: ./mvnw -Psonar test -pl "${GATE_MODULES}" -am -DskipITs --no-transfer-progress
+      # target/site/jacoco/jacoco.csv, and jacoco:check (bound to `verify`)
+      # enforces the LINE/BRANCH floor with jacoco.haltOnFailure=true. Running to
+      # `verify` (not `test`) is what makes the check execute. -am builds upstream
+      # reactor deps. The module list must stay in sync with env.GATE_MODULES.
+      - name: Verify gate modules with coverage floor
+        run: ./mvnw -Psonar verify -pl "${GATE_MODULES}" -am -DskipITs --no-transfer-progress
 
       - name: Aggregate coverage report
         id: coverage
@@ -69,13 +71,12 @@ jobs:
             echo "${report}"
             echo '```'
             echo ""
-            echo "_WARN mode: floor is LINE >= 80% and BRANCH >= 80% (not yet blocking)._"
+            echo "_BLOCKING: floor is LINE >= 80% and BRANCH >= 80% (enforced by jacoco:check at verify)._"
           } >> "${GITHUB_STEP_SUMMARY}"
 
   mutation-diff:
     name: Mutation (PIT on changed core classes)
     runs-on: ubuntu-latest
-    continue-on-error: true # WARN mode — flip to blocking after test backfill
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4

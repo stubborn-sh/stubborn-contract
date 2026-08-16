@@ -107,15 +107,24 @@ HTML + CSV reports land in each module's `target/pit-reports/`.
   PIT at a 90% floor per affected module. If no core classes changed it succeeds with
   `no core classes changed`.
 
-Both jobs are `continue-on-error: true` (WARN mode).
+Both jobs are **BLOCKING** (the backfill has landed).
 
-## Flipping to blocking
+## Blocking status (enforced)
 
-Once the test backfill lands, make the gates enforcing:
+The gates are enforcing as of the backfill completion:
 
-1. `stubborn-contract-build/pom.xml`: set `<jacoco.haltOnFailure>true</jacoco.haltOnFailure>`.
-2. `stubborn-contract-build/pom.xml`: set `<pitest.mutationThreshold>90</pitest.mutationThreshold>`.
-3. `.github/workflows/quality-gates.yaml`: remove `continue-on-error: true` from both jobs.
+1. `stubborn-contract-build/pom.xml`: `<jacoco.haltOnFailure>true</jacoco.haltOnFailure>`.
+2. `stubborn-contract-build/pom.xml`: `<pitest.mutationThreshold>90</pitest.mutationThreshold>`.
+3. `.github/workflows/quality-gates.yaml`: `continue-on-error` removed from both jobs;
+   the coverage job runs to `verify` so `jacoco:check` executes.
+
+**Aggregate coverage** across the 10 Docker-free gate modules (JaCoCo, `-Psonar`):
+**line 91.1%** (12 981/14 247), **branch 83.3%** (5 013/6 018). Every one of those
+modules individually clears the 80%/80% floor. Kafka/Rabbit are validated in CI
+(Docker) via their Testcontainers conformance suites.
+
+To revert to warn mode, re-add `continue-on-error: true` to both jobs (and/or set
+`jacoco.haltOnFailure=false`, `pitest.mutationThreshold=0`).
 
 ## Backfill progress
 

@@ -192,12 +192,12 @@
 		-->
 		<jacoco.line.min>0.80</jacoco.line.min>
 		<jacoco.branch.min>0.80</jacoco.branch.min>
-		<jacoco.haltOnFailure>false</jacoco.haltOnFailure>
+		<jacoco.haltOnFailure>true</jacoco.haltOnFailure>
 		<!--
 		  PIT mutation-coverage floor (percent). 0 = warn mode now; raised to 90 once the
 		  test backfill lands. Applied per changed core class by the mutation-diff CI gate.
 		-->
-		<pitest.mutationThreshold>0</pitest.mutationThreshold>
+		<pitest.mutationThreshold>90</pitest.mutationThreshold>
 
 		<!--
 		  Core module gate: set to false in Spring-agnostic core modules to ban
