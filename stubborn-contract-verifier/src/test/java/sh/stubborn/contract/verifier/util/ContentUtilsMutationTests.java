@@ -30,7 +30,6 @@ import sh.stubborn.contract.spec.internal.DslProperty;
 import sh.stubborn.contract.spec.internal.DynamicStringImpl;
 import sh.stubborn.contract.spec.internal.ExecutionProperty;
 import sh.stubborn.contract.spec.internal.FromFileProperty;
-import sh.stubborn.contract.spec.internal.Header;
 import sh.stubborn.contract.spec.internal.Headers;
 import sh.stubborn.contract.spec.internal.MatchingStrategy;
 import sh.stubborn.contract.spec.internal.NamedProperty;

@@ -19,7 +19,6 @@ package sh.stubborn.contract.spec;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-
 import sh.stubborn.contract.spec.internal.Input;
 import sh.stubborn.contract.spec.internal.OutputMessage;
 import sh.stubborn.contract.spec.internal.Request;

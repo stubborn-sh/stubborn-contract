@@ -25,8 +25,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class ContractDownloaderMutationTests {
 
@@ -42,14 +42,14 @@ class ContractDownloaderMutationTests {
 	@Test
 	void shouldReturnUnpackedContractsLocation(@TempDir Path temp) {
 		File unpacked = temp.resolve("unpacked").toFile();
-		when(this.stubDownloader.downloadAndUnpackStubJar(this.stubConfiguration))
-			.thenReturn(Map.entry(this.stubConfiguration, unpacked));
+		given(this.stubDownloader.downloadAndUnpackStubJar(this.stubConfiguration))
+			.willReturn(Map.entry(this.stubConfiguration, unpacked));
 		assertThat(downloader("").unpackAndDownloadContracts()).isEqualTo(unpacked);
 	}
 
 	@Test
 	void shouldThrowWhenContractsCannotBeDownloaded() {
-		when(this.stubDownloader.downloadAndUnpackStubJar(this.stubConfiguration)).thenReturn(null);
+		given(this.stubDownloader.downloadAndUnpackStubJar(this.stubConfiguration)).willReturn(null);
 		assertThatThrownBy(() -> downloader("").unpackAndDownloadContracts()).isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining("failed to be downloaded");
 	}

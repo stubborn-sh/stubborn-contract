@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
-
 import sh.stubborn.contract.spec.ContractStorer;
 import sh.stubborn.contract.spec.util.RegexpUtils;
 import sh.stubborn.contract.spec.util.ValidateUtils;

@@ -72,23 +72,6 @@ class WireMockHttpServerStubMutationTests {
 		}
 	}
 
-	private static final class HttpsEnablingConfigurer
-			implements HttpServerStubConfigurer<com.github.tomakehurst.wiremock.core.WireMockConfiguration> {
-
-		@Override
-		public boolean isAccepted(Object httpStubConfiguration) {
-			return httpStubConfiguration instanceof com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-		}
-
-		@Override
-		public com.github.tomakehurst.wiremock.core.WireMockConfiguration configure(
-				com.github.tomakehurst.wiremock.core.WireMockConfiguration httpStubConfiguration,
-				HttpServerStubConfiguration httpServerStubConfiguration) {
-			return httpStubConfiguration.dynamicHttpsPort();
-		}
-
-	}
-
 	@Test
 	void shouldListRegisteredMappingsAfterRegisteringRealStub() {
 		WireMockHttpServerStub stub = new WireMockHttpServerStub();
@@ -122,6 +105,23 @@ class WireMockHttpServerStubMutationTests {
 			assertThat(stub.stop()).isSameAs(stub);
 		}
 		assertThat(stub.isRunning()).isFalse();
+	}
+
+	private static final class HttpsEnablingConfigurer
+			implements HttpServerStubConfigurer<com.github.tomakehurst.wiremock.core.WireMockConfiguration> {
+
+		@Override
+		public boolean isAccepted(Object httpStubConfiguration) {
+			return httpStubConfiguration instanceof com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+		}
+
+		@Override
+		public com.github.tomakehurst.wiremock.core.WireMockConfiguration configure(
+				com.github.tomakehurst.wiremock.core.WireMockConfiguration httpStubConfiguration,
+				HttpServerStubConfiguration httpServerStubConfiguration) {
+			return httpStubConfiguration.dynamicHttpsPort();
+		}
+
 	}
 
 }

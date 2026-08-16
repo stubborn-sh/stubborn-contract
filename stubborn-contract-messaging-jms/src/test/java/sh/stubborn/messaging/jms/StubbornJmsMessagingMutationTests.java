@@ -30,7 +30,6 @@ import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
 import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 
 import static org.assertj.core.api.Assertions.assertThat;

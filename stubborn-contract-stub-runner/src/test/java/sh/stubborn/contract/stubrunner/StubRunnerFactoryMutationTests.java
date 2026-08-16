@@ -25,8 +25,8 @@ import org.junit.jupiter.api.io.TempDir;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpStubMessages;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class StubRunnerFactoryMutationTests {
 
@@ -45,7 +45,7 @@ class StubRunnerFactoryMutationTests {
 	@Test
 	void skipsDependencyWhenDownloaderReturnsNull() {
 		StubRunnerOptions options = new StubRunnerOptionsBuilder().withStubs("group:artifact:1.0.0").build();
-		when(this.stubDownloader.downloadAndUnpackStubJar(org.mockito.ArgumentMatchers.any())).thenReturn(null);
+		given(this.stubDownloader.downloadAndUnpackStubJar(org.mockito.ArgumentMatchers.any())).willReturn(null);
 		assertThat(factory(options).createStubsFromServiceConfiguration()).isEmpty();
 	}
 
@@ -55,8 +55,8 @@ class StubRunnerFactoryMutationTests {
 			.withFailOnNoStubs(false)
 			.build();
 		StubConfiguration config = new StubConfiguration("group", "artifact", "1.0.0");
-		when(this.stubDownloader.downloadAndUnpackStubJar(org.mockito.ArgumentMatchers.any()))
-			.thenReturn(Map.entry(config, temp.toFile()));
+		given(this.stubDownloader.downloadAndUnpackStubJar(org.mockito.ArgumentMatchers.any()))
+			.willReturn(Map.entry(config, temp.toFile()));
 
 		Collection<StubRunner> runners = factory(options).createStubsFromServiceConfiguration();
 

@@ -29,8 +29,8 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class StubRunnerExtensionMutationTests {
 
@@ -81,26 +81,26 @@ class StubRunnerExtensionMutationTests {
 	void getContractsDelegatesToStubFinder() {
 		Map<StubConfiguration, Collection<Contract>> contracts = Map.of(new StubConfiguration("g:a:1.0.0"),
 				List.of(new Contract()));
-		when(this.batchStubRunner.getContracts()).thenReturn(contracts);
+		given(this.batchStubRunner.getContracts()).willReturn(contracts);
 		assertThat(withMockFinder().getContracts()).isEqualTo(contracts);
 	}
 
 	@Test
 	void labelsDelegateToStubFinder() {
 		Map<String, Collection<String>> labels = Map.of("g:a:1.0.0", List.of("label"));
-		when(this.batchStubRunner.labels()).thenReturn(labels);
+		given(this.batchStubRunner.labels()).willReturn(labels);
 		assertThat(withMockFinder().labels()).isEqualTo(labels);
 	}
 
 	@Test
 	void triggerWithNotationAndLabelReturnsTrueWhenSuccessful() {
-		when(this.batchStubRunner.trigger("g:a", "label")).thenReturn(true);
+		given(this.batchStubRunner.trigger("g:a", "label")).willReturn(true);
 		assertThat(withMockFinder().trigger("g:a", "label")).isTrue();
 	}
 
 	@Test
 	void triggerWithNotationAndLabelThrowsWhenFailed() {
-		when(this.batchStubRunner.trigger("g:a", "label")).thenReturn(false);
+		given(this.batchStubRunner.trigger("g:a", "label")).willReturn(false);
 		assertThatThrownBy(() -> withMockFinder().trigger("g:a", "label")).isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining("g:a")
 			.hasMessageContaining("label");
@@ -108,26 +108,26 @@ class StubRunnerExtensionMutationTests {
 
 	@Test
 	void triggerWithLabelReturnsTrueWhenSuccessful() {
-		when(this.batchStubRunner.trigger("label")).thenReturn(true);
+		given(this.batchStubRunner.trigger("label")).willReturn(true);
 		assertThat(withMockFinder().trigger("label")).isTrue();
 	}
 
 	@Test
 	void triggerWithLabelThrowsWhenFailed() {
-		when(this.batchStubRunner.trigger("label")).thenReturn(false);
+		given(this.batchStubRunner.trigger("label")).willReturn(false);
 		assertThatThrownBy(() -> withMockFinder().trigger("label")).isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining("label");
 	}
 
 	@Test
 	void triggerAllReturnsTrueWhenSuccessful() {
-		when(this.batchStubRunner.trigger()).thenReturn(true);
+		given(this.batchStubRunner.trigger()).willReturn(true);
 		assertThat(withMockFinder().trigger()).isTrue();
 	}
 
 	@Test
 	void triggerAllThrowsWhenFailed() {
-		when(this.batchStubRunner.trigger()).thenReturn(false);
+		given(this.batchStubRunner.trigger()).willReturn(false);
 		assertThatThrownBy(() -> withMockFinder().trigger()).isInstanceOf(IllegalStateException.class)
 			.hasMessageContaining("Failed to trigger a message");
 	}

@@ -132,16 +132,16 @@ class YamlContractEqualsMutationTests {
 	private Object distinctValue(Field field, Object current) throws Exception {
 		Class<?> type = field.getType();
 		if (type == boolean.class || type == Boolean.class) {
-			return (current == null) ? Boolean.TRUE : !((Boolean) current);
+			return (current != null) ? !((Boolean) current) : Boolean.TRUE;
 		}
 		if (type == int.class || type == Integer.class) {
-			return (current == null) ? Integer.valueOf(999) : ((Integer) current) + 1;
+			return (current != null) ? ((Integer) current) + 1 : Integer.valueOf(999);
 		}
 		if (type == long.class || type == Long.class) {
-			return (current == null) ? Long.valueOf(999L) : ((Long) current) + 1L;
+			return (current != null) ? ((Long) current) + 1L : Long.valueOf(999L);
 		}
 		if (CharSequence.class.isAssignableFrom(type)) {
-			return (current == null) ? "distinct-" + field.getName() : current + "-x";
+			return (current != null) ? current + "-x" : "distinct-" + field.getName();
 		}
 		if (Map.class.isAssignableFrom(type)) {
 			Map<Object, Object> map = new LinkedHashMap<>();

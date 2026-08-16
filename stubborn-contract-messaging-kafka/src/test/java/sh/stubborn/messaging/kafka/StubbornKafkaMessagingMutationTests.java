@@ -36,7 +36,6 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
-
 import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 
 import static org.assertj.core.api.Assertions.assertThat;

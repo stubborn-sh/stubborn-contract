@@ -28,30 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class MetadataUtilMutationTests {
 
-	public static class Bean {
-
-		private String name;
-
-		private int count;
-
-		public String getName() {
-			return this.name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public int getCount() {
-			return this.count;
-		}
-
-		public void setCount(int count) {
-			this.count = count;
-		}
-
-	}
-
 	@Test
 	void fromMetadata_returns_same_object_when_metadata_null() {
 		Bean target = new Bean();
@@ -160,6 +136,30 @@ class MetadataUtilMutationTests {
 		equivalent.put("k", "v");
 		assertThat(map).isEqualTo(equivalent);
 		assertThat(map.hashCode()).isEqualTo(equivalent.hashCode());
+	}
+
+	public static class Bean {
+
+		private String name;
+
+		private int count;
+
+		public String getName() {
+			return this.name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public int getCount() {
+			return this.count;
+		}
+
+		public void setCount(int count) {
+			this.count = count;
+		}
+
 	}
 
 }

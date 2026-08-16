@@ -28,7 +28,6 @@ import com.rabbitmq.client.GetResponse;
 import com.rabbitmq.client.LongString;
 import com.rabbitmq.client.impl.LongStringHelper;
 import org.junit.jupiter.api.Test;
-
 import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 
 import static org.assertj.core.api.Assertions.assertThat;

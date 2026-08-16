@@ -34,6 +34,80 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class ContractVerifierMessagingMutationTests {
 
+	@Test
+	void send_forwards_payload_headers_and_destination() {
+		CapturingSender sender = new CapturingSender();
+		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(sender, new StubReceiver(null));
+		Map<String, Object> headers = new HashMap<>();
+		headers.put("h", "1");
+		ContractVerifierMessage message = new ContractVerifierMessage("body", headers);
+		messaging.send(message, "queue");
+		assertThat(sender.payload).isEqualTo("body");
+		assertThat(sender.headers).containsEntry("h", "1");
+		assertThat(sender.destination).isEqualTo("queue");
+		assertThat(sender.contract).isNull();
+	}
+
+	@Test
+	void send_with_contract_sets_input_message_type() {
+		CapturingSender sender = new CapturingSender();
+		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(sender, new StubReceiver(null));
+		YamlContract contract = new YamlContract();
+		ContractVerifierMessage message = new ContractVerifierMessage("body", null);
+		messaging.send(message, "queue", contract);
+		assertThat(sender.contract).isSameAs(contract);
+		Object metadata = contract.metadata.get(ContractVerifierMessageMetadata.METADATA_KEY);
+		assertThat(metadata).isInstanceOf(ContractVerifierMessageMetadata.class);
+		assertThat(((ContractVerifierMessageMetadata) metadata).getMessageType())
+			.isEqualTo(ContractVerifierMessageMetadata.MessageType.INPUT);
+	}
+
+	@Test
+	void receive_wraps_contract_message_payload_and_headers() {
+		Map<String, Object> headers = new HashMap<>();
+		headers.put("h", "1");
+		SimpleContractMessage received = new SimpleContractMessage("body", headers);
+		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(new CapturingSender(),
+				new StubReceiver(received));
+		ContractVerifierMessage result = messaging.receive("queue");
+		assertThat(result).isNotNull();
+		assertThat(result.getPayload()).isEqualTo("body");
+		assertThat(result.getHeaders()).containsEntry("h", "1");
+	}
+
+	@Test
+	void receive_wraps_plain_payload_with_no_headers() {
+		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(new CapturingSender(),
+				new StubReceiver("plain"));
+		ContractVerifierMessage result = messaging.receive("queue");
+		assertThat(result).isNotNull();
+		assertThat(result.getPayload()).isEqualTo("plain");
+		assertThat(result.getHeaders()).isEmpty();
+	}
+
+	@Test
+	void receive_with_contract_sets_output_message_type() {
+		StubReceiver receiver = new StubReceiver("plain");
+		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(new CapturingSender(), receiver);
+		YamlContract contract = new YamlContract();
+		messaging.receive("queue", contract);
+		assertThat(receiver.contract).isSameAs(contract);
+		Object metadata = contract.metadata.get(ContractVerifierMessageMetadata.METADATA_KEY);
+		assertThat(((ContractVerifierMessageMetadata) metadata).getMessageType())
+			.isEqualTo(ContractVerifierMessageMetadata.MessageType.OUTPUT);
+	}
+
+	@Test
+	void create_builds_message() {
+		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(new CapturingSender(),
+				new StubReceiver(null));
+		Map<String, Object> headers = new HashMap<>();
+		headers.put("h", "1");
+		ContractVerifierMessage message = messaging.create("body", headers);
+		assertThat(message.getPayload()).isEqualTo("body");
+		assertThat(message.getHeaders()).containsEntry("h", "1");
+	}
+
 	private static final class CapturingSender implements MessageVerifierSender<Object> {
 
 		@Nullable Object payload;
@@ -110,80 +184,6 @@ class ContractVerifierMessagingMutationTests {
 			return this.headers;
 		}
 
-	}
-
-	@Test
-	void send_forwards_payload_headers_and_destination() {
-		CapturingSender sender = new CapturingSender();
-		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(sender, new StubReceiver(null));
-		Map<String, Object> headers = new HashMap<>();
-		headers.put("h", "1");
-		ContractVerifierMessage message = new ContractVerifierMessage("body", headers);
-		messaging.send(message, "queue");
-		assertThat(sender.payload).isEqualTo("body");
-		assertThat(sender.headers).containsEntry("h", "1");
-		assertThat(sender.destination).isEqualTo("queue");
-		assertThat(sender.contract).isNull();
-	}
-
-	@Test
-	void send_with_contract_sets_input_message_type() {
-		CapturingSender sender = new CapturingSender();
-		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(sender, new StubReceiver(null));
-		YamlContract contract = new YamlContract();
-		ContractVerifierMessage message = new ContractVerifierMessage("body", null);
-		messaging.send(message, "queue", contract);
-		assertThat(sender.contract).isSameAs(contract);
-		Object metadata = contract.metadata.get(ContractVerifierMessageMetadata.METADATA_KEY);
-		assertThat(metadata).isInstanceOf(ContractVerifierMessageMetadata.class);
-		assertThat(((ContractVerifierMessageMetadata) metadata).getMessageType())
-			.isEqualTo(ContractVerifierMessageMetadata.MessageType.INPUT);
-	}
-
-	@Test
-	void receive_wraps_contract_message_payload_and_headers() {
-		Map<String, Object> headers = new HashMap<>();
-		headers.put("h", "1");
-		SimpleContractMessage received = new SimpleContractMessage("body", headers);
-		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(new CapturingSender(),
-				new StubReceiver(received));
-		ContractVerifierMessage result = messaging.receive("queue");
-		assertThat(result).isNotNull();
-		assertThat(result.getPayload()).isEqualTo("body");
-		assertThat(result.getHeaders()).containsEntry("h", "1");
-	}
-
-	@Test
-	void receive_wraps_plain_payload_with_no_headers() {
-		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(new CapturingSender(),
-				new StubReceiver("plain"));
-		ContractVerifierMessage result = messaging.receive("queue");
-		assertThat(result).isNotNull();
-		assertThat(result.getPayload()).isEqualTo("plain");
-		assertThat(result.getHeaders()).isEmpty();
-	}
-
-	@Test
-	void receive_with_contract_sets_output_message_type() {
-		StubReceiver receiver = new StubReceiver("plain");
-		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(new CapturingSender(), receiver);
-		YamlContract contract = new YamlContract();
-		messaging.receive("queue", contract);
-		assertThat(receiver.contract).isSameAs(contract);
-		Object metadata = contract.metadata.get(ContractVerifierMessageMetadata.METADATA_KEY);
-		assertThat(((ContractVerifierMessageMetadata) metadata).getMessageType())
-			.isEqualTo(ContractVerifierMessageMetadata.MessageType.OUTPUT);
-	}
-
-	@Test
-	void create_builds_message() {
-		ContractVerifierMessaging<Object> messaging = new ContractVerifierMessaging<>(new CapturingSender(),
-				new StubReceiver(null));
-		Map<String, Object> headers = new HashMap<>();
-		headers.put("h", "1");
-		ContractVerifierMessage message = messaging.create("body", headers);
-		assertThat(message.getPayload()).isEqualTo("body");
-		assertThat(message.getHeaders()).containsEntry("h", "1");
 	}
 
 }
