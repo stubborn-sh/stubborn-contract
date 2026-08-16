@@ -26,7 +26,7 @@ import java.util.ServiceLoader;
  * none is provided
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public class StubDownloaderBuilderProvider {
 

@@ -22,7 +22,7 @@ import java.util.Objects;
  * Represents a http cookie.
  *
  * @author Alex Xandra Albert Sim
- * @since 1.2.5
+ * @since 1.0.0
  */
 public class Cookie extends DslProperty {
 

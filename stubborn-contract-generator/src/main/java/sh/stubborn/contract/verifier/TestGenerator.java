@@ -45,6 +45,7 @@ import sh.stubborn.contract.verifier.util.NamesUtil;
  * Generates contract verifier tests.
  *
  * @author Jakub Kubrynski, codearte.io
+ * @since 1.0.0
  */
 public class TestGenerator {
 

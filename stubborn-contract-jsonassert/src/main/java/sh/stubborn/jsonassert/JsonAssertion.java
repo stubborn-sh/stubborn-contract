@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Entry point for assertions. Use the static factory method and you're ready to go!
  *
  * @author Marcin Grzejszczak
- * @since 0.2.0
+ * @since 1.0.0
  * @see JsonVerifiable
  */
 public class JsonAssertion {

@@ -43,6 +43,7 @@ import org.jspecify.annotations.Nullable;
  * are captured verbatim from the legacy Groovy pipeline, as with the Java targets.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class SpockTestRenderer {
 

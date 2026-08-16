@@ -4,7 +4,7 @@ package sh.stubborn.xmlassert;
  * Contract to read the value from a XML basing on it.
  *
  * @author Marcin Grzejszczak
- * @since 0.0.1
+ * @since 1.0.0
  */
 public interface XmlReader {
 

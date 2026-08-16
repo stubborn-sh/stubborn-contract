@@ -58,6 +58,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
  * message is the earliest enqueued.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class StubbornJmsMessageVerifierReceiver extends AbstractStubbornJmsVerifier
 		implements MessageVerifierReceiver<JmsMessage> {

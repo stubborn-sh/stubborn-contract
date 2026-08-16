@@ -43,7 +43,7 @@ import org.springframework.kafka.core.KafkaTemplate;
  * {@code org.apache.avro.specific.SpecificRecordBase} is on the classpath.
  *
  * @author Emanuel Trandafir
- * @since 4.2.0
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.apache.avro.specific.SpecificRecordBase")
@@ -99,6 +99,8 @@ public final class KafkaAvroContractVerifierConfiguration {
 	 * runtime metadata — not part of the message payload. Without this mixin, Jackson
 	 * either fails on non-serializable types or includes Avro internals in the output,
 	 * causing false contract mismatches.
+	 *
+	 * @since 1.0.0
 	 */
 	@JsonIgnoreProperties({ "schema", "specificData", "classSchema", "conversion" })
 	interface IgnoreAvroMixin {

@@ -36,6 +36,7 @@ import org.jspecify.annotations.Nullable;
  * dependency.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 final class DynamicStrings {
 

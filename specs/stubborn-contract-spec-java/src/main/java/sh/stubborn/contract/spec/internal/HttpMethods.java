@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
- * @since 1.0.2
+ * @since 1.0.0
  */
 public final class HttpMethods {
 
@@ -74,6 +74,12 @@ public final class HttpMethods {
 	 */
 	public static String TRACE = "TRACE";
 
+	/**
+	 * Enumeration of supported HTTP methods.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public enum HttpMethod {
 
 		GET(HttpMethods.GET), HEAD(HttpMethods.HEAD), POST(HttpMethods.POST), PUT(HttpMethods.PUT),

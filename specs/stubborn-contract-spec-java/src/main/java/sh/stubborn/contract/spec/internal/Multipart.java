@@ -22,6 +22,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a multipart entry of a request body in the contract DSL.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class Multipart extends DslProperty {
 
 	public Multipart(Map<String, DslProperty> multipart) {

@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
  * the location to be a maven repository.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class FileStubDownloader implements StubDownloaderBuilder {
 

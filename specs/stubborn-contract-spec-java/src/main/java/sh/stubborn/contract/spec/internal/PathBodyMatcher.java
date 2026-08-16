@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
  * A body matcher that matches against a given path.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class PathBodyMatcher implements BodyMatcher {
 

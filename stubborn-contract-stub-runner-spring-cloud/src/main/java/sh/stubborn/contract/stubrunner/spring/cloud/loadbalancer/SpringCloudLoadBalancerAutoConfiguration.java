@@ -40,7 +40,7 @@ import org.springframework.context.annotation.Primary;
  * Provides autoconfiguraion for the Spring Cloud Load Balancer module.
  *
  * @author Marcin Grzejszczak
- * @since 2.2.3
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ LoadBalancerClient.class, LoadBalancerClientFactory.class })

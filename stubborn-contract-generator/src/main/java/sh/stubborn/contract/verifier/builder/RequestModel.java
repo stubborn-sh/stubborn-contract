@@ -34,6 +34,7 @@ package sh.stubborn.contract.verifier.builder;
  * @param whenBlock the {@code // when:} response chain (named to avoid the {@code when}
  * keyword confusion)
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 record RequestModel(FluentStatement given, FluentStatement whenBlock) {
 

@@ -30,7 +30,7 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  * method's body.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public class JavaTestGenerator implements SingleTestGenerator {
 

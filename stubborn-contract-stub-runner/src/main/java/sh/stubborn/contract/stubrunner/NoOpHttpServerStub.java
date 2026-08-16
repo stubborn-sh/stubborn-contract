@@ -23,6 +23,7 @@ import java.util.Collection;
  * No-op implementation of {@link HttpServerStub} that does nothing.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class NoOpHttpServerStub implements HttpServerStub {
 

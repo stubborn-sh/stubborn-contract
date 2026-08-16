@@ -28,7 +28,7 @@ import sh.stubborn.contract.verifier.util.CloneUtils;
 /**
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  */
 interface BodyMethodGeneration {
 

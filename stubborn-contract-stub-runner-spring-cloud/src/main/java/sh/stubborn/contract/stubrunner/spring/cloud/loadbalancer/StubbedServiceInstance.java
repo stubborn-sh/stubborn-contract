@@ -33,7 +33,7 @@ import org.springframework.util.StringUtils;
  * {@link ServiceInstance} backed by a running stub.
  *
  * @author Marcin Grzejszczak
- * @since 2.2.3
+ * @since 1.0.0
  */
 class StubbedServiceInstance implements ServiceInstance {
 

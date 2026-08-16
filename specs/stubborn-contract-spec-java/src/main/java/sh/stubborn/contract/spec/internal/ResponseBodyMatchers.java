@@ -21,7 +21,7 @@ package sh.stubborn.contract.spec.internal;
  *
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
- * @since 1.0.3
+ * @since 1.0.0
  */
 public class ResponseBodyMatchers extends BodyMatchers {
 

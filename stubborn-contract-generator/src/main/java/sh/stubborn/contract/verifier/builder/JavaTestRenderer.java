@@ -54,6 +54,7 @@ import org.jspecify.annotations.Nullable;
  * needed.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class JavaTestRenderer {
 

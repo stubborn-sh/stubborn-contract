@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
  * Builds a {@link StubDownloader} that delegates to a list of downloaders.
  *
  * @author Marcin Grzejszczak
- * @since 2.0.0
+ * @since 1.0.0
  */
 class CompositeStubDownloaderBuilder implements StubDownloaderBuilder {
 

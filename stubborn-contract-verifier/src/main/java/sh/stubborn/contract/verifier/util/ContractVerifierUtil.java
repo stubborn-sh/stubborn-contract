@@ -48,7 +48,7 @@ import sh.stubborn.contract.verifier.util.xml.DOMNamespaceContext;
  *
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  */
 public final class ContractVerifierUtil {
 
@@ -69,7 +69,7 @@ public final class ContractVerifierUtil {
 	 * @param testClass - test class relative to which the file is stored
 	 * @param relativePath - relative path to the file
 	 * @return bytes of the file
-	 * @since 2.1.0
+	 * @since 1.0.0
 	 */
 	public static byte[] fileToBytes(Object testClass, String relativePath) {
 		try {
@@ -89,7 +89,7 @@ public final class ContractVerifierUtil {
 	 * @param parsedXml - a {@link Document} object with parsed XML content
 	 * @param path - the xPath expression to retrieve the value with
 	 * @return {@link String} value of the XML node
-	 * @since 2.1.0
+	 * @since 1.0.0
 	 */
 	public static String valueFromXPath(Document parsedXml, String path) {
 		XPath xPath = XPathFactory.newInstance().newXPath();
@@ -109,7 +109,7 @@ public final class ContractVerifierUtil {
 	 * @param parsedXml - a {@link Document} object with parsed XML content
 	 * @param path - the xPath expression to retrieve the value with
 	 * @return the XML {@link Node} object
-	 * @since 2.1.0
+	 * @since 1.0.0
 	 */
 	public static Node nodeFromXPath(Document parsedXml, String path) {
 		XPath xPath = XPathFactory.newInstance().newXPath();
@@ -129,7 +129,7 @@ public final class ContractVerifierUtil {
 	 * @param testClass - test class relative to which the file is stored
 	 * @param relativePath - relative path to the file
 	 * @return bytes of the file
-	 * @since 3.0.0
+	 * @since 1.0.0
 	 */
 	public static @Nullable YamlContract contract(Object testClass, String relativePath) {
 		String path = fromRelativePath(relativePath);
@@ -162,6 +162,8 @@ public final class ContractVerifierUtil {
 
 	/**
 	 * A map with a fluent interface.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class ContractVerifierMap implements Map<Object, Object> {
 

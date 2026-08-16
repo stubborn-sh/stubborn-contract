@@ -26,6 +26,7 @@ import org.springframework.messaging.support.MessageBuilder;
  * Builds Spring Integration {@link Message} instances from payload and headers.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class ContractVerifierIntegrationMessageBuilder {
 

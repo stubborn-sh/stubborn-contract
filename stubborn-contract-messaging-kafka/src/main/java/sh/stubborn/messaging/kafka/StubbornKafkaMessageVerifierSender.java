@@ -61,6 +61,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * deterministic rather than flaky.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class StubbornKafkaMessageVerifierSender implements MessageVerifierSender<KafkaMessage>, Closeable {
 

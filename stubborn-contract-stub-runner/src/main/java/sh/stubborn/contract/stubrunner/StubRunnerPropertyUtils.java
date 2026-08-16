@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * Reads property from system prop and from env var.
  *
  * @author Marcin Grzejszczak
- * @since 2.0.0
+ * @since 1.0.0
  */
 public final class StubRunnerPropertyUtils {
 

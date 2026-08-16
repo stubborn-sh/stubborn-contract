@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
  * taken from: https://github.com/spring-cloud/spring-cloud-release-tools
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class GitRepo {
 
@@ -341,6 +342,8 @@ class GitRepo {
 	/**
 	 * Wraps the static method calls to {@link Git} and {@link CloneCommand} allowing for
 	 * easier unit testing.
+	 *
+	 * @since 1.0.0
 	 */
 	static class JGitFactory {
 

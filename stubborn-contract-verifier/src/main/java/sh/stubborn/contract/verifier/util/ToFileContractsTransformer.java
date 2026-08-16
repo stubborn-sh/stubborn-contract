@@ -36,7 +36,7 @@ import sh.stubborn.contract.spec.ContractConverter;
  * WARNING: This class is incubating and experimental. It might change in the future.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public final class ToFileContractsTransformer {
 

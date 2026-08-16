@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller that allows triggering of stub messages by label.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @RestController
 @RequestMapping(value = "/triggers", produces = MediaType.APPLICATION_JSON_VALUE)

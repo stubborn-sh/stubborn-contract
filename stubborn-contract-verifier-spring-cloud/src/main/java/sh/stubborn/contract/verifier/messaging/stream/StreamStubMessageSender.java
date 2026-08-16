@@ -34,6 +34,7 @@ import org.springframework.messaging.MessageChannel;
  * context.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class StreamStubMessageSender implements MessageVerifierSender<Message<?>> {
 

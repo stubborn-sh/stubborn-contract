@@ -50,7 +50,7 @@ import org.gradle.process.ExecOperations;
  * @author Marcin Grzejszczak
  * @author Anatoliy Balakirev
  * @author Shannon Pamperl
- * @since 2.0.0
+ * @since 1.0.0
  */
 @CacheableTask
 class GenerateClientStubsFromDslTask extends DefaultTask {

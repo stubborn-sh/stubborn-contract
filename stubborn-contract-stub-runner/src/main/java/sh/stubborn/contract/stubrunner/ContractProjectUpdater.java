@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * Updates the project containing contracts.
  *
  * @author Marcin Grzejszczak
- * @since 2.0.0
+ * @since 1.0.0
  */
 public class ContractProjectUpdater {
 

@@ -70,7 +70,7 @@ import sh.stubborn.contract.stubrunner.StubsMode;
  * @author Marcin Grzejszczak
  * @author Anatoliy Balakirev
  * @author Shannon Pamperl
- * @since 1.0.2
+ * @since 1.0.0
  */
 @CacheableTask
 class ContractsCopyTask extends DefaultTask {

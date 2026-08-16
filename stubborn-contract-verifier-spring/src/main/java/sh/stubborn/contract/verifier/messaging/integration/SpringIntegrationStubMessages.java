@@ -36,6 +36,7 @@ import org.springframework.messaging.PollableChannel;
  * {@link MessageVerifierReceiver}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class SpringIntegrationStubMessages
 		implements MessageVerifierSender<Message<?>>, MessageVerifierReceiver<Message<?>> {

@@ -45,7 +45,7 @@ import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
  * Recursively converts contracts into their stub representations.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public class RecursiveFilesConverter {
 

@@ -30,7 +30,7 @@ import org.springframework.amqp.core.MessageProperties;
  * Represents metadata for AMQP based communication.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public class AmqpMetadata implements SpringCloudContractMetadata {
 
@@ -86,6 +86,8 @@ public class AmqpMetadata implements SpringCloudContractMetadata {
 
 	/**
 	 * AMQP message metadata.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class MessageAmqpMetadata {
 
@@ -119,6 +121,8 @@ public class AmqpMetadata implements SpringCloudContractMetadata {
 
 	/**
 	 * Options related to connecting to the real broker.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class ConnectToBroker {
 

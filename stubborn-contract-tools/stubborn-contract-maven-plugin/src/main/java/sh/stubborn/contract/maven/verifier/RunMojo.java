@@ -43,6 +43,7 @@ import org.springframework.util.StringUtils;
  *
  * @author Mariusz Smykula
  * @author Eddú Meléndez
+ * @since 1.0.0
  */
 @Mojo(name = "run", requiresProject = false, requiresDependencyResolution = ResolutionScope.RUNTIME)
 @SuppressWarnings("NullAway.Init")

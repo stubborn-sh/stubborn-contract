@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * Configuration class for an {@link HttpServerStub}.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public final class HttpServerStubConfiguration {
 

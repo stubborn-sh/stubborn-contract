@@ -36,6 +36,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Marcin Grzejszczak
  * @author Eddú Meléndez
+ * @since 1.0.0
  * @see StubRunnerOptionsBuilder
  */
 public class StubRunnerOptions {
@@ -352,6 +353,8 @@ public class StubRunnerOptions {
 
 	/**
 	 * Options for a proxy.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class StubRunnerProxyOptions {
 

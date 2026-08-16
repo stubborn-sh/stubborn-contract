@@ -21,6 +21,7 @@ package sh.stubborn.contract.spec.internal;
  *
  * @param <T> the property type
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 interface RegexCreatingProperty<T extends DslProperty> {
 

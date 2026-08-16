@@ -24,6 +24,7 @@ import org.jspecify.annotations.Nullable;
  * Matching type with corresponding values.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class MatchingTypeValue {
 

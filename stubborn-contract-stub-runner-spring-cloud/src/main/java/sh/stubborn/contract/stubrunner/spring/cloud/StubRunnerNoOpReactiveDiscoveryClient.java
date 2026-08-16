@@ -25,7 +25,7 @@ import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
  * No-op {@link ReactiveDiscoveryClient} used when no delegate is available.
  *
  * @author Marcin Grzejszczak
- * @since 2.2.4
+ * @since 1.0.0
  */
 class StubRunnerNoOpReactiveDiscoveryClient implements ReactiveDiscoveryClient {
 

@@ -78,6 +78,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * {@code @ConfigProperty(name = "stubborn.contract.stubrunner.runningstubs.producer.url")}.
  *
  * @author Stubborn Contract
+ * @since 1.0.0
  * @see BatchStubRunner
  */
 public class StubRunnerResource implements QuarkusTestResourceLifecycleManager {

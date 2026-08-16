@@ -41,6 +41,7 @@ import sh.stubborn.contract.verifier.config.TestFramework;
  * supply, which no production {@link Field} visitor declares.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 final class ClassScaffoldProducer {
 

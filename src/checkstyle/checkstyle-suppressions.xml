@@ -20,6 +20,11 @@
 		"-//Puppy Crawl//DTD Suppressions 1.1//EN"
 		"https://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
+	<!-- The public-API Javadoc/@since policy (checkstyle-public-api.xml) targets the
+	     published library only; internal test-fixture modules under tests/ and the
+	     docker sample project are exempt. -->
+	<suppress files=".*[/\\]tests[/\\].*" checks="(MissingJavadocType|WriteTag)"/>
+	<suppress files=".*[/\\]docker[/\\].*" checks="(MissingJavadocType|WriteTag)"/>
 	<!-- Xeger is repackaged -->
 	<suppress files=".*xeger.*" checks=".*"/>
 	<suppress files=".*functionalTest.*" checks="(Javadoc*|HideUtility*|LineLengthCheck)"/>

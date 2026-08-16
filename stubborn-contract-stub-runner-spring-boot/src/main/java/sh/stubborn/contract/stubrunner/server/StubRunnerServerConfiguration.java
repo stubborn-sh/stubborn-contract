@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Import;
  *
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 class StubRunnerServerConfiguration {

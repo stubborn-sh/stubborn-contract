@@ -57,6 +57,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * broker has acknowledged the message.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class StubbornRabbitMessageVerifierSender extends AbstractStubbornRabbitVerifier
 		implements MessageVerifierSender<RabbitMessage> {

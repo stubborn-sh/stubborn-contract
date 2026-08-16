@@ -25,6 +25,12 @@ import org.sonatype.plexus.components.cipher.DefaultPlexusCipher;
 import org.sonatype.plexus.components.cipher.PlexusCipher;
 import org.sonatype.plexus.components.sec.dispatcher.DefaultSecDispatcher;
 
+/**
+ * Provides access to the local Maven settings, resolving the local repository location.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class MavenSettings {
 
 	private static final String MAVEN_USER_CONFIG_DIRECTORY = "maven.user.config.dir";

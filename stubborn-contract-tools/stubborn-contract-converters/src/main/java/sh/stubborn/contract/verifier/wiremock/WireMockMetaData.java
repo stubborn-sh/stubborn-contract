@@ -27,6 +27,12 @@ import org.jspecify.annotations.Nullable;
 import sh.stubborn.contract.verifier.util.MetadataUtil;
 import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
 
+/**
+ * Contract metadata carrying WireMock-specific stub configuration.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class WireMockMetaData implements SpringCloudContractMetadata {
 
 	/**

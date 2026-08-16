@@ -42,6 +42,7 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
  * first.
  *
  * @author Mariusz Smykula
+ * @since 1.0.0
  */
 @Mojo(name = "generateStubs", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true)
 @SuppressWarnings("NullAway.Init")

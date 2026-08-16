@@ -25,7 +25,7 @@ import java.io.ObjectOutputStream;
  * Creates a clone.
  *
  * @author Marcin Grzejszczak
- * @since 2.2.0
+ * @since 1.0.0
  */
 public final class CloneUtils {
 

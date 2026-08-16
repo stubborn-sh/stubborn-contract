@@ -4,7 +4,7 @@ package sh.stubborn.xmlassert;
  * Contract to match a parsed XML via XPath
  *
  * @author Marcin Grzejszczak
- * @since 0.0.1
+ * @since 1.0.0
  */
 public interface XmlVerifiable extends IteratingOverArray, XmlReader {
 

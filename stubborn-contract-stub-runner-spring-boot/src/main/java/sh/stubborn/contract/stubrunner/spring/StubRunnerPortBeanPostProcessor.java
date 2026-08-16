@@ -25,7 +25,7 @@ import org.springframework.util.ReflectionUtils;
  * Injects {@link StubRunnerPort} ports into fields.
  *
  * @author Marcin Grzejszczak
- * @since 2.0.0
+ * @since 1.0.0
  */
 class StubRunnerPortBeanPostProcessor implements BeanPostProcessor {
 

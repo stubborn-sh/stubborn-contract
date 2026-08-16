@@ -34,7 +34,7 @@ import org.jspecify.annotations.Nullable;
  * {@code spring.kafka.properties.schema.registry.url}.
  *
  * @author Emanuel Trandafir
- * @since 4.2.0
+ * @since 1.0.0
  */
 public final class AvroMetadata {
 

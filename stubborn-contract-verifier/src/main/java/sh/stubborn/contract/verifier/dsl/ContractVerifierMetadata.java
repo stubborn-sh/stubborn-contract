@@ -27,7 +27,7 @@ import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
  * Metadata representation of the Contract Verifier.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public class ContractVerifierMetadata implements SpringCloudContractMetadata {
 

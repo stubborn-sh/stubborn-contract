@@ -51,6 +51,7 @@ import sh.stubborn.messaging.rabbit.StubbornRabbitMessageVerifierSender;
  * {@link StubRunnerResource} (a no-op messaging backend).
  *
  * @author Stubborn Contract
+ * @since 1.0.0
  * @see StubRunnerResource
  */
 public class MessagingStubRunnerResource extends StubRunnerResource {

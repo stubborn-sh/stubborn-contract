@@ -57,7 +57,7 @@ import org.springframework.restdocs.snippet.Snippet;
  * documentation entitled `dsl-contract.adoc` containing that contract.
  *
  * @author Marcin Grzejszczak
- * @since 1.0.4
+ * @since 1.0.0
  */
 public final class SpringCloudContractRestDocs {
 

@@ -29,6 +29,7 @@ import org.jspecify.annotations.Nullable;
  * @param <T> the type of DslProperty to create
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
+ * @since 1.0.0
  */
 abstract class PatternValueDslProperty<T extends DslProperty> implements RegexCreatingProperty<T> {
 

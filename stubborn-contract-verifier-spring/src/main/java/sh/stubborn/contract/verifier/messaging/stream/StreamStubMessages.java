@@ -31,6 +31,7 @@ import org.springframework.messaging.Message;
  * sender and receiver instances for Spring Cloud Stream.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public class StreamStubMessages implements MessageVerifierSender<Message<?>>, MessageVerifierReceiver<Message<?>> {
 

@@ -26,7 +26,7 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
  * Builds a single test.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public interface SingleTestGenerator {
 
@@ -42,6 +42,12 @@ public interface SingleTestGenerator {
 	String buildClass(ContractVerifierConfigProperties properties, Collection<ContractMetadata> listOfFiles,
 			String includedDirectoryRelativePath, GeneratedClassData generatedClassData);
 
+	/**
+	 * Location and identity of a generated test class.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	class GeneratedClassData {
 
 		/**

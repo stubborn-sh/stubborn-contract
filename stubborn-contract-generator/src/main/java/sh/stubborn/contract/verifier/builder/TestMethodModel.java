@@ -50,6 +50,7 @@ import org.jspecify.annotations.Nullable;
  * @param response the structured {@code // then:} status/header assertions, or
  * {@code null} to emit the whole {@code // then:} block verbatim from {@code bodyLines}
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 record TestMethodModel(String name, List<AnnotationModel> annotations, List<String> bodyLines,
 		@Nullable RequestModel request, @Nullable ResponseModel response) {

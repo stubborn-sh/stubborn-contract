@@ -56,6 +56,7 @@ import org.jspecify.annotations.Nullable;
  * </ul>
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 final class AetherFactories {
 

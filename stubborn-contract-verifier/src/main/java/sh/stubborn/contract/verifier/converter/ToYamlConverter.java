@@ -36,7 +36,7 @@ import sh.stubborn.contract.verifier.util.ContractVerifierDslConverter;
  * Converts contracts to YAML for the given folder.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public final class ToYamlConverter {
 

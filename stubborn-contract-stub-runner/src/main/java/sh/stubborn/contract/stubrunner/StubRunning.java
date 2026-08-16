@@ -22,6 +22,7 @@ import java.io.Closeable;
  * Contract for running stubs.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public interface StubRunning extends Closeable, StubFinder {
 

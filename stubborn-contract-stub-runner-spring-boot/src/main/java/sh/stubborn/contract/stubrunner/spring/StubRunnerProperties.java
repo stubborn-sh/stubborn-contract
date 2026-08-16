@@ -33,6 +33,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Configuration properties for the stub runner.
  *
  * @author Dave Syer
+ * @since 1.0.0
  */
 @ConfigurationProperties("stubborn.contract.stubrunner")
 public class StubRunnerProperties {

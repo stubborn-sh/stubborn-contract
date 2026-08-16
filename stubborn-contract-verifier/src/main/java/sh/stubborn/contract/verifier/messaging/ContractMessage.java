@@ -40,6 +40,7 @@ import org.jspecify.annotations.Nullable;
  * honours the interface identically.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public interface ContractMessage {
 

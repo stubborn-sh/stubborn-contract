@@ -4,7 +4,7 @@ package sh.stubborn.jsonassert;
  * Contract to match a parsed JSON via JSON Path
  *
  * @author Marcin Grzejszczak
- * @since 0.1.0
+ * @since 1.0.0
  */
 public interface JsonVerifiable extends IteratingOverArray, JsonReader {
 

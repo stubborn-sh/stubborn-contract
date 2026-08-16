@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
  * Arguments passed to the {@link StubRunner} application.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  * @see StubRunner
  */
 class Arguments {

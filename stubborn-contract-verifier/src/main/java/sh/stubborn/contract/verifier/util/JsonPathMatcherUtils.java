@@ -41,7 +41,7 @@ import tools.jackson.databind.json.JsonMapper;
  * creation, and body matcher conversions.
  *
  * @author Marcin Grzejszczak
- * @since 5.1.0
+ * @since 1.0.0
  */
 public final class JsonPathMatcherUtils {
 

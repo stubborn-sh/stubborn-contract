@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * Exception thrown when a stub was not found.
  *
  * @author Marcin Grzejszczak
- * @since 1.0.1
+ * @since 1.0.0
  */
 public class StubNotFoundException extends RuntimeException {
 

@@ -57,6 +57,7 @@ import sh.stubborn.contract.verifier.util.MapConverter;
  * @author Marcin Grzejszczak
  * @author Olga Maciaszek-Sharma
  * @author Stessy Delcroix
+ * @since 1.0.0
  */
 class ContractsToYaml {
 

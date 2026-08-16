@@ -37,6 +37,7 @@ import java.util.zip.ZipInputStream;
  * specified location
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class ZipCategory {
 

@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Standalone Spring Boot application that starts the stub runner server.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @SpringBootApplication
 @EnableStubRunnerServer

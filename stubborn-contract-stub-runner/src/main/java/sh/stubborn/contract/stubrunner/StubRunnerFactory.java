@@ -46,6 +46,7 @@ import sh.stubborn.contract.verifier.wiremock.DslToWireMockClientConverter;
  * stubs and returns a list of corresponding stub runners.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class StubRunnerFactory {
 

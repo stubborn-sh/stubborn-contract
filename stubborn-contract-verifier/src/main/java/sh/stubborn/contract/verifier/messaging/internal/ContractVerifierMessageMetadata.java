@@ -26,7 +26,7 @@ import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
  * Metadata representation of the Contract Verifier messaging.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public class ContractVerifierMessageMetadata implements SpringCloudContractMetadata {
 
@@ -68,6 +68,8 @@ public class ContractVerifierMessageMetadata implements SpringCloudContractMetad
 
 	/**
 	 * Type of a message.
+	 *
+	 * @since 1.0.0
 	 */
 	public enum MessageType {
 

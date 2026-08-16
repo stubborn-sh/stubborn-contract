@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  * {@link StubResource}.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public interface StubDownloaderBuilder {
 

@@ -4,7 +4,7 @@ package sh.stubborn.xmlassert;
  * Wrapper for a string version of an XML
  *
  * @author Marcin Grzejszczak
- * @since 0.0.1
+ * @since 1.0.0
  */
 public class XmlAsString {
 

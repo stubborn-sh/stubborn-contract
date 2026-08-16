@@ -20,6 +20,12 @@ import java.util.Collection;
 
 import org.assertj.core.api.Assertions;
 
+/**
+ * Entry point for the AssertJ-style assertions provided by Stubborn Contract.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class SpringCloudContractAssertions extends Assertions {
 
 	/**

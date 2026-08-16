@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
  * separately.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 abstract class AbstractStubbornJmsVerifier implements Closeable {
 

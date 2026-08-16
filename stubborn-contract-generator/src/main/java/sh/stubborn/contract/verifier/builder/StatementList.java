@@ -30,6 +30,7 @@ import java.util.List;
  *
  * @param statements the statements, in order, each without a trailing terminator
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 record StatementList(List<String> statements) {
 

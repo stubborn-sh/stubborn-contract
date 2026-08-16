@@ -20,7 +20,7 @@ package sh.stubborn.contract.verifier.util.xml;
  * Helper interface describing the process of current iteration.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public interface IteratingOverArray {
 

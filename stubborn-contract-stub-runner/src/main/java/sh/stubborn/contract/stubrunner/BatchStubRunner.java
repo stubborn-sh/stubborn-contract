@@ -31,6 +31,7 @@ import sh.stubborn.contract.spec.Contract;
  * Manages lifecycle of multiple {@link StubRunner} instances.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  * @see StubRunner
  */
 public class BatchStubRunner implements StubRunning {

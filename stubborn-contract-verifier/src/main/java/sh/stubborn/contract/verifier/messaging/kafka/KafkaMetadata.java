@@ -28,7 +28,7 @@ import sh.stubborn.contract.verifier.util.SpringCloudContractMetadata;
  * Represents metadata for Kafka based communication.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public final class KafkaMetadata implements SpringCloudContractMetadata {
@@ -123,6 +123,8 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 
 	/**
 	 * Kafka message metadata.
+	 *
+	 * @since 1.0.0
 	 */
 	public static final class MessageKafkaMetadata {
 
@@ -151,6 +153,8 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 
 	/**
 	 * Options related to connecting to the real broker.
+	 *
+	 * @since 1.0.0
 	 */
 	public static final class ConnectToBroker {
 

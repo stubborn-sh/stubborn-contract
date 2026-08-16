@@ -29,7 +29,7 @@ import sh.stubborn.contract.verifier.converter.YamlContract;
  *
  * @param <M> message type
  * @author Marcin Grzejszczak
- * @since 2.2.0
+ * @since 1.0.0
  */
 public interface MessageVerifierReceiver<M> {
 

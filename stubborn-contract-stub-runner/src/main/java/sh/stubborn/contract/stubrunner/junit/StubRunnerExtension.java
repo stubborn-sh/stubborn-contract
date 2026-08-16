@@ -51,7 +51,7 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * JUnit 5 extension that allows to download and run stubs.
  *
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  */
 public class StubRunnerExtension implements BeforeAllCallback, AfterAllCallback, BeforeEachCallback, AfterEachCallback,
 		StubFinder, StubRunnerExtensionOptions {
@@ -356,7 +356,7 @@ public class StubRunnerExtension implements BeforeAllCallback, AfterAllCallback,
 	 * Helper class with additional port, related methods once you pick a stub to
 	 * download.
 	 *
-	 * @since 1.2.0
+	 * @since 1.0.0
 	 */
 	public static class PortStubRunnerExtension extends StubRunnerExtension implements PortStubRunnerExtensionOptions {
 

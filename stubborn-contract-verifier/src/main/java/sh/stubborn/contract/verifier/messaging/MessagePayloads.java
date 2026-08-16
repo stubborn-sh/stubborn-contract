@@ -39,6 +39,7 @@ import org.jspecify.annotations.Nullable;
  * {@code String}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class MessagePayloads {
 

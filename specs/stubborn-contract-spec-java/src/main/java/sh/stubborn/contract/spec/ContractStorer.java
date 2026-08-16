@@ -25,7 +25,7 @@ import java.util.Map;
  *
  * @param <T> contracts type
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public interface ContractStorer<T> {
 

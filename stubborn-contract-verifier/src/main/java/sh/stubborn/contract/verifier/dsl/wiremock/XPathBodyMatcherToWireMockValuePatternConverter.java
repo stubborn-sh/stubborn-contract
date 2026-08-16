@@ -24,7 +24,7 @@ import sh.stubborn.contract.spec.internal.MatchingType;
  * Converts an XPath body matcher into a WireMock string value pattern.
  *
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  */
 final class XPathBodyMatcherToWireMockValuePatternConverter {
 

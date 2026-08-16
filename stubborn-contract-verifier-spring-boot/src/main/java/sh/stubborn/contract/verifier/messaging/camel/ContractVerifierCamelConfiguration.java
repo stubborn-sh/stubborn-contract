@@ -44,6 +44,7 @@ import org.springframework.context.annotation.Import;
  * Configuration that registers Apache Camel messaging beans for contract verification.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(Message.class)

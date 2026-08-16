@@ -49,6 +49,7 @@ import org.springframework.util.StringUtils;
  *
  * @author Marcin Grzejszczak
  * @author Eddú Meléndez
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(StubRunnerProperties.class)

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
  * Allows running stubs from the given directory.
  *
  * @author Mariusz Smykula
+ * @since 1.0.0
  */
 @Component
 public class LocalStubRunner {

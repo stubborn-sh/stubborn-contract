@@ -33,7 +33,7 @@ import sh.stubborn.contract.spec.internal.HttpMethods;
  * Warning! This API is experimental and can change in time.
  *
  * @author Marcin Grzejszczak
- * @since 3.0.0
+ * @since 1.0.0
  */
 public class Request {
 
@@ -172,6 +172,8 @@ public class Request {
 
 	/**
 	 * Builder over HTTP methods.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class MethodBuilder {
 
@@ -261,6 +263,8 @@ public class Request {
 
 	/**
 	 * Builder for a {@link Request}.
+	 *
+	 * @since 1.0.0
 	 */
 	public static class Builder {
 

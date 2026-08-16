@@ -20,7 +20,7 @@ package sh.stubborn.contract.verifier.util;
  * Exception occurring when we're trying to parse the DSL.
  *
  * @author Marcin Grzejszczak
- * @since 1.1.0
+ * @since 1.0.0
  */
 public class DslParseException extends RuntimeException {
 

@@ -42,6 +42,7 @@ import org.springframework.core.Ordered;
  * Verifier auto configuration containing default beans for messaging.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)

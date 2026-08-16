@@ -23,7 +23,7 @@ package sh.stubborn.contract.spec.internal;
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
  * @author Olga Maciaszek-Sharma
- * @since 1.0.3
+ * @since 1.0.0
  */
 public enum MatchingType {
 

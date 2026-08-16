@@ -32,6 +32,7 @@ package sh.stubborn.contract.verifier.builder;
  *
  * @param thenBlock the status-code, header and cookie assertion statements
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 record ResponseModel(StatementList thenBlock) {
 

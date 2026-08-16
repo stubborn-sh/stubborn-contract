@@ -31,7 +31,7 @@ import sh.stubborn.contract.verifier.util.xml.XmlToXPathsConverter;
 
 /**
  * @author Olga Maciaszek-Sharma
- * @since 2.1.0
+ * @since 1.0.0
  */
 class XmlBodyVerificationBuilder implements BodyMethodGeneration {
 

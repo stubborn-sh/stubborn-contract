@@ -29,6 +29,7 @@ import org.jspecify.annotations.Nullable;
  * Primitive version of a Stubs {@link StubResource}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class StubsResource implements StubResource {
 

@@ -74,7 +74,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
  * WireMock JSON DSL instead of the native Java DSL.
  *
  * @author Dave Syer
- *
+ * @since 1.0.0
  */
 public final class WireMockRestServiceServer {
 

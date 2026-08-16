@@ -35,6 +35,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Mariusz Smykula
  * @author Eddú Meléndez
+ * @since 1.0.0
  */
 @Component
 public class AetherStubDownloaderFactory {

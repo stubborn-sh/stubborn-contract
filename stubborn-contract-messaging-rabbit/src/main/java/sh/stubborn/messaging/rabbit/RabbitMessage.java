@@ -42,6 +42,7 @@ import sh.stubborn.contract.verifier.messaging.ContractMessage;
  * blocks.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class RabbitMessage implements ContractMessage {
 

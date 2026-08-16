@@ -26,6 +26,7 @@ import sh.stubborn.contract.verifier.file.SingleContractMetadata;
  * Adds a label, proper indents and line endings for the body of a method.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 interface BodyMethodVisitor {
 

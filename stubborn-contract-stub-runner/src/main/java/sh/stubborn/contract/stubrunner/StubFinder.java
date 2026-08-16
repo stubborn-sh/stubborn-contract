@@ -27,6 +27,7 @@ import sh.stubborn.contract.spec.Contract;
  * Contract for finding registered stubs.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public interface StubFinder extends StubTrigger {
 

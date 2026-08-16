@@ -47,7 +47,7 @@ import org.springframework.kafka.core.KafkaTemplate;
  * Boot auto-configuration this is handled automatically.
  *
  * @author Emanuel Trandafir
- * @since 4.2.0
+ * @since 1.0.0
  */
 public final class KafkaAvroMessageVerifierSender implements MessageVerifierSender<Object> {
 

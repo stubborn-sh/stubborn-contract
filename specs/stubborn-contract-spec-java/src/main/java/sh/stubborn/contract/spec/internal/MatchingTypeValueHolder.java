@@ -16,6 +16,13 @@
 
 package sh.stubborn.contract.spec.internal;
 
+/**
+ * Holds a value together with the {@link MatchingType} that should be applied when
+ * matching it.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public class MatchingTypeValueHolder {
 
 	MatchingTypeValue matchingTypeValue = new MatchingTypeValue(MatchingType.TYPE);

@@ -16,7 +16,7 @@ import java.io.StringWriter;
  * Contains cached objects that are memory consuming
  *
  * @author Marcin Grzejszczak
- * @since 0.0.1
+ * @since 1.0.0
  */
 class XmlCachedObjects {
 

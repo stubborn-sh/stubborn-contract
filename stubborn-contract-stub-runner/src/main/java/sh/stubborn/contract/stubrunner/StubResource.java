@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  * from the stub-runner core module.
  *
  * @author Marcin Grzejszczak
- * @since 4.2.0
+ * @since 1.0.0
  */
 public interface StubResource {
 

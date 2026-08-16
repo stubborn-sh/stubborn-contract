@@ -49,7 +49,7 @@ import sh.stubborn.contract.stubrunner.StubsMode;
  * @author Marcin Grzejszczak
  * @author Anatoliy Balakirev
  * @author Shannon Pamperl
- * @since 2.0.0
+ * @since 1.0.0
  */
 class PublishStubsToScmTask extends DefaultTask {
 

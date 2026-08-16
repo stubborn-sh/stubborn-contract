@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author Marcin Grzejszczak
- * @since 4.2.0
+ * @since 1.0.0
  */
 class ClasspathStubResourceScanner {
 

@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
  * Fetches stubs from a remote location.
  *
  * @author Mariusz Smykula
+ * @since 1.0.0
  */
 @Component
 public class RemoteStubRunner {

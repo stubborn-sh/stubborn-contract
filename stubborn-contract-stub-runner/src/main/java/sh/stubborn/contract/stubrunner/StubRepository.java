@@ -42,6 +42,7 @@ import sh.stubborn.contract.verifier.util.ContractScanner;
  * Wraps the folder with stub mappings.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 class StubRepository {
 

@@ -19,6 +19,12 @@ package sh.stubborn.contract.verifier.util;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+/**
+ * Utility methods for asserting on generated test content.
+ *
+ * @author Marcin Grzejszczak
+ * @since 1.0.0
+ */
 public final class AssertionUtil {
 
 	private static boolean NON_STRICT = false;

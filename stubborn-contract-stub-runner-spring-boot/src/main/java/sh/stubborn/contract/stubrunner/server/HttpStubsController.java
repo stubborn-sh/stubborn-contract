@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller that exposes the running HTTP stubs and their mappings.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 @RestController
 @RequestMapping(value = "/stubs", produces = MediaType.APPLICATION_JSON_VALUE)

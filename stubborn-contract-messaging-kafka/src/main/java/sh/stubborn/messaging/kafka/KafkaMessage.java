@@ -38,6 +38,7 @@ import sh.stubborn.contract.verifier.messaging.ContractMessage;
  * required.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class KafkaMessage implements ContractMessage {
 

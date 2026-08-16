@@ -33,7 +33,7 @@ import sh.stubborn.contract.spec.Contract;
  *
  * @author Marcin Grzejszczak
  * @author Tim Ysewyn
- * @since 1.2.1
+ * @since 1.0.0
  */
 public class YamlContract {
 
@@ -82,6 +82,12 @@ public class YamlContract {
 				this.name, this.priority, this.ignored, this.inProgress, this.metadata);
 	}
 
+	/**
+	 * YAML representation of a contract's HTTP request.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class Request {
 
 		public @Nullable String method;
@@ -143,6 +149,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML representation of a multipart request entry.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class Multipart {
 
 		public Map<String, String> params = new LinkedHashMap<String, String>();
@@ -173,6 +185,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML representation of a named multipart part.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class Named {
 
 		public @Nullable String paramName;
@@ -231,6 +249,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matchers applied to the stub (request) side.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class StubMatchers {
 
 		public @Nullable KeyValueMatcher url;
@@ -274,6 +298,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * Type of matcher applied to a stub or test value.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public enum MatchingType {
 
 		equal_to, containing, matching, not_matching, equal_to_json, equal_to_xml, absent, binary_equal_to;
@@ -289,6 +319,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matcher applied to the request body.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class BodyStubMatcher {
 
 		public @Nullable String path;
@@ -335,12 +371,24 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * Predefined regular-expression type for a matcher.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public enum RegexType {
 
 		as_integer, as_double, as_float, as_long, as_short, as_boolean, as_string
 
 	}
 
+	/**
+	 * YAML matcher applied to a multipart request part.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class MultipartStubMatcher {
 
 		public List<KeyValueMatcher> params = new ArrayList<KeyValueMatcher>();
@@ -371,6 +419,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matcher applied to a named multipart request part.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class MultipartNamedStubMatcher {
 
 		public @Nullable String paramName;
@@ -408,6 +462,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matcher describing an expected value by regular expression.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class ValueMatcher {
 
 		public @Nullable String regex;
@@ -445,6 +505,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matcher applied to the response body.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class BodyTestMatcher {
 
 		public @Nullable String path;
@@ -491,6 +557,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matcher applied to a keyed value such as a header or cookie.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class KeyValueMatcher {
 
 		public @Nullable String key;
@@ -530,10 +602,22 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matcher applied to headers.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class HeadersMatcher extends KeyValueMatcher {
 
 	}
 
+	/**
+	 * YAML matcher applied to a query parameter.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class QueryParameterMatcher {
 
 		public @Nullable String key;
@@ -568,6 +652,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matcher applied to a response header.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class TestHeaderMatcher {
 
 		public @Nullable String key;
@@ -607,6 +697,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matcher applied to a response cookie.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class TestCookieMatcher {
 
 		public @Nullable String key;
@@ -646,6 +742,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * Predefined regular expressions available to matchers.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public enum PredefinedRegex {
 
 		only_alpha_unicode, number, any_double, any_boolean, ip_address, hostname, email, url, uuid, iso_date,
@@ -653,18 +755,36 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * Type of matcher applicable to the stub (request) side.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public enum StubMatcherType {
 
 		by_date, by_time, by_timestamp, by_regex, by_equality, by_type, by_null
 
 	}
 
+	/**
+	 * Type of matcher applicable to the test (response) side.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public enum TestMatcherType {
 
 		by_date, by_time, by_timestamp, by_regex, by_equality, by_type, by_command, by_null
 
 	}
 
+	/**
+	 * YAML representation of a contract's HTTP response.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class Response {
 
 		public @Nullable Integer status;
@@ -718,6 +838,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML matchers applied to the test (response) side.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class TestMatchers {
 
 		public List<BodyTestMatcher> body = new ArrayList<BodyTestMatcher>();
@@ -752,6 +878,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML representation of a messaging contract's input.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class Input {
 
 		public @Nullable String triggeredBy;
@@ -784,6 +916,12 @@ public class YamlContract {
 
 	}
 
+	/**
+	 * YAML representation of a messaging contract's output message.
+	 *
+	 * @author Marcin Grzejszczak
+	 * @since 1.0.0
+	 */
 	public static class OutputMessage {
 
 		public @Nullable String sentTo;

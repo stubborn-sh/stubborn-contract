@@ -27,6 +27,7 @@ import org.jspecify.annotations.Nullable;
  * {@code strings[0] value[0] strings[1] … strings[n]}.
  *
  * @author Marcin Grzejszczak
+ * @since 1.0.0
  */
 public final class DynamicStringImpl implements DynamicString, Serializable {
 

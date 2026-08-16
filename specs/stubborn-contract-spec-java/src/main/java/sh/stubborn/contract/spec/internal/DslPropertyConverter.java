@@ -25,7 +25,7 @@ import java.util.ServiceLoader;
  * not in Java for Spring Cloud Contract to understand.
  *
  * @author Marcin Grzejszczak
- * @since 2.2.0
+ * @since 1.0.0
  */
 public interface DslPropertyConverter {
 

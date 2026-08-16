@@ -21,7 +21,7 @@ package sh.stubborn.contract.spec.internal;
  * generate a concrete value for them.
  *
  * @author Marcin Grzejszczak
- * @since 2.1.0
+ * @since 1.0.0
  */
 public interface CanBeDynamic {
 

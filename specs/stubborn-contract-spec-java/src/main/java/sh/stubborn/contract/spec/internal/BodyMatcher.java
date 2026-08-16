@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * Matchers for the given path.
  *
  * @author Marcin Grzejszczak
- * @since 1.0.3
+ * @since 1.0.0
  */
 public interface BodyMatcher {
 

@@ -822,6 +822,25 @@ ${stubborn.groovy.transform.imports}
 							<goal>check</goal>
 						</goals>
 					</execution>
+					<!--
+					  Public-API Javadoc policy: every public type must have a Javadoc
+					  comment carrying an @since tag. Runs on main sources only (the
+					  spring config above also lints test sources, which must not be
+					  held to the public-API @since rule).
+					-->
+					<execution>
+						<id>checkstyle-public-api-javadoc</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<configLocation>${maven.multiModuleProjectDirectory}/src/checkstyle/checkstyle-public-api.xml</configLocation>
+							<includeTestSourceDirectory>false</includeTestSourceDirectory>
+							<!-- Own cache file so it never collides with the main checkstyle execution. -->
+							<cacheFile>${project.build.directory}/checkstyle-public-api-cachefile</cacheFile>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
