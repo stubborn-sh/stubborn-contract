@@ -18,9 +18,6 @@ package sh.stubborn.contract.stubrunner.messaging.amqp;
 
 import org.jspecify.annotations.Nullable;
 
-import org.springframework.amqp.rabbit.annotation.Exchange;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 /**
@@ -33,8 +30,10 @@ public class MessageSubscriberRabbitListener {
 	private @Nullable Person person;
 
 	// tag::amqp_annotated_listener[]
-	@RabbitListener(bindings = @QueueBinding(value = @Queue("test.queue"),
-			exchange = @Exchange(value = "contract-test.exchange", ignoreDeclarationExceptions = "true")))
+	// The stub-runner Rabbit backend publishes to a queue named after the contract's
+	// sentTo destination via the AMQP default exchange (the queue is declared as a bean
+	// in RabbitListenerConfig), so the annotated listener consumes it by name.
+	@RabbitListener(queues = "contract-test.exchange")
 	public void handlePerson(Person person) {
 		this.person = person;
 	}

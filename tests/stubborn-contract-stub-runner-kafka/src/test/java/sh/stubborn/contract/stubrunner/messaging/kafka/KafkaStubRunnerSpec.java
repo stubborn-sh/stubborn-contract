@@ -16,9 +16,8 @@
 
 package sh.stubborn.contract.stubrunner.messaging.kafka;
 
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -28,14 +27,18 @@ import org.awaitility.Awaitility;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.kafka.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -44,35 +47,52 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 /**
+ * Stub-runner Kafka integration test backed by a real Kafka broker (Testcontainers).
+ * Verifies that triggering a messaging stub by label publishes the contract's output
+ * message to the broker where the application consumes it. Requires Docker, so it runs in
+ * CI.
+ *
+ * <p>
+ * Only the trigger-by-label paths are exercised because the test fixture ships a single,
+ * trigger-only contract ({@code bookReturned1.groovy}); there is no input contract, so
+ * input&#8594;output stub matching is intentionally not covered here (that behaviour is
+ * exercised by the Spring Cloud Stream stub-runner spec, which ships input contracts).
+ *
  * @author Marcin Grzejszczak
  */
 @SpringBootTest(classes = KafkaStubRunnerSpec.Config.class, properties = "debug=true")
 @AutoConfigureStubRunner
+@AutoConfigureMessageVerifier
 @DisabledOnOs(OS.WINDOWS)
-@EmbeddedKafka(topics = { "input", "input2", "output", "delete" })
-@Disabled("TODO: Migrate to middleware based approach")
+@Testcontainers
 class KafkaStubRunnerSpec {
 
 	private static final Logger log = LoggerFactory.getLogger(KafkaStubRunnerSpec.class);
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-	@Autowired
-	StubFinder stubFinder;
+	@Container
+	private static final KafkaContainer KAFKA = new KafkaContainer(DockerImageName.parse("apache/kafka:3.8.1"));
+
+	@DynamicPropertySource
+	static void kafkaProperties(DynamicPropertyRegistry registry) {
+		// Points BOTH the application's Spring Kafka client and the stub-runner Kafka
+		// backend (which derives its bootstrap servers from the application's
+		// KafkaTemplate) at the Testcontainers broker.
+		registry.add("spring.kafka.bootstrap-servers", KAFKA::getBootstrapServers);
+	}
 
 	@Autowired
-	KafkaTemplate<Object, Object> kafkaTemplate;
+	StubFinder stubFinder;
 
 	@Autowired
 	MyMessageListener myMessageListener;
@@ -96,62 +116,6 @@ class KafkaStubRunnerSpec {
 		return result;
 	}
 
-	private @Nullable Message<?> receiveNullableMessageFromOutput() {
-		Message<?> m = this.myMessageListener.output();
-		log.info("Received message [" + m + "]");
-		return m;
-	}
-
-	// Skipping the test on Jenkins cause it's for some reason flakey only there
-	@Test
-	void shouldDownloadTheStubAndRegisterARouteForIt() {
-		log.info("Sending the message");
-		// tag::client_send[]
-		Message<?> message = MessageBuilder.createMessage(new BookReturned("foo"),
-				new MessageHeaders(Map.of("sample", "header")));
-		this.kafkaTemplate.setDefaultTopic("input");
-		var unused = this.kafkaTemplate.send(message);
-		// end::client_send[]
-		log.info("Message sent");
-		Awaitility.await().pollInterval(200, TimeUnit.MILLISECONDS).untilAsserted(() -> {
-			log.info("Receiving the message");
-			// tag::client_receive[]
-			Message<?> receivedMessage = receiveFromOutput();
-			// end::client_receive[]
-			log.info("Message received [" + receivedMessage + "]");
-			// tag::client_receive_message[]
-			then(receivedMessage).isNotNull();
-			then(assertThatBodyContainsBookNameFoo(receivedMessage.getPayload())).isTrue();
-			then(receivedMessage.getHeaders().get("BOOK-NAME")).isEqualTo("foo");
-			// end::client_receive_message[]
-		});
-	}
-
-	@Test
-	void shouldPropagateTheKafkaRecordKeyViaMessageHeaders() {
-		log.info("Sending the message");
-		// tag::client_send[]
-		Message<?> message = MessageBuilder.createMessage(new BookReturned("bar"),
-				new MessageHeaders(Map.of("kafka_messageKey", "bar5150")));
-		this.kafkaTemplate.setDefaultTopic("input2");
-		var unused = this.kafkaTemplate.send(message);
-		// end::client_send[]
-		log.info("Message sent");
-		Awaitility.await().pollInterval(200, TimeUnit.MILLISECONDS).untilAsserted(() -> {
-			log.info("Receiving the message");
-			// tag::client_receive[]
-			Message<?> receivedMessage = receiveFromOutput();
-			// end::client_receive[]
-			log.info("Message received [" + receivedMessage + "]");
-			// tag::client_receive_message[]
-			then(receivedMessage).isNotNull();
-			then(assertThatBodyContainsBookName(receivedMessage.getPayload(), "bar")).isTrue();
-			then(receivedMessage.getHeaders().get("BOOK-NAME")).isEqualTo("bar");
-			then(receivedMessage.getHeaders().get("kafka_receivedMessageKey")).isEqualTo("bar5150");
-			// end::client_receive_message[]
-		});
-	}
-
 	@Test
 	void shouldTriggerAMessageByLabel() {
 		// tag::client_trigger[]
@@ -163,8 +127,8 @@ class KafkaStubRunnerSpec {
 			// end::client_trigger_receive[]
 			// tag::client_trigger_message[]
 			then(receivedMessage).isNotNull();
-			then(assertThatBodyContainsBookNameFoo(receivedMessage.getPayload())).isTrue();
-			then(receivedMessage.getHeaders().get("BOOK-NAME")).isEqualTo("foo");
+			then(bodyContainsBookName(receivedMessage.getPayload(), "foo")).isTrue();
+			then(headerAsString(receivedMessage.getHeaders().get("BOOK-NAME"))).isEqualTo("foo");
 			// end::client_trigger_message[]
 		});
 	}
@@ -177,8 +141,8 @@ class KafkaStubRunnerSpec {
 		Awaitility.await().pollInterval(200, TimeUnit.MILLISECONDS).untilAsserted(() -> {
 			Message<?> receivedMessage = receiveFromOutput();
 			then(receivedMessage).isNotNull();
-			then(assertThatBodyContainsBookNameFoo(receivedMessage.getPayload())).isTrue();
-			then(receivedMessage.getHeaders().get("BOOK-NAME")).isEqualTo("foo");
+			then(bodyContainsBookName(receivedMessage.getPayload(), "foo")).isTrue();
+			then(headerAsString(receivedMessage.getHeaders().get("BOOK-NAME"))).isEqualTo("foo");
 		});
 	}
 
@@ -190,8 +154,8 @@ class KafkaStubRunnerSpec {
 		Awaitility.await().pollInterval(200, TimeUnit.MILLISECONDS).untilAsserted(() -> {
 			Message<?> receivedMessage = receiveFromOutput();
 			then(receivedMessage).isNotNull();
-			then(assertThatBodyContainsBookNameFoo(receivedMessage.getPayload())).isTrue();
-			then(receivedMessage.getHeaders().get("BOOK-NAME")).isEqualTo("foo");
+			then(bodyContainsBookName(receivedMessage.getPayload(), "foo")).isTrue();
+			then(headerAsString(receivedMessage.getHeaders().get("BOOK-NAME"))).isEqualTo("foo");
 		});
 	}
 
@@ -214,49 +178,33 @@ class KafkaStubRunnerSpec {
 		Awaitility.await().pollInterval(200, TimeUnit.MILLISECONDS).untilAsserted(() -> {
 			Message<?> receivedMessage = receiveFromOutput();
 			then(receivedMessage).isNotNull();
-			then(assertThatBodyContainsBookName(receivedMessage.getPayload())).isTrue();
-			then(receivedMessage.getHeaders().get("BOOK-NAME")).isNotNull();
+			then(bodyContainsBookName(receivedMessage.getPayload(), "foo")).isTrue();
+			then(headerAsString(receivedMessage.getHeaders().get("BOOK-NAME"))).isNotNull();
 		});
 	}
 
-	@Test
-	void shouldTriggerALabelWithNoOutputMessage() {
-		// tag::trigger_no_output[]
-		Message<?> message = MessageBuilder.createMessage(new BookReturned("foo"),
-				new MessageHeaders(Map.of("sample", "header")));
-		this.kafkaTemplate.setDefaultTopic("delete");
-		var unused = this.kafkaTemplate.send(message);
-		// end::trigger_no_output[]
-	}
-
-	@Test
-	void shouldNotTriggerAMessageThatDoesNotMatchInput() {
-		Message<?> message = MessageBuilder.createMessage(new BookReturned("notmatching"),
-				new MessageHeaders(Map.of("wrong", "header")));
-		this.kafkaTemplate.setDefaultTopic("input");
-		var unused = this.kafkaTemplate.send(message);
-
-		Message<?> receivedMessage = receiveNullableMessageFromOutput();
-
-		then(receivedMessage).isNull();
-	}
-
-	private boolean assertThatBodyContainsBookNameFoo(Object payload) throws Exception {
-		return assertThatBodyContainsBookName(payload, "foo");
-	}
-
-	private boolean assertThatBodyContainsBookName(Object payload, String expectedValue) throws Exception {
+	private static boolean bodyContainsBookName(Object payload, String expectedValue) throws Exception {
 		log.info("Got payload [" + payload + "]");
-		String objectAsString = (payload instanceof String s) ? s : OBJECT_MAPPER.writeValueAsString(payload);
+		String objectAsString = payloadAsString(payload);
 		JsonNode json = OBJECT_MAPPER.readTree(objectAsString);
 		return expectedValue.equals(json.get("bookName").asText());
 	}
 
-	private boolean assertThatBodyContainsBookName(Object payload) throws Exception {
-		log.info("Got payload [" + payload + "]");
-		String objectAsString = (payload instanceof String s) ? s : OBJECT_MAPPER.writeValueAsString(payload);
-		JsonNode json = OBJECT_MAPPER.readTree(objectAsString);
-		return json.get("bookName") != null;
+	private static String payloadAsString(Object payload) throws Exception {
+		if (payload instanceof String string) {
+			return string;
+		}
+		if (payload instanceof byte[] bytes) {
+			return new String(bytes, StandardCharsets.UTF_8);
+		}
+		return OBJECT_MAPPER.writeValueAsString(payload);
+	}
+
+	private static @Nullable String headerAsString(@Nullable Object header) {
+		if (header instanceof byte[] bytes) {
+			return new String(bytes, StandardCharsets.UTF_8);
+		}
+		return (header != null) ? header.toString() : null;
 	}
 
 	@Configuration
@@ -271,8 +219,6 @@ class KafkaStubRunnerSpec {
 	static class MyMessageListener {
 
 		private static final Logger log = LoggerFactory.getLogger(MyMessageListener.class);
-
-		CountDownLatch latch = new CountDownLatch(1);
 
 		@Nullable Message<?> output;
 

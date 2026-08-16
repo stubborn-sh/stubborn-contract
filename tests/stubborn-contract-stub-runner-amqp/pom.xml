@@ -31,8 +31,16 @@
 			<artifactId>stubborn-contract-verifier</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.amqp</groupId>
-			<artifactId>spring-rabbit</artifactId>
+			<!-- Brings spring-rabbit AND triggers Boot's RabbitAutoConfiguration, which
+			     provides the ConnectionFactory / RabbitAdmin the app's RabbitTemplate and
+			     listener containers autowire. Raw spring-rabbit alone compiles but leaves
+			     no auto-configured ConnectionFactory, failing context load. -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-json</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -45,6 +53,31 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<!-- Spring-free RabbitMQ MessageVerifier building block; provides the
+			     StubbornRabbit sender/receiver that ContractVerifierRabbitConfiguration
+			     wires as beans. It is declared optional in verifier-spring-boot, so it
+			     must be pulled in explicitly here. -->
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-messaging-rabbit</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>rabbitmq</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

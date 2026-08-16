@@ -20,8 +20,11 @@ import java.util.Objects;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
@@ -30,14 +33,29 @@ import sh.stubborn.jsonassert.JsonAssertion;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 // Context configuration would end up in base class
 @AutoConfigureMessageVerifier
-@SpringBootTest(classes = AmqpMessagingApplication.class, properties = "stubborn.contract.stubrunner.amqp.enabled=true")
-@Disabled("TODO: Migrate to middleware based approach")
+@SpringBootTest(classes = AmqpMessagingApplication.class,
+		properties = "stubborn.contract.stubrunner.rabbit.enabled=true")
+@Testcontainers
 class AmqpMessagingApplicationSpec {
+
+	@Container
+	private static final RabbitMQContainer RABBIT = new RabbitMQContainer(
+			DockerImageName.parse("rabbitmq:3.13-management-alpine"));
+
+	@DynamicPropertySource
+	static void rabbitProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.rabbitmq.host", RABBIT::getHost);
+		registry.add("spring.rabbitmq.port", RABBIT::getAmqpPort);
+		registry.add("spring.rabbitmq.username", RABBIT::getAdminUsername);
+		registry.add("spring.rabbitmq.password", RABBIT::getAdminPassword);
+	}
 
 	// ALL CASES
 	@Autowired

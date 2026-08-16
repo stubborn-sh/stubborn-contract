@@ -1,1 +1,1 @@
-stubborn.contract.stubrunner.amqp.enabled: true
+stubborn.contract.stubrunner.rabbit.enabled: true

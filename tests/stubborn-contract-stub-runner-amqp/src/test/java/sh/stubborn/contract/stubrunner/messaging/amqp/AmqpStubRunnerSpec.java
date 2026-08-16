@@ -16,23 +16,45 @@
 
 package sh.stubborn.contract.stubrunner.messaging.amqp;
 
-import org.junit.jupiter.api.Disabled;
+import java.time.Duration;
+
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import sh.stubborn.contract.stubrunner.StubTrigger;
 import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+import sh.stubborn.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.then;
 
 @AutoConfigureStubRunner
+@AutoConfigureMessageVerifier
 @SpringBootTest(classes = AmqpMessagingApplication.class)
-@Disabled("TODO: Migrate to middleware based approach")
+@Testcontainers
 class AmqpStubRunnerSpec {
+
+	@Container
+	private static final RabbitMQContainer RABBIT = new RabbitMQContainer(
+			DockerImageName.parse("rabbitmq:3.13-management-alpine"));
+
+	@DynamicPropertySource
+	static void rabbitProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.rabbitmq.host", RABBIT::getHost);
+		registry.add("spring.rabbitmq.port", RABBIT::getAmqpPort);
+		registry.add("spring.rabbitmq.username", RABBIT::getAdminUsername);
+		registry.add("spring.rabbitmq.password", RABBIT::getAdminPassword);
+	}
 
 	@Autowired
 	StubTrigger stubTrigger;
@@ -48,8 +70,12 @@ class AmqpStubRunnerSpec {
 		this.stubTrigger.trigger("contract-test.person.created.event");
 		// end::client_trigger[]
 
-		then(this.messageSubscriber).should().handleMessage(this.personArgumentCaptor.capture());
-		assertThat(this.personArgumentCaptor.getValue().getName()).isNotNull();
+		// The stub-runner Rabbit backend publishes to a real broker, so the listener
+		// receives the Person asynchronously.
+		Awaitility.await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
+			then(this.messageSubscriber).should().handleMessage(this.personArgumentCaptor.capture());
+			assertThat(this.personArgumentCaptor.getValue().getName()).isNotNull();
+		});
 	}
 
 }

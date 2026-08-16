@@ -24,8 +24,33 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
+			<!-- Brings spring-kafka AND Boot's spring-boot-kafka autoconfig module (moved
+			     out of spring-boot-autoconfigure in Boot 4), which provides KafkaTemplate,
+			     ConsumerFactory and the kafkaListenerContainerFactory that @KafkaListener
+			     needs. Raw spring-kafka alone compiles but leaves KafkaAutoConfiguration
+			     off the classpath, so the listener factory is never created. -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Spring-free Kafka MessageVerifier building block; provides the
+			     StubbornKafka sender/receiver that ContractVerifierKafkaConfiguration
+			     wires as beans. It is declared optional in verifier-spring-boot, so it
+			     must be pulled in explicitly here. -->
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-messaging-kafka</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers-kafka</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>

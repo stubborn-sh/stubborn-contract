@@ -17,7 +17,6 @@
 package sh.stubborn.contract.spec.internal
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.condition.DisabledIf
 import sh.stubborn.contract.spec.Contract
 import java.io.File
 import kotlin.test.assertEquals
@@ -25,19 +24,12 @@ import kotlin.test.assertTrue
 
 class KotlinContractConverterTests {
 
-	companion object {
-		@JvmStatic
-		fun isKotlin23OrGreater() = KotlinVersion.CURRENT.isAtLeast(2, 3)
-	}
-
     @Test
-	@DisabledIf(value = "sh.stubborn.contract.spec.internal.KotlinContractConverterTests#isKotlin23OrGreater")
     fun `accept kts files`() {
         assertTrue(KotlinContractConverter().isAccepted(file("contracts/singleDefinition.kts")))
     }
 
     @Test
-	@DisabledIf(value = "sh.stubborn.contract.spec.internal.KotlinContractConverterTests#isKotlin23OrGreater")
     fun `should convert single contract definition`() {
         val converter = KotlinContractConverter()
         val contracts = converter.convertFrom(file("contracts/singleDefinition.kts"))
@@ -46,7 +38,6 @@ class KotlinContractConverterTests {
     }
 
     @Test
-	@DisabledIf(value = "sh.stubborn.contract.spec.internal.KotlinContractConverterTests#isKotlin23OrGreater")
     fun `should convert multiple contract definitions`() {
         val converter = KotlinContractConverter()
         val contracts = converter.convertFrom(file("contracts/multipleDefinitions.kts"))
@@ -55,7 +46,6 @@ class KotlinContractConverterTests {
     }
 
     @Test
-	@DisabledIf(value = "sh.stubborn.contract.spec.internal.KotlinContractConverterTests#isKotlin23OrGreater")
     fun `should work with binary payload`() {
         val converter = KotlinContractConverter()
         val contracts = converter.convertFrom(file("contracts/shouldWorkWithBinaryPayload.kts"))

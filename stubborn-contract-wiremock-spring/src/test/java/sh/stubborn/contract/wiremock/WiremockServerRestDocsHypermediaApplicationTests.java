@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.api.BDDAssertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.wiremock.WiremockServerRestDocsHypermediaApplicationTests.TestConfiguration;
 
@@ -48,7 +47,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = TestConfiguration.class, properties = "wiremock.placeholders.enabled=false")
 @AutoConfigureRestDocs(outputDir = "target/snippets")
 @AutoConfigureMockMvc
-@Disabled("jakarta")
 public class WiremockServerRestDocsHypermediaApplicationTests {
 
 	@Autowired

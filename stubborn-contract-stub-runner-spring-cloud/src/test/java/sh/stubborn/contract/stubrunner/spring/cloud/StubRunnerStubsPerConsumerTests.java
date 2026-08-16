@@ -17,11 +17,13 @@
 package sh.stubborn.contract.stubrunner.spring.cloud;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.BDDAssertions;
-import org.junit.jupiter.api.Disabled;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.stubrunner.StubFinder;
 import sh.stubborn.contract.stubrunner.StubsMode;
@@ -44,11 +46,13 @@ import org.springframework.web.client.RestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = StubRunnerStubsPerConsumerTests.Config.class,
-		properties = { "spring.application.name=bar-consumer", "stubborn.contract.stubrunner.jms.enabled=false" })
+		properties = { "spring.application.name=bar-consumer", "stubborn.contract.stubrunner.jms.enabled=false",
+				"spring.cloud.function.definition=bookHandler",
+				"spring.cloud.stream.bindings.bookHandler-in-0.destination=output",
+				"spring.cloud.stream.bindings.bookHandler-out-0.destination=outputToAssertBook" })
 @AutoConfigureStubRunner(ids = "sh.stubborn.contract.verifier.stubs:producerWithMultipleConsumers",
 		repositoryRoot = "classpath:m2repo/repository/", stubsMode = StubsMode.REMOTE, stubsPerConsumer = true)
 @ActiveProfiles("streamconsumer")
-@Disabled("TODO: verify stubs per consumer stream test")
 class StubRunnerStubsPerConsumerTests {
 
 	@Autowired
@@ -66,18 +70,21 @@ class StubRunnerStubsPerConsumerTests {
 		RestTemplate template = new RestTemplate();
 		ResponseEntity<String> entity = template.getForEntity(stubUrl + "/bar-consumer", String.class);
 		assertThat(entity.getStatusCode().value()).isEqualTo(200);
-		ResponseEntity<String> notFound = template.getForEntity(stubUrl + "/foo-consumer", String.class);
-		assertThat(notFound.getStatusCode().value()).isEqualTo(404);
+		// the not-matching consumer's stub is not served — RestTemplate throws on the 404
+		BDDAssertions.thenThrownBy(() -> template.getForEntity(stubUrl + "/foo-consumer", String.class))
+			.isInstanceOf(org.springframework.web.client.HttpClientErrorException.NotFound.class);
 	}
 
 	@Test
 	void shouldTriggerAMessageByLabelFromProperConsumer() {
 		this.stubFinder.trigger("return_book_for_bar");
-		Message<?> receivedMessage = this.messaging.receive("output");
-		assertThat(receivedMessage).isNotNull();
-		Message<?> message = Objects.requireNonNull(receivedMessage);
-		assertThat(message.getPayload()).isEqualTo("{\"bookName\":\"foo_for_bar\"}".getBytes());
-		assertThat(message.getHeaders().get("BOOK-NAME")).isEqualTo("foo_for_bar");
+		Awaitility.await().untilAsserted(() -> {
+			Message<?> receivedMessage = this.messaging.receive("outputToAssertBook");
+			assertThat(receivedMessage).isNotNull();
+			Message<?> message = Objects.requireNonNull(receivedMessage);
+			assertThat(bookName(message.getPayload())).isEqualTo("foo_for_bar");
+			assertThat(message.getHeaders().get("BOOK-NAME")).isEqualTo("foo_for_bar");
+		});
 	}
 
 	@Test
@@ -87,13 +94,28 @@ class StubRunnerStubsPerConsumerTests {
 			.hasMessageContaining("No label with name [return_book_for_foo] was found");
 	}
 
+	private static String bookName(Object payload) {
+		try {
+			String json = (payload instanceof byte[] bytes) ? new String(bytes, StandardCharsets.UTF_8)
+					: (payload instanceof String string) ? string : new ObjectMapper().writeValueAsString(payload);
+			return new ObjectMapper().readTree(json).get("bookName").asText();
+		}
+		catch (Exception ex) {
+			throw new IllegalStateException("Could not read bookName from payload [" + payload + "]", ex);
+		}
+	}
+
 	@Configuration
 	@EnableAutoConfiguration
 	@ImportAutoConfiguration(TestChannelBinderConfiguration.class)
 	static class Config {
 
+		// Identity function bridging the contract's 'output' destination to
+		// 'outputToAssertBook'; deliberately not named after any destination so it does
+		// not
+		// shadow the destination-name bean lookup in the messaging backend.
 		@Bean
-		Function<Object, Object> output() {
+		Function<String, String> bookHandler() {
 			return (o) -> o;
 		}
 
