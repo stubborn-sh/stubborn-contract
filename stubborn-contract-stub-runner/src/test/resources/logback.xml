@@ -21,6 +21,13 @@
 
 	<logger name="org.springframework.cloud.function" level="INFO"/>
 
+	<!--
+	  Exercise the module's debug/trace logging guards during tests so their branches are
+	  covered by keeping isDebugEnabled()/isTraceEnabled() true. Output still flows to the
+	  console (default additivity) so tests that assert on captured log output keep working.
+	-->
+	<logger name="sh.stubborn" level="TRACE"/>
+
 	<root level="INFO">
 		<appender-ref ref="CONSOLE"/>
 	</root>
