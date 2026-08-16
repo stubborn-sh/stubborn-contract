@@ -118,10 +118,29 @@ The gates are enforcing as of the backfill completion:
 3. `.github/workflows/quality-gates.yaml`: `continue-on-error` removed from both jobs;
    the coverage job runs to `verify` so `jacoco:check` executes.
 
-**Aggregate coverage** across the 10 Docker-free gate modules (JaCoCo, `-Psonar`):
-**line 91.1%** (12 981/14 247), **branch 83.3%** (5 013/6 018). Every one of those
-modules individually clears the 80%/80% floor. Kafka/Rabbit are validated in CI
-(Docker) via their Testcontainers conformance suites.
+### Coverage counts integration tests; mutation does not
+
+**Line + branch coverage** is measured over **unit AND integration tests**. The
+Kafka/Rabbit `*ConformanceTests` are `@Testcontainers` surefire tests, so they run
+in the coverage job (Docker is available on the CI runner) and their coverage is
+captured by the jacoco agent.
+
+- **Kafka**: the conformance round-trip covers its broker-I/O sender/receiver to
+  the floor, so those classes are counted (no exclusion).
+- **Rabbit**: the conformance round-trip is counted too, but the bundle still lands
+  at ~72% — the connection-open / receive-timeout / error branches in the sender,
+  receiver and abstract verifier aren't reached without a controllable broker
+  failure. Those three connection classes stay excluded until a broker-failure
+  integration test lands; `RabbitMessage` (the adapter) is counted.
+
+**Mutation (PIT) is unit-only**: `*ConformanceTests` are excluded from the mutator
+run (alongside `*ArchTests`) — they are slow, Docker-bound, and mutating broker-I/O
+is out of scope.
+
+The only classes still excluded from the coverage floor are stub-runner's git /
+Maven-resolver / filesystem-IO error paths (SSH transport, Aether ServiceLocator
+reflection, delete/retry IO-failure), which no unit **or** integration test here
+exercises; adding integration tests for them is tracked as follow-up.
 
 To revert to warn mode, re-add `continue-on-error: true` to both jobs (and/or set
 `jacoco.haltOnFailure=false`, `pitest.mutationThreshold=0`).
