@@ -93,6 +93,6 @@ One way to use Stub Runner Boot is to use it as a feed of stubs for "smoke tests
 
 The problem with this approach is that, if you use microservices, you most likely also use a service discovery tool. Stub Runner Boot lets you solve this issue by starting the required stubs and registering them in a service discovery tool.
 
-Now assume that we want to start this application so that the stubs get automatically registered. We can do so by running the application with `java -jar ${SYSTEM_PROPS} stub-runner-boot-eureka-example.jar`.
+Now assume that we want to start this application so that the stubs get automatically registered. We can do so by running the application with `java -jar ${SYSTEM_PROPS} stubborn-contract-stubrunner-app.jar`.
 
 That way, your deployed application can send requests to started WireMock servers through service discovery. Most likely, the basic properties could be set by default in `application.yml`, because they are not likely to change. That way, you can provide only the list of stubs to download whenever you start the Stub Runner Boot.

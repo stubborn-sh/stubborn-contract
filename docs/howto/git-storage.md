@@ -53,8 +53,8 @@ For the SCM functionality, currently, we support the Git repository. To use it, 
 
 ```
 git://file:///foo/bar
-git://https://github.com/spring-cloud-samples/spring-cloud-contract-nodejs-contracts-git.git
-git://git@github.com:spring-cloud-samples/spring-cloud-contract-nodejs-contracts-git.git
+git://https://github.com/your-org/contracts-git.git
+git://git@github.com:your-org/contracts-git.git
 ```
 
 ## Producer
@@ -77,7 +77,7 @@ The following listing includes the relevant parts both Maven and Gradle build fi
     <extensions>true</extensions>
     <configuration>
         <!-- We want to pick contracts from a Git repository -->
-        <contractsRepositoryUrl>git://https://github.com/spring-cloud-samples/spring-cloud-contract-nodejs-contracts-git.git</contractsRepositoryUrl>
+        <contractsRepositoryUrl>git://https://github.com/your-org/contracts-git.git</contractsRepositoryUrl>
 
         <!-- We reuse the contract dependency section to set up the path
         to the folder that contains the contract definitions. In our case the
@@ -118,7 +118,7 @@ contracts {
     path will be /groupId/artifactId/version/contracts
      */
     contractRepository {
-        repositoryUrl = "git://https://github.com/spring-cloud-samples/spring-cloud-contract-nodejs-contracts-git.git"
+        repositoryUrl = "git://https://github.com/your-org/contracts-git.git"
     }
     // The mode can't be classpath
     contractsMode = "REMOTE"
@@ -188,7 +188,7 @@ On the consumer side, when passing the `repositoryRoot` parameter — either fro
 ```java
 @AutoConfigureStubRunner(
     stubsMode="REMOTE",
-    repositoryRoot="git://https://github.com/spring-cloud-samples/spring-cloud-contract-nodejs-contracts-git.git",
+    repositoryRoot="git://https://github.com/your-org/contracts-git.git",
     ids="com.example:bookstore:0.0.1.RELEASE"
 )
 ```
