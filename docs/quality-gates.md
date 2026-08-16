@@ -126,15 +126,26 @@ Gate targets: **80% line + 80% branch** coverage and **90% mutation** (killable)
 | stubborn-contract-jsonassert | 94.1% | 91.2% | 92.2% | ✅ done |
 | stubborn-contract-xmlassert | 93.7% | 95.3% | 94.5% | ✅ done |
 | stubborn-contract-wiremock | 100% | 100% | 100% | ✅ done |
-| specs/stubborn-contract-spec-java | — | — | — | ⬜ pending (transitively-tested; ~4% own line) |
-| specs/stubborn-contract-spec-groovy | — | — | — | ⬜ pending (Groovy — verify PIT support) |
-| stubborn-contract-verifier | 68% | 56% | — | ⬜ pending (largest, ~4900 lines) |
-| stubborn-contract-generator | — | — | — | ⬜ pending |
-| stubborn-contract-stub-runner | — | — | — | ⬜ pending |
-| stubborn-contract-tools/stubborn-contract-converters | — | — | — | ⬜ pending (needs -am build; tests use spec-groovy) |
-| stubborn-contract-messaging-kafka | — | — | — | ⬜ pending (broker integration — unit tests only) |
-| stubborn-contract-messaging-rabbit | — | — | — | ⬜ pending |
-| stubborn-contract-messaging-jms | — | — | — | ⬜ pending |
+| specs/stubborn-contract-spec-java | 90.5% | 88.7% | 97.7% | ✅ done |
+| specs/stubborn-contract-spec-groovy | 93% | 92% | 97.7% | ✅ done |
+| stubborn-contract-verifier | 88% | 78% | 81% | 🟨 line met; branch/mutation in follow-up |
+| stubborn-contract-generator | 92.5% | 81.1% | 97.5%¹ | ✅ line+branch; mutation on survivor clusters |
+| stubborn-contract-stub-runner | 90.9% | 84.6% | 91.0% | ✅ done |
+| stubborn-contract-tools/stubborn-contract-converters | 94.7% | 81.1% | 95.2% | ✅ done |
+| stubborn-contract-messaging-kafka | 89%² | 89%² | 79%² | 🟨 non-broker 100%; broker paths CI-only |
+| stubborn-contract-messaging-rabbit | 32%² | 55%² | 62%² | 🟨 non-broker 100%; broker paths CI-only |
+| stubborn-contract-messaging-jms | 91% | 86% | 100% | ✅ done |
+
+¹ Generator: the module-wide PIT run could not complete locally under load; the
+survivor clusters (BlockBuilder, JsonBodyVerificationBuilder, BodyParser) measure
+97.5% and the rendering builders are covered by the golden-master/MethodBodyBuilder
+suites. Line/branch are full-module JaCoCo figures.
+
+² Messaging Kafka/Rabbit: figures are **local, Docker-absent**. Every broker-free
+class is at 100% killable mutation; the live send/receive/connect poll loops are
+exercised only by the Testcontainers `*ConformanceTests`, which run in CI (Docker).
+The module gate for these two is validated in CI, not locally. JMS reaches all gates
+locally via an embedded in-VM Artemis broker (no Docker).
 
 ## Per-module backfill playbook (proven on the 3 done modules)
 
