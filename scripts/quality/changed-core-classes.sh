@@ -69,5 +69,12 @@ for module in "${GATE_MODULES[@]}"; do
 		fi
 	done <<< "${changed_files}"
 
-	[ -n "${fqcns}" ] && printf '%s\t%s\n' "${module}" "${fqcns}"
+	if [ -n "${fqcns}" ]; then
+		printf '%s\t%s\n' "${module}" "${fqcns}"
+	fi
 done
+
+# Never let the exit status of the last loop iteration (an empty-module `[ -n ]`
+# test returning 1) leak out: the CI step captures our stdout under `set -e`, so
+# a non-zero exit here aborts the whole mutation gate even on success.
+exit 0
