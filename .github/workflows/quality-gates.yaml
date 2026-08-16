@@ -1,0 +1,134 @@
+name: Quality Gates
+
+# Coverage + mutation quality gates for the 12 "core, spring-less" modules.
+#
+# Both jobs are BLOCKING: the test backfill has landed (aggregate line 91% /
+# branch 83% across the gate modules; see docs/quality-gates.md). The coverage
+# job runs to the `verify` phase so jacoco:check enforces the LINE >= 80% /
+# BRANCH >= 80% floor (jacoco.haltOnFailure=true), and the mutation job enforces
+# a 90% floor on changed core classes. To revert to warn mode, re-add
+# `continue-on-error: true` to both jobs.
+#
+# Java / Maven bootstrap mirrors .github/workflows/pr.yaml so dependency
+# resolution behaves identically.
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+  # The 12 core, spring-less gate modules as a Maven -pl comma list. MUST stay in
+  # sync with the gate set in scripts/quality/*.sh and docs/quality-gates.md.
+  GATE_MODULES: >-
+    stubborn-contract-jsonassert,stubborn-contract-xmlassert,specs/stubborn-contract-spec-java,specs/stubborn-contract-spec-groovy,stubborn-contract-verifier,stubborn-contract-generator,stubborn-contract-stub-runner,stubborn-contract-wiremock,stubborn-contract-tools/stubborn-contract-converters,stubborn-contract-messaging-kafka,stubborn-contract-messaging-rabbit,stubborn-contract-messaging-jms
+
+jobs:
+  coverage:
+    name: Coverage (JaCoCo aggregate)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Install BOM (stubborn-contract-dependencies)
+        run: |
+          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
+
+      # -Psonar binds jacoco:prepare-agent + jacoco:report so each module writes
+      # target/site/jacoco/jacoco.csv, and jacoco:check (bound to `verify`)
+      # enforces the LINE/BRANCH floor. The gate measures UNIT + INTEGRATION tests:
+      # the @Testcontainers *ConformanceTests are surefire tests, so they run here
+      # (Docker is available on the runner) and their coverage is captured by the
+      # jacoco agent — no ITs are skipped. haltOnFailure is passed here (not
+      # defaulted in the parent POM) so ONLY this gate-module-scoped job enforces
+      # coverage — a plain `clean install` must not fail on non-gate modules (e.g.
+      # the Maven plugin) that also activate jacoco. Running to `verify` (not
+      # `test`) is what makes the check execute. -am builds upstream reactor deps.
+      - name: Verify gate modules with coverage floor (unit + integration)
+        run: ./mvnw -Psonar verify -pl "${GATE_MODULES}" -am -Djacoco.haltOnFailure=true --no-transfer-progress
+
+      - name: Aggregate coverage report
+        id: coverage
+        run: |
+          report="$(scripts/quality/coverage-report.sh)"
+          echo "${report}"
+          {
+            echo "## Coverage (core gate modules)"
+            echo ""
+            echo '```'
+            echo "${report}"
+            echo '```'
+            echo ""
+            echo "_BLOCKING: floor is LINE >= 80% and BRANCH >= 80% (enforced by jacoco:check at verify)._"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  mutation-diff:
+    name: Mutation (PIT on changed core classes)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          fetch-depth: 0 # full history so the merge-base diff resolves
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
+
+      - name: Install BOM (stubborn-contract-dependencies)
+        run: |
+          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
+
+      # For each gate module with changed production classes, run PIT restricted to
+      # exactly those classes with a 90% mutation floor. Upstream reactor deps are
+      # built with -am. If nothing changed, succeed with a note.
+      - name: Mutation test changed core classes
+        run: |
+          set -euo pipefail
+          base_ref="origin/${{ github.base_ref }}"
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}" || true
+
+          changes="$(scripts/quality/changed-core-classes.sh "${base_ref}")"
+          if [ -z "${changes}" ]; then
+            echo "no core classes changed"
+            exit 0
+          fi
+
+          echo "Changed core classes:"
+          echo "${changes}"
+
+          while IFS=$'\t' read -r module classes; do
+            [ -z "${module}" ] && continue
+            echo "::group::PIT ${module} (${classes})"
+            ./mvnw -pl "${module}" -am test-compile \
+              org.pitest:pitest-maven:mutationCoverage \
+              -DtargetClasses="${classes}" \
+              -DtargetTests='sh.stubborn.*' \
+              -DmutationThreshold=90 \
+              --no-transfer-progress
+            echo "::endgroup::"
+          done <<< "${changes}"

@@ -1,0 +1,41 @@
+/*
+ * Copyright 2013-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package sh.stubborn.contract.verifier.converter;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.spec.Contract;
+
+import static org.assertj.core.api.BDDAssertions.then;
+
+class StubPostProcessorMutationTests {
+
+	@Test
+	void processors_loads_registered_post_processors_via_service_loader() {
+		List<StubPostProcessor> processors = StubPostProcessor.PROCESSORS();
+		then(processors).isNotEmpty();
+		then(processors).anyMatch((p) -> p instanceof MarkerStubPostProcessor);
+	}
+
+	@Test
+	void default_post_process_returns_the_same_stub_mapping() {
+		StubPostProcessor<String> processor = (contract) -> true;
+		then(processor.postProcess("stub", new Contract())).isEqualTo("stub");
+	}
+
+}
