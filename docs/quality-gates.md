@@ -113,7 +113,7 @@ Both jobs are **BLOCKING** (the backfill has landed).
 
 The gates are enforcing as of the backfill completion:
 
-1. `stubborn-contract-build/pom.xml`: `<jacoco.haltOnFailure>true</jacoco.haltOnFailure>`.
+1. `stubborn-contract-build/pom.xml`: `jacoco.haltOnFailure` stays **false** (a plain `clean install` must not fail on non-gate modules like the Maven plugin that also activate jacoco); the coverage job passes `-Djacoco.haltOnFailure=true` to enforce only over the gate modules.
 2. `stubborn-contract-build/pom.xml`: `<pitest.mutationThreshold>90</pitest.mutationThreshold>`.
 3. `.github/workflows/quality-gates.yaml`: `continue-on-error` removed from both jobs;
    the coverage job runs to `verify` so `jacoco:check` executes.

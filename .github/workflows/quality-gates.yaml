@@ -53,11 +53,13 @@ jobs:
 
       # -Psonar binds jacoco:prepare-agent + jacoco:report so each module writes
       # target/site/jacoco/jacoco.csv, and jacoco:check (bound to `verify`)
-      # enforces the LINE/BRANCH floor with jacoco.haltOnFailure=true. Running to
-      # `verify` (not `test`) is what makes the check execute. -am builds upstream
-      # reactor deps. The module list must stay in sync with env.GATE_MODULES.
+      # enforces the LINE/BRANCH floor. haltOnFailure is passed here (not defaulted
+      # in the parent POM) so ONLY this gate-module-scoped job enforces coverage —
+      # a plain `clean install` must not fail on non-gate modules (e.g. the Maven
+      # plugin) that also activate jacoco. Running to `verify` (not `test`) is what
+      # makes the check execute. -am builds upstream reactor deps.
       - name: Verify gate modules with coverage floor
-        run: ./mvnw -Psonar verify -pl "${GATE_MODULES}" -am -DskipITs --no-transfer-progress
+        run: ./mvnw -Psonar verify -pl "${GATE_MODULES}" -am -DskipITs -Djacoco.haltOnFailure=true --no-transfer-progress
 
       - name: Aggregate coverage report
         id: coverage
