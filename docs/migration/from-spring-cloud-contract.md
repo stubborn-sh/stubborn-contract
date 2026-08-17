@@ -289,4 +289,4 @@ import is sufficient.
 ## See also
 
 - [stubborn-samples](https://github.com/stubborn-sh/stubborn-samples) — working examples of producer and consumer setups
-- [Issue #27](https://github.com/stubborn-sh/stubborn-contract/issues/27) — SCC 5.x ↔ Stubborn interoperability tests
+- [sample-compatibility](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-compatibility) — SCC 5.x ↔ Stubborn interoperability tests
