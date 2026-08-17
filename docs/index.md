@@ -34,7 +34,7 @@ Stubborn Contract is a consumer-driven contract (CDC) testing library for JVM an
 
 **The producer** uses the contract to auto-generate and run tests that prove their API honours each contract. **The consumer** gets a generated stub — a WireMock-based fake HTTP server — that it can test against without running the real service.
 
-Stubborn Contract is the official continuation of [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract) 5.x, led by its original creator. Existing SCC contracts, stubs, and Groovy DSL files work without modification.
+Stubborn Contract is the official continuation of [Spring Cloud Contract](https://github.com/spring-cloud/spring-cloud-contract) 5.x, led by its original creator. Existing SCC contracts, stubs, and Groovy DSL files work without modification.
 
 ## How It Works
 

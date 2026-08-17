@@ -13,7 +13,7 @@ Stubborn Contract supports defining multiple contracts in a single file (in Groo
 
 The following example shows a contract definition. See the source files for complete examples:
 
-- [Groovy contract example](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-contract-verifier/src/test/groovy/org/springframework/cloud/contract/verifier/builder/SpringTestMethodBodyBuildersSpec.groovy)
+- [Groovy contract example](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-contract-verifier/src/test/resources/dsl/basic/sampleDsl.groovy)
 - [YAML contract example](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-contract-verifier/src/test/resources/yml/contract_rest.yml)
 - [Java contract example](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-contract-verifier/src/test/resources/contractsToCompile/contract_rest.java)
 - [Kotlin contract example](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-contract-verifier/src/test/resources/kotlin/contract_rest.kts)

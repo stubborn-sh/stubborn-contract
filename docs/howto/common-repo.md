@@ -6,11 +6,9 @@ Assume we have a producer with coordinates of `com.example:server` and three con
 
 ## Repository Structure
 
-See the [Stubborn Contract Samples repository](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/contracts/) for an example of how to set up the repository.
+See the [Stubborn Contract Samples repository](https://github.com/stubborn-sh/stubborn-samples) for examples of how to set up producers and consumers.
 
-The repository uses the assembly plugin to build the JAR with all the contracts.
-
-See the [contracts.xml assembly descriptor example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/contracts/src/assembly/contracts.xml).
+The repository uses the [Maven Assembly plugin](https://maven.apache.org/plugins/maven-assembly-plugin/) to build the JAR with all the contracts: an assembly descriptor packages the `contracts` directory into a single artifact that is published to Nexus or Artifactory.
 
 Stubborn Contract is set up on the consumer and on the producer side with the proper plugin setup in the common repository with contracts. CI jobs build an artifact of all contracts and upload it to Nexus or Artifactory.
 

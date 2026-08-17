@@ -31,10 +31,17 @@ jobs:
       - name: Reference tables are in sync with the code
         run: npm run docs:gen:check
 
-      # Builds the site: validates every <!--@include--> partial and every <<< snippet import
-      # path resolves, and runs the drift guard again.
+      # Fail if any <!--@include--> partial or <<< snippet-import target is missing, if any
+      # local link does not resolve, or if any external link resolves to a 404/410. Runs before
+      # the build so a missing include fails fast with a clear message instead of being silently
+      # inlined as an error string by VitePress.
+      - name: Includes, snippets and links resolve
+        run: npm run docs:check
+
+      # Builds the site: re-validates every <!--@include--> partial and every <<< snippet import
+      # path resolves, runs VitePress' own dead-link detection, and runs the drift guard again.
       - name: Build docs
         run: npm run docs:build
 
-      - name: Internal link check
+      - name: Built-site reachability check
         run: bash scripts/check-docs-links.sh

@@ -16,7 +16,7 @@ Assume that `Loan Issuance` is a client to the `Fraud Detection` server. In the 
 - Both the client and the server development teams need to communicate directly and discuss changes while going through the process.
 - CDC is all about communication.
 
-The server-side code is available under [Stubborn Contract Samples](https://github.com/stubborn-sh/stubborn-samples) repository `samples/standalone/dsl/http-server` path, and the client-side code is available under the `samples/standalone/dsl/http-client` path.
+The server-side code is available under the [Stubborn Contract Samples](https://github.com/stubborn-sh/stubborn-samples) repository `sample-http/producer` path, and the client-side code is available under the `sample-http/consumer` path.
 
 ::: tip
 In this case, the producer owns the contracts. Physically, all the contracts are in the producer's repository.
@@ -84,7 +84,7 @@ As a developer of the Loan Issuance service (a consumer of the Fraud Detection s
 
 ### Start Doing TDD by Writing a Test for Your Feature
 
-See the [LoanApplicationServiceTests.java](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-client/src/test/java/com/example/loan/LoanApplicationServiceTests.java) example.
+See the [LoanApplicationServiceTests.java](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/consumer) example.
 
 Assume that you have written a test of your new feature. If a loan application for a big amount is received, the system should reject that loan application with some description.
 
@@ -92,7 +92,7 @@ Assume that you have written a test of your new feature. If a loan application f
 
 At some point in time, you need to send a request to the Fraud Detection service. Assume that you need to send the request containing the ID of the client and the amount the client wants to borrow. You want to send it to the `/fraudcheck` URL by using the `PUT` method.
 
-See the [LoanApplicationService.java](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-client/src/main/java/com/example/loan/LoanApplicationService.java) example.
+See the [LoanApplicationService.java](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/consumer) example.
 
 For simplicity, the port of the Fraud Detection service is set to `8080`, and the application runs on `8090`.
 
@@ -118,8 +118,8 @@ Place the contract in the `src/test/resources/contracts/fraud` folder. The `frau
 
 See the contract examples:
 
-- [Groovy contract](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-server/src/test/resources/contracts/fraud/shouldMarkClientAsFraud.groovy)
-- [YAML contract](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-server/src/test/resources/contracts/yml/fraud/shouldMarkClientAsFraud.yml)
+- [Groovy contract](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/producer/src/test/resources/contracts/beer/shouldGrantABeer.groovy)
+- [YAML contract](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/producer/src/test/resources/contracts/beer)
 
 The YML contract is quite straightforward. However, when you take a look at the contract written with a statically typed Groovy DSL, you might wonder what the `value(client(...), server(...))` parts are. By using this notation, Stubborn Contract lets you define parts of a JSON block, a URL, or other structure that is dynamic. In the case of an identifier or a timestamp, you need not hardcode a value. You want to allow some different ranges of values. To enable ranges of values, you can set regular expressions that match those values for the consumer side.
 
@@ -141,7 +141,7 @@ Then an HTTP response is sent to the consumer that:
 
 ### Add the Stubborn Contract Verifier Plugin
 
-We can add either a Maven or a Gradle plugin. First, we add the Stubborn Contract BOM. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-server/pom.xml).
+We can add either a Maven or a Gradle plugin. First, we add the Stubborn Contract BOM. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/producer/pom.xml).
 
 Since the plugin was added, you get the Stubborn Contract Verifier features, which from the provided contracts:
 
@@ -176,9 +176,9 @@ It confirms that the stubs of the `http-server` have been installed in the local
 
 In order to profit from the Stubborn Contract Stub Runner functionality of automatic stub downloading, you must do the following in your consumer side project (Loan Application service):
 
-1. Add the Stubborn Contract BOM. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-client/pom.xml).
+1. Add the Stubborn Contract BOM. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/consumer/pom.xml).
 2. Add the dependency to Stubborn Contract Stub Runner.
-3. Annotate your test class with `@AutoConfigureStubRunner`. In the annotation, provide the `group-id` and `artifact-id` for the Stub Runner to download the stubs of your collaborators. See the [LoanApplicationServiceTests.java example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-client/src/test/java/com/example/loan/LoanApplicationServiceTests.java).
+3. Annotate your test class with `@AutoConfigureStubRunner`. In the annotation, provide the `group-id` and `artifact-id` for the Stub Runner to download the stubs of your collaborators. See the [LoanApplicationServiceTests.java example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/consumer).
 4. (Optional) Because you are playing with the collaborators offline, you can also provide the offline work switch (`StubRunnerProperties.StubsMode.LOCAL`).
 
 Now, when you run your tests, you see something like the following output in the logs:
@@ -208,7 +208,7 @@ As a developer of the Fraud Detection server (a server to the Loan Issuance serv
 
 ### Taking over the Pull Request
 
-See the initial implementation: [FraudDetectionController.java](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-server/src/main/java/com/example/fraud/FraudDetectionController.java).
+See the initial implementation: [FraudDetectionController.java](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/producer).
 
 Then you can run the following commands:
 
@@ -217,7 +217,7 @@ $ git checkout -b contract-change-pr master
 $ git pull https://your-git-server.com/server-side-fork.git contract-change-pr
 ```
 
-In the configuration of the Maven plugin, you must pass the `packageWithBaseClasses` property. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-server/pom.xml).
+In the configuration of the Maven plugin, you must pass the `packageWithBaseClasses` property. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/producer/pom.xml).
 
 ::: danger
 This example uses "convention-based" naming by setting the `packageWithBaseClasses` property. Doing so means that the two last packages combine to make the name of the base test class. In our case, the contracts were placed under `src/test/resources/contracts/fraud`. Since you do not have two packages starting from the `contracts` folder, pick only one, which should be `fraud`. Add the `Base` suffix and capitalize `fraud`. That gives you the `FraudBase` test class name.
@@ -225,7 +225,7 @@ This example uses "convention-based" naming by setting the `packageWithBaseClass
 
 All the generated tests extend that class. Over there, you can set up your Spring Context or whatever is necessary. In this case, you should use [Rest Assured MVC](https://github.com/rest-assured/rest-assured) to start the server side `FraudDetectionController`.
 
-See the [FraudBase.java example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-server/src/test/java/com/example/fraud/FraudBase.java).
+See the [FraudBase.java example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/producer).
 
 Now, if you run `./mvnw clean install`, you get something like the following output:
 
@@ -266,7 +266,7 @@ Note that, on the producer side, you are also doing TDD. The expectations are ex
 
 ### Write the Missing Implementation
 
-Because you know the expected input and expected output, you can write the missing implementation. See the [FraudDetectionController.java](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-server/src/main/java/com/example/fraud/FraudDetectionController.java) example.
+Because you know the expected input and expected output, you can write the missing implementation. See the [FraudDetectionController.java](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/producer) example.
 
 When you run `./mvnw clean install` again, the tests pass. Since the Stubborn Contract Verifier plugin adds the tests to the `generated-test-sources`, you can actually run those tests from your IDE.
 
@@ -300,6 +300,6 @@ $ git merge --no-ff contract-change-pr
 
 Now you can disable the offline work for Stubborn Contract Stub Runner and indicate where the repository with your stubs is located. At this moment, the stubs of the server side are automatically downloaded from Nexus/Artifactory. You can set the value of `stubsMode` to `REMOTE`.
 
-See the [application-test-repo.yaml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-client/src/test/resources/application-test-repo.yaml).
+See the [application-test-repo.yaml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/consumer).
 
 That's it. You have finished the tutorial.

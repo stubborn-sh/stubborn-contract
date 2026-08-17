@@ -4,7 +4,7 @@ In the polyglot world, there are languages that do not use binary storage, as Ar
 
 ## Repository Structure
 
-The repository would have to have the following setup (which you can checkout from [here](https://github.com/stubborn-sh/stubborn-samples/tree/main/contracts_git/)):
+The repository would have to have the following setup (see the [Stubborn Contract Samples repository](https://github.com/stubborn-sh/stubborn-samples) for working producer and consumer projects):
 
 ```
 .
@@ -163,7 +163,7 @@ With such a setup:
 
 ## Producer with Contracts Stored Locally
 
-Another option to use the SCM as the destination for stubs and contracts is to store the contracts locally, with the producer, and only push the contracts and the stubs to SCM. See [this project example](https://github.com/stubborn-sh/stubborn-samples/tree/main/producer_with_empty_git/) for the setup required to achieve this with Maven and Gradle.
+Another option to use the SCM as the destination for stubs and contracts is to store the contracts locally, with the producer, and only push the contracts and the stubs to SCM. See the [Stubborn Contract Samples repository](https://github.com/stubborn-sh/stubborn-samples) for the setup required to achieve this with Maven and Gradle.
 
 With such a setup:
 
