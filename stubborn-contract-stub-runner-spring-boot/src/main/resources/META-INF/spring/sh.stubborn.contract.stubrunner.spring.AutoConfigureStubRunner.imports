@@ -2,5 +2,7 @@ sh.stubborn.contract.stubrunner.spring.StubRunnerConfiguration
 sh.stubborn.contract.verifier.messaging.integration.ContractVerifierIntegrationConfiguration
 sh.stubborn.contract.verifier.messaging.camel.ContractVerifierCamelConfiguration
 sh.stubborn.contract.verifier.messaging.jms.ContractVerifierJmsConfiguration
+sh.stubborn.contract.verifier.messaging.kafka.ContractVerifierKafkaConfiguration
+sh.stubborn.contract.verifier.messaging.rabbit.ContractVerifierRabbitConfiguration
 sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration
 sh.stubborn.contract.verifier.messaging.avro.KafkaAvroContractVerifierConfiguration

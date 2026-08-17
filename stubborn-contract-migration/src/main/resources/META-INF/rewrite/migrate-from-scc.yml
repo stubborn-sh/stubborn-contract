@@ -232,7 +232,7 @@ tags:
 recipeList:
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: sh.stubborn.contract.stubrunner.junit.StubRunnerRule
-      newFullyQualifiedTypeName: sh.stubborn.contract.stubrunner.junit5.StubRunnerExtension
+      newFullyQualifiedTypeName: sh.stubborn.contract.stubrunner.junit.StubRunnerExtension
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: sh.stubborn.contract.stubrunner.junit.StubRunnerClassRule
-      newFullyQualifiedTypeName: sh.stubborn.contract.stubrunner.junit5.StubRunnerExtension
+      newFullyQualifiedTypeName: sh.stubborn.contract.stubrunner.junit.StubRunnerExtension

@@ -334,9 +334,9 @@ class ContractConfig {
 Contracts can also be defined in Kotlin:
 
 ```kotlin
-import sh.stubborn.contract.spec.Contract
+import sh.stubborn.contract.spec.ContractDsl.Companion.contract
 
-Contract.make {
+contract {
     request {
         method = GET
         url = url("/resource")
