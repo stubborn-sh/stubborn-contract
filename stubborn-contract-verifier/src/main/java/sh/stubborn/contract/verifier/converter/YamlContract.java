@@ -37,26 +37,42 @@ import sh.stubborn.contract.spec.Contract;
  */
 public class YamlContract {
 
+	/** Incoming HTTP request definition (HTTP contracts). */
 	public @Nullable Request request;
 
+	/** HTTP response to return (HTTP contracts). */
 	public @Nullable Response response;
 
+	/** Input message definition (messaging contracts). */
 	public @Nullable Input input;
 
+	/** Output message definition (messaging contracts). */
 	public @Nullable OutputMessage outputMessage;
 
+	/** Human-readable description of the scenario. */
 	public @Nullable String description;
 
+	/** Identifier used to trigger a messaging contract from a stub. */
 	public @Nullable String label;
 
+	/**
+	 * Name for the generated test method (auto-generated from the file name if absent).
+	 */
 	public @Nullable String name;
 
+	/** Stub priority — a lower number wins over a higher one. */
 	public @Nullable Integer priority;
 
+	/** Exclude from test generation; the stub is still generated. */
 	public boolean ignored;
 
+	/**
+	 * Mark as in-progress; generates a skipped/{@code @Disabled} test, the stub is still
+	 * usable.
+	 */
 	public boolean inProgress;
 
+	/** Free-form metadata map passed through to converters and tooling. */
 	public Map<String, Object> metadata = new HashMap<>();
 
 	@Override
@@ -90,26 +106,45 @@ public class YamlContract {
 	 */
 	public static class Request {
 
+		/**
+		 * HTTP method: {@code GET}, {@code POST}, {@code PUT}, {@code DELETE},
+		 * {@code PATCH}, {@code HEAD}, {@code OPTIONS}, {@code TRACE}.
+		 */
 		public @Nullable String method;
 
+		/**
+		 * Exact URL (including query string). For a regex URL use {@code matchers.url}.
+		 */
 		public @Nullable String url;
 
+		/** Exact path without the query string. */
 		public @Nullable String urlPath;
 
+		/** Query-parameter matchers. */
 		public Map<String, Object> queryParameters = new LinkedHashMap<String, Object>();
 
+		/** Request header matchers. */
 		public @Nullable Map<String, Object> headers = new LinkedHashMap<String, Object>();
 
+		/** Cookie matchers. */
 		public @Nullable Map<String, Object> cookies = new LinkedHashMap<String, Object>();
 
+		/** Expected request body (JSON, XML or plain string). */
 		public @Nullable Object body;
 
+		/** Read the request body from this classpath file. */
 		public @Nullable String bodyFromFile;
 
+		/** Read the request body as raw bytes from this classpath file. */
 		public @Nullable String bodyFromFileAsBytes;
 
+		/**
+		 * Per-element matchers ({@code url}, {@code body}, {@code headers},
+		 * {@code queryParameters}, {@code cookies}, {@code multipart}).
+		 */
 		public StubMatchers matchers = new StubMatchers();
 
+		/** Multipart request definition. */
 		public @Nullable Multipart multipart;
 
 		@Override
@@ -327,18 +362,31 @@ public class YamlContract {
 	 */
 	public static class BodyStubMatcher {
 
+		/** JSONPath expression the matcher applies to (e.g. {@code $.items[0].id}). */
 		public @Nullable String path;
 
+		/** Matcher type (see the matcher-type tables). */
 		public @Nullable StubMatcherType type;
 
+		/**
+		 * Value for the matcher (required for {@code by_regex}, {@code by_equality},
+		 * {@code by_command}).
+		 */
 		public @Nullable String value;
 
+		/** One of the predefined regex shortcuts instead of a raw {@code value}. */
 		public @Nullable PredefinedRegex predefined;
 
+		/** For array paths: minimum number of matching elements. */
 		public @Nullable Integer minOccurrence;
 
+		/** For array paths: maximum number of matching elements. */
 		public @Nullable Integer maxOccurrence;
 
+		/**
+		 * Coerce the matched value to this type (e.g. {@code as_integer},
+		 * {@code as_double}).
+		 */
 		public @Nullable RegexType regexType;
 
 		@Override
@@ -750,8 +798,36 @@ public class YamlContract {
 	 */
 	public enum PredefinedRegex {
 
-		only_alpha_unicode, number, any_double, any_boolean, ip_address, hostname, email, url, uuid, iso_date,
-		iso_date_time, iso_time, iso_8601_with_offset, non_empty, non_blank
+		/** Unicode letters only. */
+		only_alpha_unicode,
+		/** Integer or decimal number. */
+		number,
+		/** Decimal number. */
+		any_double,
+		/** {@code true} or {@code false}. */
+		any_boolean,
+		/** IPv4 address. */
+		ip_address,
+		/** Host name. */
+		hostname,
+		/** Email address. */
+		email,
+		/** URL. */
+		url,
+		/** UUID. */
+		uuid,
+		/** ISO-8601 date ({@code yyyy-MM-dd}). */
+		iso_date,
+		/** ISO-8601 date-time. */
+		iso_date_time,
+		/** ISO-8601 time. */
+		iso_time,
+		/** ISO-8601 date-time with a zone offset. */
+		iso_8601_with_offset,
+		/** Any non-empty string. */
+		non_empty,
+		/** Any non-blank string. */
+		non_blank
 
 	}
 
@@ -763,7 +839,20 @@ public class YamlContract {
 	 */
 	public enum StubMatcherType {
 
-		by_date, by_time, by_timestamp, by_regex, by_equality, by_type, by_null
+		/** ISO-8601 date. */
+		by_date,
+		/** ISO-8601 time. */
+		by_time,
+		/** ISO-8601 date-time. */
+		by_timestamp,
+		/** Value matches the {@code value} regex (or a {@code predefined} shortcut). */
+		by_regex,
+		/** Exact value match. */
+		by_equality,
+		/** Same JSON type (string, number, boolean, object, array). */
+		by_type,
+		/** Value is null. */
+		by_null
 
 	}
 
@@ -775,7 +864,22 @@ public class YamlContract {
 	 */
 	public enum TestMatcherType {
 
-		by_date, by_time, by_timestamp, by_regex, by_equality, by_type, by_command, by_null
+		/** ISO-8601 date. */
+		by_date,
+		/** ISO-8601 time. */
+		by_time,
+		/** ISO-8601 date-time. */
+		by_timestamp,
+		/** Value matches the {@code value} regex (or a {@code predefined} shortcut). */
+		by_regex,
+		/** Exact value match. */
+		by_equality,
+		/** Same JSON type. */
+		by_type,
+		/** Call {@code value} as a Java method to assert the value. */
+		by_command,
+		/** Value is null. */
+		by_null
 
 	}
 
@@ -787,22 +891,31 @@ public class YamlContract {
 	 */
 	public static class Response {
 
+		/** HTTP status code. */
 		public @Nullable Integer status;
 
+		/** Response headers. */
 		public @Nullable Map<String, Object> headers = new LinkedHashMap<String, Object>();
 
+		/** Response cookies. */
 		public @Nullable Map<String, Object> cookies = new LinkedHashMap<String, Object>();
 
+		/** Response body. */
 		public @Nullable Object body;
 
+		/** Read the body from this classpath file. */
 		public @Nullable String bodyFromFile;
 
+		/** Read the body as raw bytes from this classpath file. */
 		public @Nullable String bodyFromFileAsBytes;
 
+		/** Per-element matchers asserted in the generated consumer test. */
 		public TestMatchers matchers = new TestMatchers();
 
+		/** Respond asynchronously. */
 		public @Nullable Boolean async;
 
+		/** Artificial delay for the WireMock stub. */
 		public @Nullable Integer fixedDelayMilliseconds;
 
 		@Override
@@ -886,8 +999,10 @@ public class YamlContract {
 	 */
 	public static class Input {
 
+		/** Name of a method on the test base class that triggers the message. */
 		public @Nullable String triggeredBy;
 
+		/** Name of a method called after the message is processed (for assertions). */
 		public @Nullable String assertThat;
 
 		@Override
@@ -924,18 +1039,25 @@ public class YamlContract {
 	 */
 	public static class OutputMessage {
 
+		/** Destination (topic/queue/binding) the producer writes to. */
 		public @Nullable String sentTo;
 
+		/** Expected message headers. */
 		public @Nullable Map<String, Object> headers = new LinkedHashMap<String, Object>();
 
+		/** Expected message payload. */
 		public @Nullable Object body;
 
+		/** Read the payload from this classpath file. */
 		public @Nullable String bodyFromFile;
 
+		/** Read the payload as raw bytes from this classpath file. */
 		public @Nullable String bodyFromFileAsBytes;
 
+		/** Name of a method called after the message is sent (for assertions). */
 		public @Nullable String assertThat;
 
+		/** Per-element matchers for the message body/headers. */
 		public TestMatchers matchers = new TestMatchers();
 
 		@Override
