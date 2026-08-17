@@ -55,7 +55,7 @@ $ java -jar stubborn-contract-stub-runner-app/target/stubborn-contract-stub-runn
 The Spring Cloud CLI launcher requires the published fat JAR artifact. Until publishing resumes, the instructions below are for reference only.
 :::
 
-Starting from the `1.4.0.RELEASE` version of the [Spring Cloud CLI](https://cloud.spring.io/spring-cloud-cli) project, you can start Stub Runner Boot by running `spring cloud stubrunner`.
+Starting from the `1.4.0.RELEASE` version of the [Spring Cloud CLI](https://github.com/spring-attic/spring-cloud-cli) project, you can start Stub Runner Boot by running `spring cloud stubrunner`.
 
 To pass the configuration, you can create a `stubborn.contract.stubrunner.yml` file in the current working directory, in a subdirectory called `config`, or in `~/.spring-cloud`. The file could resemble the following example for running stubs installed locally:
 

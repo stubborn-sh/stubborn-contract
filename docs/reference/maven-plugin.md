@@ -59,7 +59,7 @@ Sometimes, regardless of the picked IDE, you can see that the `target/generated-
 
 ## Maven and REST Assured
 
-The `stubborn-contract-dependencies` BOM manages `io.rest-assured:rest-assured:6.0.0` so you do not need to specify the version in your project. Add the dependency without a `<version>`:
+The `stubborn-contract-dependencies` BOM manages `io.rest-assured:rest-assured:6.0.1` so you do not need to specify the version in your project. Add the dependency without a `<version>`:
 
 ```xml
 <dependency>
@@ -160,7 +160,7 @@ To change the default configuration, you can add a `configuration` section to th
 - `contractsDirectory`: Specifies a directory that contains contracts written with the Groovy DSL. The default directory is `/src/test/resources/contracts`.
 - `generatedTestSourcesDir`: Specifies the test source directory where tests generated from the Groovy DSL should be placed. By default, its value is `$buildDir/generated-test-sources/contracts`.
 - `generatedTestResourcesDir`: Specifies the test resource directory for resources used by the generated tests.
-- `testFramework`: Specifies the target test framework to be used. Currently, Spock, JUnit 4 (`TestFramework.JUNIT`), and JUnit 5 are supported, with JUnit 4 being the default framework.
+- `testFramework`: Target test framework. Supported values are `JUNIT5` (the default), `SPOCK`, `TESTNG` and `CUSTOM`.
 - `packageWithBaseClasses`: Defines a package where all the base classes reside. This setting takes precedence over `baseClassForTests`. The convention is such that, if you have a contract under (for example) `src/test/resources/contract/foo/bar/baz/` and set the value of the `packageWithBaseClasses` property to `com.example.base`, Stubborn Contract Verifier assumes that there is a `BarBazBase` class under the `com.example.base` package. In other words, the system takes the last two parts of the package, if they exist, and forms a class with `Base` as a suffix.
 - `baseClassMappings`: Specifies a list of base class mappings that provide `contractPackageRegex` (which is checked against the package where the contract is located) and `baseClassFQN` (which maps to the fully qualified name of the base class for the matched contract). This setting takes precedence over `packageWithBaseClasses` and `baseClassForTests`.
 - `contractsProperties`: A map that contains properties to be passed to Stubborn Contract components. Those properties might be used by (for example) built-in or custom Stub Downloaders.

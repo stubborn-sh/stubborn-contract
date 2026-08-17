@@ -67,10 +67,10 @@ Contract.make {
 | Field | Description |
 |---|---|
 | `url` | Exact URL string |
-| `urlPattern` | Regex pattern |
 | `urlPath` | Exact path (ignores query params) |
-| `urlPathPattern` | Regex path (ignores query params) |
-| `queryParameters` | Map of expected query parameters |
+
+For **regex** URL matching, add a `url` entry under `matchers` (`matchers.url`) rather than a
+separate URL field — see [Matchers](./yaml-contracts#matchers).
 
 ```yaml
 request:

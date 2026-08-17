@@ -136,7 +136,7 @@ You can add the additional snapshot repository to your `settings.gradle` to use 
 
 ## Add Stubs
 
-By default, Stubborn Contract Verifier looks for stubs in the `src/contractTest/resources/contracts` directory. For transitional purposes, the plugin will also look for contracts in `src/test/resources/contracts`, however, this directory is deprecated as of Stubborn Contract 3.0.0.
+By default, Stubborn Contract Verifier looks for stubs in the `src/contractTest/resources/contracts` directory. For transitional purposes, the plugin will also look for contracts in `src/test/resources/contracts`, however, this directory is deprecated.
 
 It should also be noted that with this new Gradle source set, you should also migrate any base classes used within your contract tests to `src/contractTest/{language}` where `{language}` should be replaced with Java or Groovy as needed for your purposes.
 
@@ -166,7 +166,7 @@ contracts {
     testMode = 'MockMvc'
     generatedTestJavaSourcesDir = project.file("${project.buildDir}/generated-test-sources/contractTest/java")
     generatedTestGroovySourcesDir = project.file("${project.buildDir}/generated-test-sources/contractTest/groovy")
-    generatedTestResourcesDir = project.file("${project.buildDir}/generated-test-resources/contracts")
+    generatedTestResourcesDir = project.file("${project.buildDir}/generated-test-resources/contractTest")
     contractsDslDir = project.file("${project.projectDir}/src/contractTest/resources/contracts")
     basePackageForTests = 'sh.stubborn.contract.verifier.tests'
     stubsOutputDir = project.file("${project.buildDir}/stubs")
@@ -226,7 +226,7 @@ verifierStubsJar {
 }
 ```
 
-As of 3.0.0, the default publication has been disabled. As a result, you are able to create any named jar and publish it as you would normally have done via Gradle configuration options.
+The default publication is disabled. As a result, you are able to create any named jar and publish it as you would normally have done via Gradle configuration options.
 
 ## Configuration Options
 
@@ -243,7 +243,7 @@ As of 3.0.0, the default publication has been disabled. As a result, you are abl
 - `generatedTestGroovySourcesDir`: Specifies the test source directory where Groovy/Spock tests generated from the Groovy DSL should be placed. By default, it's value is `$buildDir/generated-test-sources/contractTest/groovy`.
 - `generatedTestResourcesDir`: Specifies the test resource directory where resources used by the tests generated from the Groovy DSL should be placed. By default, its value is `$buildDir/generated-test-resources/contractTest`.
 - `stubsOutputDir`: Specifies the directory where the generated WireMock stubs from the Groovy DSL should be placed.
-- `testFramework`: Specifies the target test framework to be used. Currently, Spock, JUnit 4 (`TestFramework.JUNIT`) and JUnit 5 are supported, with JUnit 4 being the default framework.
+- `testFramework`: Target test framework. Supported values are `JUNIT5` (the default), `SPOCK`, `TESTNG` and `CUSTOM`.
 - `contractsProperties`: A map that contains properties to be passed to Stubborn Contract components.
 - `sourceSet`: Source set where the contracts are stored. If not provided will assume `contractTest`.
 - `contractDependency`: Specifies the Dependency that provides `groupid:artifactid:version:classifier` coordinates.
@@ -260,7 +260,6 @@ There is also the `contractRepository { ... }` closure that contains the followi
 - `password`: The repository password
 - `proxyPort`: The port of the proxy
 - `proxyHost`: The host of the proxy
-- `cacheDownloadedContracts`: If set to `true`, caches the folder where non-snapshot contract artifacts got downloaded. Defaults to `true`.
 
 You can also turn on the following experimental features in the plugin:
 
@@ -271,7 +270,7 @@ You can also turn on the following experimental features in the plugin:
 
 When using Stubborn Contract Verifier in MockMvc (the default), you need to create a base specification for all generated acceptance tests. In this class, you need to point to an endpoint, which should be verified.
 
-See the [BaseMockMvcSpec.groovy example](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-contract-gradle-plugin/src/test/resources/functionalTest/bootSimple/src/test/groovy/org/springframework/cloud/contract/verifier/twitter/places/BaseMockMvcSpec.groovy).
+See the [BaseMockMvcSpec.groovy example](https://github.com/stubborn-sh/stubborn-contract/tree/main/stubborn-contract-extras/stubborn-contract-gradle-plugin/src/test/resources/functionalTest/bootSimple/src/test/groovy/sh/stubborn/contract/verifier/twitter/places/BaseMockMvcSpec.groovy).
 
 If you use `Explicit` mode, you can use a base class to initialize the whole tested application, as you might see in regular integration tests. If you use the `JAXRSCLIENT` mode, this base class should also contain a `protected WebTarget webTarget` field. Right now, the only option to test the JAX-RS API is to start a web server.
 
@@ -323,14 +322,14 @@ publishing {
 }
 ```
 
-Since 3.0.0, the internal stubs publication has been deprecated and disabled by default. It is recommended to include the `verifierStubsJar` with one of your own publications.
+The internal stubs publication is deprecated and disabled by default. It is recommended to include the `verifierStubsJar` with one of your own publications.
 
 ## Pushing Stubs to SCM
 
-If you use the SCM repository to keep the contracts and stubs, you might want to automate the step of pushing stubs to the repository. To do that, you can call the `pushStubsToScm` task:
+If you use the SCM repository to keep the contracts and stubs, you might want to automate the step of pushing stubs to the repository. To do that, you can call the `publishStubsToScm` task:
 
 ```bash
-$ ./gradlew pushStubsToScm
+$ ./gradlew publishStubsToScm
 ```
 
 You can find all possible configuration options in the [Git storage how-to guide](../howto/git-storage). You can pass them either through the `contractsProperties` field (for example, `contracts { contractsProperties = [foo:"bar"] }`), through the `contractsProperties` method (for example, `contracts { contractsProperties([foo:"bar"]) }`), or through a system property or an environment variable.

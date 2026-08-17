@@ -36,7 +36,7 @@ sequenceDiagram
 
 To start working with Stubborn Contract, you can add files with REST or messaging contracts expressed in either Groovy DSL or YAML to the contracts directory, which is set by the `contractsDslDir` property. By default, it is `$rootDir/src/test/resources/contracts`.
 
-Then add the Stubborn Contract Verifier dependency and plugin to your build file. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-server/pom.xml).
+Then add the Stubborn Contract Verifier dependency and plugin to your build file. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/producer/pom.xml).
 
 The following listing shows how to add the plugin to the build/plugins section:
 
@@ -85,7 +85,7 @@ Once the implementation and the test base class are in place, the tests pass, an
 
 You can use Stubborn Contract Stub Runner in the integration tests to get a running WireMock instance or messaging route that simulates the actual service.
 
-To do so, add the dependency to Stubborn Contract Stub Runner. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-client/pom.xml).
+To do so, add the dependency to Stubborn Contract Stub Runner. See the [full pom.xml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/consumer/pom.xml).
 
 You can get the producer-side stubs installed in your Maven repository in either of two ways:
 
@@ -100,7 +100,7 @@ $ ./mvnw clean install -DskipTests
 The tests are being skipped because the producer-side contract implementation is not in place yet, so the automatically generated contract tests fail.
 :::
 
-- By getting already-existing producer service stubs from a remote repository. To do so, pass the stub artifact IDs and artifact repository URL as Stubborn Contract Stub Runner properties. See the [application-test-repo.yaml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/standalone/dsl/http-client/src/test/resources/application-test-repo.yaml).
+- By getting already-existing producer service stubs from a remote repository. To do so, pass the stub artifact IDs and artifact repository URL as Stubborn Contract Stub Runner properties. See the [application-test-repo.yaml example](https://github.com/stubborn-sh/stubborn-samples/tree/main/sample-http/consumer).
 
 Now you can annotate your test class with `@AutoConfigureStubRunner`. In the annotation, provide the `group-id` and `artifact-id` values for Stubborn Contract Stub Runner to run the collaborators' stubs for you:
 

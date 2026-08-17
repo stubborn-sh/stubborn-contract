@@ -144,7 +144,7 @@ Whenever an HTTPS port is found, it takes precedence over the HTTP port.
 
 ### HTTP Stubs
 
-Stubs are defined in JSON documents, whose syntax is defined in the [WireMock documentation](http://wiremock.org/stubbing.html).
+Stubs are defined in JSON documents, whose syntax is defined in the [WireMock documentation](https://wiremock.org/docs/stubbing/).
 
 The following example defines a stub in JSON:
 
