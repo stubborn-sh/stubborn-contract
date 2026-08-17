@@ -1,16 +1,15 @@
 # WireMock Helpers
 
 Stubborn Contract uses [WireMock](https://wiremock.org/) as the fake HTTP server behind every
-generated stub. The WireMock support is split across three modules, one per
+generated stub. The WireMock support is split across two modules, one per
 [tier](./modules), so you pull in only as much Spring as you actually use.
 
 | Module | Tier | What it gives you |
 |--------|------|-------------------|
 | `stubborn-contract-wiremock` | Core (zero Spring) | WireMock integration core; the custom request matchers that back generated stubs. |
 | `stubborn-contract-wiremock-spring` | `-spring` | Spring MVC / RestTemplate / WebTestClient helpers and REST Docs snippet generation. |
-| `stubborn-contract-wiremock-spring-boot` | `-spring-boot` | Spring Boot configuration (`WireMockRestTemplateConfiguration`). |
 
-All three inherit their version from the [BOM](../getting-started/installation), so declare
+Both inherit their version from the [BOM](../getting-started/installation), so declare
 them without a `<version>`.
 
 ## The custom matcher (and SCC compatibility)
@@ -41,10 +40,13 @@ WireMock server into Spring-based tests, including:
 These are the same helpers that shipped in `spring-cloud-contract-wiremock`, re-homed under the
 `sh.stubborn.contract.wiremock` package. When migrating, update the import prefix only.
 
-## Spring Boot configuration (`stubborn-contract-wiremock-spring-boot`)
+## Spring Boot tests
 
-The `-spring-boot` module adds `WireMockRestTemplateConfiguration` for Spring Boot tests that
-need a `RestTemplate` pre-wired against WireMock.
+Stubborn Contract does not ship its own Spring Boot WireMock auto-configuration. For standing up
+a WireMock server inside a Spring Boot test (lifecycle, port injection, property wiring), use
+[WireMock's own Spring Boot integration](https://wiremock.org/docs/) (`@EnableWireMock`). The
+`-spring` helpers above cover the RestTemplate / WebTestClient / REST Docs cases; WireMock's
+Spring Boot integration covers the server-per-test wiring.
 
 ## Debugging stubs
 
@@ -55,7 +57,7 @@ mappings were considered and why they were rejected. See
 
 ## See also
 
-- [Modules & Architecture](./modules) — where these three modules sit in the tier model
+- [Modules & Architecture](./modules) — where these two modules sit in the tier model
 - [Stub Runner Reference](./stub-runner) — how stubs get downloaded and served
 - [Customization](./customization) — customizing generated WireMock mappings
 - [Debug WireMock](../howto/debug-wiremock)

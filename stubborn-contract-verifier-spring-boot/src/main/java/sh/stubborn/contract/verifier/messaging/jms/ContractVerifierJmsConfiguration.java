@@ -16,19 +16,16 @@
 
 package sh.stubborn.contract.verifier.messaging.jms;
 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import jakarta.jms.Message;
-import org.jspecify.annotations.Nullable;
-import sh.stubborn.contract.verifier.converter.YamlContract;
+import jakarta.jms.ConnectionFactory;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
 import sh.stubborn.contract.verifier.messaging.integration.ContractVerifierIntegrationConfiguration;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
+import sh.stubborn.messaging.jms.JmsMessage;
+import sh.stubborn.messaging.jms.StubbornJmsMessageVerifierReceiver;
+import sh.stubborn.messaging.jms.StubbornJmsMessageVerifierSender;
 
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -38,61 +35,45 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
 
 /**
- * Configuration that registers JMS messaging beans for contract verification.
+ * Spring-on-top wiring for the Spring-free JMS sender and receiver. It exposes them as the
+ * messaging {@code MessageVerifierSender}/{@code MessageVerifierReceiver} beans and a
+ * {@link ContractVerifierMessaging} bean that a {@code @AutoConfigureMessageVerifier} test
+ * picks up. Sender and receiver are registered as independent beans, each guarded by its
+ * own {@code @ConditionalOnMissingBean}, so either can be overridden without disturbing the
+ * other — matching the Kafka, Rabbit, Camel and Spring Integration backends.
+ *
+ * <p>
+ * The broker is taken from the application's {@link ConnectionFactory} (which Spring Boot
+ * autoconfigures from {@code spring.artemis.*}/{@code spring.activemq.*} or an embedded
+ * broker), so the same test setup used with Spring JMS keeps working — only the underlying
+ * verifiers are now the Spring-free, plain {@code jakarta.jms} implementations.
  *
  * @author Marcin Grzejszczak
  * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(JmsTemplate.class)
+@ConditionalOnClass({ JmsTemplate.class, StubbornJmsMessageVerifierSender.class })
 @ConditionalOnProperty(name = "stubborn.contract.stubrunner.jms.enabled", havingValue = "true", matchIfMissing = true)
 @AutoConfigureBefore({ ContractVerifierIntegrationConfiguration.class, NoOpContractVerifierAutoConfiguration.class })
 public class ContractVerifierJmsConfiguration {
 
-	@Bean
+	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(MessageVerifierSender.class)
-	MessageVerifierSender<Message> contractVerifierJmsMessageSender(ObjectProvider<JmsTemplate> jmsTemplateProvider) {
-		JmsTemplate jmsTemplate = jmsTemplateProvider.getIfAvailable(JmsTemplate::new);
-		JmsStubMessages jmsStubMessages = new JmsStubMessages(jmsTemplate);
-		return new MessageVerifierSender<>() {
-			@Override
-			public void send(Message message, String destination, @Nullable YamlContract contract) {
-				jmsStubMessages.send(message, destination, contract);
-			}
-
-			@Override
-			public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
-					@Nullable YamlContract contract) {
-				jmsStubMessages.send(payload, headers, destination, contract);
-			}
-		};
+	StubbornJmsMessageVerifierSender stubbornJmsMessageVerifierSender(ConnectionFactory connectionFactory) {
+		return new StubbornJmsMessageVerifierSender(connectionFactory);
 	}
 
-	@Bean
+	@Bean(destroyMethod = "close")
 	@ConditionalOnMissingBean(MessageVerifierReceiver.class)
-	MessageVerifierReceiver<Message> contractVerifierJmsMessageReceiver(
-			ObjectProvider<JmsTemplate> jmsTemplateProvider) {
-		JmsTemplate jmsTemplate = jmsTemplateProvider.getIfAvailable(JmsTemplate::new);
-		JmsStubMessages jmsStubMessages = new JmsStubMessages(jmsTemplate);
-		return new MessageVerifierReceiver<>() {
-			@Override
-			public @Nullable Message receive(String destination, long timeout, TimeUnit timeUnit,
-					@Nullable YamlContract contract) {
-				return jmsStubMessages.receive(destination, timeout, timeUnit, contract);
-			}
-
-			@Override
-			public @Nullable Message receive(String destination, @Nullable YamlContract contract) {
-				return jmsStubMessages.receive(destination, contract);
-			}
-		};
+	StubbornJmsMessageVerifierReceiver stubbornJmsMessageVerifierReceiver(ConnectionFactory connectionFactory) {
+		return new StubbornJmsMessageVerifierReceiver(connectionFactory);
 	}
 
 	@Bean
 	@ConditionalOnMissingBean(ContractVerifierMessaging.class)
-	ContractVerifierMessaging<Message> contractVerifierJmsMessaging(MessageVerifierSender<Message> sender,
-			MessageVerifierReceiver<Message> receiver) {
-		return new ContractVerifierJmsHelper(sender, receiver);
+	ContractVerifierMessaging<JmsMessage> contractVerifierJmsMessaging(MessageVerifierSender<JmsMessage> sender,
+			MessageVerifierReceiver<JmsMessage> receiver) {
+		return new ContractVerifierMessaging<>(sender, receiver);
 	}
 
 }

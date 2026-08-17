@@ -99,7 +99,6 @@ Adds `spring-boot-autoconfigure` and the concrete messaging backends.
 |--------|---------|
 | `stubborn-contract-verifier-spring-boot` | `@AutoConfigureMessageVerifier` and all messaging backends — `integration`, `jms`, `camel`, `avro` (plus a `noop` backend). |
 | `stubborn-contract-stub-runner-spring-boot` | `@AutoConfigureStubRunner`, port injection, stub-runner auto-configuration. |
-| `stubborn-contract-wiremock-spring-boot` | Spring Boot WireMock auto-configuration (`WireMockRestTemplateConfiguration`). |
 
 ## Spring Cloud tier (`-spring-cloud`)
 
