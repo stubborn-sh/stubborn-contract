@@ -246,8 +246,8 @@ class DocumentationReferenceTests {
 	private List<Path> sourceFiles() {
 		return walk(this.repoRoot, (path) -> {
 			String s = path.toString();
-			return (s.endsWith(".java") || s.endsWith(".groovy")) && s.contains("/src/main/") && !s.contains("/target/")
-					&& !s.contains("/.claude/");
+			return (s.endsWith(".java") || s.endsWith(".groovy") || s.endsWith(".kt")) && s.contains("/src/main/")
+					&& !s.contains("/target/") && !s.contains("/.claude/");
 		});
 	}
 
