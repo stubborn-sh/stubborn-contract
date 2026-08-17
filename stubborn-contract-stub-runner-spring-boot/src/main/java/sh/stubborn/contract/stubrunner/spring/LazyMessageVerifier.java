@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
@@ -37,6 +39,8 @@ import org.springframework.beans.factory.BeanFactory;
 @SuppressWarnings("unchecked")
 class LazyMessageVerifier implements MessageVerifierSender<Object>, MessageVerifierReceiver<Object> {
 
+	private static final Logger log = LoggerFactory.getLogger(LazyMessageVerifier.class);
+
 	private @Nullable MessageVerifierSender<Object> messageVerifierSender;
 
 	private @Nullable MessageVerifierReceiver<Object> messageVerifierReceiver;
@@ -50,8 +54,14 @@ class LazyMessageVerifier implements MessageVerifierSender<Object>, MessageVerif
 	private MessageVerifierSender<Object> messageVerifierSender() {
 		MessageVerifierSender<Object> sender = this.messageVerifierSender;
 		if (sender == null) {
-			sender = this.beanFactory.getBeanProvider(MessageVerifierSender.class)
-				.getIfAvailable(NoOpStubMessages::new);
+			sender = this.beanFactory.getBeanProvider(MessageVerifierSender.class).getIfAvailable(() -> {
+				log.warn("No MessageVerifierSender bean is available — falling back to a no-op sender. "
+						+ "Messaging contracts triggered through StubRunner will NOT be published to any broker. "
+						+ "Put the relevant messaging backend on the test classpath (e.g. "
+						+ "stubborn-contract-messaging-kafka/-rabbit/-jms together with the matching Spring "
+						+ "messaging library and a KafkaTemplate/ConnectionFactory bean).");
+				return new NoOpStubMessages<>();
+			});
 			this.messageVerifierSender = sender;
 		}
 		return sender;
@@ -60,8 +70,14 @@ class LazyMessageVerifier implements MessageVerifierSender<Object>, MessageVerif
 	private MessageVerifierReceiver<Object> messageVerifierReceiver() {
 		MessageVerifierReceiver<Object> receiver = this.messageVerifierReceiver;
 		if (receiver == null) {
-			receiver = this.beanFactory.getBeanProvider(MessageVerifierReceiver.class)
-				.getIfAvailable(NoOpStubMessages::new);
+			receiver = this.beanFactory.getBeanProvider(MessageVerifierReceiver.class).getIfAvailable(() -> {
+				log.warn("No MessageVerifierReceiver bean is available — falling back to a no-op receiver. "
+						+ "Messaging contracts verified through StubRunner will receive nothing (null). "
+						+ "Put the relevant messaging backend on the test classpath (e.g. "
+						+ "stubborn-contract-messaging-kafka/-rabbit/-jms together with the matching Spring "
+						+ "messaging library and a KafkaTemplate/ConnectionFactory bean).");
+				return new NoOpStubMessages<>();
+			});
 			this.messageVerifierReceiver = receiver;
 		}
 		return receiver;

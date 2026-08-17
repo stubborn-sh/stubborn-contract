@@ -31,7 +31,7 @@ class DropJUnit4SupportTests implements RewriteTest {
 					package sh.stubborn.contract.stubrunner.junit;
 					public class StubRunnerRule {}
 					""", """
-					package sh.stubborn.contract.stubrunner.junit5;
+					package sh.stubborn.contract.stubrunner.junit;
 					public class StubRunnerExtension {}
 					"""));
 	}
@@ -47,7 +47,7 @@ class DropJUnit4SupportTests implements RewriteTest {
 
 				}
 				""", """
-				import sh.stubborn.contract.stubrunner.junit5.StubRunnerExtension;
+				import sh.stubborn.contract.stubrunner.junit.StubRunnerExtension;
 
 				class MyTest {
 
