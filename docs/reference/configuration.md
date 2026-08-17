@@ -36,7 +36,7 @@ These are the key configuration properties for Stubborn Contract Verifier (Maven
 | Property | Default | Description |
 |----------|---------|-------------|
 | `testMode` | `MockMvc` | Test mode: `MockMvc`, `WebTestClient`, `JaxRsClient`, or `Explicit` |
-| `testFramework` | `JUNIT` | Test framework: `JUNIT` (JUnit 4), `JUNIT5`, or `SPOCK` |
+| `testFramework` | `JUNIT5` | Test framework: `JUNIT5`, `SPOCK`, `TESTNG`, or `CUSTOM` |
 | `basePackageForTests` | `sh.stubborn.contract.verifier.tests` | Base package for all generated tests |
 | `baseClassForTests` | — | Base class for all generated tests |
 | `packageWithBaseClasses` | — | Package where all base classes reside |
@@ -78,5 +78,5 @@ For the complete list of auto-configured properties, see the auto-generated conf
 Common property prefixes:
 
 - `stubborn.contract.stubrunner.*` — Stub Runner configuration (canonical)
-- `stubborn.contract.verifier.*` — Verifier HTTP port configuration
+- `stubborn.contract.verifier.http.port` / `.minPort` / `.maxPort` — Maven `run` goal system properties (not Spring config)
 - `spring.cloud.contract.stubrunner.*` — deprecated alias (bridges to canonical via `StubRunnerPropertiesMigrator`)

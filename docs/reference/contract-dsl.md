@@ -258,13 +258,7 @@ For messaging, a contract defines:
 Contract.make {
     label 'some_label'
     input {
-        messageFrom 'input.topic'
-        messageBody([
-            bookName: 'foo'
-        ])
-        messageHeaders {
-            header 'BOOK-NAME': 'foo'
-        }
+        triggeredBy('bookReturnedTriggered()')
     }
     outputMessage {
         sentTo 'output.topic'

@@ -45,22 +45,29 @@ outputMessage:
     contentType: application/json
 ```
 
-## Input-only contract (consumer-side)
+## The `input` block
 
-When testing a consumer that processes incoming messages, define what the consumer expects to receive:
+A messaging contract is **trigger → output**: the `input` block names the trigger, and
+`outputMessage` describes what the producer publishes as a result. `input` supports two fields
+(see the [schema](./yaml-contracts#input-object)):
 
 ```yaml
 label: processPayment
 input:
-  messageFrom: payment-events
-  messageBody:
+  triggeredBy: sendPayment()   # a method on the test base class that makes the app publish
+outputMessage:
+  sentTo: payments-out
+  body:
     eventType: PAYMENT_COMPLETED
     amount: 99.99
-  messageHeaders:
+  headers:
     contentType: application/json
 ```
 
-No `outputMessage` needed — the consumer's behaviour (e.g., saving to a database) is verified by the consumer's own test.
+`triggeredBy` calls a method on the base class to provoke the producer; `assertThat` optionally
+calls a method afterwards. A consumer that merely *reads* a message is verified by running its own
+test against the stub-triggered message (see the stub-runner messaging guides), not by a separate
+input-message contract.
 
 ## Body and header matchers
 
@@ -118,7 +125,7 @@ public abstract class MessagingBase {
 
 ## Spring Cloud Stream
 
-With Spring Cloud Stream, the `sentTo` / `messageFrom` values map to **binding names** (not topic names):
+With Spring Cloud Stream, the `sentTo` value maps to a **binding name** (not a topic name):
 
 ```yaml
 outputMessage:

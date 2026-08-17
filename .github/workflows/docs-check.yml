@@ -1,0 +1,40 @@
+name: Docs Check
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    name: Docs alignment & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install
+        run: npm install --no-audit --no-fund
+
+      # Regenerate the code-derived reference tables and fail if they differ from what's
+      # committed (i.e. the Java source changed but the docs weren't regenerated), or if the
+      # descriptions are out of sync with the model, or a reference doc/example uses a schema
+      # name that does not exist.
+      - name: Reference tables are in sync with the code
+        run: npm run docs:gen:check
+
+      # Builds the site: validates every <!--@include--> partial and every <<< snippet import
+      # path resolves, and runs the drift guard again.
+      - name: Build docs
+        run: npm run docs:build
+
+      - name: Internal link check
+        run: bash scripts/check-docs-links.sh
