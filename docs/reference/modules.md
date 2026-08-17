@@ -44,7 +44,9 @@ flowchart TB
 Keeping the core free of Spring means the contract DSL, the test generator, the stub runner
 and the assertion helpers can be embedded in non-Spring builds (plain JUnit, Gradle, the Maven
 plugin, even non-JVM tooling via the JSON/YAML contract format). Spring is a convenience layer
-added on top, never a hard requirement of the engine.
+added on top, never a hard requirement of the engine. The
+[Quarkus tier](#quarkus-tier-framework-agnostic) is this principle in action — a first-class
+consumer integration that sits directly on the core and never touches Spring.
 :::
 
 ## Core tier (zero Spring)
@@ -105,6 +107,19 @@ Adds `spring-boot-autoconfigure` and the concrete messaging backends.
 |--------|---------|
 | `stubborn-contract-verifier-spring-cloud` | Spring Cloud Stream messaging verifier. |
 | `stubborn-contract-stub-runner-spring-cloud` | Eureka / Consul / Zookeeper service discovery for the stub runner. |
+
+## Quarkus tier (framework-agnostic)
+
+The Spring tiers above are one way to sit on top of the zero-Spring core — they are not the
+only one. The **Quarkus tier** is a parallel, framework-agnostic set of adapters that depend
+on the core directly (never on any `-spring*` module), so a Quarkus application can consume
+stubs inside a `@QuarkusTest` without pulling in Spring. See the
+[Quarkus integration guide](../integrations/quarkus) for usage.
+
+| Module | Purpose |
+|--------|---------|
+| `stubborn-contract-stub-runner-quarkus` | CDI-free Quarkus stub-runner integration. A `QuarkusTestResourceLifecycleManager` (`StubRunnerResource`) boots the WireMock-backed HTTP stubs and injects a `StubFinder` / `BatchStubRunner`, reusing 100% of the Spring-free stub-runner core. |
+| `stubborn-contract-stub-runner-messaging-quarkus` | Adds **messaging** on top of the HTTP resource (`MessagingStubRunnerResource`). A triggered stub publishes its `outputMessage` to a real broker — Kafka or RabbitMQ (`transport` = `kafka` / `rabbit`, plus a `brokerAddress`) — through the Spring-free messaging building blocks. |
 
 ## Infrastructure & tooling
 

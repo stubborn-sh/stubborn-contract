@@ -145,8 +145,8 @@ To change the default configuration, you can add a `configuration` section to th
         </execution>
     </executions>
     <configuration>
-        <basePackageForTests>org.springframework.cloud.verifier.twitter.place</basePackageForTests>
-        <baseClassForTests>org.springframework.cloud.verifier.twitter.place.BaseMockMvcSpec</baseClassForTests>
+        <basePackageForTests>com.example.contracts</basePackageForTests>
+        <baseClassForTests>com.example.contracts.BaseMockMvcSpec</baseClassForTests>
     </configuration>
 </plugin>
 ```
@@ -337,7 +337,7 @@ If you use the SCM (Source Control Management) repository to keep the contracts 
     <extensions>true</extensions>
     <configuration>
         <!-- We want to pick contracts from a Git repository -->
-        <contractsRepositoryUrl>git://https://github.com/spring-cloud-samples/spring-cloud-contract-nodejs-contracts-git.git</contractsRepositoryUrl>
+        <contractsRepositoryUrl>git://https://github.com/your-org/contracts-git.git</contractsRepositoryUrl>
 
         <!-- We reuse the contract dependency section to set up the path
         to the folder that contains the contract definitions. In our case the

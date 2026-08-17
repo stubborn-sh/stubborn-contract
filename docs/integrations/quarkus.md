@@ -3,7 +3,10 @@
 `stubborn-contract-stub-runner-quarkus` lets a **Quarkus** application run Stubborn
 Contract consumer stubs inside a `@QuarkusTest`, without pulling in Spring. It is a thin
 adapter over the framework-agnostic stub runner core (`BatchStubRunner`) wired through
-Quarkus' own `QuarkusTestResourceLifecycleManager` lifecycle.
+Quarkus' own `QuarkusTestResourceLifecycleManager` lifecycle. A companion module,
+`stubborn-contract-stub-runner-messaging-quarkus`, extends it so a triggered stub can
+publish its message to a real Kafka or RabbitMQ broker (see
+[Messaging over a real broker](#messaging-over-a-real-broker)).
 
 ## Motivation
 
@@ -19,7 +22,7 @@ provides it, reusing 100% of the download/serve/close machinery.
 |------------|--------|------|
 | Consumer stub runner (HTTP) | **YES** | Full reuse of `BatchStubRunner`; CLASSPATH / LOCAL / REMOTE modes, port publishing, `StubFinder` injection. |
 | Producer HTTP verification | **partial** | Not provided by this module. Producers verify contracts with the generated tests run in `TestMode.EXPLICIT` against a running Quarkus app + RestAssured (see below). |
-| Messaging (Kafka/JMS/AMQP…) | **not-yet** | The core messaging abstractions are Spring-free, but no Quarkus messaging backend is wired. Consumer HTTP stubbing only for now. |
+| Messaging (Kafka / RabbitMQ) | **YES** | Via `stubborn-contract-stub-runner-messaging-quarkus`. A triggered stub publishes its `outputMessage` to a real broker through the Spring-free messaging building blocks. See [below](#messaging-over-a-real-broker). |
 
 ### Producer-side HTTP verification (partial)
 
@@ -127,16 +130,68 @@ class ConsumerStubRunnerTest {
 }
 ```
 
+## Messaging over a real broker
+
+`stubborn-contract-stub-runner-messaging-quarkus` adds messaging on top of the HTTP
+resource. Its `MessagingStubRunnerResource` **extends** `StubRunnerResource`, so it accepts
+every init arg above plus two more, and when a test calls `trigger("<label>")` the matching
+contract's `outputMessage` is published to a real broker.
+
+```xml
+<dependency>
+    <groupId>sh.stubborn</groupId>
+    <artifactId>stubborn-contract-stub-runner-messaging-quarkus</artifactId>
+    <version>${stubborn-contract.version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
+| Init arg | Required | Meaning |
+|----------|----------|---------|
+| `transport` | yes (for messaging) | `kafka` or `rabbit`. When unset, the resource behaves as HTTP-only. |
+| `brokerAddress` | yes when `transport` is set | Kafka `bootstrap.servers` (e.g. `localhost:9092`) or an AMQP URI (e.g. `amqp://localhost:5672`). |
+
+Under the hood the resource builds a `StubbornKafkaMessageVerifierSender` or
+`StubbornRabbitMessageVerifierSender` from those args and hands it to the stub runner; the
+sender is closed when the resource stops. Because a Testcontainers broker's address is only
+known at runtime (and `@ResourceArg` values are compile-time literals), the common pattern
+is a small subclass of `MessagingStubRunnerResource` that starts the container in `start()`
+and supplies the `brokerAddress` itself, while also pointing the application-under-test's
+consumer at the same broker.
+
+```java
+@QuarkusTest
+@QuarkusTestResource(value = KafkaStubRunnerResource.class, // your subclass owning the container
+    initArgs = {
+        @ResourceArg(name = "ids", value = "com.example:producer:+:stubs"),
+        @ResourceArg(name = "stubsMode", value = "CLASSPATH"),
+        @ResourceArg(name = "transport", value = "kafka")
+        // brokerAddress is supplied at runtime by the subclass
+    })
+class MessagingConsumerTest {
+
+    @Inject
+    VerificationListener listener; // your app bean that consumes the topic
+
+    StubFinder stubFinder; // populated by StubRunnerResource#inject
+
+    @Test
+    void receivesTheTriggeredMessage() {
+        this.stubFinder.trigger("verification_received"); // publishes to the real broker
+        Awaitility.await().atMost(Duration.ofSeconds(10))
+            .untilAsserted(() -> assertThat(this.listener.hasReceived("foo")).isTrue());
+    }
+}
+```
+
 ## Limitations
 
-- **Consumer HTTP only.** No messaging backend is wired yet; contract messaging (Kafka,
-  JMS, AMQP) is a follow-up.
 - **No Quarkus Dev Services / extension.** This is a plain test-resource, not a Quarkus
   extension — it runs in JVM test mode. It has not been validated under native-image
   test runs.
-- **The `quarkus-bom` is intentionally not imported** by the module. It re-manages
+- **The `quarkus-bom` is intentionally not imported** by the modules. It re-manages
   transitive versions (notably downgrading `jackson-annotations` below what the stub
-  runner's embedded WireMock needs). The module pins only the single Quarkus interface it
-  compiles against.
-- **No starter / sample yet.** A `stubborn-contract-starter-stub-runner-quarkus` and a
-  runnable sample under `stubborn-samples` are natural follow-ups.
+  runner's embedded WireMock needs). The modules pin only the single Quarkus interface they
+  compile against, so a consumer imports `quarkus-bom` itself and version-pins the adapter.
+- **No starter yet.** A `stubborn-contract-starter-stub-runner-quarkus` is a natural
+  follow-up.
