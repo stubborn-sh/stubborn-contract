@@ -35,18 +35,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
 
 /**
- * Spring-on-top wiring for the Spring-free JMS sender and receiver. It exposes them as the
- * messaging {@code MessageVerifierSender}/{@code MessageVerifierReceiver} beans and a
- * {@link ContractVerifierMessaging} bean that a {@code @AutoConfigureMessageVerifier} test
- * picks up. Sender and receiver are registered as independent beans, each guarded by its
- * own {@code @ConditionalOnMissingBean}, so either can be overridden without disturbing the
- * other — matching the Kafka, Rabbit, Camel and Spring Integration backends.
+ * Spring-on-top wiring for the Spring-free JMS sender and receiver. It exposes them as
+ * the messaging {@code MessageVerifierSender}/{@code MessageVerifierReceiver} beans and a
+ * {@link ContractVerifierMessaging} bean that a {@code @AutoConfigureMessageVerifier}
+ * test picks up. Sender and receiver are registered as independent beans, each guarded by
+ * its own {@code @ConditionalOnMissingBean}, so either can be overridden without
+ * disturbing the other — matching the Kafka, Rabbit, Camel and Spring Integration
+ * backends.
  *
  * <p>
  * The broker is taken from the application's {@link ConnectionFactory} (which Spring Boot
  * autoconfigures from {@code spring.artemis.*}/{@code spring.activemq.*} or an embedded
- * broker), so the same test setup used with Spring JMS keeps working — only the underlying
- * verifiers are now the Spring-free, plain {@code jakarta.jms} implementations.
+ * broker), so the same test setup used with Spring JMS keeps working — only the
+ * underlying verifiers are now the Spring-free, plain {@code jakarta.jms}
+ * implementations.
  *
  * @author Marcin Grzejszczak
  * @since 1.0.0
