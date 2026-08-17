@@ -62,6 +62,7 @@ cd ../consumer && ./mvnw test
 |--------|-------------|
 | `stubborn-contract-verifier-spring-boot` | AutoConfigureMessageVerifier, all messaging backends (Integration, JMS, Camel, Avro) |
 | `stubborn-contract-stub-runner-spring-boot` | AutoConfigureStubRunner, port injection |
+| `stubborn-contract-wiremock-spring-boot` | Spring Boot WireMock autoconfigure |
 
 ### Spring Cloud tier (`-spring-cloud`)
 

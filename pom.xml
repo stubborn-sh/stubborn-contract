@@ -91,6 +91,7 @@
 		<!--<module>docker</module>-->
 		<module>stubborn-contract-wiremock</module>
 		<module>stubborn-contract-wiremock-spring</module>
+		<module>stubborn-contract-wiremock-spring-boot</module>
 		<module>stubborn-contract-verifier</module>
 		<module>stubborn-contract-generator</module>
 		<module>docs</module>
