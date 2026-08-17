@@ -1,7 +1,7 @@
 # Using the Stub Runner Boot Application
 
 ::: warning Standalone Fat JAR Not Available in Current Release
-As of `4.1.6`, the executable (fat) JAR artifact for Stub Runner Boot is **not published to Maven Central** due to limitations in the current artifact repository release tooling. The sections below that describe the fat JAR, the standalone download, and the Spring Cloud CLI launcher are preserved for reference and will apply again if artifact publishing is restored.
+As of `4.1.6`, the executable (fat) JAR artifact for Stub Runner Boot is **not published to Maven Central** due to limitations in the current artifact repository release tooling. The sections below that describe the fat JAR and the standalone download are preserved for reference and will apply again if artifact publishing is restored.
 
 **Current alternatives:**
 
@@ -48,25 +48,6 @@ $ java -jar stubborn-contract-stub-runner-app/target/stubborn-contract-stub-runn
     --stubborn.contract.stubrunner.ids=... \
     --stubborn.contract.stubrunner.repositoryRoot=...
 ```
-
-## Spring Cloud CLI
-
-::: warning Depends on the Fat JAR
-The Spring Cloud CLI launcher requires the published fat JAR artifact. Until publishing resumes, the instructions below are for reference only.
-:::
-
-Starting from the `1.4.0.RELEASE` version of the [Spring Cloud CLI](https://github.com/spring-attic/spring-cloud-cli) project, you can start Stub Runner Boot by running `spring cloud stubrunner`.
-
-To pass the configuration, you can create a `stubborn.contract.stubrunner.yml` file in the current working directory, in a subdirectory called `config`, or in `~/.spring-cloud`. The file could resemble the following example for running stubs installed locally:
-
-```yaml
-stubborn.contract.stubrunner:
-  stubsMode: LOCAL
-  ids:
-    - com.example:beer-api-producer:+:9876
-```
-
-Then you can call `spring cloud stubrunner` from your terminal window to start the Stub Runner server. It is available at port `8750`.
 
 ## Endpoints
 
