@@ -32,6 +32,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jms.core.JmsTemplate;
 
 /**
@@ -60,18 +61,21 @@ import org.springframework.jms.core.JmsTemplate;
 public class ContractVerifierJmsConfiguration {
 
 	@Bean(destroyMethod = "close")
+	@Lazy
 	@ConditionalOnMissingBean(MessageVerifierSender.class)
 	StubbornJmsMessageVerifierSender stubbornJmsMessageVerifierSender(ConnectionFactory connectionFactory) {
 		return new StubbornJmsMessageVerifierSender(connectionFactory);
 	}
 
 	@Bean(destroyMethod = "close")
+	@Lazy
 	@ConditionalOnMissingBean(MessageVerifierReceiver.class)
 	StubbornJmsMessageVerifierReceiver stubbornJmsMessageVerifierReceiver(ConnectionFactory connectionFactory) {
 		return new StubbornJmsMessageVerifierReceiver(connectionFactory);
 	}
 
 	@Bean
+	@Lazy
 	@ConditionalOnMissingBean(ContractVerifierMessaging.class)
 	ContractVerifierMessaging<JmsMessage> contractVerifierJmsMessaging(MessageVerifierSender<JmsMessage> sender,
 			MessageVerifierReceiver<JmsMessage> receiver) {
