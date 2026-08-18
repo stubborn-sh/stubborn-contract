@@ -277,6 +277,16 @@
 				<version>${httpcore5.version}</version>
 			</dependency>
 			<!--
+			  Security override: httpclient5 5.6.1 (via Apache HttpClient5 / WireMock) carries
+			  CVE-2026-71290 (CVSS 9.1) and is not managed by the Spring Boot BOM. Pin the patched
+			  5.6.4 so consumers importing this BOM inherit the fix. Remove once a managing BOM ships >= 5.6.4.
+			-->
+			<dependency>
+				<groupId>org.apache.httpcomponents.client5</groupId>
+				<artifactId>httpclient5</artifactId>
+				<version>${httpclient5.version}</version>
+			</dependency>
+			<!--
 			  wiremock-jetty12:3.13.2 uses jetty-ee10-*:12.0.37 which calls APIs only present in
 			  Jetty 12.0.x (e.g. ByteBufferPool.acquire(int,boolean), Environment.ensure(String)).
 			  Spring Boot 4 forces all org.eclipse.jetty:* to 12.1.x where those methods were removed.

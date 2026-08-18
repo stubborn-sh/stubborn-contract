@@ -121,11 +121,14 @@
 		  parent) so the reactor pom, the consumer BOM, and every module share one source of
 		  truth. Jetty is held on the 12.0.x line that WireMock 3.13.2 requires (12.1.x
 		  removed APIs wiremock-jetty12 calls); httpcore5 is pinned above its vulnerable 5.4.2.
+		  httpclient5 is pinned above 5.6.1 (CVE-2026-71290, CVSS 9.1) — it leaks in as a
+		  transitive of Apache HttpClient5 / WireMock and is not managed by the Spring Boot BOM.
 		  icu4j is pinned above CVE-2025-5222 (buffer overflow, fixed from ICU 77 onward); it
 		  leaks in as a deep transitive of the Eclipse WST xpath2 processor in stubborn-contract-xmlassert.
 		-->
 		<jetty.version>12.0.37</jetty.version>
 		<httpcore5.version>5.4.3</httpcore5.version>
+		<httpclient5.version>5.6.4</httpclient5.version>
 		<icu4j.version>78.3</icu4j.version>
 		<!--
 		  Defined here (the common build parent) rather than the reactor root so the Docker
