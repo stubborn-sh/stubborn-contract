@@ -178,6 +178,7 @@
 				<module>stubborn-contract-stub-runner-amqp</module>
 				<module>stubborn-contract-stub-runner-jms</module>
 				<module>stubborn-contract-stub-runner-kafka</module>
+				<module>stubborn-contract-stub-runner-consumer-converters</module>
 			</modules>
 		</profile>
 		<profile>
@@ -203,6 +204,7 @@
 				<module>stubborn-contract-stub-runner-amqp</module>
 				<module>stubborn-contract-stub-runner-jms</module>
 				<module>stubborn-contract-stub-runner-kafka</module>
+				<module>stubborn-contract-stub-runner-consumer-converters</module>
 			</modules>
 		</profile>
 	</profiles>
