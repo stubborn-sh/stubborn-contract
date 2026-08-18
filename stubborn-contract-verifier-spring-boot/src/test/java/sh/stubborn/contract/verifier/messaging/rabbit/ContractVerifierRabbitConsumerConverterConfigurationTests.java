@@ -18,7 +18,6 @@ package sh.stubborn.contract.verifier.messaging.rabbit;
 
 import java.nio.charset.StandardCharsets;
 
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -97,30 +96,6 @@ class ContractVerifierRabbitConsumerConverterConfigurationTests {
 		@Bean
 		MessageConverter customMessageConverter() {
 			return new JacksonJsonMessageConverter(new JsonMapper());
-		}
-
-	}
-
-	static class Person {
-
-		private @Nullable Integer id;
-
-		private @Nullable String name;
-
-		public @Nullable Integer getId() {
-			return this.id;
-		}
-
-		public void setId(Integer id) {
-			this.id = id;
-		}
-
-		public @Nullable String getName() {
-			return this.name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
 		}
 
 	}

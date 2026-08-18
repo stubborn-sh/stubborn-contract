@@ -17,7 +17,6 @@
 package sh.stubborn.contract.verifier.messaging.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -94,20 +93,6 @@ class ContractVerifierKafkaConsumerConverterConfigurationTests {
 		@Bean
 		RecordMessageConverter customRecordMessageConverter() {
 			return new StringJacksonJsonMessageConverter(new JsonMapper());
-		}
-
-	}
-
-	static class BookReturned {
-
-		private @Nullable String bookName;
-
-		public @Nullable String getBookName() {
-			return this.bookName;
-		}
-
-		public void setBookName(String bookName) {
-			this.bookName = bookName;
 		}
 
 	}
