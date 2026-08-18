@@ -74,6 +74,22 @@ class ContractVerifierKafkaConsumerConverterConfigurationTests {
 	}
 
 	@Test
+	void shouldBackOffWhenConsumerConfiguresItsOwnValueDeserializer() {
+		this.contextRunner
+			.withPropertyValues("spring.kafka.consumer.value-deserializer="
+					+ "org.springframework.kafka.support.serializer.JsonDeserializer")
+			.run((context) -> assertThat(context).doesNotHaveBean(RecordMessageConverter.class));
+	}
+
+	@Test
+	void shouldRegisterConverterWhenValueDeserializerIsExplicitlyStringDeserializer() {
+		this.contextRunner
+			.withPropertyValues("spring.kafka.consumer.value-deserializer="
+					+ "org.apache.kafka.common.serialization.StringDeserializer")
+			.run((context) -> assertThat(context).hasSingleBean(RecordMessageConverter.class));
+	}
+
+	@Test
 	void shouldConvertJsonRecordToInferredTypeWithoutTypeIdHeader() {
 		StringJacksonJsonMessageConverter converter = new StringJacksonJsonMessageConverter(new JsonMapper());
 		ConsumerRecord<String, String> record = new ConsumerRecord<>("book-returned", 0, 0L, null,
