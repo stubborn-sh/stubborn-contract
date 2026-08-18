@@ -57,6 +57,7 @@ export default withMermaid({
             { text: 'Quick Start (3 min)', link: '/getting-started/quick-start' },
             { text: 'First Application', link: '/getting-started/first-application' },
             { text: 'Consumer-Driven CDC', link: '/getting-started/cdc' },
+            { text: 'Key Concepts', link: '/getting-started/concepts' },
           ],
         },
       ],
@@ -94,11 +95,32 @@ export default withMermaid({
           ],
         },
         {
+          text: 'Integrations',
+          items: [
+            { text: 'Quarkus', link: '/integrations/quarkus' },
+          ],
+        },
+        {
           text: 'Advanced',
           items: [
             { text: 'Docker Integration', link: '/reference/docker' },
             { text: 'Customization', link: '/reference/customization' },
             { text: 'Configuration Reference', link: '/reference/configuration' },
+          ],
+        },
+      ],
+      '/integrations/': [
+        {
+          text: 'Integrations',
+          items: [
+            { text: 'Quarkus', link: '/integrations/quarkus' },
+          ],
+        },
+        {
+          text: 'Reference',
+          items: [
+            { text: 'Modules & Architecture', link: '/reference/modules' },
+            { text: 'Stub Runner Overview', link: '/reference/stub-runner' },
           ],
         },
       ],
