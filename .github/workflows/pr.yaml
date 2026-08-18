@@ -36,13 +36,20 @@ jobs:
           ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
 
       - name: Build & test
-        run: ./mvnw clean install --no-transfer-progress
+        run: |
+          set -o pipefail
+          ./mvnw clean install -B --no-transfer-progress 2>&1 | tee /tmp/build.log
 
-      - name: Publish test results
-        if: always()
-        uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
-        with:
-          name: PR Test Results
-          path: '**/target/surefire-reports/TEST-*.xml'
-          reporter: java-junit
-          fail-on-error: false
+      # TEMPORARY diagnostic: surface the exact reactor failure (compile error or the
+      # consumer-converters Testcontainers test) in the readable log tail. Revert once pinned.
+      - name: Dump failure
+        if: failure()
+        run: |
+          echo "===== REACTOR SUMMARY ====="
+          awk '/Reactor Summary/{p=1} p{print}' /tmp/build.log | tail -180
+          echo "===== ERROR / FAILURE LINES ====="
+          grep -nE "BUILD FAILURE|<<< FAILURE!|<<< ERROR!|COMPILATION ERROR|cannot find symbol|package [a-z0-9.]* does not exist|Failed to execute goal|Tests run: .*(Failures|Errors): [1-9]|\[ERROR\]" /tmp/build.log | tail -120
+          echo "===== consumer-converters surefire dumps ====="
+          for f in $(find tests/stubborn-contract-stub-runner-consumer-converters -path '*surefire-reports*' -name '*.txt' 2>/dev/null); do echo "--- $f ---"; sed -n '1,80p' "$f"; done
+          echo "===== consumer-converters log slice ====="
+          grep -nE "consumer-converters|ConsumerConverterSpec|MessageConversion|Converter|No qualifying bean|expected single matching bean|Awaitility|ConditionTimeout" /tmp/build.log | tail -100
