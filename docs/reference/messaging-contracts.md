@@ -155,6 +155,33 @@ class OrderConsumerTest {
 }
 ```
 
+### Zero-config JSON conversion for typed listeners
+
+A triggered messaging stub is published to a **real broker** as raw JSON bytes with a
+`contentType=application/json` header and **no** `__TypeId__` header. When the consumer's
+listener binds a **typed** parameter — for example:
+
+```java
+@KafkaListener(topics = "orders")
+void onOrder(Order order) { ... }        // Kafka
+
+@RabbitListener(queues = "orders")
+void onOrder(Order order) { ... }        // RabbitMQ
+```
+
+Stubborn registers a JSON message converter out of the box (through
+`@AutoConfigureMessageVerifier`, which `@AutoConfigureStubRunner` includes) so the JSON body is
+deserialized into the type inferred from the listener method parameter. You do **not** have to
+hand-configure a `JsonDeserializer`, a `RecordMessageConverter`, or a `MessageConverter` — this
+restores the zero-config experience Spring Cloud Contract users had with its in-memory binder.
+
+The converter is added only when the consumer has not already defined one, so a project that
+configures its own converter keeps full control. To opt out entirely, set:
+
+```properties
+stubborn.contract.messaging.consumer-converters.enabled=false
+```
+
 ## Messaging backends
 
 The Spring-free messaging abstractions (`MessageVerifierSender` / `MessageVerifierReceiver`,
