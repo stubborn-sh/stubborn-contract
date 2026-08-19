@@ -90,6 +90,29 @@ class ContractVerifierRabbitConsumerConverterConfigurationTests {
 		assertThat(((Person) payload).getName()).isEqualTo("me");
 	}
 
+	@Test
+	void shouldIgnoreTypeIdHeaderAndBindToTheInferredType() {
+		this.contextRunner.run((context) -> {
+			JacksonJsonMessageConverter converter = context.getBean(JacksonJsonMessageConverter.class);
+			MessageProperties properties = new MessageProperties();
+			properties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
+			// A transport-neutral contract message may carry a Spring '__TypeId__' header
+			// reflecting the wire payload's type (here 'java.lang.String'). It must NOT
+			// override the listener's inferred type, otherwise the JSON is deserialized
+			// into
+			// a String and fails to bind to the typed listener parameter.
+			properties.setHeader("__TypeId__", "java.lang.String");
+			properties.setInferredArgumentType(Person.class);
+			Message message = new Message("{ \"id\" : 9, \"name\" : \"me\" }".getBytes(StandardCharsets.UTF_8),
+					properties);
+
+			Object payload = converter.fromMessage(message);
+
+			assertThat(payload).isInstanceOf(Person.class);
+			assertThat(((Person) payload).getName()).isEqualTo("me");
+		});
+	}
+
 	@Configuration(proxyBeanMethods = false)
 	static class CustomConverterConfiguration {
 

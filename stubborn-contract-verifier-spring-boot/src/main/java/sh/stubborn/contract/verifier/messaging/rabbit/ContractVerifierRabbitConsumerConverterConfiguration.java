@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.messaging.rabbit;
 
 import tools.jackson.databind.json.JsonMapper;
 
+import org.springframework.amqp.support.converter.JacksonJavaTypeMapper.TypePrecedence;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -40,10 +41,11 @@ import org.springframework.context.annotation.Configuration;
  * default {@code SimpleMessageConverter} yields a {@code String}, which fails to bind to
  * a typed listener record. This config registers a Jackson 3
  * {@link JacksonJsonMessageConverter} as the single {@link MessageConverter} bean that
- * Spring Boot wires into the {@code @RabbitListener} container factory. As the
- * converter's type mapper resolves the target type from the listener method parameter
- * (inferred type), the JSON body is deserialized without needing a {@code __TypeId__}
- * header.
+ * Spring Boot wires into the {@code @RabbitListener} container factory. Its type mapper
+ * is set to {@link TypePrecedence#INFERRED} so the target type always comes from the
+ * listener method parameter — even when the transport-neutral message carries a Spring
+ * {@code __TypeId__} header (Spring AMQP would otherwise honour that header, defaulting
+ * to {@code TYPE_ID} precedence, and deserialize the JSON into the wrong type).
  *
  * <h3>Guards</h3>
  * <ul>
@@ -73,7 +75,17 @@ public class ContractVerifierRabbitConsumerConverterConfiguration {
 	@Bean
 	@ConditionalOnMissingBean(MessageConverter.class)
 	JacksonJsonMessageConverter stubbornContractRabbitJsonMessageConverter() {
-		return new JacksonJsonMessageConverter(new JsonMapper());
+		JacksonJsonMessageConverter converter = new JacksonJsonMessageConverter(new JsonMapper());
+		// A transport-neutral contract message may carry a Spring '__TypeId__' header
+		// reflecting the wire payload's type (for example 'java.lang.String'). Spring
+		// AMQP's
+		// type mapper defaults to TYPE_ID precedence, so it would honour that header and
+		// deserialize the JSON into a String instead of the listener's type. Force
+		// INFERRED
+		// precedence so the target type always comes from the '@RabbitListener' method
+		// parameter — matching the Kafka converter and the zero-config contract.
+		converter.setTypePrecedence(TypePrecedence.INFERRED);
+		return converter;
 	}
 
 }
