@@ -27,8 +27,7 @@ description: >-
   BOM, and swaps both build plugins, in Maven and Gradle builds alike. The
   com.toomuchcoding JSON/XML assertion coordinates are swapped alongside the
   sh.stubborn.jsonassert / sh.stubborn.xmlassert package renames. Every coordinate is
-  repinned to latest.release, because a Spring Cloud Contract version carried over onto
-  an sh.stubborn artifact was never published and fails to resolve.
+  repinned to latest.release.
 tags:
   - spring-cloud-contract
   - stubborn-contract

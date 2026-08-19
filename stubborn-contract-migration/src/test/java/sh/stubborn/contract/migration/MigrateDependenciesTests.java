@@ -51,12 +51,11 @@ class MigrateDependenciesTests implements RewriteTest {
 						</dependency>
 					</dependencies>
 				</project>
-				""", (spec) -> spec.after((actual) -> {
-			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
-				.contains("<artifactId>stubborn-contract-verifier</artifactId>")
-				.doesNotContain("spring-cloud-contract-verifier");
-			return actual;
-		})));
+				""",
+				(spec) -> spec.after((actual) -> assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+					.contains("<artifactId>stubborn-contract-verifier</artifactId>")
+					.doesNotContain("spring-cloud-contract-verifier")
+					.actual())));
 	}
 
 	@Test
@@ -75,12 +74,11 @@ class MigrateDependenciesTests implements RewriteTest {
 						</dependency>
 					</dependencies>
 				</project>
-				""", (spec) -> spec.after((actual) -> {
-			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
-				.contains("<artifactId>stubborn-contract-stub-runner</artifactId>")
-				.doesNotContain("spring-cloud-contract-stub-runner");
-			return actual;
-		})));
+				""",
+				(spec) -> spec.after((actual) -> assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+					.contains("<artifactId>stubborn-contract-stub-runner</artifactId>")
+					.doesNotContain("spring-cloud-contract-stub-runner")
+					.actual())));
 	}
 
 	@Test
@@ -156,27 +154,27 @@ class MigrateDependenciesTests implements RewriteTest {
 	void migratesMavenPlugin() {
 		// The plugin repin drops the stale version in one cycle and re-resolves it in
 		// the next, so this recipe legitimately makes changes across two cycles.
-		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2), Assertions.pomXml("""
-				<project>
-					<groupId>com.example</groupId>
-					<artifactId>my-app</artifactId>
-					<version>1.0.0</version>
-					<build>
-						<plugins>
-							<plugin>
-								<groupId>org.springframework.cloud</groupId>
-								<artifactId>spring-cloud-contract-maven-plugin</artifactId>
-								<version>4.1.0</version>
-							</plugin>
-						</plugins>
-					</build>
-				</project>
-				""", (spec) -> spec.after((actual) -> {
-			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
-				.contains("<artifactId>stubborn-contract-maven-plugin</artifactId>")
-				.doesNotContain("spring-cloud-contract-maven-plugin");
-			return actual;
-		})));
+		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2),
+				Assertions.pomXml("""
+						<project>
+							<groupId>com.example</groupId>
+							<artifactId>my-app</artifactId>
+							<version>1.0.0</version>
+							<build>
+								<plugins>
+									<plugin>
+										<groupId>org.springframework.cloud</groupId>
+										<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+										<version>4.1.0</version>
+									</plugin>
+								</plugins>
+							</build>
+						</project>
+						""",
+						(spec) -> spec.after((actual) -> assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+							.contains("<artifactId>stubborn-contract-maven-plugin</artifactId>")
+							.doesNotContain("spring-cloud-contract-maven-plugin")
+							.actual())));
 	}
 
 	@Test
@@ -198,12 +196,11 @@ class MigrateDependenciesTests implements RewriteTest {
 						</dependencies>
 					</dependencyManagement>
 				</project>
-				""", (spec) -> spec.after((actual) -> {
-			assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
-				.contains("<artifactId>stubborn-contract-dependencies</artifactId>")
-				.doesNotContain("spring-cloud-contract-dependencies");
-			return actual;
-		})));
+				""",
+				(spec) -> spec.after((actual) -> assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+					.contains("<artifactId>stubborn-contract-dependencies</artifactId>")
+					.doesNotContain("spring-cloud-contract-dependencies")
+					.actual())));
 	}
 
 	@Test
