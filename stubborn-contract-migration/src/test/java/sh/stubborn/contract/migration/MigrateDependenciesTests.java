@@ -79,6 +79,75 @@ class MigrateDependenciesTests implements RewriteTest {
 	}
 
 	@Test
+	void migratesConvertersDependency() {
+		rewriteRun(Assertions.pomXml("""
+				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.springframework.cloud</groupId>
+							<artifactId>spring-cloud-contract-converters</artifactId>
+							<version>4.1.0</version>
+							<scope>test</scope>
+						</dependency>
+					</dependencies>
+				</project>
+				""",
+				(spec) -> spec.after((actual) -> assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+					.contains("<artifactId>stubborn-contract-converters</artifactId>")
+					.doesNotContain("spring-cloud-contract-converters")
+					.actual())));
+	}
+
+	@Test
+	void migratesSpecJettyStarterAndAssertionDependencies() {
+		rewriteRun(
+				Assertions.pomXml("""
+						<project>
+							<groupId>com.example</groupId>
+							<artifactId>my-app</artifactId>
+							<version>1.0.0</version>
+							<dependencies>
+								<dependency>
+									<groupId>org.springframework.cloud</groupId>
+									<artifactId>spring-cloud-contract-spec</artifactId>
+									<version>4.1.0</version>
+									<scope>test</scope>
+								</dependency>
+								<dependency>
+									<groupId>org.springframework.cloud</groupId>
+									<artifactId>spring-cloud-starter-contract-stub-runner-jetty</artifactId>
+									<version>4.1.0</version>
+									<scope>test</scope>
+								</dependency>
+								<dependency>
+									<groupId>com.toomuchcoding.jsonassert</groupId>
+									<artifactId>jsonassert</artifactId>
+									<version>0.8.0</version>
+									<scope>test</scope>
+								</dependency>
+								<dependency>
+									<groupId>com.toomuchcoding.xmlassert</groupId>
+									<artifactId>xmlassert</artifactId>
+									<version>0.0.2</version>
+									<scope>test</scope>
+								</dependency>
+							</dependencies>
+						</project>
+						""",
+						(spec) -> spec.after((actual) -> assertThat(actual)
+							.contains("<artifactId>stubborn-contract-spec</artifactId>")
+							.contains("<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>")
+							.contains("<artifactId>stubborn-contract-jsonassert</artifactId>")
+							.contains("<artifactId>stubborn-contract-xmlassert</artifactId>")
+							.doesNotContain("org.springframework.cloud")
+							.doesNotContain("com.toomuchcoding")
+							.actual())));
+	}
+
+	@Test
 	void migratesMavenPlugin() {
 		rewriteRun(Assertions.pomXml("""
 				<project>
@@ -128,6 +197,70 @@ class MigrateDependenciesTests implements RewriteTest {
 				.doesNotContain("spring-cloud-contract-dependencies");
 			return actual;
 		})));
+	}
+
+	@Test
+	void repinsAnExplicitlyPinnedBomVersionToAPublishedRelease() {
+		rewriteRun(Assertions.pomXml("""
+				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
+					<dependencyManagement>
+						<dependencies>
+							<dependency>
+								<groupId>org.springframework.cloud</groupId>
+								<artifactId>spring-cloud-contract-dependencies</artifactId>
+								<version>4.1.4</version>
+								<type>pom</type>
+								<scope>import</scope>
+							</dependency>
+						</dependencies>
+					</dependencyManagement>
+				</project>
+				""",
+				// sh.stubborn:stubborn-contract-dependencies:4.1.4 was never published;
+				// carrying the Spring Cloud Contract version over leaves the pom
+				// unresolvable, and OpenRewrite marks the failure up with `~~`.
+				(spec) -> spec.after((actual) -> assertThat(actual).doesNotContain("4.1.4")
+					.doesNotContain("~~")
+					.containsPattern(
+							"(?s)<artifactId>stubborn-contract-dependencies</artifactId>\\s*<version>\\d+\\.\\d+\\.\\d+</version>")
+					.actual())));
+	}
+
+	@Test
+	void repinsAnExplicitlyPinnedDependencyAndPluginVersionToAPublishedRelease() {
+		rewriteRun(Assertions.pomXml("""
+				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.springframework.cloud</groupId>
+							<artifactId>spring-cloud-contract-verifier</artifactId>
+							<version>4.1.4</version>
+							<scope>test</scope>
+						</dependency>
+					</dependencies>
+					<build>
+						<plugins>
+							<plugin>
+								<groupId>org.springframework.cloud</groupId>
+								<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+								<version>4.1.4</version>
+							</plugin>
+						</plugins>
+					</build>
+				</project>
+				""", (spec) -> spec.after((actual) -> assertThat(actual).doesNotContain("4.1.4")
+			.doesNotContain("~~")
+			.containsPattern(
+					"(?s)<artifactId>stubborn-contract-verifier</artifactId>\\s*<version>\\d+\\.\\d+\\.\\d+</version>")
+			.containsPattern(
+					"(?s)<artifactId>stubborn-contract-maven-plugin</artifactId>\\s*<version>\\d+\\.\\d+\\.\\d+</version>")
+			.actual())));
 	}
 
 }

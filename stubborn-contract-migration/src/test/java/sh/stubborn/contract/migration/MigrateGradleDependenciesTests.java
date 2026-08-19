@@ -17,10 +17,15 @@
 package sh.stubborn.contract.migration;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.Recipe;
 import org.openrewrite.config.Environment;
+import org.openrewrite.gradle.ChangeManagedDependency;
+import org.openrewrite.gradle.plugins.ChangePlugin;
+import org.openrewrite.java.dependencies.ChangeDependency;
+import org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,8 +35,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * options validate (a typo in a recipe id or option name fails to activate here), the
  * expected set of coordinate/plugin changes is present, and the top-level composite runs
  * it. The actual Gradle source transformation is performed by the standard, battle-tested
- * {@code org.openrewrite.gradle.*} recipes; exercising those end-to-end requires the
- * Gradle tooling API (a live Gradle model), which is out of scope for this unit test.
+ * {@code org.openrewrite.gradle.*} and {@code org.openrewrite.java.dependencies.*}
+ * recipes; exercising those end-to-end requires the Gradle tooling API (a live Gradle
+ * model), which is out of scope for this unit test.
  */
 class MigrateGradleDependenciesTests {
 
@@ -49,13 +55,41 @@ class MigrateGradleDependenciesTests {
 	void gradleRecipeHasExpectedCoordinateAndPluginChanges() {
 		Recipe recipe = this.environment.activateRecipes("sh.stubborn.contract.migration.UpdateGradleDependencies");
 
-		List<String> recipeTypes = recipe.getRecipeList().stream().map((r) -> r.getClass().getSimpleName()).toList();
+		List<String> recipeTypes = flatten(recipe).map((r) -> r.getClass().getSimpleName()).toList();
 
-		// 8 dependency coordinate swaps (verifier, stub-runner, 2 starters, wiremock,
-		// spec-java, spec-groovy, spec-kotlin) + the BOM + the Gradle plugin id.
-		assertThat(recipeTypes).filteredOn("ChangeDependency"::equals).hasSize(8);
+		// 13 build-tool agnostic coordinate swaps (verifier, stub-runner, 3 starters,
+		// wiremock, converters, spec, spec-java, spec-groovy, spec-kotlin, jsonassert,
+		// xmlassert) + both BOM variants + the Gradle plugin id.
+		assertThat(recipeTypes).filteredOn("ChangeDependency"::equals).hasSize(13);
 		assertThat(recipeTypes).filteredOn("ChangeManagedDependency"::equals).hasSize(1);
+		assertThat(recipeTypes).filteredOn("ChangeManagedDependencyGroupIdAndArtifactId"::equals).hasSize(1);
 		assertThat(recipeTypes).filteredOn("ChangePlugin"::equals).hasSize(1);
+	}
+
+	@Test
+	void gradleRecipeRepinsEveryCoordinateToAPublishedRelease() {
+		Recipe recipe = this.environment.activateRecipes("sh.stubborn.contract.migration.UpdateGradleDependencies");
+
+		// An unset newVersion carries the Spring Cloud Contract version over onto the
+		// sh.stubborn coordinate, producing a GAV that was never published.
+		assertThat(flatten(recipe)).allSatisfy((subRecipe) -> {
+			if (subRecipe instanceof ChangeDependency changeDependency) {
+				assertThat(changeDependency.getNewVersion()).isEqualTo("latest.release");
+			}
+			else if (subRecipe instanceof ChangeManagedDependency changeManagedDependency) {
+				assertThat(changeManagedDependency.getNewVersion()).isEqualTo("latest.release");
+			}
+			else if (subRecipe instanceof ChangeManagedDependencyGroupIdAndArtifactId changeManagedGav) {
+				assertThat(changeManagedGav.getNewVersion()).isEqualTo("latest.release");
+			}
+			else if (subRecipe instanceof ChangePlugin changePlugin) {
+				assertThat(changePlugin.getNewVersion()).isEqualTo("latest.release");
+			}
+		});
+	}
+
+	private static Stream<Recipe> flatten(Recipe recipe) {
+		return Stream.concat(Stream.of(recipe), recipe.getRecipeList().stream().flatMap((r) -> flatten(r)));
 	}
 
 	@Test

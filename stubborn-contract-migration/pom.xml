@@ -17,7 +17,9 @@
 	<description>OpenRewrite recipes to migrate from Spring Cloud Contract to Stubborn Contract</description>
 
 	<properties>
-		<openrewrite.version>8.88.0</openrewrite.version>
+		<!-- Both aligned by org.openrewrite.recipe:rewrite-recipe-bom:3.37.0; bump them together. -->
+		<openrewrite.version>8.89.0</openrewrite.version>
+		<openrewrite-java-dependencies.version>1.60.2</openrewrite-java-dependencies.version>
 	</properties>
 
 	<dependencies>
@@ -25,6 +27,16 @@
 			<groupId>org.openrewrite</groupId>
 			<artifactId>rewrite-java</artifactId>
 			<version>${openrewrite.version}</version>
+		</dependency>
+		<!--
+		  rewrite-java-dependencies supplies org.openrewrite.java.dependencies.ChangeDependency,
+		  which delegates to the Maven and Gradle coordinate recipes. UpdateDependencies lists each
+		  coordinate once through it instead of once per build tool.
+		-->
+		<dependency>
+			<groupId>org.openrewrite.recipe</groupId>
+			<artifactId>rewrite-java-dependencies</artifactId>
+			<version>${openrewrite-java-dependencies.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openrewrite</groupId>
