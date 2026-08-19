@@ -183,13 +183,17 @@ void onOrder(Order order) { ... }        // Kafka
 
 @RabbitListener(queues = "orders")
 void onOrder(Order order) { ... }        // RabbitMQ
+
+@JmsListener(destination = "orders")
+void onOrder(Order order) { ... }        // JMS (ActiveMQ Artemis)
 ```
 
 Stubborn registers a JSON message converter out of the box (through
 `@AutoConfigureMessageVerifier`, which `@AutoConfigureStubRunner` includes) so the JSON body is
 deserialized into the type inferred from the listener method parameter. You do **not** have to
-hand-configure a `JsonDeserializer`, a `RecordMessageConverter`, or a `MessageConverter` — this
-restores the zero-config experience Spring Cloud Contract users had with its in-memory binder.
+hand-configure a `JsonDeserializer`, a `RecordMessageConverter`, a `MessageConverter`, or a
+`JmsListenerConfigurer` — this restores the zero-config experience Spring Cloud Contract users
+had with its in-memory binder.
 
 The converter is added only when the consumer has not already defined one **and** has not
 configured its own `spring.kafka.consumer.value-deserializer` (a consumer that sets, say, a

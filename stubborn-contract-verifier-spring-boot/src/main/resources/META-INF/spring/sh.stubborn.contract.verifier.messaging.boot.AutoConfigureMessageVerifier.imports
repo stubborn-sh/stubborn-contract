@@ -7,3 +7,4 @@ sh.stubborn.contract.verifier.messaging.kafka.ContractVerifierKafkaConfiguration
 sh.stubborn.contract.verifier.messaging.kafka.ContractVerifierKafkaConsumerConverterConfiguration
 sh.stubborn.contract.verifier.messaging.rabbit.ContractVerifierRabbitConfiguration
 sh.stubborn.contract.verifier.messaging.rabbit.ContractVerifierRabbitConsumerConverterConfiguration
+sh.stubborn.contract.verifier.messaging.jms.ContractVerifierJmsConsumerConverterConfiguration
