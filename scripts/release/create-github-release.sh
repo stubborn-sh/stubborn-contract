@@ -35,7 +35,13 @@ Pin the BOM once and every Stubborn Contract module lines up:
 All artifacts are on [Maven Central](https://central.sonatype.com/namespace/sh.stubborn).
 EOF
 
-gh release create "v${VERSION}" \
-	--title "v${VERSION}" \
-	--notes-file "$NOTES_FILE" \
-	--generate-notes
+# Idempotent: this script is also dispatchable on its own (publish-github-release.yml),
+# so a re-run after a partial release must not fail on an existing release.
+if gh release view "v${VERSION}" >/dev/null 2>&1; then
+	echo "Release v${VERSION} already exists — nothing to do."
+else
+	gh release create "v${VERSION}" \
+		--title "v${VERSION}" \
+		--notes-file "$NOTES_FILE" \
+		--generate-notes
+fi
