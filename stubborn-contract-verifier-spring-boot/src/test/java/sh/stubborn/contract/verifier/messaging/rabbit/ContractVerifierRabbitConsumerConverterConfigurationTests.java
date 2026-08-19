@@ -17,6 +17,7 @@
 package sh.stubborn.contract.verifier.messaging.rabbit;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
@@ -91,25 +92,32 @@ class ContractVerifierRabbitConsumerConverterConfigurationTests {
 	}
 
 	@Test
-	void shouldIgnoreTypeIdHeaderAndBindToTheInferredType() {
+	@SuppressWarnings("unchecked")
+	void shouldNotDeserializeToStringWhenATypeIdHeaderIsPresent() {
 		this.contextRunner.run((context) -> {
 			JacksonJsonMessageConverter converter = context.getBean(JacksonJsonMessageConverter.class);
 			MessageProperties properties = new MessageProperties();
 			properties.setContentType(MessageProperties.CONTENT_TYPE_JSON);
-			// A transport-neutral contract message may carry a Spring '__TypeId__' header
-			// reflecting the wire payload's type (here 'java.lang.String'). It must NOT
-			// override the listener's inferred type, otherwise the JSON is deserialized
-			// into
-			// a String and fails to bind to the typed listener parameter.
+			// Reproduces the real @RabbitListener path: the contract message carries a
+			// Spring
+			// '__TypeId__=java.lang.String' header and NO inferred-argument type is set
+			// on the
+			// properties. The default mapper would honour '__TypeId__' and deserialize
+			// the
+			// JSON body into a String, which Spring's messaging layer then cannot bind to
+			// the
+			// typed listener parameter. The converter must ignore '__TypeId__' and yield
+			// the
+			// JSON object as a map instead, so the messaging layer can bind it to the
+			// record.
 			properties.setHeader("__TypeId__", "java.lang.String");
-			properties.setInferredArgumentType(Person.class);
 			Message message = new Message("{ \"id\" : 9, \"name\" : \"me\" }".getBytes(StandardCharsets.UTF_8),
 					properties);
 
 			Object payload = converter.fromMessage(message);
 
-			assertThat(payload).isInstanceOf(Person.class);
-			assertThat(((Person) payload).getName()).isEqualTo("me");
+			assertThat(payload).isInstanceOf(Map.class);
+			assertThat((Map<String, Object>) payload).containsEntry("name", "me").containsEntry("id", 9);
 		});
 	}
 

@@ -18,7 +18,7 @@ package sh.stubborn.contract.verifier.messaging.rabbit;
 
 import tools.jackson.databind.json.JsonMapper;
 
-import org.springframework.amqp.support.converter.JacksonJavaTypeMapper.TypePrecedence;
+import org.springframework.amqp.support.converter.DefaultJacksonJavaTypeMapper;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -42,10 +42,12 @@ import org.springframework.context.annotation.Configuration;
  * a typed listener record. This config registers a Jackson 3
  * {@link JacksonJsonMessageConverter} as the single {@link MessageConverter} bean that
  * Spring Boot wires into the {@code @RabbitListener} container factory. Its type mapper
- * is set to {@link TypePrecedence#INFERRED} so the target type always comes from the
- * listener method parameter — even when the transport-neutral message carries a Spring
- * {@code __TypeId__} header (Spring AMQP would otherwise honour that header, defaulting
- * to {@code TYPE_ID} precedence, and deserialize the JSON into the wrong type).
+ * is configured to ignore the Spring {@code __TypeId__} header (see
+ * {@link #stubbornContractRabbitJsonMessageConverter()}) — a transport-neutral message
+ * may carry {@code __TypeId__=java.lang.String}, which the default mapper would honour to
+ * deserialize the JSON into a {@code String} that cannot bind to the typed listener. With
+ * the header ignored the JSON is read as a generic tree and Spring's messaging layer
+ * binds it to the listener's method-parameter type.
  *
  * <h3>Guards</h3>
  * <ul>
@@ -76,16 +78,32 @@ public class ContractVerifierRabbitConsumerConverterConfiguration {
 	@ConditionalOnMissingBean(MessageConverter.class)
 	JacksonJsonMessageConverter stubbornContractRabbitJsonMessageConverter() {
 		JacksonJsonMessageConverter converter = new JacksonJsonMessageConverter(new JsonMapper());
-		// A transport-neutral contract message may carry a Spring '__TypeId__' header
-		// reflecting the wire payload's type (for example 'java.lang.String'). Spring
-		// AMQP's
-		// type mapper defaults to TYPE_ID precedence, so it would honour that header and
-		// deserialize the JSON into a String instead of the listener's type. Force
-		// INFERRED
-		// precedence so the target type always comes from the '@RabbitListener' method
-		// parameter — matching the Kafka converter and the zero-config contract.
-		converter.setTypePrecedence(TypePrecedence.INFERRED);
+		converter.setJavaTypeMapper(ignoreTypeIdTypeMapper());
 		return converter;
+	}
+
+	/**
+	 * A type mapper that never reads the Spring {@code __TypeId__} header. A
+	 * transport-neutral contract message may carry {@code __TypeId__=java.lang.String}
+	 * (reflecting the JSON wire payload). The default mapper honours that header and
+	 * deserializes the body into a {@code String}, which then cannot bind to the typed
+	 * {@code @RabbitListener} parameter. By overriding the class-id field name to a
+	 * header that is never present, the converter deserializes the JSON to a generic tree
+	 * instead, and Spring's messaging layer binds it to the listener's method-parameter
+	 * type — the same zero-config outcome as Kafka. All packages are trusted, since
+	 * contract messages come from trusted stubs.
+	 * @return a type mapper that ignores the {@code __TypeId__} header and trusts all
+	 * packages
+	 */
+	private static DefaultJacksonJavaTypeMapper ignoreTypeIdTypeMapper() {
+		DefaultJacksonJavaTypeMapper typeMapper = new DefaultJacksonJavaTypeMapper() {
+			@Override
+			public String getClassIdFieldName() {
+				return "__stubborn_ignored_type_id__";
+			}
+		};
+		typeMapper.setTrustedPackages("*");
+		return typeMapper;
 	}
 
 }
