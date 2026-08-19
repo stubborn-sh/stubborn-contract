@@ -28,6 +28,7 @@ export default withMermaid({
       { text: 'Getting Started', link: '/getting-started/' },
       { text: 'Reference', link: '/reference/maven-plugin' },
       { text: 'How-to Guides', link: '/howto/' },
+      { text: 'Blog', link: '/blog/announcing-stubborn-contract-0-1-0' },
       {
         text: 'Migration',
         items: [
@@ -48,6 +49,14 @@ export default withMermaid({
     ],
 
     sidebar: {
+      '/blog/': [
+        {
+          text: 'Blog',
+          items: [
+            { text: 'Announcing Stubborn Contract 0.1.0', link: '/blog/announcing-stubborn-contract-0-1-0' },
+          ],
+        },
+      ],
       '/getting-started/': [
         {
           text: 'Getting Started',
