@@ -27,7 +27,12 @@ class MigrateDependenciesTests implements RewriteTest {
 
 	@Override
 	public void defaults(RecipeSpec spec) {
-		spec.recipeFromResources("sh.stubborn.contract.migration.UpdateMavenDependencies");
+		spec.recipeFromResources("sh.stubborn.contract.migration.UpdateDependencies");
+	}
+
+	@Test
+	void everyRecipeInTheYamlConfigures() {
+		assertRecipesConfigure();
 	}
 
 	@Test
@@ -149,7 +154,9 @@ class MigrateDependenciesTests implements RewriteTest {
 
 	@Test
 	void migratesMavenPlugin() {
-		rewriteRun(Assertions.pomXml("""
+		// The plugin repin drops the stale version in one cycle and re-resolves it in
+		// the next, so this recipe legitimately makes changes across two cycles.
+		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2), Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>my-app</artifactId>
@@ -200,6 +207,43 @@ class MigrateDependenciesTests implements RewriteTest {
 	}
 
 	@Test
+	void repinsTheMavenPluginWithoutDisturbingOtherPlugins() {
+		// The plugin repin drops the stale version in one cycle and re-resolves it in
+		// the next, so this recipe legitimately makes changes across two cycles.
+		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2), Assertions.pomXml("""
+				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
+					<build>
+						<plugins>
+							<plugin>
+								<groupId>org.apache.maven.plugins</groupId>
+								<artifactId>maven-surefire-plugin</artifactId>
+								<version>3.5.6</version>
+							</plugin>
+							<plugin>
+								<groupId>org.springframework.cloud</groupId>
+								<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+								<version>4.1.4</version>
+							</plugin>
+						</plugins>
+					</build>
+				</project>
+				""",
+				// The stale plugin version is dropped and re-resolved, so the XPath doing
+				// the dropping has to match this plugin only.
+				(spec) -> spec.after((actual) -> assertThat(actual)
+					.containsPattern(
+							"(?s)<artifactId>maven-surefire-plugin</artifactId>\\s*<version>3\\.5\\.6</version>")
+					.containsPattern(
+							"(?s)<artifactId>stubborn-contract-maven-plugin</artifactId>\\s*<version>\\d+\\.\\d+\\.\\d+</version>")
+					.doesNotContain("4.1.4")
+					.doesNotContain("~~")
+					.actual())));
+	}
+
+	@Test
 	void repinsAnExplicitlyPinnedBomVersionToAPublishedRelease() {
 		rewriteRun(Assertions.pomXml("""
 				<project>
@@ -231,7 +275,9 @@ class MigrateDependenciesTests implements RewriteTest {
 
 	@Test
 	void repinsAnExplicitlyPinnedDependencyAndPluginVersionToAPublishedRelease() {
-		rewriteRun(Assertions.pomXml("""
+		// The plugin repin drops the stale version in one cycle and re-resolves it in
+		// the next, so this recipe legitimately makes changes across two cycles.
+		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2), Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>my-app</artifactId>

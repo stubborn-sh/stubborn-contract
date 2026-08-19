@@ -42,7 +42,9 @@ class MigrateFromSpringCloudContractTests implements RewriteTest {
 
 	@Test
 	void migratesAWholeSpringCloudContractProject() {
-		rewriteRun(Assertions.pomXml("""
+		// The plugin repin drops the stale version in one cycle and re-resolves it in
+		// the next, so this recipe legitimately makes changes across two cycles.
+		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2), Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>beer-producer</artifactId>
