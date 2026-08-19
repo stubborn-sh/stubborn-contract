@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>sh.stubborn</groupId>
 		<artifactId>stubborn-contract-starters</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>stubborn-contract-starter-stub-runner</artifactId>
