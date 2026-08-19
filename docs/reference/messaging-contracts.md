@@ -132,9 +132,17 @@ outputMessage:
   sentTo: orders-out-0    # binding name, not Kafka topic
 ```
 
-## AMQP / ActiveMQ Artemis
+## RabbitMQ (AMQP)
 
-Add `stubborn-contract-verifier-spring-boot` and `spring-boot-starter-artemis`. The `sentTo` value is the queue/topic name.
+Add `spring-boot-starter-amqp` and the Spring-free RabbitMQ building block
+`stubborn-contract-messaging-rabbit`; `@AutoConfigureMessageVerifier` then wires the
+`StubbornRabbitMessageVerifierSender` / `…Receiver` against your Spring AMQP connection
+factory. The `sentTo` value is the queue name.
+
+## JMS (ActiveMQ Artemis)
+
+Add `spring-boot-starter-artemis` and the Spring-free JMS building block
+`stubborn-contract-messaging-jms`. The `sentTo` value is the queue/topic name.
 
 ## Stub Runner for messaging consumers
 
@@ -155,6 +163,14 @@ class OrderConsumerTest {
 }
 ```
 
+When the trigger publishes to a **real broker** (Testcontainers or an embedded broker),
+put the matching Spring-free building block on the test classpath so the correct
+raw-bytes sender is wired — `stubborn-contract-messaging-kafka` for Kafka,
+`stubborn-contract-messaging-rabbit` for RabbitMQ, `stubborn-contract-messaging-jms`
+for JMS — alongside your broker starter (`spring-boot-starter-kafka` /
+`-amqp` / `-artemis`). The `kafka-consumer` and `rabbit-consumer` samples show the full
+setup.
+
 ### Zero-config JSON conversion for typed listeners
 
 A triggered messaging stub is published to a **real broker** as raw JSON bytes with a
@@ -167,13 +183,17 @@ void onOrder(Order order) { ... }        // Kafka
 
 @RabbitListener(queues = "orders")
 void onOrder(Order order) { ... }        // RabbitMQ
+
+@JmsListener(destination = "orders")
+void onOrder(Order order) { ... }        // JMS (ActiveMQ Artemis)
 ```
 
 Stubborn registers a JSON message converter out of the box (through
 `@AutoConfigureMessageVerifier`, which `@AutoConfigureStubRunner` includes) so the JSON body is
 deserialized into the type inferred from the listener method parameter. You do **not** have to
-hand-configure a `JsonDeserializer`, a `RecordMessageConverter`, or a `MessageConverter` — this
-restores the zero-config experience Spring Cloud Contract users had with its in-memory binder.
+hand-configure a `JsonDeserializer`, a `RecordMessageConverter`, a `MessageConverter`, or a
+`JmsListenerConfigurer` — this restores the zero-config experience Spring Cloud Contract users
+had with its in-memory binder.
 
 The converter is added only when the consumer has not already defined one **and** has not
 configured its own `spring.kafka.consumer.value-deserializer` (a consumer that sets, say, a
@@ -200,6 +220,7 @@ backends that implement them are auto-configured by `@AutoConfigureMessageVerifi
 | Apache Avro payloads | `stubborn-contract-verifier-spring-boot` (`avro`) |
 | Spring Cloud Stream | `stubborn-contract-verifier-spring-cloud` |
 | Kafka | `stubborn-contract-messaging-kafka` |
+| RabbitMQ | `stubborn-contract-messaging-rabbit` |
 
 `@AutoConfigureMessageVerifier` picks the backend present on the classpath, so in most projects
 you add the relevant Spring Boot messaging starter and Stubborn wires the rest. See
