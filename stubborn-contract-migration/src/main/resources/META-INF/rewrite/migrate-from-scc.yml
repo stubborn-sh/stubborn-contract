@@ -26,7 +26,8 @@ description: >-
   sh.stubborn:stubborn-* equivalents, migrates the spring-cloud-contract-dependencies
   BOM, and swaps both build plugins, in Maven and Gradle builds alike. Each coordinate is
   listed once: org.openrewrite.java.dependencies.ChangeDependency covers both build
-  tools. The com.toomuchcoding JSON/XML assertion coordinates are swapped alongside the
+  tools, and updates dependencyManagement along with the dependency itself, so the BOM
+  needs no separate entry. The com.toomuchcoding JSON/XML assertion coordinates are swapped alongside the
   sh.stubborn.jsonassert / sh.stubborn.xmlassert package renames. Every coordinate is
   repinned to latest.release, because a Spring Cloud Contract version carried over onto
   an sh.stubborn artifact was never published and fails to resolve. The Maven plugin
@@ -116,13 +117,7 @@ recipeList:
       newGroupId: sh.stubborn
       newArtifactId: stubborn-contract-xmlassert
       newVersion: latest.release
-  - org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId:
-      oldGroupId: org.springframework.cloud
-      oldArtifactId: spring-cloud-contract-dependencies
-      newGroupId: sh.stubborn
-      newArtifactId: stubborn-contract-dependencies
-      newVersion: latest.release
-  - org.openrewrite.gradle.ChangeManagedDependency:
+  - org.openrewrite.java.dependencies.ChangeDependency:
       oldGroupId: org.springframework.cloud
       oldArtifactId: spring-cloud-contract-dependencies
       newGroupId: sh.stubborn

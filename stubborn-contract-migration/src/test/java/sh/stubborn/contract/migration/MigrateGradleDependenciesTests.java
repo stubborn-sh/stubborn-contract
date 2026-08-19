@@ -22,10 +22,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.Recipe;
 import org.openrewrite.config.Environment;
-import org.openrewrite.gradle.ChangeManagedDependency;
 import org.openrewrite.gradle.plugins.ChangePlugin;
 import org.openrewrite.java.dependencies.ChangeDependency;
-import org.openrewrite.maven.ChangeManagedDependencyGroupIdAndArtifactId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,12 +48,11 @@ class MigrateGradleDependenciesTests {
 
 		List<String> recipeTypes = flatten(recipe).map((r) -> r.getClass().getSimpleName()).toList();
 
-		// 13 build-tool agnostic coordinate swaps (verifier, stub-runner, 3 starters,
+		// 14 build-tool agnostic coordinate swaps (verifier, stub-runner, 3 starters,
 		// wiremock, converters, spec, spec-java, spec-groovy, spec-kotlin, jsonassert,
-		// xmlassert) + both BOM variants + the Gradle plugin id.
-		assertThat(recipeTypes).filteredOn("ChangeDependency"::equals).hasSize(13);
-		assertThat(recipeTypes).filteredOn("ChangeManagedDependency"::equals).hasSize(1);
-		assertThat(recipeTypes).filteredOn("ChangeManagedDependencyGroupIdAndArtifactId"::equals).hasSize(1);
+		// xmlassert, the BOM) + the Gradle plugin id. ChangeDependency updates
+		// dependencyManagement itself, so the BOM needs no separate managed entry.
+		assertThat(recipeTypes).filteredOn("ChangeDependency"::equals).hasSize(14);
 		assertThat(recipeTypes).filteredOn("ChangePlugin"::equals).hasSize(1);
 	}
 
@@ -68,12 +65,6 @@ class MigrateGradleDependenciesTests {
 		assertThat(flatten(recipe)).allSatisfy((subRecipe) -> {
 			if (subRecipe instanceof ChangeDependency changeDependency) {
 				assertThat(changeDependency.getNewVersion()).isEqualTo("latest.release");
-			}
-			else if (subRecipe instanceof ChangeManagedDependency changeManagedDependency) {
-				assertThat(changeManagedDependency.getNewVersion()).isEqualTo("latest.release");
-			}
-			else if (subRecipe instanceof ChangeManagedDependencyGroupIdAndArtifactId changeManagedGav) {
-				assertThat(changeManagedGav.getNewVersion()).isEqualTo("latest.release");
 			}
 			else if (subRecipe instanceof ChangePlugin changePlugin) {
 				assertThat(changePlugin.getNewVersion()).isEqualTo("latest.release");
