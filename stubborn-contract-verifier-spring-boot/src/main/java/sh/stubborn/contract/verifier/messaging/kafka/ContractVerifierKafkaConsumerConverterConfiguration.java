@@ -55,13 +55,18 @@ import org.springframework.kafka.support.converter.StringJacksonJsonMessageConve
  * <li>{@link ConditionalOnProperty @ConditionalOnProperty} on
  * {@code stubborn.contract.messaging.consumer-converters.enabled} (default {@code true})
  * — set it to {@code false} to opt out of the magic entirely.</li>
+ * <li>{@link ConditionalOnProperty @ConditionalOnProperty} on
+ * {@code spring.kafka.consumer.value-deserializer} — the converter is registered only
+ * when the value deserializer is unset (Boot's default {@code StringDeserializer}) or
+ * explicitly {@code StringDeserializer}. A consumer that configures its own deserializer
+ * (for example a {@code JsonDeserializer} that already yields the typed value) keeps full
+ * control and this converter <em>backs off</em>, so it never double-converts an
+ * already-deserialized value.</li>
  * </ul>
  *
  * <p>
- * The converter never touches the consumer's deserializer configuration, so a user who
- * has configured a different {@code value.deserializer} keeps full control. The
- * configuration is imported only through {@code @AutoConfigureMessageVerifier} (and hence
- * {@code @AutoConfigureStubRunner}), so it is harmless in production.
+ * The configuration is imported only through {@code @AutoConfigureMessageVerifier} (and
+ * hence {@code @AutoConfigureStubRunner}), so it is harmless in production.
  *
  * @author Marcin Grzejszczak
  * @since 1.0.0
@@ -74,6 +79,8 @@ public class ContractVerifierKafkaConsumerConverterConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(RecordMessageConverter.class)
+	@ConditionalOnProperty(name = "spring.kafka.consumer.value-deserializer",
+			havingValue = "org.apache.kafka.common.serialization.StringDeserializer", matchIfMissing = true)
 	StringJacksonJsonMessageConverter stubbornContractKafkaJsonMessageConverter() {
 		return new StringJacksonJsonMessageConverter(new JsonMapper());
 	}

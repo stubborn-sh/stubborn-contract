@@ -175,8 +175,11 @@ deserialized into the type inferred from the listener method parameter. You do *
 hand-configure a `JsonDeserializer`, a `RecordMessageConverter`, or a `MessageConverter` — this
 restores the zero-config experience Spring Cloud Contract users had with its in-memory binder.
 
-The converter is added only when the consumer has not already defined one, so a project that
-configures its own converter keeps full control. To opt out entirely, set:
+The converter is added only when the consumer has not already defined one **and** has not
+configured its own `spring.kafka.consumer.value-deserializer` (a consumer that sets, say, a
+`JsonDeserializer` already yields a typed value, so Stubborn backs off rather than
+double-converting). Either way, a project that configures its own conversion keeps full
+control. To opt out entirely, set:
 
 ```properties
 stubborn.contract.messaging.consumer-converters.enabled=false
