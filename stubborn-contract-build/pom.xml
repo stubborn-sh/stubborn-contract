@@ -207,6 +207,13 @@
 		  direct Spring dependencies (org.springframework.*, *.boot, *.cloud).
 		-->
 		<stubborn.no-spring.skip>true</stubborn.no-spring.skip>
+		<!--
+		  SCC-API gate: Stubborn Contract must never depend on Spring Cloud Contract
+		  (org.springframework.cloud:spring-cloud-contract*). Enforced in every module
+		  and scope by the ban-scc-api enforcer rule. Set to true only in a module that
+		  genuinely must keep an SCC dependency (e.g. a dedicated compatibility test).
+		-->
+		<stubborn.no-scc.skip>false</stubborn.no-scc.skip>
 		<!-- Set to false in public API modules to enable revapi binary-compat check. -->
 		<stubborn.revapi.skip>true</stubborn.revapi.skip>
 		<!--
@@ -729,6 +736,37 @@
 							</rules>
 						</configuration>
 					</execution>
+						<!--
+						  Repo-wide guardrail: Stubborn Contract is the successor to Spring
+						  Cloud Contract and must not depend on the old SCC API in ANY module
+						  or scope. Bans org.springframework.cloud:spring-cloud-contract*
+						  (verifier, spec, stub-runner, wiremock, the -dependencies BOM, ...)
+						  directly and transitively, so a "migrated" reactor can never drag
+						  the old stack back onto a classpath. Runs in every module: the
+						  spring-cloud-* stream/discovery deps in the -spring-cloud tier are
+						  fine, only spring-cloud-contract* is banned. Escape hatch: set
+						  stubborn.no-scc.skip=true in a module that genuinely must keep it
+						  (e.g. a dedicated SCC-compatibility test). See
+						  stubborn-sh/stubborn-openapi#22.
+						-->
+						<execution>
+							<id>ban-scc-api</id>
+							<phase>validate</phase>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<skip>${stubborn.no-scc.skip}</skip>
+								<rules>
+									<bannedDependencies>
+										<searchTransitive>true</searchTransitive>
+										<excludes>
+											<exclude>org.springframework.cloud:spring-cloud-contract*</exclude>
+										</excludes>
+									</bannedDependencies>
+								</rules>
+							</configuration>
+						</execution>
 				</executions>
 			</plugin>
 			<!--
