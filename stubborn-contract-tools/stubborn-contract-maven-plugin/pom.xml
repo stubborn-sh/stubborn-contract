@@ -276,25 +276,40 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!--
+		  These maven-resolver artifacts MUST stay at provided scope. Maven core already
+		  supplies org.apache.maven.resolver:* (and its httpclient/httpcore) on every
+		  plugin realm and exports org.eclipse.aether.* to it. Declaring them at compile
+		  scope loads a second copy of maven-resolver-transport-http (with its own
+		  httpclient) into this plugin's realm; the two copies share one
+		  RepositorySystemSession, and the first remote download on a cold local
+		  repository dies with "BasicAuthCache cannot be cast to AuthCache". provided keeps
+		  compile-time access while letting Maven core own the runtime classes. See #171.
+		-->
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-impl</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-transport-file</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-transport-http</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.resolver</groupId>
 			<artifactId>maven-resolver-connector-basic</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
