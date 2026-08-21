@@ -152,8 +152,17 @@ class ClasspathStubResourceScanner {
 				if (!entry.isDirectory()) {
 					Path entryPath = Path.of(entry.getName());
 					if (matchesAny(matchers, entryPath)) {
-						URL url = new URL("jar:file:" + jar.getName() + "!/" + entry.getName());
-						result.add(urlToResource(url, entry.getName()));
+						try {
+							URL url = jarEntryUrl(jar, entry.getName());
+							result.add(urlToResource(url, entry.getName()));
+						}
+						catch (IOException ex) {
+							// One un-encodable entry name must not abort the whole jar
+							// scan.
+							if (log.isTraceEnabled()) {
+								log.trace("Skipping jar entry [" + entry.getName() + "]: " + ex.getMessage());
+							}
+						}
 					}
 				}
 			}
@@ -164,6 +173,41 @@ class ClasspathStubResourceScanner {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Builds a {@code jar:file:...!/entry} URL whose jar-file path and entry name are
+	 * percent-encoded, so the resulting URL is a valid {@link URI}. WireMock mapping
+	 * files may contain characters that are legal in a jar entry name but illegal in an
+	 * unescaped URI (a space, for example). Without encoding,
+	 * {@code StubResource.getURI()} — called up front for every mapping while
+	 * {@code @AutoConfigureStubRunner} builds the shared stub-runner bean — would throw
+	 * {@code URISyntaxException} and fail the whole application context, not just the
+	 * tests exercising that one contract. See issue #169.
+	 * @param jar the jar being scanned
+	 * @param entryName the raw jar entry name
+	 * @return an encoded, URI-safe {@code jar:} URL for the entry
+	 * @throws IOException if the entry name cannot be encoded to a URI path
+	 */
+	private static URL jarEntryUrl(JarFile jar, String entryName) throws IOException {
+		String jarFileUri = new File(jar.getName()).toURI().toString();
+		return new URL("jar:" + jarFileUri + "!/" + encodePath(entryName));
+	}
+
+	/**
+	 * Percent-encodes the characters of a jar entry path that are illegal in a URI, while
+	 * preserving the {@code /} segment separators.
+	 * @param path the raw jar entry path
+	 * @return the path with URI-illegal characters percent-encoded
+	 * @throws IOException if the path cannot be encoded to a URI
+	 */
+	private static String encodePath(String path) throws IOException {
+		try {
+			return new URI(null, null, path, null).getRawPath();
+		}
+		catch (java.net.URISyntaxException ex) {
+			throw new IOException("Cannot encode jar entry name to a URI: " + path, ex);
+		}
 	}
 
 	private List<StubResource> scanFileSystem(String pattern) throws IOException {

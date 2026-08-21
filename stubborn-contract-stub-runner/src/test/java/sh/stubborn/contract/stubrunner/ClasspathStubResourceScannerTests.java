@@ -17,14 +17,23 @@
 package sh.stubborn.contract.stubrunner;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 /**
  * Tests for {@link ClasspathStubResourceScanner}.
@@ -152,6 +161,52 @@ class ClasspathStubResourceScannerTests {
 	void exactFileThatDoesNotExistReturnsEmptyList() throws IOException {
 		List<StubResource> resources = this.scanner.getResources("/no/such/path/stub.json");
 		assertThat(resources).isEmpty();
+	}
+
+	@Test
+	void jarMappingWithSpaceInFilenameResolvesToValidUri(@TempDir Path dir) throws IOException {
+		// Regression for #169: a WireMock mapping filename with a character that is legal
+		// in a jar entry name but illegal in an unescaped URI (a space) must not blow up
+		// StubResource.getURI() and, in turn, the whole @AutoConfigureStubRunner context.
+		String entryName = "META-INF/com.example/artifact/mappings/should send greeting.json";
+		String body = "{\"request\":{\"method\":\"GET\"}}";
+		Path jar = dir.resolve("stubs-with-spaces.jar");
+		try (JarOutputStream out = new JarOutputStream(Files.newOutputStream(jar))) {
+			// Real stub jars carry directory entries; getResources("META-INF") relies on
+			// the
+			// "META-INF/" entry existing, and JarOutputStream does not create them
+			// implicitly.
+			for (String dirEntry : new String[] { "META-INF/", "META-INF/com.example/",
+					"META-INF/com.example/artifact/", "META-INF/com.example/artifact/mappings/" }) {
+				out.putNextEntry(new JarEntry(dirEntry));
+				out.closeEntry();
+			}
+			out.putNextEntry(new JarEntry(entryName));
+			out.write(body.getBytes(StandardCharsets.UTF_8));
+			out.closeEntry();
+		}
+
+		ClassLoader previous = Thread.currentThread().getContextClassLoader();
+		try (URLClassLoader loader = new URLClassLoader(new URL[] { jar.toUri().toURL() }, null)) {
+			Thread.currentThread().setContextClassLoader(loader);
+
+			List<StubResource> resources = this.scanner.getResources("classpath*:**/*.json");
+
+			assertThat(resources).extracting(StubResource::getFilename).contains("should send greeting.json");
+			StubResource resource = resources.stream()
+				.filter((r) -> "should send greeting.json".equals(r.getFilename()))
+				.findFirst()
+				.orElseThrow();
+			assertThatNoException().isThrownBy(resource::getURI);
+			URI uri = resource.getURI();
+			assertThat(uri.toString()).contains("should%20send%20greeting.json");
+			try (InputStream in = Objects.requireNonNull(resource.getInputStream())) {
+				assertThat(new String(in.readAllBytes(), StandardCharsets.UTF_8)).isEqualTo(body);
+			}
+		}
+		finally {
+			Thread.currentThread().setContextClassLoader(previous);
+		}
 	}
 
 }
