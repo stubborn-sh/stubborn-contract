@@ -112,6 +112,8 @@ public class ContractVerifierKafkaConsumerConverterConfiguration {
 	 * producer {@code KafkaTemplate} untouched. Scoping the converter to the listener
 	 * factory (rather than exposing it as a bare bean) is what keeps the producer side
 	 * free of the double-encoding described in the enclosing class' Javadoc.
+	 *
+	 * @since 1.0.0
 	 */
 	static class StubbornContractKafkaListenerConverterPostProcessor implements BeanPostProcessor {
 
