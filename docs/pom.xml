@@ -15,8 +15,14 @@
 	<name>Stubborn Contract Docs</name>
 	<description>Stubborn Contract Reference Documentation</description>
 	<properties>
-		<!-- Don't deploy docs jar to Maven Central -->
+		<!--
+		  Don't deploy the reference-docs jar to Maven Central. It is a build artifact for
+		  the docs site, not a consumed dependency, and shipping it wastes Central quota.
+		  maven.deploy.skip is what central-publishing-maven-plugin honors; the
+		  deploy-plugin phase override below only covers the legacy maven-deploy-plugin.
+		-->
 		<maven-deploy-plugin-default.phase>none</maven-deploy-plugin-default.phase>
+		<maven.deploy.skip>true</maven.deploy.skip>
 		<maven.install.skip>true</maven.install.skip>
 	</properties>
 
