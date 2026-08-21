@@ -29,9 +29,8 @@ The fastest path is to run the OpenRewrite recipe that automates steps 1–4 bel
   -Drewrite.activeRecipes=sh.stubborn.contract.migration.MigrateFromSpringCloudContract
 ```
 
-This composite recipe (`sh.stubborn.contract.migration.MigrateFromSpringCloudContract`) applies six sub-recipes:
-- `sh.stubborn.contract.migration.UpdateMavenDependencies` — replaces `org.springframework.cloud:spring-cloud-contract-*` GAVs (dependencies, the managed BOM, and the Maven plugin) with their `sh.stubborn:stubborn-*` equivalents
-- `sh.stubborn.contract.migration.UpdateGradleDependencies` — the same coordinate and plugin-id swaps for Gradle builds (Groovy and Kotlin DSL)
+This composite recipe (`sh.stubborn.contract.migration.MigrateFromSpringCloudContract`) applies five sub-recipes:
+- `sh.stubborn.contract.migration.UpdateDependencies` — replaces `org.springframework.cloud:spring-cloud-contract-*` GAVs (dependencies, the managed BOM, and the Maven/Gradle plugins) with their `sh.stubborn:stubborn-*` equivalents, in Maven and Gradle builds alike (Groovy and Kotlin DSL), repinning each to the latest published release
 - `sh.stubborn.contract.migration.RenameJavaPackages` — renames `org.springframework.cloud.contract` → `sh.stubborn.contract`, and the assertion packages `com.toomuchcoding.jsonassert` → `sh.stubborn.jsonassert` and `com.toomuchcoding.xmlassert` → `sh.stubborn.xmlassert`
 - `sh.stubborn.contract.migration.MigrateStubRunnerProperties` — renames `spring.cloud.contract.stubrunner.*` configuration keys to `stubborn.contract.stubrunner.*`
 - `sh.stubborn.contract.migration.MigrateVerifierProperties` — renames `spring.cloud.contract.verifier.*` configuration keys to `stubborn.contract.verifier.*`
@@ -54,6 +53,10 @@ After running, verify the changes and complete any remaining manual steps below.
 | `org.springframework.cloud:spring-cloud-contract-spec-kotlin` | `sh.stubborn:stubborn-contract-spec-kotlin` |
 | `org.springframework.cloud:spring-cloud-contract-converters` | `sh.stubborn:stubborn-contract-converters` |
 | `org.springframework.cloud:spring-cloud-contract-stub-runner` | `sh.stubborn:stubborn-contract-stub-runner` |
+| `org.springframework.cloud:spring-cloud-contract-spec` | `sh.stubborn:stubborn-contract-spec` |
+| `org.springframework.cloud:spring-cloud-starter-contract-stub-runner-jetty` | `sh.stubborn:stubborn-contract-starter-stub-runner-jetty` |
+| `com.toomuchcoding.jsonassert:jsonassert` | `sh.stubborn:stubborn-contract-jsonassert` |
+| `com.toomuchcoding.xmlassert:xmlassert` | `sh.stubborn:stubborn-contract-xmlassert` |
 
 Version: use the current release, or a snapshot from:
 ```xml
