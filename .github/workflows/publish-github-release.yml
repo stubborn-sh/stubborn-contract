@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+
 jobs:
   github-release:
     name: GitHub Release
@@ -17,6 +21,21 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           ref: "v${{ inputs.version }}"
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      # Build the standalone stub-runner executable ("fat") jar so it can be attached to
+      # the release. In the main Release workflow this jar already exists from the deploy
+      # build; on a standalone re-dispatch it has to be rebuilt from the tagged sources.
+      # It is intentionally not on Maven Central (repackage uses attach=false), so the
+      # only way to obtain it is to build it here.
+      - name: Build standalone stub-runner executable jar
+        run: ./mvnw -B -DskipTests -pl stubborn-contract-stub-runner-app -am package --no-transfer-progress
 
       - name: Create GitHub Release
         env:

@@ -55,6 +55,16 @@
 							<mainClass>
 								sh.stubborn.contract.stubrunner.server.StubRunnerBoot
 							</mainClass>
+							<!--
+							  Keep the fat/executable jar OUT of Maven Central. With a classifier
+							  the thin library jar remains the module's main (deployed) artifact,
+							  and attach=false stops the ~50MB executable jar from being installed
+							  or deployed. The executable jar is still produced at
+							  target/${project.build.finalName}-exec.jar for the GitHub Release
+							  and the Docker image to pick up.
+							-->
+							<classifier>exec</classifier>
+							<attach>false</attach>
 						</configuration>
 					</execution>
 				</executions>

@@ -18,6 +18,13 @@
 	<description>Stubborn Contract Tests</description>
 
 	<properties>
+		<!--
+		  Internal integration tests (Eureka/Zookeeper stub-runner-app scenarios). These
+		  are never consumed as dependencies, so keep them out of Maven Central. Inherited
+		  by the child modules; central-publishing-maven-plugin honors maven.deploy.skip.
+		-->
+		<maven.deploy.skip>true</maven.deploy.skip>
+		<maven.install.skip>true</maven.install.skip>
 		<!-- WireMock (wiremock-jetty12) requires jetty-ee10-servlet 12.1.x which calls
 		     Environment.ensure(String,Class) — that method only exists in jetty-util 12.1.x.
 		     Force all Jetty core artifacts to the same minor to keep the stack consistent. -->
