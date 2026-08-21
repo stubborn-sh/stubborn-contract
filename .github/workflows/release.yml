@@ -10,8 +10,18 @@ on:
         description: 'Next SNAPSHOT version (e.g. 0.2.0-SNAPSHOT)'
         required: true
         default: '0.2.0-SNAPSHOT'
+      verifySamples:
+        description: 'Build the stubborn-samples suite against the release artifacts before publishing. A sample failure aborts the release before anything is published.'
+        type: boolean
+        required: false
+        default: true
+      autoPublish:
+        description: 'Publish to Maven Central automatically once the build, the SNAPSHOT gate and (if enabled) the sample verification pass. When false the deployment is staged in the Central Portal as validated/pending for a manual Publish.'
+        type: boolean
+        required: false
+        default: true
       dryRun:
-        description: 'Staged dry-run: deploy to Central Portal (validated/pending, never auto-published) but skip tag / GitHub release / next-snapshot commit.'
+        description: 'Staged dry-run: deploy to Central Portal (validated/pending, never auto-published) but skip tag / GitHub release / next-snapshot commit. Sample verification still runs.'
         type: boolean
         required: false
         default: false
@@ -22,6 +32,8 @@ permissions:
 env:
   JAVA_VERSION: '17'
   JAVA_DISTRIBUTION: 'temurin'
+  # On a dry-run we always stage (never publish); otherwise honour the autoPublish input.
+  CENTRAL_AUTO_PUBLISH: ${{ (inputs.dryRun && 'false') || inputs.autoPublish }}
 
 jobs:
   release:
@@ -66,21 +78,32 @@ jobs:
           ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
 
       - name: Build & test
+        # Installs the fully-versioned release artifacts into the local ~/.m2. These are the
+        # exact bytes the sample verification below resolves and that the deploy step ships.
         run: ./mvnw clean install --no-transfer-progress
 
       - name: Fail if any SNAPSHOT version remains
         # Extracted to scripts/release/assert-no-snapshots.sh (unit-tested via test/bats).
         run: scripts/release/assert-no-snapshots.sh
 
+      - name: Verify samples against the release artifacts
+        # Pre-publish gate: build the stubborn-samples suite against the just-built
+        # ${{ inputs.version }} artifacts (resolved from the local ~/.m2 populated above,
+        # i.e. the exact artifacts that will be deployed). A sample failure fails this step,
+        # so the deploy/publish steps below never run and nothing goes live. This is what
+        # would have caught, for example, stubborn-sh/stubborn-contract#164.
+        if: ${{ inputs.verifySamples }}
+        run: scripts/release/verify-samples.sh "${{ inputs.version }}"
+
       - name: Deploy stubborn-contract-build to Maven Central
-        run: ./mvnw deploy -Ppublish,release -DskipTests -Dcentral.autoPublish=false --no-transfer-progress -f stubborn-contract-build/pom.xml
+        run: ./mvnw deploy -Ppublish,release -DskipTests -Dcentral.autoPublish=${{ env.CENTRAL_AUTO_PUBLISH }} --no-transfer-progress -f stubborn-contract-build/pom.xml
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Deploy all modules to Maven Central
-        run: ./mvnw deploy -Ppublish,release -DskipTests -Dcentral.autoPublish=false --no-transfer-progress
+        run: ./mvnw deploy -Ppublish,release -DskipTests -Dcentral.autoPublish=${{ env.CENTRAL_AUTO_PUBLISH }} --no-transfer-progress
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
