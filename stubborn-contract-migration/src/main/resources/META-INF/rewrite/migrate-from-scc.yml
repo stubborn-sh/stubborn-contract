@@ -147,6 +147,39 @@ tags:
   - spring-cloud-contract
   - stubborn-contract
 recipeList:
+  # stubborn-openapi-validator moved its classes to sh.stubborn.contract.openapi.*
+  # rather than the default sh.stubborn.contract.verifier.* target, so these must be
+  # redirected BEFORE the broad org.springframework.cloud.contract -> sh.stubborn.contract
+  # rename below (otherwise they would rewrite to packages that do not exist). See
+  # stubborn-sh/stubborn-openapi#22.
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: org.springframework.cloud.contract.verifier.openapivalidation
+      newPackageName: sh.stubborn.contract.openapi.validation
+      recursive: true
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.cloud.contract.verifier.converter.OpenApiContractConverter
+      newFullyQualifiedTypeName: sh.stubborn.contract.openapi.converter.OpenApiContractConverter
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.cloud.contract.verifier.converter.Oa3ToScc
+      newFullyQualifiedTypeName: sh.stubborn.contract.openapi.converter.Oa3ToScc
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.cloud.contract.verifier.converter.Oa3ToSccRequest
+      newFullyQualifiedTypeName: sh.stubborn.contract.openapi.converter.Oa3ToSccRequest
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.cloud.contract.verifier.converter.Oa3ToSccResponse
+      newFullyQualifiedTypeName: sh.stubborn.contract.openapi.converter.Oa3ToSccResponse
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.cloud.contract.verifier.converter.Oa3Spec
+      newFullyQualifiedTypeName: sh.stubborn.contract.openapi.converter.Oa3Spec
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.cloud.contract.verifier.converter.Oa3Parser
+      newFullyQualifiedTypeName: sh.stubborn.contract.openapi.converter.Oa3Parser
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.cloud.contract.verifier.converter.TempYamlToContracts
+      newFullyQualifiedTypeName: sh.stubborn.contract.openapi.converter.TempYamlToContracts
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.cloud.contract.verifier.converter.ServiceNameVerifier
+      newFullyQualifiedTypeName: sh.stubborn.contract.openapi.converter.ServiceNameVerifier
   - org.openrewrite.java.ChangePackage:
       oldPackageName: org.springframework.cloud.contract
       newPackageName: sh.stubborn.contract

@@ -51,6 +51,18 @@ class MigrateJavaPackagesTests implements RewriteTest {
 					public class XmlAssertion {
 						public static Object assertThat(String body) { return null; }
 					}
+					""", """
+					package org.springframework.cloud.contract.verifier.openapivalidation;
+					public class VerifyContractsAgainstOpenApi {
+					}
+					""", """
+					package org.springframework.cloud.contract.verifier.converter;
+					public class OpenApiContractConverter {
+					}
+					""", """
+					package org.springframework.cloud.contract.verifier.converter;
+					public class YamlContractConverter {
+					}
 					"""));
 	}
 
@@ -120,6 +132,63 @@ class MigrateJavaPackagesTests implements RewriteTest {
 
 				class MyTest {
 					Object result = XmlAssertion.assertThat("<a/>");
+				}
+				"""));
+	}
+
+	@Test
+	void renamesOpenApiValidationImportToItsRelocatedPackage() {
+		// The openapi-validator's openapivalidation classes moved to
+		// sh.stubborn.contract.openapi.validation, not sh.stubborn.contract.verifier.*.
+		rewriteRun(Assertions.java("""
+				import org.springframework.cloud.contract.verifier.openapivalidation.VerifyContractsAgainstOpenApi;
+
+				class MyTest {
+					VerifyContractsAgainstOpenApi verifier = new VerifyContractsAgainstOpenApi();
+				}
+				""", """
+				import sh.stubborn.contract.openapi.validation.VerifyContractsAgainstOpenApi;
+
+				class MyTest {
+					VerifyContractsAgainstOpenApi verifier = new VerifyContractsAgainstOpenApi();
+				}
+				"""));
+	}
+
+	@Test
+	void renamesOpenApiContractConverterToItsRelocatedPackage() {
+		rewriteRun(Assertions.java("""
+				import org.springframework.cloud.contract.verifier.converter.OpenApiContractConverter;
+
+				class MyTest {
+					OpenApiContractConverter converter = new OpenApiContractConverter();
+				}
+				""", """
+				import sh.stubborn.contract.openapi.converter.OpenApiContractConverter;
+
+				class MyTest {
+					OpenApiContractConverter converter = new OpenApiContractConverter();
+				}
+				"""));
+	}
+
+	@Test
+	void keepsLibraryConverterInTheVerifierPackage() {
+		// Discriminates the openapi redirect above from the broad rename: a genuine
+		// library
+		// type in the same source package must still go to
+		// sh.stubborn.contract.verifier.*.
+		rewriteRun(Assertions.java("""
+				import org.springframework.cloud.contract.verifier.converter.YamlContractConverter;
+
+				class MyTest {
+					YamlContractConverter converter = new YamlContractConverter();
+				}
+				""", """
+				import sh.stubborn.contract.verifier.converter.YamlContractConverter;
+
+				class MyTest {
+					YamlContractConverter converter = new YamlContractConverter();
 				}
 				"""));
 	}
