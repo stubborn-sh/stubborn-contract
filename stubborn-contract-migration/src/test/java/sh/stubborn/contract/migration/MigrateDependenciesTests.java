@@ -152,29 +152,26 @@ class MigrateDependenciesTests implements RewriteTest {
 
 	@Test
 	void migratesMavenPlugin() {
-		// The plugin repin drops the stale version in one cycle and re-resolves it in
-		// the next, so this recipe legitimately makes changes across two cycles.
-		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2),
-				Assertions.pomXml("""
-						<project>
-							<groupId>com.example</groupId>
-							<artifactId>my-app</artifactId>
-							<version>1.0.0</version>
-							<build>
-								<plugins>
-									<plugin>
-										<groupId>org.springframework.cloud</groupId>
-										<artifactId>spring-cloud-contract-maven-plugin</artifactId>
-										<version>4.1.0</version>
-									</plugin>
-								</plugins>
-							</build>
-						</project>
-						""",
-						(spec) -> spec.after((actual) -> assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
-							.contains("<artifactId>stubborn-contract-maven-plugin</artifactId>")
-							.doesNotContain("spring-cloud-contract-maven-plugin")
-							.actual())));
+		rewriteRun(Assertions.pomXml("""
+				<project>
+					<groupId>com.example</groupId>
+					<artifactId>my-app</artifactId>
+					<version>1.0.0</version>
+					<build>
+						<plugins>
+							<plugin>
+								<groupId>org.springframework.cloud</groupId>
+								<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+								<version>4.1.0</version>
+							</plugin>
+						</plugins>
+					</build>
+				</project>
+				""",
+				(spec) -> spec.after((actual) -> assertThat(actual).contains("<groupId>sh.stubborn</groupId>")
+					.contains("<artifactId>stubborn-contract-maven-plugin</artifactId>")
+					.doesNotContain("spring-cloud-contract-maven-plugin")
+					.actual())));
 	}
 
 	@Test
@@ -205,9 +202,7 @@ class MigrateDependenciesTests implements RewriteTest {
 
 	@Test
 	void repinsTheMavenPluginWithoutDisturbingOtherPlugins() {
-		// The plugin repin drops the stale version in one cycle and re-resolves it in
-		// the next, so this recipe legitimately makes changes across two cycles.
-		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2), Assertions.pomXml("""
+		rewriteRun(Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>my-app</artifactId>
@@ -228,8 +223,8 @@ class MigrateDependenciesTests implements RewriteTest {
 					</build>
 				</project>
 				""",
-				// The stale plugin version is dropped and re-resolved, so the XPath doing
-				// the dropping has to match this plugin only.
+				// Repinning the migrated plugin must leave every other plugin's version
+				// alone.
 				(spec) -> spec.after((actual) -> assertThat(actual)
 					.containsPattern(
 							"(?s)<artifactId>maven-surefire-plugin</artifactId>\\s*<version>3\\.5\\.6</version>")
@@ -272,9 +267,7 @@ class MigrateDependenciesTests implements RewriteTest {
 
 	@Test
 	void repinsAnExplicitlyPinnedDependencyAndPluginVersionToAPublishedRelease() {
-		// The plugin repin drops the stale version in one cycle and re-resolves it in
-		// the next, so this recipe legitimately makes changes across two cycles.
-		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2), Assertions.pomXml("""
+		rewriteRun(Assertions.pomXml("""
 				<project>
 					<groupId>com.example</groupId>
 					<artifactId>my-app</artifactId>
