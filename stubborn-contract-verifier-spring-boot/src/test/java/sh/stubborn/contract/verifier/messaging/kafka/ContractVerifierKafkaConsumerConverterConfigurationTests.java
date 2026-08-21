@@ -16,26 +16,35 @@
 
 package sh.stubborn.contract.verifier.messaging.kafka;
 
+import java.util.Map;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.verifier.messaging.kafka.ContractVerifierKafkaConsumerConverterConfiguration.StubbornContractKafkaListenerConverterPostProcessor;
 import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.converter.RecordMessageConverter;
 import org.springframework.kafka.support.converter.StringJacksonJsonMessageConverter;
 import org.springframework.messaging.Message;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests the out-of-the-box Kafka consumer JSON converter auto-configuration. Verifies the
  * conditions (default-on, opt-out, user-override back-off) and — deterministically, with
- * no broker — the actual conversion behaviour the feature relies on: a JSON record with
- * no {@code __TypeId__} header is bound to the type inferred from the listener method
- * parameter.
+ * no broker — that the converter is installed on the {@code @KafkaListener} container
+ * factory only, never on the producer {@code KafkaTemplate} (the double-encoding
+ * regression, #164), plus the actual conversion behaviour the feature relies on: a JSON
+ * record with no {@code __TypeId__} header is bound to the type inferred from the
+ * listener method parameter.
  *
  * @author Marcin Grzejszczak
  */
@@ -45,32 +54,30 @@ class ContractVerifierKafkaConsumerConverterConfigurationTests {
 		.withConfiguration(AutoConfigurations.of(ContractVerifierKafkaConsumerConverterConfiguration.class));
 
 	@Test
-	void shouldRegisterJsonRecordMessageConverterByDefault() {
-		this.contextRunner.run((context) -> {
-			assertThat(context).hasSingleBean(RecordMessageConverter.class);
-			assertThat(context).hasSingleBean(StringJacksonJsonMessageConverter.class);
-		});
+	void shouldRegisterListenerConverterPostProcessorByDefault() {
+		this.contextRunner.run((context) -> assertThat(context)
+			.hasSingleBean(StubbornContractKafkaListenerConverterPostProcessor.class));
 	}
 
 	@Test
 	void shouldNotRegisterConverterWhenDisabled() {
 		this.contextRunner.withPropertyValues("stubborn.contract.messaging.consumer-converters.enabled=false")
-			.run((context) -> assertThat(context).doesNotHaveBean(RecordMessageConverter.class));
+			.run((context) -> assertThat(context)
+				.doesNotHaveBean(StubbornContractKafkaListenerConverterPostProcessor.class));
 	}
 
 	@Test
 	void shouldRegisterConverterWhenExplicitlyEnabled() {
 		this.contextRunner.withPropertyValues("stubborn.contract.messaging.consumer-converters.enabled=true")
-			.run((context) -> assertThat(context).hasSingleBean(RecordMessageConverter.class));
+			.run((context) -> assertThat(context)
+				.hasSingleBean(StubbornContractKafkaListenerConverterPostProcessor.class));
 	}
 
 	@Test
 	void shouldBackOffWhenUserDefinesRecordMessageConverter() {
-		this.contextRunner.withUserConfiguration(CustomConverterConfiguration.class).run((context) -> {
-			assertThat(context).hasSingleBean(RecordMessageConverter.class);
-			assertThat(context.getBean(RecordMessageConverter.class))
-				.isSameAs(context.getBean("customRecordMessageConverter"));
-		});
+		this.contextRunner.withUserConfiguration(CustomConverterConfiguration.class)
+			.run((context) -> assertThat(context)
+				.doesNotHaveBean(StubbornContractKafkaListenerConverterPostProcessor.class));
 	}
 
 	@Test
@@ -78,7 +85,8 @@ class ContractVerifierKafkaConsumerConverterConfigurationTests {
 		this.contextRunner
 			.withPropertyValues("spring.kafka.consumer.value-deserializer="
 					+ "org.springframework.kafka.support.serializer.JsonDeserializer")
-			.run((context) -> assertThat(context).doesNotHaveBean(RecordMessageConverter.class));
+			.run((context) -> assertThat(context)
+				.doesNotHaveBean(StubbornContractKafkaListenerConverterPostProcessor.class));
 	}
 
 	@Test
@@ -86,7 +94,38 @@ class ContractVerifierKafkaConsumerConverterConfigurationTests {
 		this.contextRunner
 			.withPropertyValues("spring.kafka.consumer.value-deserializer="
 					+ "org.apache.kafka.common.serialization.StringDeserializer")
-			.run((context) -> assertThat(context).hasSingleBean(RecordMessageConverter.class));
+			.run((context) -> assertThat(context)
+				.hasSingleBean(StubbornContractKafkaListenerConverterPostProcessor.class));
+	}
+
+	@Test
+	void shouldInstallJsonConverterOnListenerContainerFactory() {
+		StubbornContractKafkaListenerConverterPostProcessor postProcessor = new StubbornContractKafkaListenerConverterPostProcessor();
+		ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+
+		Object result = postProcessor.postProcessAfterInitialization(factory, "kafkaListenerContainerFactory");
+
+		assertThat(result).isSameAs(factory);
+		assertThat(ReflectionTestUtils.getField(factory, "recordMessageConverter"))
+			.isInstanceOf(StringJacksonJsonMessageConverter.class);
+	}
+
+	@Test
+	void shouldNotInstallConverterOnProducerKafkaTemplate() {
+		// #164: the out-of-the-box converter must be scoped to the listener side only.
+		// Leaking it onto the producer template re-wraps a JsonSerializer producer's JSON
+		// body as a JSON string (tagged __TypeId__=java.lang.String), which makes a
+		// field-based assertion generated from a Groovy outputMessage body fail with a
+		// jsonpath "can not be applied to primitives" error.
+		StubbornContractKafkaListenerConverterPostProcessor postProcessor = new StubbornContractKafkaListenerConverterPostProcessor();
+		KafkaTemplate<String, String> template = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(Map.of()));
+		RecordMessageConverter original = template.getMessageConverter();
+
+		Object result = postProcessor.postProcessAfterInitialization(template, "kafkaTemplate");
+
+		assertThat(result).isSameAs(template);
+		assertThat(template.getMessageConverter()).isSameAs(original);
+		assertThat(template.getMessageConverter()).isNotInstanceOf(StringJacksonJsonMessageConverter.class);
 	}
 
 	@Test

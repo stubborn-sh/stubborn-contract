@@ -20,11 +20,16 @@
 	<properties>
 		<!--
 		  Internal integration tests (Eureka/Zookeeper stub-runner-app scenarios). These
-		  are never consumed as dependencies, so keep them out of Maven Central. Inherited
-		  by the child modules; central-publishing-maven-plugin honors maven.deploy.skip.
+		  are never consumed as external dependencies, so keep them out of Maven Central.
+		  Inherited by the child modules; central-publishing-maven-plugin honors
+		  maven.deploy.skip. Note: we intentionally do NOT skip the install phase.
+		  stubborn-contract-tests-support is a shared compile/test dependency of the
+		  sample modules here; the CI "changed modules + dependents" path installs the
+		  whole reactor first so those snapshots resolve from ~/.m2, and skipping install
+		  would leave tests-support unresolvable when a sample is rebuilt on its own.
+		  Skipping deploy alone already keeps everything off Maven Central.
 		-->
 		<maven.deploy.skip>true</maven.deploy.skip>
-		<maven.install.skip>true</maven.install.skip>
 		<!-- WireMock (wiremock-jetty12) requires jetty-ee10-servlet 12.1.x which calls
 		     Environment.ensure(String,Class) — that method only exists in jetty-util 12.1.x.
 		     Force all Jetty core artifacts to the same minor to keep the stack consistent. -->
