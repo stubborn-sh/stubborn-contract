@@ -18,11 +18,13 @@ package sh.stubborn.contract.verifier.messaging.kafka;
 
 import tools.jackson.databind.json.JsonMapper;
 
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.AbstractKafkaListenerContainerFactory;
 import org.springframework.kafka.support.converter.RecordMessageConverter;
 import org.springframework.kafka.support.converter.StringJacksonJsonMessageConverter;
 
@@ -39,11 +41,28 @@ import org.springframework.kafka.support.converter.StringJacksonJsonMessageConve
  * {@code contentType=application/json} header and <em>no</em> {@code __TypeId__} header.
  * Spring Boot defaults the consumer's {@code value.deserializer} to a
  * {@code StringDeserializer}, so the record value arrives as a {@code String}. This
- * config registers a {@link StringJacksonJsonMessageConverter} (Jackson 3) as the
- * {@link RecordMessageConverter}; Spring Boot wires that single bean into the
- * {@code @KafkaListener} container factory, and — because the type mapper defaults to
- * {@code TypePrecedence.INFERRED} — the JSON body is deserialized into the type declared
- * by the listener method parameter. No {@code __TypeId__} header is required.
+ * config installs a {@link StringJacksonJsonMessageConverter} (Jackson 3) as the
+ * {@link RecordMessageConverter} <em>on the {@code @KafkaListener} container factory
+ * only</em>; because the type mapper defaults to {@code TypePrecedence.INFERRED}, the
+ * JSON body is deserialized into the type declared by the listener method parameter. No
+ * {@code __TypeId__} header is required.
+ *
+ * <h3>Why a listener-scoped post-processor instead of a bare bean</h3>
+ * <p>
+ * Exposing the converter as a bare {@link RecordMessageConverter} {@code @Bean} would let
+ * Spring Boot wire it into <em>both</em> the {@code @KafkaListener} container factory
+ * <em>and</em> the producer's {@code KafkaTemplate} (see
+ * {@code KafkaAutoConfiguration#kafkaTemplate} and
+ * {@code KafkaAnnotationDrivenConfiguration}). On the producer side that double-encodes a
+ * contract's {@code outputMessage}: a producer already serializing with a
+ * {@code JsonSerializer} would have its JSON body re-wrapped as a JSON string and tagged
+ * with {@code __TypeId__=java.lang.String}, so an {@code assertThatJson(...).field(...)}
+ * assertion generated from a Groovy {@code outputMessage} body fails with a jsonpath "can
+ * not be applied to primitives" error. Installing the converter through a
+ * {@link BeanPostProcessor} that targets only the
+ * {@link AbstractKafkaListenerContainerFactory} keeps the producer {@code KafkaTemplate}
+ * on its default converter. This mirrors how the JMS and RabbitMQ out-of-the-box
+ * converters are scoped to the listener side.
  *
  * <h3>Guards</h3>
  * <ul>
@@ -51,13 +70,15 @@ import org.springframework.kafka.support.converter.StringJacksonJsonMessageConve
  * active when Spring Kafka is on the classpath, so it is inert without Kafka
  * messaging.</li>
  * <li>{@link ConditionalOnMissingBean @ConditionalOnMissingBean(RecordMessageConverter.class)}
- * — it <em>never</em> overrides a converter the user has already defined.</li>
+ * — when the user has already defined their own {@link RecordMessageConverter} bean,
+ * Spring Boot wires it into the listener factory and this post-processor backs off, so it
+ * <em>never</em> overrides a user-supplied converter.</li>
  * <li>{@link ConditionalOnProperty @ConditionalOnProperty} on
  * {@code stubborn.contract.messaging.consumer-converters.enabled} (default {@code true})
  * — set it to {@code false} to opt out of the magic entirely.</li>
  * <li>{@link ConditionalOnProperty @ConditionalOnProperty} on
- * {@code spring.kafka.consumer.value-deserializer} — the converter is registered only
- * when the value deserializer is unset (Boot's default {@code StringDeserializer}) or
+ * {@code spring.kafka.consumer.value-deserializer} — the converter is installed only when
+ * the value deserializer is unset (Boot's default {@code StringDeserializer}) or
  * explicitly {@code StringDeserializer}. A consumer that configures its own deserializer
  * (for example a {@code JsonDeserializer} that already yields the typed value) keeps full
  * control and this converter <em>backs off</em>, so it never double-converts an
@@ -81,8 +102,27 @@ public class ContractVerifierKafkaConsumerConverterConfiguration {
 	@ConditionalOnMissingBean(RecordMessageConverter.class)
 	@ConditionalOnProperty(name = "spring.kafka.consumer.value-deserializer",
 			havingValue = "org.apache.kafka.common.serialization.StringDeserializer", matchIfMissing = true)
-	StringJacksonJsonMessageConverter stubbornContractKafkaJsonMessageConverter() {
-		return new StringJacksonJsonMessageConverter(new JsonMapper());
+	static StubbornContractKafkaListenerConverterPostProcessor stubbornContractKafkaListenerConverterPostProcessor() {
+		return new StubbornContractKafkaListenerConverterPostProcessor();
+	}
+
+	/**
+	 * Installs a Jackson JSON {@link RecordMessageConverter} on every
+	 * {@link AbstractKafkaListenerContainerFactory} as it is created, leaving the
+	 * producer {@code KafkaTemplate} untouched. Scoping the converter to the listener
+	 * factory (rather than exposing it as a bare bean) is what keeps the producer side
+	 * free of the double-encoding described in the enclosing class' Javadoc.
+	 */
+	static class StubbornContractKafkaListenerConverterPostProcessor implements BeanPostProcessor {
+
+		@Override
+		public Object postProcessAfterInitialization(Object bean, String beanName) {
+			if (bean instanceof AbstractKafkaListenerContainerFactory<?, ?, ?> factory) {
+				factory.setRecordMessageConverter(new StringJacksonJsonMessageConverter(new JsonMapper()));
+			}
+			return bean;
+		}
+
 	}
 
 }
