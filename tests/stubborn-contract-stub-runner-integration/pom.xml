@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>sh.stubborn</groupId>
 		<artifactId>stubborn-contract-tests</artifactId>
-		<version>0.1.1-SNAPSHOT</version>
+		<version>0.1.1</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>stubborn-contract-stub-runner-integration</artifactId>

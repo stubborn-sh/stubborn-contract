@@ -11,7 +11,7 @@
 
 	<groupId>sh.stubborn</groupId>
 	<artifactId>stubborn-contract-build</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.1</version>
 	<packaging>pom</packaging>
 
 	<name>Stubborn Build</name>
