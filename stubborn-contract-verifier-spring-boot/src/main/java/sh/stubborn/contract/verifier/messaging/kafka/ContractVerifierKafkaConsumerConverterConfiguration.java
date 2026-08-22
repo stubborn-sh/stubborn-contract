@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.utils.Bytes;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -165,7 +166,7 @@ public class ContractVerifierKafkaConsumerConverterConfiguration {
 		}
 
 		@Override
-		protected Object extractAndConvertValue(ConsumerRecord<?, ?> record, Type type) {
+		protected Object extractAndConvertValue(ConsumerRecord<?, ?> record, @Nullable Type type) {
 			Object value = record.value();
 			if (value != null && type == String.class) {
 				return asString(value);
