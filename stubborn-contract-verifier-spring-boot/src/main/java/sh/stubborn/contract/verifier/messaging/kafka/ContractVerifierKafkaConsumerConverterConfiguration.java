@@ -16,6 +16,11 @@
 
 package sh.stubborn.contract.verifier.messaging.kafka;
 
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.utils.Bytes;
 import tools.jackson.databind.json.JsonMapper;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -41,11 +46,19 @@ import org.springframework.kafka.support.converter.StringJacksonJsonMessageConve
  * {@code contentType=application/json} header and <em>no</em> {@code __TypeId__} header.
  * Spring Boot defaults the consumer's {@code value.deserializer} to a
  * {@code StringDeserializer}, so the record value arrives as a {@code String}. This
- * config installs a {@link StringJacksonJsonMessageConverter} (Jackson 3) as the
- * {@link RecordMessageConverter} <em>on the {@code @KafkaListener} container factory
- * only</em>; because the type mapper defaults to {@code TypePrecedence.INFERRED}, the
- * JSON body is deserialized into the type declared by the listener method parameter. No
- * {@code __TypeId__} header is required.
+ * config installs a Jackson 3 {@link RecordMessageConverter} <em>on the
+ * {@code @KafkaListener} container factory only</em>; because the type mapper defaults to
+ * {@code TypePrecedence.INFERRED}, the JSON body is deserialized into the type declared
+ * by the listener method parameter. No {@code __TypeId__} header is required.
+ *
+ * <p>
+ * The converter is a {@link StringJacksonJsonMessageConverter} subclass that <em>passes
+ * through</em> a {@code String} or {@code byte[]} listener parameter unchanged (see
+ * {@code PassThroughStringJacksonJsonMessageConverter}). A stock
+ * {@code StringJacksonJsonMessageConverter} would try to deserialize the JSON body
+ * <em>into</em> {@code String} and fail with a {@code ConversionException}, breaking the
+ * common consumer that receives the raw JSON as a {@code String} and parses it itself.
+ * Only a typed listener parameter (a record, a {@code Map}, …) is JSON-bound.
  *
  * <h3>Why a listener-scoped post-processor instead of a bare bean</h3>
  * <p>
@@ -120,9 +133,67 @@ public class ContractVerifierKafkaConsumerConverterConfiguration {
 		@Override
 		public Object postProcessAfterInitialization(Object bean, String beanName) {
 			if (bean instanceof AbstractKafkaListenerContainerFactory<?, ?, ?> factory) {
-				factory.setRecordMessageConverter(new StringJacksonJsonMessageConverter(new JsonMapper()));
+				factory.setRecordMessageConverter(new PassThroughStringJacksonJsonMessageConverter(new JsonMapper()));
 			}
 			return bean;
+		}
+
+	}
+
+	/**
+	 * A {@link StringJacksonJsonMessageConverter} that passes a {@code String} or
+	 * {@code byte[]} listener parameter through unchanged, deferring to the JSON
+	 * converter only for a typed listener parameter (a record, a {@code Map}, …).
+	 *
+	 * <p>
+	 * The stock converter always tries to deserialize the JSON body <em>into</em> the
+	 * listener parameter type. For the very common consumer that declares a
+	 * {@code String} parameter and parses the JSON itself, that means calling
+	 * {@code jsonMapper.readValue("{...}", String.class)}, which throws a
+	 * {@code ConversionException} ("Failed to convert from JSON") and fails the listener
+	 * invocation. By returning the raw record value for {@code String}/{@code byte[]}
+	 * parameters we keep the zero-config typed-binding for record parameters while
+	 * leaving a raw-payload consumer working exactly as it does with Spring Boot's
+	 * default converter.
+	 *
+	 * @since 1.0.0
+	 */
+	static final class PassThroughStringJacksonJsonMessageConverter extends StringJacksonJsonMessageConverter {
+
+		PassThroughStringJacksonJsonMessageConverter(JsonMapper jsonMapper) {
+			super(jsonMapper);
+		}
+
+		@Override
+		protected Object extractAndConvertValue(ConsumerRecord<?, ?> record, Type type) {
+			Object value = record.value();
+			if (value != null && type == String.class) {
+				return asString(value);
+			}
+			if (value != null && type == byte[].class) {
+				return asBytes(value);
+			}
+			return super.extractAndConvertValue(record, type);
+		}
+
+		private static Object asString(Object value) {
+			if (value instanceof byte[] bytes) {
+				return new String(bytes, StandardCharsets.UTF_8);
+			}
+			if (value instanceof Bytes bytes) {
+				return new String(bytes.get(), StandardCharsets.UTF_8);
+			}
+			return value;
+		}
+
+		private static Object asBytes(Object value) {
+			if (value instanceof String string) {
+				return string.getBytes(StandardCharsets.UTF_8);
+			}
+			if (value instanceof Bytes bytes) {
+				return bytes.get();
+			}
+			return value;
 		}
 
 	}

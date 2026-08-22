@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.verifier.messaging.kafka.ContractVerifierKafkaConsumerConverterConfiguration.PassThroughStringJacksonJsonMessageConverter;
 import sh.stubborn.contract.verifier.messaging.kafka.ContractVerifierKafkaConsumerConverterConfiguration.StubbornContractKafkaListenerConverterPostProcessor;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -107,7 +108,7 @@ class ContractVerifierKafkaConsumerConverterConfigurationTests {
 
 		assertThat(result).isSameAs(factory);
 		assertThat(ReflectionTestUtils.getField(factory, "recordMessageConverter"))
-			.isInstanceOf(StringJacksonJsonMessageConverter.class);
+			.isInstanceOf(PassThroughStringJacksonJsonMessageConverter.class);
 	}
 
 	@Test
@@ -130,7 +131,8 @@ class ContractVerifierKafkaConsumerConverterConfigurationTests {
 
 	@Test
 	void shouldConvertJsonRecordToInferredTypeWithoutTypeIdHeader() {
-		StringJacksonJsonMessageConverter converter = new StringJacksonJsonMessageConverter(new JsonMapper());
+		PassThroughStringJacksonJsonMessageConverter converter = new PassThroughStringJacksonJsonMessageConverter(
+				new JsonMapper());
 		ConsumerRecord<String, String> record = new ConsumerRecord<>("book-returned", 0, 0L, null,
 				"{ \"bookName\" : \"foo\" }");
 
@@ -140,6 +142,36 @@ class ContractVerifierKafkaConsumerConverterConfigurationTests {
 
 		assertThat(message.getPayload()).isInstanceOf(BookReturned.class);
 		assertThat(((BookReturned) message.getPayload()).getBookName()).isEqualTo("foo");
+	}
+
+	@Test
+	void shouldPassThroughRawJsonForStringListenerParameter() {
+		// The common consumer declares a String @KafkaListener parameter and parses the
+		// JSON itself. The stock StringJacksonJsonMessageConverter would call
+		// readValue("{...}", String.class) and fail with a ConversionException; the
+		// pass-through converter must hand the raw JSON string to the listener unchanged.
+		PassThroughStringJacksonJsonMessageConverter converter = new PassThroughStringJacksonJsonMessageConverter(
+				new JsonMapper());
+		ConsumerRecord<String, String> record = new ConsumerRecord<>("verifications", 0, 0L, null,
+				"{\"bookName\":\"foo\"}");
+
+		Message<?> message = converter.toMessage(record, null, null, String.class);
+
+		assertThat(message.getPayload()).isEqualTo("{\"bookName\":\"foo\"}");
+	}
+
+	@Test
+	void shouldPassThroughRawBytesForByteArrayListenerParameter() {
+		PassThroughStringJacksonJsonMessageConverter converter = new PassThroughStringJacksonJsonMessageConverter(
+				new JsonMapper());
+		ConsumerRecord<String, String> record = new ConsumerRecord<>("verifications", 0, 0L, null,
+				"{\"bookName\":\"foo\"}");
+
+		Message<?> message = converter.toMessage(record, null, null, byte[].class);
+
+		assertThat(message.getPayload()).isInstanceOf(byte[].class);
+		assertThat(new String((byte[]) message.getPayload(), java.nio.charset.StandardCharsets.UTF_8))
+			.isEqualTo("{\"bookName\":\"foo\"}");
 	}
 
 	@Configuration(proxyBeanMethods = false)
