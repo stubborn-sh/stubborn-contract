@@ -266,6 +266,28 @@
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-stub-runner</artifactId>
+			<!--
+			  #171: stubborn-contract-stub-runner declares maven-resolver-transport-http at
+			  compile scope (AetherStubDownloader uses it to fetch stubs over HTTP at test
+			  runtime). Maven core already supplies maven-resolver-transport-http — and its
+			  Apache HttpClient — to every plugin realm. Pulling a second copy into this
+			  plugin's realm makes the two transports share one RepositorySystemSession; the
+			  first remote download after the realm exists reads back a cached AuthCache
+			  created by the other realm's class and dies with
+			  "BasicAuthCache cannot be cast to AuthCache". It surfaces in whichever plugin
+			  (Surefire, PMD, ...) resolves next and only on a cold local repository, so it
+			  reads as an unrelated failure. Moving THIS plugin's own resolver artifacts to
+			  provided (below) was not enough — it does not reach the transitive compile-scope
+			  copy stub-runner brings. Exclude the transport so Maven core owns the single copy.
+			  The plugin's build-time goals (convert/generateTests) work on local contracts and
+			  do not need the plugin realm to download stubs over HTTP.
+			-->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.maven.resolver</groupId>
+					<artifactId>maven-resolver-transport-http</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
