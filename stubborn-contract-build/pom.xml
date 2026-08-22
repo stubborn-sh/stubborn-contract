@@ -472,15 +472,6 @@
 							<exclude>sh/stubborn/messaging/rabbit/StubbornRabbitMessageVerifierSender.class</exclude>
 							<exclude>sh/stubborn/messaging/rabbit/StubbornRabbitMessageVerifierReceiver.class</exclude>
 							<exclude>sh/stubborn/messaging/rabbit/AbstractStubbornRabbitVerifier.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/GitRepo.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/GitRepo$*.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/GitStubDownloader.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/AetherStubDownloader.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/AetherStubDownloaderBuilder.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/AetherFactories.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/AetherFactories$*.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/DirectoryCopyingVisitor.class</exclude>
-							<exclude>sh/stubborn/contract/stubrunner/DirectoryCopyingVisitor$*.class</exclude>
 						</excludes>
 					</configuration>
 					<executions>
