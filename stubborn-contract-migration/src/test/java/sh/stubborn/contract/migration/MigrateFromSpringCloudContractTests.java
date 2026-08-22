@@ -42,56 +42,53 @@ class MigrateFromSpringCloudContractTests implements RewriteTest {
 
 	@Test
 	void migratesAWholeSpringCloudContractProject() {
-		// The plugin repin drops the stale version in one cycle and re-resolves it in
-		// the next, so this recipe legitimately makes changes across two cycles.
-		rewriteRun((spec) -> spec.expectedCyclesThatMakeChanges(2),
-				Assertions.pomXml("""
-						<project>
-							<groupId>com.example</groupId>
-							<artifactId>beer-producer</artifactId>
-							<version>1.0.0</version>
-							<dependencyManagement>
-								<dependencies>
-									<dependency>
-										<groupId>org.springframework.cloud</groupId>
-										<artifactId>spring-cloud-contract-dependencies</artifactId>
-										<version>4.1.0</version>
-										<type>pom</type>
-										<scope>import</scope>
-									</dependency>
-								</dependencies>
-							</dependencyManagement>
-							<dependencies>
-								<dependency>
-									<groupId>org.springframework.cloud</groupId>
-									<artifactId>spring-cloud-starter-contract-verifier</artifactId>
-									<scope>test</scope>
-								</dependency>
-								<dependency>
-									<groupId>org.springframework.cloud</groupId>
-									<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
-									<scope>test</scope>
-								</dependency>
-							</dependencies>
-							<build>
-								<plugins>
-									<plugin>
-										<groupId>org.springframework.cloud</groupId>
-										<artifactId>spring-cloud-contract-maven-plugin</artifactId>
-										<version>4.1.0</version>
-									</plugin>
-								</plugins>
-							</build>
-						</project>
-						""",
-						(spec) -> spec.after((actual) -> assertThat(actual)
-							.contains("<artifactId>stubborn-contract-dependencies</artifactId>")
-							.contains("<artifactId>stubborn-contract-starter-verifier</artifactId>")
-							.contains("<artifactId>stubborn-contract-starter-stub-runner</artifactId>")
-							.contains("<artifactId>stubborn-contract-maven-plugin</artifactId>")
-							.contains("<groupId>sh.stubborn</groupId>")
-							.doesNotContain("spring-cloud-contract")
-							.actual())),
+		rewriteRun(Assertions.pomXml("""
+				<project>
+					<groupId>com.example</groupId>
+					<artifactId>beer-producer</artifactId>
+					<version>1.0.0</version>
+					<dependencyManagement>
+						<dependencies>
+							<dependency>
+								<groupId>org.springframework.cloud</groupId>
+								<artifactId>spring-cloud-contract-dependencies</artifactId>
+								<version>4.1.0</version>
+								<type>pom</type>
+								<scope>import</scope>
+							</dependency>
+						</dependencies>
+					</dependencyManagement>
+					<dependencies>
+						<dependency>
+							<groupId>org.springframework.cloud</groupId>
+							<artifactId>spring-cloud-starter-contract-verifier</artifactId>
+							<scope>test</scope>
+						</dependency>
+						<dependency>
+							<groupId>org.springframework.cloud</groupId>
+							<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
+							<scope>test</scope>
+						</dependency>
+					</dependencies>
+					<build>
+						<plugins>
+							<plugin>
+								<groupId>org.springframework.cloud</groupId>
+								<artifactId>spring-cloud-contract-maven-plugin</artifactId>
+								<version>4.1.0</version>
+							</plugin>
+						</plugins>
+					</build>
+				</project>
+				""",
+				(spec) -> spec.after((actual) -> assertThat(actual)
+					.contains("<artifactId>stubborn-contract-dependencies</artifactId>")
+					.contains("<artifactId>stubborn-contract-starter-verifier</artifactId>")
+					.contains("<artifactId>stubborn-contract-starter-stub-runner</artifactId>")
+					.contains("<artifactId>stubborn-contract-maven-plugin</artifactId>")
+					.contains("<groupId>sh.stubborn</groupId>")
+					.doesNotContain("spring-cloud-contract")
+					.actual())),
 				org.openrewrite.properties.Assertions.properties("""
 						spring.cloud.contract.stubrunner.ids=com.example:beer-producer:+:stubs
 						spring.cloud.contract.stubrunner.stubs-mode=LOCAL

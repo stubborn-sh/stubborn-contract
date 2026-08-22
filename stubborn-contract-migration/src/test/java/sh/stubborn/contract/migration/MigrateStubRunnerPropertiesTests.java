@@ -17,6 +17,7 @@
 package sh.stubborn.contract.migration;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.properties.Assertions;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -28,6 +29,7 @@ class MigrateStubRunnerPropertiesTests implements RewriteTest {
 		spec.recipeFromResources("sh.stubborn.contract.migration.MigrateStubRunnerProperties");
 	}
 
+	@DocumentExample
 	@Test
 	void renamesStubRunnerKeysInProperties() {
 		rewriteRun(Assertions.properties("""

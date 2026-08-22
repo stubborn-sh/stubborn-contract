@@ -122,14 +122,7 @@ recipeList:
       oldArtifactId: spring-cloud-contract-maven-plugin
       newGroupId: sh.stubborn
       newArtifactId: stubborn-contract-maven-plugin
-  - org.openrewrite.xml.RemoveXmlTag:
-      xPath: /project/build/plugins/plugin[artifactId='stubborn-contract-maven-plugin']/version
-      fileMatcher: '**/pom.xml'
-  - org.openrewrite.maven.UpgradePluginVersion:
-      groupId: sh.stubborn
-      artifactId: stubborn-contract-maven-plugin
       newVersion: latest.release
-      addVersionIfMissing: true
   - org.openrewrite.gradle.plugins.ChangePlugin:
       pluginId: org.springframework.cloud.contract
       newPluginId: sh.stubborn.contract

@@ -17,16 +17,21 @@
 	<description>OpenRewrite recipes to migrate from Spring Cloud Contract to Stubborn Contract</description>
 
 	<properties>
+		<openrewrite-bom.version>8.90.3</openrewrite-bom.version>
 		<openrewrite-recipe-bom.version>3.37.0</openrewrite-recipe-bom.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!--
-			  rewrite-recipe-bom aligns the org.openrewrite core modules (via the rewrite-bom it
-			  imports) with the org.openrewrite.recipe modules, so rewrite-java-dependencies and
-			  the rewrite-maven / rewrite-gradle recipes it delegates to cannot drift apart.
-			-->
+			<!-- Remove once a release of rewrite-recipe-bom carries rewrite 8.90.3 or later. -->
+			<dependency>
+				<groupId>org.openrewrite</groupId>
+				<artifactId>rewrite-bom</artifactId>
+				<version>${openrewrite-bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- Supplies the org.openrewrite.recipe module versions; the import above wins the core ones. -->
 			<dependency>
 				<groupId>org.openrewrite.recipe</groupId>
 				<artifactId>rewrite-recipe-bom</artifactId>
@@ -42,33 +47,11 @@
 			<groupId>org.openrewrite</groupId>
 			<artifactId>rewrite-java</artifactId>
 		</dependency>
-		<!--
-		  rewrite-java-dependencies supplies org.openrewrite.java.dependencies.ChangeDependency,
-		  which delegates to the Maven and Gradle coordinate recipes. UpdateDependencies lists each
-		  coordinate once through it instead of once per build tool.
-		-->
+		<!-- Supplies ChangeDependency, so UpdateDependencies lists each coordinate once for both build tools. -->
 		<dependency>
 			<groupId>org.openrewrite.recipe</groupId>
 			<artifactId>rewrite-java-dependencies</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.openrewrite</groupId>
-			<artifactId>rewrite-maven</artifactId>
-		</dependency>
-		<!--
-		  rewrite-gradle is kept for the planned Gradle build-script migration recipes
-		  (org.openrewrite.gradle.*), even though migrate-from-scc is currently Maven/Java only.
-		  It transitively pulls rewrite-kotlin + the Kotlin runtime (2.3.21), which is exposed to
-		  CVE-2026-53914 (CVSS 9.8). No GA fix (Kotlin 2.4.20) is on Maven Central yet, so rather
-		  than pin a pre-release, the CVE is suppressed centrally for all org.jetbrains.kotlin
-		  coordinates in config/dependency-check-suppressions.xml (documented, removal-on-GA).
-		-->
-		<dependency>
-			<groupId>org.openrewrite</groupId>
-			<artifactId>rewrite-gradle</artifactId>
-		</dependency>
-		<!-- rewrite-properties + rewrite-yaml back the Stub Runner property-key migration
-		     (org.openrewrite.{properties,yaml}.ChangePropertyKey) in application.properties/yml. -->
 		<dependency>
 			<groupId>org.openrewrite</groupId>
 			<artifactId>rewrite-properties</artifactId>

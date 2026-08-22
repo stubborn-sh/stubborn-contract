@@ -17,6 +17,7 @@
 package sh.stubborn.contract.migration;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.java.Assertions;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
@@ -66,6 +67,7 @@ class MigrateJavaPackagesTests implements RewriteTest {
 					"""));
 	}
 
+	@DocumentExample
 	@Test
 	void renamesStubRunnerImport() {
 		rewriteRun(Assertions.java("""

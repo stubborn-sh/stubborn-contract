@@ -1,0 +1,61 @@
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: sh.stubborn.contract.migration.DropJUnit4Support
+examples:
+- description: '`DropJUnit4SupportTests#migratesStubRunnerRuleToExtension`'
+  sources:
+  - before: "import sh.stubborn.contract.stubrunner.junit.StubRunnerRule;\n\nclass\
+      \ MyTest {\n\n\tStubRunnerRule stubRunner = new StubRunnerRule();\n\n}\n"
+    after: "import sh.stubborn.contract.stubrunner.junit.StubRunnerExtension;\n\n\
+      class MyTest {\n\n\tStubRunnerExtension stubRunner = new StubRunnerExtension();\n\
+      \n}\n"
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: sh.stubborn.contract.migration.MigrateStubRunnerProperties
+examples:
+- description: '`MigrateStubRunnerPropertiesTests#renamesStubRunnerKeysInProperties`'
+  sources:
+  - before: |
+      spring.cloud.contract.stubrunner.ids=com.example:my-service:+:stubs
+      spring.cloud.contract.stubrunner.stubs-mode=LOCAL
+      spring.cloud.contract.stubrunner.repository-root=stubs://classpath:/
+    after: |
+      stubborn.contract.stubrunner.ids=com.example:my-service:+:stubs
+      stubborn.contract.stubrunner.stubs-mode=LOCAL
+      stubborn.contract.stubrunner.repository-root=stubs://classpath:/
+    language: properties
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: sh.stubborn.contract.migration.MigrateVerifierProperties
+examples:
+- description: '`MigrateVerifierPropertiesTests#renamesVerifierKeysInProperties`'
+  sources:
+  - before: |
+      spring.cloud.contract.verifier.assert.size=true
+      spring.cloud.contract.verifier.base-package-for-tests=com.example.contracts
+    after: |
+      stubborn.contract.verifier.assert.size=true
+      stubborn.contract.verifier.base-package-for-tests=com.example.contracts
+    language: properties
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: sh.stubborn.contract.migration.RenameJavaPackages
+examples:
+- description: '`MigrateJavaPackagesTests#renamesStubRunnerImport`'
+  sources:
+  - before: |
+      import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner;
+      import org.springframework.cloud.contract.stubrunner.StubsMode;
+
+      @AutoConfigureStubRunner(stubsMode = StubsMode.CLASSPATH)
+      class MyTest {
+      }
+    after: |
+      import sh.stubborn.contract.stubrunner.spring.AutoConfigureStubRunner;
+      import sh.stubborn.contract.stubrunner.StubsMode;
+
+      @AutoConfigureStubRunner(stubsMode = StubsMode.CLASSPATH)
+      class MyTest {
+      }
+    language: java
