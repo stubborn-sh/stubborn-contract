@@ -18,7 +18,7 @@
 #   The container is run ONCE in setup_file; each @test inspects the captured
 #   result. Inputs come from environment variables:
 #     SC_DOCKER_IMAGE  (required) full image ref, e.g.
-#                      stubborn-acceptance/stubborn-contract:0.1.0-SNAPSHOT
+#                      stubborn-acceptance/stubborn-contract:0.1.2-SNAPSHOT
 #     FIXTURE_PORT     (optional) host port for the fixture app (default 8888)
 #     SC_DEBUG         (optional) "true" turns on the image's Gradle --debug
 #

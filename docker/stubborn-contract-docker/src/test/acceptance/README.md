@@ -67,7 +67,7 @@ SC_BUILD_IMAGE=true \
   bats docker/stubborn-contract-docker/src/test/acceptance/docker-acceptance.bats
 
 # Or against a pre-built image ref:
-SC_DOCKER_IMAGE=stubborn-acceptance/stubborn-contract:0.1.0-SNAPSHOT \
+SC_DOCKER_IMAGE=stubborn-acceptance/stubborn-contract:0.1.2-SNAPSHOT \
   bats docker/stubborn-contract-docker/src/test/acceptance/docker-acceptance.bats
 ```
 
