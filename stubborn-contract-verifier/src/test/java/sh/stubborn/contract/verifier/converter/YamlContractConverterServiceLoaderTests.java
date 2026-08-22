@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Every converter this project ships is reachable through the documented
- * {@link ContractConverter} SPI. The in-tree callers add
- * {@link YamlContractConverter} by hand, so a missing registration is invisible here and
- * shows up only in a downstream tool that trusts the SPI: it reads no YAML contract, and
- * whatever gate it powers passes while asserting nothing.
+ * {@link ContractConverter} SPI. The in-tree callers add {@link YamlContractConverter} by
+ * hand, so a missing registration is invisible here and shows up only in a downstream
+ * tool that trusts the SPI: it reads no YAML contract, and whatever gate it powers passes
+ * while asserting nothing.
  */
 class YamlContractConverterServiceLoaderTests {
 
