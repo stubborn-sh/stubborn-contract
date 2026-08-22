@@ -12,13 +12,13 @@
 	<parent>
 		<groupId>sh.stubborn</groupId>
 		<artifactId>stubborn-contract-docker-parent</artifactId>
-		<version>0.1.0-SNAPSHOT</version>
+		<version>0.1.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
 	<artifactId>stubborn-contract-docker</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<name>Stubborn Contract Docker</name>
 	<description>Stubborn Contract Docker</description>
 
