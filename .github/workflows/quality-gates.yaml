@@ -64,19 +64,6 @@ jobs:
       - name: Verify gate modules with coverage floor (unit + integration)
         run: ./mvnw -Psonar verify -pl "${GATE_MODULES}" -am -Djacoco.haltOnFailure=true --no-transfer-progress
 
-      - name: TEMP diagnostic - stub-runner per-class branch coverage
-        if: always()
-        run: |
-          csv=stubborn-contract-stub-runner/target/site/jacoco/jacoco.csv
-          if [ -f "$csv" ]; then
-            echo "class,branch_missed,branch_covered,branch_pct (sorted worst-first)"
-            awk -F, 'NR>1 { bm=$6; bc=$7; tot=bm+bc; pct=(tot>0)?100*bc/tot:100;
-              printf "%6.1f%%  miss=%3d cov=%3d  %s\n", pct, bm, bc, $3 }' "$csv" \
-              | sort -n | head -50
-          else
-            echo "no jacoco.csv at $csv"
-          fi
-
       - name: Aggregate coverage report
         id: coverage
         run: |
