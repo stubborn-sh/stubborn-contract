@@ -30,7 +30,7 @@ permissions:
   contents: write
 
 env:
-  JAVA_VERSION: '17'
+  JAVA_VERSION: '21'
   JAVA_DISTRIBUTION: 'temurin'
   # On a dry-run we always stage (never publish); otherwise honour the autoPublish input.
   CENTRAL_AUTO_PUBLISH: ${{ (inputs.dryRun && 'false') || inputs.autoPublish }}

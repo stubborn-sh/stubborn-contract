@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  JAVA_VERSION: '17'
+  JAVA_VERSION: '21'
   JAVA_DISTRIBUTION: 'temurin'
   DOCKER_ORG: mgrzejszczak
 
