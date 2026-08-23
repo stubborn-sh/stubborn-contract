@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>sh.stubborn</groupId>
 		<artifactId>stubborn-contract-parent</artifactId>
-		<version>0.1.2</version>
+		<version>0.1.3-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>stubborn-contract-stub-runner-messaging-quarkus</artifactId>

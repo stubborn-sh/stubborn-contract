@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>sh.stubborn</groupId>
 		<artifactId>stubborn-contract-build</artifactId>
-		<version>0.1.2</version>
+		<version>0.1.3-SNAPSHOT</version>
 		<relativePath>../stubborn-contract-build/pom.xml</relativePath>
 	</parent>
 	<groupId>sh.stubborn</groupId>
 	<artifactId>stubborn-contract-dependencies</artifactId>
-	<version>0.1.2</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>stubborn-contract-dependencies</name>
 	<description>Stubborn Contract Dependencies</description>
