@@ -133,3 +133,33 @@ jobs:
         # otherwise the docker drift check fails on the next main build.
         if: ${{ !inputs.dryRun }}
         run: scripts/release/back-to-snapshot.sh "${{ inputs.next-snapshot }}"
+
+  # ─── Docker images ────────────────────────────────────────────────────
+  # Called as a reusable workflow rather than left to publish-docker.yml's own
+  # `tags:` trigger. That trigger has never fired: the tag is pushed by this
+  # workflow using GITHUB_TOKEN, and GitHub does not start workflow runs for
+  # events created by GITHUB_TOKEN. Calling it directly needs no extra secret.
+  docker:
+    name: Publish Docker images
+    needs: release
+    if: ${{ !inputs.dryRun }}
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      version: ${{ inputs.version }}
+    secrets: inherit
+
+  # A release is not done until the images are actually pullable. This asserts
+  # it from a clean runner with no build state — the publish job's own check
+  # can only see the world its build left behind.
+  verify-docker:
+    name: Assert Docker images are published
+    needs: docker
+    if: ${{ !inputs.dryRun }}
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_ORG: mgrzejszczak
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+
+      - name: Verify images on Docker Hub
+        run: ./scripts/ci/verify-docker-images.sh "$DOCKER_ORG" "${{ inputs.version }}" latest

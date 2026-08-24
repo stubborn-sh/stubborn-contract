@@ -1,23 +1,27 @@
 #!/usr/bin/env bash
 #
-# Re-tag the just-built versioned Docker images as :latest and push them. Only
-# meaningful on a release-tag build; on any other ref it is a no-op. Reads the
-# version from $GITHUB_REF (refs/tags/vX.Y.Z).
+# Re-tag the just-built versioned Docker images as :latest and push them.
 #
-# Usage: push-latest-tags.sh <docker-registry-organization>
+# Usage: push-latest-tags.sh <docker-registry-organization> <version>
+#
+# An empty version is a no-op, so a snapshot build can call this unconditionally
+# without :latest drifting onto an unreleased image.
+#
+# Environment:
+#   DOCKER   docker binary to use (tests)
 #
 set -euo pipefail
 
-here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ORG="${1:?docker registry organization required}"
-VERSION="$("$here/version-from-ref.sh")"
+VERSION="${2-}"
+DOCKER="${DOCKER:-docker}"
 
 if [[ -z "$VERSION" ]]; then
-	echo "Not a release tag ref (${GITHUB_REF:-unset}); nothing to tag as latest." >&2
+	echo "No release version given; nothing to tag as latest." >&2
 	exit 0
 fi
 
 for image in stubborn-contract stubborn-contract-stub-runner; do
-	docker tag "${ORG}/${image}:${VERSION}" "${ORG}/${image}:latest"
-	docker push "${ORG}/${image}:latest"
+	"$DOCKER" tag "${ORG}/${image}:${VERSION}" "${ORG}/${image}:latest"
+	"$DOCKER" push "${ORG}/${image}:latest"
 done
