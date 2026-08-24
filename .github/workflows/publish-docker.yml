@@ -1,10 +1,37 @@
 name: Publish Docker Images
 
+# Publishes the verifier (stubborn-contract) and stub-runner
+# (stubborn-contract-stub-runner) images to Docker Hub.
+#
+# TWO THINGS TO KNOW BEFORE EDITING:
+#
+# 1. This runs `deploy`, not `package`. dockerfile-maven-plugin binds its
+#    `build` goal to `package` but its `push` goal to `deploy`. Running
+#    `package` here builds both images, pushes neither, and exits 0 — which is
+#    what happened for the first 139 runs of this workflow, during which
+#    nothing was ever published. Artifact deployment itself is skipped
+#    (maven-deploy-plugin skip=true in docker/pom.xml, plus -Dmaven.deploy.skip
+#    below); the only thing the deploy phase is wanted for is the image push.
+#
+# 2. The run ends by asking the registry whether the images are really there.
+#    A publish workflow that cannot fail is not a publish workflow.
+
 on:
   push:
-    branches: [ main ]
-    tags: [ 'v*.*.*' ]
+    branches: [main]
+    tags: ['v*.*.*']
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version to publish (e.g. 0.1.2). Leave empty for the latest GitHub release.'
+        required: false
+        default: ''
+  workflow_call:
+    inputs:
+      version:
+        description: 'Release version to publish (e.g. 0.1.2).'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -15,12 +42,31 @@ env:
   DOCKER_ORG: mgrzejszczak
 
 jobs:
-  publish-docker:
-    name: Build & Push Docker Images
+  resolve:
+    name: Resolve what to publish
     runs-on: ubuntu-latest
-
+    outputs:
+      version: ${{ steps.target.outputs.version }}
+      ref: ${{ steps.target.outputs.ref }}
+      push_latest: ${{ steps.target.outputs.push_latest }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+
+      - name: Resolve target
+        id: target
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: ./scripts/ci/resolve-docker-publish.sh
+
+  publish:
+    name: Build & Push Docker Images
+    needs: resolve
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          ref: ${{ needs.resolve.outputs.ref }}
 
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v4
@@ -28,10 +74,6 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: maven
-
-      - name: Compute image tags
-        id: meta
-        run: ./scripts/ci/compute-image-tags.sh
 
       - name: Log in to Docker Hub
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
@@ -43,9 +85,7 @@ jobs:
         run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress
 
       - name: Install BOM
-        run: |
-          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
-          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress
+        run: ./scripts/ci/install-bom.sh
 
       - name: Build & install all modules (no tests)
         run: ./mvnw install -DskipTests --no-transfer-progress
@@ -53,24 +93,28 @@ jobs:
       - name: Build docker module parents
         run: ./mvnw install -N -f docker/pom.xml -DskipTests --no-transfer-progress
 
+      - name: Resolve the version the images are tagged with
+        id: pom
+        run: ./scripts/ci/project-version.sh docker/stubborn-contract-docker/pom.xml
+
       - name: Build & push stubborn-contract Docker image
-        run: |
-          ./mvnw package -f docker/stubborn-contract-docker/pom.xml \
-            -Ddocker.registry.organization=${{ env.DOCKER_ORG }} \
-            -DskipTests --no-transfer-progress
+        run: ./scripts/ci/publish-docker-image.sh docker/stubborn-contract-docker/pom.xml
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & push stubborn-contract-stub-runner Docker image
-        run: |
-          ./mvnw package -f docker/stubborn-contract-stub-runner-docker/pom.xml \
-            -Ddocker.registry.organization=${{ env.DOCKER_ORG }} \
-            -DskipTests --no-transfer-progress
+        run: ./scripts/ci/publish-docker-image.sh docker/stubborn-contract-stub-runner-docker/pom.xml
         env:
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Tag images with additional tags
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: ./scripts/ci/push-latest-tags.sh "${{ env.DOCKER_ORG }}"
+      - name: Tag images as latest
+        if: needs.resolve.outputs.push_latest == 'true'
+        run: ./scripts/ci/push-latest-tags.sh "$DOCKER_ORG" "${{ needs.resolve.outputs.version }}"
+
+      - name: Verify the images reached the registry
+        run: >-
+          ./scripts/ci/verify-docker-images.sh "$DOCKER_ORG"
+          "${{ steps.pom.outputs.version }}"
+          ${{ needs.resolve.outputs.push_latest == 'true' && 'latest' || '' }}

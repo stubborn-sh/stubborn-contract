@@ -1,10 +1,9 @@
 #!/usr/bin/env bats
 #
-# Tests for scripts/ci/version-from-ref.sh and scripts/ci/compute-image-tags.sh
-# — the Docker image tag computation used by publish-docker.yml.
+# Tests for scripts/ci/version-from-ref.sh — the release version behind the
+# Docker image tags in publish-docker.yml.
 
 VERSION_FROM_REF="${BATS_TEST_DIRNAME}/../../scripts/ci/version-from-ref.sh"
-COMPUTE_TAGS="${BATS_TEST_DIRNAME}/../../scripts/ci/compute-image-tags.sh"
 
 setup() { unset GITHUB_OUTPUT; }
 
@@ -33,16 +32,4 @@ setup() { unset GITHUB_OUTPUT; }
 @test "version-from-ref reads GITHUB_REF when no arg is given" {
 	GITHUB_REF="refs/tags/v9.9.9" run bash "$VERSION_FROM_REF"
 	[ "$output" = "9.9.9" ]
-}
-
-@test "compute-image-tags on a release tag is '<version> latest'" {
-	run bash "$COMPUTE_TAGS" "refs/tags/v0.1.0"
-	[ "$status" -eq 0 ]
-	[ "$output" = "tags=0.1.0 latest" ]
-}
-
-@test "compute-image-tags on a branch is just 'latest'" {
-	run bash "$COMPUTE_TAGS" "refs/heads/main"
-	[ "$status" -eq 0 ]
-	[ "$output" = "tags=latest" ]
 }
