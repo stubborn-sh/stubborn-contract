@@ -20,7 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.regex.Pattern;
 
+import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import com.github.tomakehurst.wiremock.matching.MultiValuePattern;
+import com.github.tomakehurst.wiremock.matching.SingleMatchMultiValuePattern;
+import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -88,6 +93,178 @@ class WireMockRequestStubStrategyTests {
 
 		assertThat(content.getHeaders().get("Content-Type").getExpected())
 			.isNotEqualTo("multipart/form-data;boundary=AaB03x");
+	}
+
+	private Contract contractFrom(String yaml) throws IOException {
+		File tmp = File.createTempFile("foo" + System.currentTimeMillis(), ".yml");
+		Files.writeString(tmp.toPath(), yaml, StandardCharsets.UTF_8);
+		return new YamlContractConverter().convertFrom(tmp).iterator().next();
+	}
+
+	private String headerYaml(String headerName, String value) {
+		return """
+				name: upload-file
+				request:
+				  method: POST
+				  url: /user/upload-file
+				  headers:
+				    %s: "%s"
+				  body:
+				    foo: bar
+				response:
+				  status: 200
+				""".formatted(headerName, value);
+	}
+
+	private StringValuePattern patternFor(String headerName, String value) throws IOException {
+		given(this.metadata.getEvaluatedInputStubContentType()).willReturn(ContentType.JSON);
+		WireMockRequestStubStrategy subject = new WireMockRequestStubStrategy(
+				contractFrom(headerYaml(headerName, value)), this.metadata);
+		MultiValuePattern header = subject.buildClientRequestContent().getHeaders().get(headerName);
+		return ((SingleMatchMultiValuePattern) header).getValuePattern();
+	}
+
+	private StringValuePattern contentTypePatternFor(String contentType) throws IOException {
+		return patternFor("Content-Type", contentType);
+	}
+
+	@Test
+	void should_not_match_a_bare_multipart_content_type_exactly() throws IOException {
+		// An exact match can never fire: the boundary is mandatory in the wire
+		// format, so no conforming client sends a bare "multipart/form-data".
+		StringValuePattern pattern = contentTypePatternFor("multipart/form-data");
+
+		assertThat(pattern).isNotInstanceOf(EqualToPattern.class);
+	}
+
+	@Test
+	void should_match_what_a_real_client_actually_sends_for_multipart() throws IOException {
+		StringValuePattern pattern = contentTypePatternFor("multipart/form-data");
+
+		assertThat(pattern.match("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxk").isExactMatch())
+			.isTrue();
+		assertThat(pattern.match("multipart/form-data;boundary=AaB03x").isExactMatch()).isTrue();
+	}
+
+	@Test
+	void should_still_match_a_multipart_content_type_sent_without_parameters() throws IOException {
+		StringValuePattern pattern = contentTypePatternFor("multipart/form-data");
+
+		assertThat(pattern.match("multipart/form-data").isExactMatch()).isTrue();
+	}
+
+	@Test
+	void should_not_match_a_different_multipart_subtype() throws IOException {
+		StringValuePattern pattern = contentTypePatternFor("multipart/form-data");
+
+		assertThat(pattern.match("multipart/mixed; boundary=AaB03x").isExactMatch()).isFalse();
+		assertThat(pattern.match("application/json").isExactMatch()).isFalse();
+	}
+
+	@Test
+	void should_cover_the_whole_multipart_family_not_just_form_data() throws IOException {
+		StringValuePattern pattern = contentTypePatternFor("multipart/mixed");
+
+		assertThat(pattern.match("multipart/mixed; boundary=AaB03x").isExactMatch()).isTrue();
+	}
+
+	@Test
+	void should_leave_a_multipart_content_type_that_already_carries_a_boundary_alone() throws IOException {
+		// The author said exactly what they meant; a fixed boundary is their call.
+		StringValuePattern pattern = contentTypePatternFor("multipart/form-data; boundary=AaB03x");
+
+		assertThat(pattern).isInstanceOf(EqualToPattern.class);
+		assertThat(pattern.getExpected()).isEqualTo("multipart/form-data; boundary=AaB03x");
+	}
+
+	@Test
+	void should_leave_a_non_multipart_content_type_as_an_exact_match() throws IOException {
+		StringValuePattern pattern = contentTypePatternFor("application/json");
+
+		assertThat(pattern).isInstanceOf(EqualToPattern.class);
+		assertThat(pattern.getExpected()).isEqualTo("application/json");
+	}
+
+	@Test
+	void should_ignore_case_when_recognising_a_multipart_content_type() throws IOException {
+		StringValuePattern pattern = contentTypePatternFor("Multipart/Form-Data");
+
+		assertThat(pattern.match("Multipart/Form-Data; boundary=AaB03x").isExactMatch()).isTrue();
+	}
+
+	@Test
+	void should_treat_the_content_type_as_a_literal_not_a_regex() throws IOException {
+		// "multipart/form-data" contains characters that are regex-significant in
+		// other media types; quoting keeps the prefix a literal.
+		StringValuePattern pattern = contentTypePatternFor("multipart/form-data");
+
+		assertThat(pattern.match("multipartXform-data; boundary=AaB03x").isExactMatch()).isFalse();
+	}
+
+	@Test
+	void should_leave_a_multipart_value_on_another_header_alone() throws IOException {
+		// The rule is about Content-Type specifically; the same string elsewhere
+		// carries no boundary requirement.
+		StringValuePattern pattern = patternFor("Accept", "multipart/form-data");
+
+		assertThat(pattern).isInstanceOf(EqualToPattern.class);
+		assertThat(pattern.getExpected()).isEqualTo("multipart/form-data");
+	}
+
+	@Test
+	void should_recognise_the_content_type_header_whatever_its_case() throws IOException {
+		// HTTP header names are case-insensitive, so a contract written with a
+		// lowercase name must be treated the same way.
+		StringValuePattern pattern = patternFor("content-type", "multipart/form-data");
+
+		assertThat(pattern).isNotInstanceOf(EqualToPattern.class);
+		assertThat(pattern.match("multipart/form-data; boundary=AaB03x").isExactMatch()).isTrue();
+	}
+
+	@Test
+	void should_ignore_whitespace_around_the_declared_content_type() throws IOException {
+		StringValuePattern pattern = contentTypePatternFor("  multipart/form-data  ");
+
+		assertThat(pattern.getExpected()).isEqualTo(Pattern.quote("multipart/form-data") + ".*");
+		assertThat(pattern.match("multipart/form-data; boundary=AaB03x").isExactMatch()).isTrue();
+	}
+
+	@Test
+	void should_quote_regex_metacharacters_in_the_media_type() throws IOException {
+		// A subtype can carry characters that mean something to a regex engine.
+		// Unquoted, "x+custom" would match "xxcustom"; quoted, it matches itself.
+		StringValuePattern pattern = contentTypePatternFor("multipart/x+custom");
+
+		assertThat(pattern.match("multipart/x+custom; boundary=AaB03x").isExactMatch()).isTrue();
+		assertThat(pattern.match("multipart/xxcustom; boundary=AaB03x").isExactMatch()).isFalse();
+	}
+
+	@Test
+	void should_leave_a_content_type_matcher_regex_exactly_as_the_author_wrote_it() throws IOException {
+		// The client value here is not a plain string but a regex property, so the
+		// multipart rule must not touch it — the author already said what they meant.
+		String yaml = """
+				name: upload-file
+				request:
+				  method: POST
+				  url: /user/upload-file
+				  headers:
+				    Content-Type: multipart/form-data
+				  matchers:
+				    headers:
+				      - key: Content-Type
+				        regex: "multipart/form\\\\-data.*"
+				  body:
+				    foo: bar
+				response:
+				  status: 200
+				""";
+		given(this.metadata.getEvaluatedInputStubContentType()).willReturn(ContentType.JSON);
+		WireMockRequestStubStrategy subject = new WireMockRequestStubStrategy(contractFrom(yaml), this.metadata);
+		MultiValuePattern header = subject.buildClientRequestContent().getHeaders().get("Content-Type");
+		StringValuePattern pattern = ((SingleMatchMultiValuePattern) header).getValuePattern();
+
+		assertThat(pattern.getExpected()).isEqualTo("multipart/form\\-data.*");
 	}
 
 }
