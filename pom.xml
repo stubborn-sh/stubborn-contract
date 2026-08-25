@@ -24,7 +24,7 @@
 	<inceptionYear>2016</inceptionYear>
 
 	<properties>
-		<spring-boot.version>4.1.0</spring-boot.version>
+		<spring-boot.version>4.1.1</spring-boot.version>
 		<!--
 		  NOTE: camel.version now lives in the build parent (stubborn-contract-build/pom.xml) so the
 		  Docker image module can inherit it and Maven-filter camelVersion into gradle.properties.
