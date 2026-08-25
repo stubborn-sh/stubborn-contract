@@ -219,13 +219,6 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 		}
 	}
 
-	private Object generateConcreteValue(Object originalBody) {
-		if (originalBody instanceof Pattern || originalBody instanceof RegexProperty) {
-			return new RegexProperty(originalBody).generate();
-		}
-		return originalBody;
-	}
-
 	private RequestPatternBuilder requestBodyGuessedFromMatchingStrategy(RequestPatternBuilder requestPattern) {
 		Body body = Objects.requireNonNull(this.request.getBody());
 		return requestPattern
