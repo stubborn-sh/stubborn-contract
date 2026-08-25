@@ -67,6 +67,19 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<!-- Run spring-boot-autoconfigure-processor to generate
+					     META-INF/spring-autoconfigure-metadata.properties (issue #184). The parent
+					     pom sets an explicit annotationProcessorPaths (errorprone + nullaway), which
+					     makes javac ignore classpath-discovered processors, so the processor must be
+					     appended here. Version is resolved from the spring-boot-dependencies BOM. -->
+					<annotationProcessorPaths combine.children="append">
+						<path>
+							<groupId>org.springframework.boot</groupId>
+							<artifactId>spring-boot-autoconfigure-processor</artifactId>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
