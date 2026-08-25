@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
+import com.github.tomakehurst.wiremock.matching.MultiValuePattern;
+import com.github.tomakehurst.wiremock.matching.SingleMatchMultiValuePattern;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -117,7 +119,10 @@ class WireMockRequestStubStrategyTests {
 		given(this.metadata.getEvaluatedInputStubContentType()).willReturn(ContentType.JSON);
 		WireMockRequestStubStrategy subject = new WireMockRequestStubStrategy(
 				contractFrom(contentTypeYaml(contentType)), this.metadata);
-		return subject.buildClientRequestContent().getHeaders().get("Content-Type");
+		// A request pattern holds headers as MultiValuePattern; the pattern the
+		// strategy actually built is the single value inside it.
+		MultiValuePattern header = subject.buildClientRequestContent().getHeaders().get("Content-Type");
+		return ((SingleMatchMultiValuePattern) header).getValuePattern();
 	}
 
 	@Test
