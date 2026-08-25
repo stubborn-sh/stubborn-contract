@@ -38,6 +38,14 @@ jobs:
       - name: Build & test
         run: ./mvnw clean install --no-transfer-progress
 
+      # The docker module is commented out of the root reactor (pom.xml), so its
+      # validate-phase check that project/gradle.properties still agrees with Maven
+      # only ever ran on push to main — after a bad version bump had already merged.
+      # Running it here needs the project's own snapshots in the local repository,
+      # which the step above has just installed.
+      - name: Check Docker image versions match Maven
+        run: ./mvnw -q validate -f docker/stubborn-contract-docker/pom.xml --no-transfer-progress
+
       - name: Publish test results
         if: always()
         uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
