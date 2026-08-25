@@ -16,10 +16,18 @@
 
 package sh.stubborn.contract.verifier.messaging.integration;
 
+import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.verifier.converter.YamlContract;
+import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,6 +43,33 @@ class ContractVerifierIntegrationConfigurationTests {
 	void shouldCreateBeansWhenOnClasspath() {
 		this.contextRunner
 			.run((context) -> assertThat(context.getBeansOfType(ContractVerifierHelper.class)).hasSize(1));
+	}
+
+	@Test
+	void shouldStartWhenAnotherSenderOfADifferentPayloadTypeIsAlreadyDefined() {
+		this.contextRunner.withConfiguration(AutoConfigurations.of(NoOpContractVerifierAutoConfiguration.class))
+			.withUserConfiguration(CustomSenderConfiguration.class)
+			.run((context) -> assertThat(context).hasNotFailed());
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	static class CustomSenderConfiguration {
+
+		@Bean
+		MessageVerifierSender<String> customMessageVerifierSender() {
+			return new MessageVerifierSender<>() {
+
+				@Override
+				public void send(String message, String destination, @Nullable YamlContract contract) {
+				}
+
+				@Override
+				public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+						@Nullable YamlContract contract) {
+				}
+			};
+		}
+
 	}
 
 }

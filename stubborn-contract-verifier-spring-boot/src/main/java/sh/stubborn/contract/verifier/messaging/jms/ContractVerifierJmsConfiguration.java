@@ -30,6 +30,7 @@ import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConf
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -90,6 +91,7 @@ public class ContractVerifierJmsConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(ContractVerifierMessaging.class)
+	@ConditionalOnBean(name = { "contractVerifierJmsMessageSender", "contractVerifierJmsMessageReceiver" })
 	ContractVerifierMessaging<Message> contractVerifierJmsMessaging(MessageVerifierSender<Message> sender,
 			MessageVerifierReceiver<Message> receiver) {
 		return new ContractVerifierJmsHelper(sender, receiver);

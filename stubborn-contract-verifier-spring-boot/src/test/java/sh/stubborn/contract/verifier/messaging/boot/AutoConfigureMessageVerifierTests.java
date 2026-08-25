@@ -16,14 +16,20 @@
 
 package sh.stubborn.contract.verifier.messaging.boot;
 
+import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
 import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cloud.stream.binder.Binder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -49,8 +55,44 @@ class AutoConfigureMessageVerifierTests {
 			});
 	}
 
+	@Test
+	void shouldStartWhenTheApplicationDefinesItsOwnSender() {
+		this.contextRunner.withUserConfiguration(CustomSenderConfiguration.class).run((context) -> {
+			assertThat(context).hasNotFailed();
+			assertThat(context.getBean(MessageVerifierSender.class)).isInstanceOf(CustomSender.class);
+			assertThat(context.getBeansOfType(ContractVerifierMessaging.class)).hasSize(1);
+		});
+	}
+
 	@AutoConfigureMessageVerifier
 	private static final class Configuration {
+
+	}
+
+	@org.springframework.context.annotation.Configuration(proxyBeanMethods = false)
+	static class CustomSenderConfiguration {
+
+		@Bean
+		CustomSender customMessageVerifierSender() {
+			return new CustomSender();
+		}
+
+	}
+
+	/**
+	 * A sender whose payload type is not the one any built-in configuration injects. The
+	 * back-off conditions ignore generics, so this suppresses every shipped sender.
+	 */
+	static class CustomSender implements MessageVerifierSender<String> {
+
+		@Override
+		public void send(String message, String destination, @Nullable YamlContract contract) {
+		}
+
+		@Override
+		public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
+				@Nullable YamlContract contract) {
+		}
 
 	}
 

@@ -28,6 +28,7 @@ import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessagin
 import sh.stubborn.contract.verifier.messaging.noop.NoOpContractVerifierAutoConfiguration;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -53,6 +54,8 @@ public class ContractVerifierStreamAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(ContractVerifierMessaging.class)
+	@ConditionalOnBean(name = { "streamContractVerifierMessageSenderExchangeWithDestinations",
+			"streamContractVerifierMessageReceiverExchangeWithDestinations" })
 	public ContractVerifierMessaging<?> streamContractVerifierMessaging(MessageVerifierSender<Message<?>> sender,
 			MessageVerifierReceiver<Message<?>> receiver) {
 		return new ContractVerifierHelper(sender, receiver);
