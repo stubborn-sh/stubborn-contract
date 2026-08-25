@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.regex.Pattern;
 
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import com.github.tomakehurst.wiremock.matching.MultiValuePattern;
@@ -100,29 +101,31 @@ class WireMockRequestStubStrategyTests {
 		return new YamlContractConverter().convertFrom(tmp).iterator().next();
 	}
 
-	private String contentTypeYaml(String contentType) {
+	private String headerYaml(String headerName, String value) {
 		return """
 				name: upload-file
 				request:
 				  method: POST
 				  url: /user/upload-file
 				  headers:
-				    Content-Type: %s
+				    %s: "%s"
 				  body:
 				    foo: bar
 				response:
 				  status: 200
-				""".formatted(contentType);
+				""".formatted(headerName, value);
+	}
+
+	private StringValuePattern patternFor(String headerName, String value) throws IOException {
+		given(this.metadata.getEvaluatedInputStubContentType()).willReturn(ContentType.JSON);
+		WireMockRequestStubStrategy subject = new WireMockRequestStubStrategy(
+				contractFrom(headerYaml(headerName, value)), this.metadata);
+		MultiValuePattern header = subject.buildClientRequestContent().getHeaders().get(headerName);
+		return ((SingleMatchMultiValuePattern) header).getValuePattern();
 	}
 
 	private StringValuePattern contentTypePatternFor(String contentType) throws IOException {
-		given(this.metadata.getEvaluatedInputStubContentType()).willReturn(ContentType.JSON);
-		WireMockRequestStubStrategy subject = new WireMockRequestStubStrategy(
-				contractFrom(contentTypeYaml(contentType)), this.metadata);
-		// A request pattern holds headers as MultiValuePattern; the pattern the
-		// strategy actually built is the single value inside it.
-		MultiValuePattern header = subject.buildClientRequestContent().getHeaders().get("Content-Type");
-		return ((SingleMatchMultiValuePattern) header).getValuePattern();
+		return patternFor("Content-Type", contentType);
 	}
 
 	@Test
@@ -196,6 +199,72 @@ class WireMockRequestStubStrategyTests {
 		StringValuePattern pattern = contentTypePatternFor("multipart/form-data");
 
 		assertThat(pattern.match("multipartXform-data; boundary=AaB03x").isExactMatch()).isFalse();
+	}
+
+	@Test
+	void should_leave_a_multipart_value_on_another_header_alone() throws IOException {
+		// The rule is about Content-Type specifically; the same string elsewhere
+		// carries no boundary requirement.
+		StringValuePattern pattern = patternFor("Accept", "multipart/form-data");
+
+		assertThat(pattern).isInstanceOf(EqualToPattern.class);
+		assertThat(pattern.getExpected()).isEqualTo("multipart/form-data");
+	}
+
+	@Test
+	void should_recognise_the_content_type_header_whatever_its_case() throws IOException {
+		// HTTP header names are case-insensitive, so a contract written with a
+		// lowercase name must be treated the same way.
+		StringValuePattern pattern = patternFor("content-type", "multipart/form-data");
+
+		assertThat(pattern).isNotInstanceOf(EqualToPattern.class);
+		assertThat(pattern.match("multipart/form-data; boundary=AaB03x").isExactMatch()).isTrue();
+	}
+
+	@Test
+	void should_ignore_whitespace_around_the_declared_content_type() throws IOException {
+		StringValuePattern pattern = contentTypePatternFor("  multipart/form-data  ");
+
+		assertThat(pattern.getExpected()).isEqualTo(Pattern.quote("multipart/form-data") + ".*");
+		assertThat(pattern.match("multipart/form-data; boundary=AaB03x").isExactMatch()).isTrue();
+	}
+
+	@Test
+	void should_quote_regex_metacharacters_in_the_media_type() throws IOException {
+		// A subtype can carry characters that mean something to a regex engine.
+		// Unquoted, "x+custom" would match "xxcustom"; quoted, it matches itself.
+		StringValuePattern pattern = contentTypePatternFor("multipart/x+custom");
+
+		assertThat(pattern.match("multipart/x+custom; boundary=AaB03x").isExactMatch()).isTrue();
+		assertThat(pattern.match("multipart/xxcustom; boundary=AaB03x").isExactMatch()).isFalse();
+	}
+
+	@Test
+	void should_leave_a_content_type_matcher_regex_exactly_as_the_author_wrote_it() throws IOException {
+		// The client value here is not a plain string but a regex property, so the
+		// multipart rule must not touch it — the author already said what they meant.
+		String yaml = """
+				name: upload-file
+				request:
+				  method: POST
+				  url: /user/upload-file
+				  headers:
+				    Content-Type: multipart/form-data
+				  matchers:
+				    headers:
+				      - key: Content-Type
+				        regex: "multipart/form\\-data.*"
+				  body:
+				    foo: bar
+				response:
+				  status: 200
+				""";
+		given(this.metadata.getEvaluatedInputStubContentType()).willReturn(ContentType.JSON);
+		WireMockRequestStubStrategy subject = new WireMockRequestStubStrategy(contractFrom(yaml), this.metadata);
+		MultiValuePattern header = subject.buildClientRequestContent().getHeaders().get("Content-Type");
+		StringValuePattern pattern = ((SingleMatchMultiValuePattern) header).getValuePattern();
+
+		assertThat(pattern.getExpected()).isEqualTo("multipart/form\\-data.*");
 	}
 
 }
