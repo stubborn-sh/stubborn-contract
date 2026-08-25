@@ -317,6 +317,9 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 	 * {@code Content-Type}, which becomes a prefix match. See
 	 * {@link #hasUnsatisfiableMultipartContentType} for why an exact match there can
 	 * never fire.
+	 * @param name the header name
+	 * @param clientValue the value the contract states for the client side
+	 * @return the pattern to match this header with
 	 */
 	private StringValuePattern headerPattern(String name, @Nullable Object clientValue) {
 		if (hasUnsatisfiableMultipartContentType(name, clientValue)) {
@@ -337,6 +340,9 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 	 * Only a plain value is rewritten. An author who reached for a regex, a matcher or
 	 * {@code containing(...)} has said what they meant, and a value that already carries
 	 * a boundary is left exactly as written.
+	 * @param name the header name
+	 * @param clientValue the value the contract states for the client side
+	 * @return whether the value should become a prefix match instead of an exact one
 	 */
 	private static boolean hasUnsatisfiableMultipartContentType(String name, @Nullable Object clientValue) {
 		if (!"Content-Type".equalsIgnoreCase(name) || !(clientValue instanceof CharSequence)) {
