@@ -88,9 +88,18 @@ public class ContractVerifierIntegrationConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(ContractVerifierMessaging.class)
-	public ContractVerifierMessaging<Message<?>> integrationContractVerifierMessaging(
-			MessageVerifierSender<Message<?>> sender, MessageVerifierReceiver<Message<?>> receiver) {
-		return new ContractVerifierHelper(sender, receiver);
+	@SuppressWarnings("unchecked")
+	public ContractVerifierMessaging<Message<?>> integrationContractVerifierMessaging(MessageVerifierSender<?> sender,
+			MessageVerifierReceiver<?> receiver) {
+		// gh-184: inject MessageVerifierSender<?>/Receiver<?> (not <Message<?>>) so this
+		// bean
+		// tolerates whatever sender won the raw @ConditionalOnMissingBean back-off above
+		// (e.g. the NoOp <Object> sender) instead of failing to autowire the narrower
+		// type.
+		// Safe: the helper only sends payloads (payload-generic) and converts received
+		// Messages.
+		return new ContractVerifierHelper((MessageVerifierSender<Message<?>>) sender,
+				(MessageVerifierReceiver<Message<?>>) receiver);
 	}
 
 }
