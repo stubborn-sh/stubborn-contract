@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -305,8 +306,44 @@ class WireMockRequestStubStrategy extends BaseWireMockStubStrategy {
 			this.request.getHeaders()
 				.getEntries()
 				.forEach((header) -> requestPattern.withHeader(header.getName(),
-						(StringValuePattern) convertToValuePattern(header.getClientValue())));
+						headerPattern(header.getName(), header.getClientValue())));
 		}
+	}
+
+	/**
+	 * Build the matcher for one request header.
+	 * <p>
+	 * Everything goes through the usual conversion except a literal multipart
+	 * {@code Content-Type}, which becomes a prefix match. See
+	 * {@link #hasUnsatisfiableMultipartContentType} for why an exact match there can
+	 * never fire.
+	 */
+	private StringValuePattern headerPattern(String name, @Nullable Object clientValue) {
+		if (hasUnsatisfiableMultipartContentType(name, clientValue)) {
+			return WireMock.matching(Pattern.quote(Objects.requireNonNull(clientValue).toString().trim()) + ".*");
+		}
+		return (StringValuePattern) convertToValuePattern(clientValue);
+	}
+
+	/**
+	 * Whether this header is a multipart {@code Content-Type} written as a plain value
+	 * with no boundary.
+	 * <p>
+	 * The boundary is not optional in the multipart wire format, so every real client
+	 * sends {@code multipart/form-data; boundary=...}. An exact match on
+	 * {@code multipart/form-data} is therefore satisfied by nothing at all, and the
+	 * consumer sees a bare 404 from the stub server rather than a mismatch it can read.
+	 * <p>
+	 * Only a plain value is rewritten. An author who reached for a regex, a matcher or
+	 * {@code containing(...)} has said what they meant, and a value that already carries
+	 * a boundary is left exactly as written.
+	 */
+	private static boolean hasUnsatisfiableMultipartContentType(String name, @Nullable Object clientValue) {
+		if (!"Content-Type".equalsIgnoreCase(name) || !(clientValue instanceof CharSequence)) {
+			return false;
+		}
+		String value = clientValue.toString().trim().toLowerCase(Locale.ROOT);
+		return value.startsWith("multipart/") && !value.contains("boundary=");
 	}
 
 	private void appendCookies(RequestPatternBuilder requestPattern) {
