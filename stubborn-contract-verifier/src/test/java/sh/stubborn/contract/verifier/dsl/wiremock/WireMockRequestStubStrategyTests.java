@@ -253,7 +253,7 @@ class WireMockRequestStubStrategyTests {
 				  matchers:
 				    headers:
 				      - key: Content-Type
-				        regex: "multipart/form\\-data.*"
+				        regex: "multipart/form\\\\-data.*"
 				  body:
 				    foo: bar
 				response:
