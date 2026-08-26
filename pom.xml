@@ -32,7 +32,7 @@
 		-->
 		<jsch-agent.version>0.0.9</jsch-agent.version>
 		<spring-cloud-zookeeper.version>5.0.2</spring-cloud-zookeeper.version>
-		<spring-cloud-stream.version>5.0.2</spring-cloud-stream.version>
+		<spring-cloud-stream.version>5.0.3</spring-cloud-stream.version>
 		<spring-cloud-netflix.version>5.0.2</spring-cloud-netflix.version>
 		<spring-cloud-consul.version>5.0.2</spring-cloud-consul.version>
 		<spring-cloud-commons.version>5.0.2</spring-cloud-commons.version>

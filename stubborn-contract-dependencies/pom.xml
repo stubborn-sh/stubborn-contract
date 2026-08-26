@@ -17,7 +17,7 @@
 	<description>Stubborn Contract Dependencies</description>
 	<properties>
 		<wiremock.version>3.13.2</wiremock.version>
-		<spring-cloud-stream.version>5.0.2</spring-cloud-stream.version>
+		<spring-cloud-stream.version>5.0.3</spring-cloud-stream.version>
 		<rest-assured.version>6.0.1</rest-assured.version>
 	</properties>
 	<dependencyManagement>
