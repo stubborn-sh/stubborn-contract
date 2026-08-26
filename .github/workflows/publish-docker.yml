@@ -118,3 +118,14 @@ jobs:
           ./scripts/ci/verify-docker-images.sh "$DOCKER_ORG"
           "${{ steps.pom.outputs.version }}"
           ${{ needs.resolve.outputs.push_latest == 'true' && 'latest' || '' }}
+
+      # The step above only asks the registry whether the image EXISTS. This one
+      # pulls the just-published stub-runner image and actually RUNS it, so an
+      # image that does not boot (e.g. a non-executable jar — stubborn-sh/stubborn#91)
+      # fails the publish instead of reaching users. Pull explicitly so we exercise
+      # the pushed image, not a stale local build.
+      - name: Smoke-boot the published stub-runner image
+        run: |
+          IMAGE="${DOCKER_ORG}/stubborn-contract-stub-runner:${{ steps.pom.outputs.version }}"
+          docker pull "${IMAGE}"
+          ./scripts/ci/smoke-boot-stub-runner.sh "${IMAGE}"

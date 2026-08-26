@@ -56,15 +56,18 @@
 								sh.stubborn.contract.stubrunner.server.StubRunnerBoot
 							</mainClass>
 							<!--
-							  Keep the fat/executable jar OUT of Maven Central. With a classifier
-							  the thin library jar remains the module's main (deployed) artifact,
-							  and attach=false stops the ~50MB executable jar from being installed
-							  or deployed. The executable jar is still produced at
-							  target/${project.build.finalName}-exec.jar for the GitHub Release
-							  and the Docker image to pick up.
+							  With a classifier the thin library jar stays the module's main
+							  artifact and the executable fat jar is attached under the 'exec'
+							  classifier. attach=true installs that exec jar into the local repo so
+							  the Docker image can resolve it as a dependency and bake it in as
+							  stub-runner-boot.jar; it is still produced at
+							  target/${project.build.finalName}-exec.jar for the GitHub Release.
+							  This whole module is kept OUT of Maven Central by the 'publish'
+							  profile's central-publishing excludeArtifacts (see the root pom), so
+							  attaching the ~50MB jar does not bloat Central.
 							-->
 							<classifier>exec</classifier>
-							<attach>false</attach>
+							<attach>true</attach>
 						</configuration>
 					</execution>
 				</executions>
