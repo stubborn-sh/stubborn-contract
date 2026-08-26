@@ -15,11 +15,13 @@ on:
     branches: [ main ]
     paths:
       - 'docker/**'
+      - 'scripts/ci/smoke-boot-stub-runner.sh'
       - '.github/workflows/docker-acceptance.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'docker/**'
+      - 'scripts/ci/smoke-boot-stub-runner.sh'
       - '.github/workflows/docker-acceptance.yml'
   workflow_dispatch:
 
@@ -129,3 +131,23 @@ jobs:
         run: |
           bats --print-output-on-failure \
             docker/stubborn-contract-docker/src/test/acceptance/docker-acceptance.bats
+
+      # The stub-runner image is a plain Spring Boot app, so building AND booting
+      # it is deterministic (no host fixture app, no networking to the host). Both
+      # steps are blocking: this is the pair that would have caught
+      # stubborn-sh/stubborn#91, where the image baked a non-executable jar and
+      # printed "no main manifest attribute" on every run.
+      - name: Build stub-runner docker image (no push)
+        run: |
+          ./mvnw package -f docker/stubborn-contract-stub-runner-docker/pom.xml \
+            -Ddocker.registry.organization=${DOCKER_ORG} \
+            -Ddockerfile.push.skip=true \
+            -DskipTests --no-transfer-progress
+
+      - name: Run stub-runner boot acceptance test (BATS)
+        env:
+          SR_DOCKER_IMAGE: ${{ env.DOCKER_ORG }}/stubborn-contract-stub-runner:${{ steps.ver.outputs.version }}
+          SR_PORT: '8750'
+        run: |
+          bats --print-output-on-failure \
+            docker/stubborn-contract-stub-runner-docker/src/test/acceptance/stub-runner-acceptance.bats

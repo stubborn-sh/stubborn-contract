@@ -53,6 +53,10 @@
 									<artifactId>stubborn-contract-stub-runner-app</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
+									<!-- The 'exec' classifier is the Spring Boot repackaged, executable
+									     fat jar. The main (no-classifier) artifact is the thin library
+									     jar with no Main-Class, which cannot be `java -jar`-run. -->
+									<classifier>exec</classifier>
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.build.directory}/libs
 									</outputDirectory>
