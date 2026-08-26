@@ -127,6 +127,15 @@ jobs:
           GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
         run: scripts/release/announce-website.sh stubborn-contract "${{ inputs.version }}"
 
+      - name: Bump stubborn-samples to the released version
+        if: ${{ !inputs.dryRun }}
+        # Dispatches to stubborn-samples so it pins every sample to this release and
+        # verifies against it (opens an auto-merging PR there). Best effort: the
+        # samples bump can also be run by hand and never fails the release.
+        env:
+          GH_TOKEN: ${{ secrets.SAMPLES_DISPATCH_TOKEN }}
+        run: scripts/release/bump-samples.sh "${{ inputs.version }}"
+
       - name: Set next SNAPSHOT version
         # Routed through set-release-version.sh (not a bare versions:set) so the
         # Docker gradle.properties and parent refs stay in sync with the poms —
