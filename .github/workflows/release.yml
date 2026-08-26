@@ -133,7 +133,7 @@ jobs:
         # verifies against it (opens an auto-merging PR there). Best effort: the
         # samples bump can also be run by hand and never fails the release.
         env:
-          GH_TOKEN: ${{ secrets.SAMPLES_DISPATCH_TOKEN }}
+          GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
         run: scripts/release/bump-samples.sh "${{ inputs.version }}"
 
       - name: Set next SNAPSHOT version

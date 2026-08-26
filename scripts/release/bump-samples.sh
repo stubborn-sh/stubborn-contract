@@ -12,7 +12,8 @@
 #
 # Environment:
 #   GH_TOKEN      token with permission to dispatch to the samples repo
-#                 (secrets.SAMPLES_DISPATCH_TOKEN); skipped when unset
+#                 (secrets.WEBSITE_DISPATCH_TOKEN — the release already uses it to
+#                 dispatch to the website repo); skipped when unset
 #   SAMPLES_REPO  override the target repository (default stubborn-sh/stubborn-samples)
 #   GH            override the gh binary (tests)
 #
