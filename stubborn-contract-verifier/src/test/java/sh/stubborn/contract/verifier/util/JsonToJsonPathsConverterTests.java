@@ -181,6 +181,44 @@ class JsonToJsonPathsConverterTests {
 		assertThatJsonPathsInMapAreValid(json, pathAndValues);
 	}
 
+	// gh-190: a JSON-LD "@context" is an array mixing objects and a bare string. The
+	// bare string is an array element, so it must be asserted with array containment
+	// ($.['@context'][?(@ == '...')]), not field-equality on the array itself
+	// ($[?(@.['@context'] == '...')]) which cannot match and, because the array
+	// verifiable is shared, also corrupted the paths of the sibling object elements.
+	@Test
+	void shouldConvertAJsonWithAnArrayMixingObjectsAndABareString() {
+		String json = """
+				{
+				  "@context": [
+				    { "@version": 1.1 },
+				    "https://www.w3.org/ns/odrl.jsonld",
+				    { "ex": "https://example.org/examples#", "hello": "ex:hello" }
+				  ]
+				}
+				""";
+		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText(json));
+
+		// the bare string is asserted as an array element (containment)
+		assertThat(pathAndValues).anySatisfy((entry) -> {
+			assertThat(entry.method()).isEqualTo(
+					".array(\"['@context']\").arrayField().isEqualTo(\"https://www.w3.org/ns/odrl.jsonld\").value()");
+			assertThat(entry.jsonPath()).isEqualTo("$.['@context'][?(@ == 'https://www.w3.org/ns/odrl.jsonld')]");
+		});
+		// the object elements are still asserted correctly and are NOT corrupted by the
+		// bare string that precedes / follows them
+		assertThat(pathAndValues).anySatisfy((entry) -> assertThat(entry.jsonPath())
+			.isEqualTo("$.['@context'][?(@.['ex'] == 'https://example.org/examples#')]"));
+		assertThat(pathAndValues).anySatisfy(
+				(entry) -> assertThat(entry.jsonPath()).isEqualTo("$.['@context'][?(@.['hello'] == 'ex:hello')]"));
+		// no path uses the broken "field-equality on the array" form
+		assertThat(pathAndValues)
+			.allSatisfy((entry) -> assertThat(entry.jsonPath()).doesNotContain("[?(@.['@context'] =="));
+
+		assertThatJsonPathsInMapAreValid(json, pathAndValues);
+	}
+
 	@Test
 	void shouldConvertAJsonWithAList() {
 		String json = """

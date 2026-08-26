@@ -157,10 +157,25 @@ class JsonPathTraverser {
 			MethodBufferingJsonVerifiable arrayKey = createArrayAsserter(key, list);
 			for (Object element : list) {
 				Object parsed = ContentUtils.returnParsedObject(element);
-				processValue(createListElementAsserter(arrayKey, parsed), parsed, collector);
+				if (isScalar(parsed)) {
+					// gh-190: a bare scalar inside a mixed array (e.g. a JSON-LD
+					// "@context" holding both objects and a string) is an array element.
+					// Assert containment via arrayField(). Passing it through the
+					// object/array asserter instead emits field-equality on the array
+					// itself, producing an unmatchable path and -- because the array
+					// verifiable is shared -- corrupting the sibling elements' paths.
+					processValue(valueToAsserter(key.arrayField(), parsed), parsed, collector);
+				}
+				else {
+					processValue(createListElementAsserter(arrayKey, parsed), parsed, collector);
+				}
 			}
 		}
 		return list;
+	}
+
+	private boolean isScalar(Object value) {
+		return value != null && !(value instanceof Map) && !(value instanceof List);
 	}
 
 	// ========== Map Entry Processing ==========
