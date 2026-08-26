@@ -21,18 +21,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.cloud.test.TestSocketUtils;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class AvailablePortScannerMutationTests {
 
+	// Fixed, uncommon high port (matching AvailablePortScannerTests) that reliably
+	// stays free on CI. The invocation count below only reaches maxRetryCount if the
+	// port is available on every retry, since the callback runs only after
+	// checkIfPortIsAvailable binds. TestSocketUtils.findAvailableTcpPort() flaked
+	// here: it hands back a port from a churning pool that is quickly reused, so with
+	// a single-port range a stolen port fails the bind on every retry, the callback
+	// never runs, and the count comes out 0 instead of maxRetryCount.
+	private static final int PORT = 8989;
+
 	@Test
 	void shouldRetryExactlyMaxRetryCountTimesBeforeGivingUp() {
-		int port = TestSocketUtils.findAvailableTcpPort();
 		int maxRetryCount = 3;
-		AvailablePortScanner scanner = new AvailablePortScanner(port, port, maxRetryCount);
+		AvailablePortScanner scanner = new AvailablePortScanner(PORT, PORT, maxRetryCount);
 		AtomicInteger invocations = new AtomicInteger();
 
 		assertThatExceptionOfType(AvailablePortScanner.NoPortAvailableException.class)
