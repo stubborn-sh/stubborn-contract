@@ -28,6 +28,7 @@ import sh.stubborn.messaging.kafka.StubbornKafkaMessageVerifierReceiver;
 import sh.stubborn.messaging.kafka.StubbornKafkaMessageVerifierSender;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -74,6 +75,7 @@ public class ContractVerifierKafkaConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(ContractVerifierMessaging.class)
+	@ConditionalOnBean(name = { "stubbornKafkaMessageVerifierSender", "stubbornKafkaMessageVerifierReceiver" })
 	ContractVerifierMessaging<KafkaMessage> contractVerifierKafkaMessaging(MessageVerifierSender<KafkaMessage> sender,
 			MessageVerifierReceiver<KafkaMessage> receiver) {
 		return new ContractVerifierMessaging<>(sender, receiver);

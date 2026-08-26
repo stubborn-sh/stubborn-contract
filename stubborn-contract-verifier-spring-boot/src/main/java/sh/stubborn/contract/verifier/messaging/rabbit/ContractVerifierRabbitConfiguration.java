@@ -29,6 +29,7 @@ import org.springframework.amqp.rabbit.connection.AbstractConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -77,6 +78,7 @@ public class ContractVerifierRabbitConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean(ContractVerifierMessaging.class)
+	@ConditionalOnBean(name = { "stubbornRabbitMessageVerifierSender", "stubbornRabbitMessageVerifierReceiver" })
 	ContractVerifierMessaging<RabbitMessage> contractVerifierRabbitMessaging(
 			MessageVerifierSender<RabbitMessage> sender, MessageVerifierReceiver<RabbitMessage> receiver) {
 		return new ContractVerifierMessaging<>(sender, receiver);
