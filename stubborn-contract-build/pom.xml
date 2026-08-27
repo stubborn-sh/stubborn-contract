@@ -105,7 +105,7 @@
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
 		<build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
 		<kotlin-maven-plugin.version>${kotlin.version}</kotlin-maven-plugin.version>
-		<revapi-maven-plugin.version>0.15.0</revapi-maven-plugin.version>
+		<revapi-maven-plugin.version>0.15.1</revapi-maven-plugin.version>
 		<revapi-java.version>0.28.1</revapi-java.version>
 
 		<!-- Static analysis + null safety -->
