@@ -109,7 +109,7 @@
 		<revapi-java.version>0.28.1</revapi-java.version>
 
 		<!-- Static analysis + null safety -->
-		<spotbugs-maven-plugin.version>4.10.3.0</spotbugs-maven-plugin.version>
+		<spotbugs-maven-plugin.version>4.10.4.0</spotbugs-maven-plugin.version>
 		<findsecbugs-plugin.version>1.13.0</findsecbugs-plugin.version>
 		<dependency-check-maven.version>12.1.1</dependency-check-maven.version>
 		<error-prone.version>2.36.0</error-prone.version>
