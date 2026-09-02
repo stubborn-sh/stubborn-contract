@@ -84,7 +84,7 @@
 		<maven-install-plugin.version>3.1.4</maven-install-plugin.version>
 		<maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
 		<maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
-		<maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+		<maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
 		<flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
 		<central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
 		<!--
