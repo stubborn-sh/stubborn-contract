@@ -103,7 +103,7 @@
 		<pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
 		<spring-javaformat.version>0.0.47</spring-javaformat.version>
 		<maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-		<build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
+		<build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
 		<kotlin-maven-plugin.version>${kotlin.version}</kotlin-maven-plugin.version>
 		<revapi-maven-plugin.version>0.15.1</revapi-maven-plugin.version>
 		<revapi-java.version>0.28.1</revapi-java.version>
