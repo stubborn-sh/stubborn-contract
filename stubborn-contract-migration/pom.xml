@@ -17,7 +17,7 @@
 	<description>OpenRewrite recipes to migrate from Spring Cloud Contract to Stubborn Contract</description>
 
 	<properties>
-		<openrewrite-bom.version>8.90.3</openrewrite-bom.version>
+		<openrewrite-bom.version>8.90.4</openrewrite-bom.version>
 		<openrewrite-recipe-bom.version>3.37.0</openrewrite-recipe-bom.version>
 	</properties>
 
