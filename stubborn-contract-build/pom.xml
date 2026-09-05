@@ -162,7 +162,7 @@
 		  at ${tomcat.version} ahead of spring-boot-dependencies (see root pom / consumer BOM), since
 		  Tomcat has no published BOM to import. Remove once the Spring Boot BOM ships >= 11.0.24.
 		-->
-		<tomcat.version>11.0.24</tomcat.version>
+		<tomcat.version>11.0.25</tomcat.version>
 		<!--
 		  Zookeeper is pulled transitively by spring-cloud-starter-zookeeper-discovery (via Curator)
 		  and managed by the spring-cloud-zookeeper-dependencies BOM at 3.9.3, which carries
