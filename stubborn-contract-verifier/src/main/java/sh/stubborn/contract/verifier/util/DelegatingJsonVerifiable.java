@@ -174,11 +174,12 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 	public MethodBufferingJsonVerifiable isEqualTo(String value) {
 		DelegatingJsonVerifiable readyToCheck = new FinishedDelegatingJsonVerifiable(this.delegate.jsonPath(),
 				this.delegate.isEqualTo(value), this.methodsBuffer, value);
-		if (this.delegate.isAssertingAValueInArray() && readyToCheck.methodsBuffer.peekLast().equals(".arrayField()")) {
+		String last = lastMethod(readyToCheck.methodsBuffer);
+		if (this.delegate.isAssertingAValueInArray() && last.equals(".arrayField()")) {
 			readyToCheck.appendMethodWithQuotedValue("isEqualTo", escapedHackedJavaText(value));
 			readyToCheck.methodsBuffer.offer(".value()");
 		}
-		else if (this.delegate.isAssertingAValueInArray() && !readyToCheck.methodsBuffer.peekLast().contains("array")) {
+		else if (this.delegate.isAssertingAValueInArray() && !last.contains("array")) {
 			readyToCheck.methodsBuffer.offer(".value()");
 		}
 		else {
@@ -201,7 +202,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 				this.delegate.isEqualTo(value), this.methodsBuffer, value);
 		// related to #271 - the problem is with asserting arrays of maps vs arrays of
 		// primitives
-		String last = readyToCheck.methodsBuffer.peekLast();
+		String last = lastMethod(readyToCheck.methodsBuffer);
 		boolean containsAMatcher = containsAnyMatcher(last);
 		if (this.delegate.isAssertingAValueInArray() && containsAMatcher) {
 			readyToCheck.methodsBuffer.offer(".value()");
@@ -211,6 +212,11 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 					: ((value != null) ? String.valueOf(value) : null));
 		}
 		return readyToCheck;
+	}
+
+	private static String lastMethod(LinkedList<String> methodsBuffer) {
+		String last = methodsBuffer.peekLast();
+		return last != null ? last : "";
 	}
 
 	private boolean containsAnyMatcher(String string) {
