@@ -218,7 +218,8 @@ class JsonPathTraverserMutationTests {
 
 	@Test
 	void json_string_as_root_emits_isEqualTo() {
-		assertThat(unordered("Hello stubborn")).containsExactly("[?(@. == 'Hello stubborn')] || .isEqualTo(\"Hello stubborn\")");
+		assertThat(unordered("Hello stubborn"))
+			.containsExactly("[?(@. == 'Hello stubborn')] || .isEqualTo(\"Hello stubborn\")");
 	}
 
 }
