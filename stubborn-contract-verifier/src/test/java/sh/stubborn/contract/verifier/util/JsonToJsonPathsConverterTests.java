@@ -968,7 +968,8 @@ class JsonToJsonPathsConverterTests {
 
 	@Test
 	void shouldConvertAJsonStringRoot() {
-		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues("Hello Stubborn");
+		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
+			.transformToJsonPathWithTestsSideValues("Hello Stubborn");
 
 		assertThat(pathAndValues).singleElement().satisfies((entry) -> {
 			assertThat(entry.method()).isEqualTo(".isEqualTo(\"Hello Stubborn\")");
