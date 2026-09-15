@@ -181,6 +181,40 @@ class JsonToJsonPathsConverterTests {
 		assertThatJsonPathsInMapAreValid(json, pathAndValues);
 	}
 
+	// ==================== Scalar-as-root tests ====================
+
+	// gh-213: a root scalar number body (e.g. `body: 42`) is valid JSON. The methods
+	// buffer is empty for a root element, so isEqualTo(Number) must not dereference the
+	// (null) result of peekLast() when checking for a preceding matcher.
+	@Test
+	void shouldConvertAJsonWithAnIntegerAsRootToAMapOfPathToValue() {
+		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText("42"));
+
+		// The generated test renders "assertThatJson(parsedJson)" + method(), so a root
+		// scalar number must yield a plain ".isEqualTo(42)" rather than NPE-ing.
+		assertThat(pathAndValues).singleElement()
+			.satisfies((entry) -> assertThat(entry.method()).isEqualTo(".isEqualTo(42)"));
+	}
+
+	@Test
+	void shouldConvertAJsonWithADecimalAsRootToAMapOfPathToValue() {
+		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText("1.1"));
+
+		assertThat(pathAndValues).singleElement()
+			.satisfies((entry) -> assertThat(entry.method()).isEqualTo(".isEqualTo(1.1)"));
+	}
+
+	@Test
+	void shouldConvertAJsonWithALongAsRootToAMapOfPathToValue() {
+		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
+			.transformToJsonPathWithTestsSideValues(this.slurper.parseText("10000000000"));
+
+		assertThat(pathAndValues).singleElement()
+			.satisfies((entry) -> assertThat(entry.method()).isEqualTo(".isEqualTo(10000000000L)"));
+	}
+
 	// gh-190: a JSON-LD "@context" is an array mixing objects and a bare string. The
 	// bare string is an array element, so it must be asserted with array containment
 	// ($.['@context'][?(@ == '...')]), not field-equality on the array itself

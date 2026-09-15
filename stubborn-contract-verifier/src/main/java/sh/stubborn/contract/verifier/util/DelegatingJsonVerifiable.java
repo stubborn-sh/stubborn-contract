@@ -214,7 +214,10 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 	}
 
 	private boolean containsAnyMatcher(String string) {
-		return string.contains("isEqualTo") || string.contains("matches") || string.contains("isNull");
+		// A root scalar body (e.g. `body: 42`) leaves the methods buffer empty, so
+		// peekLast() is null and there is no preceding matcher to detect.
+		return string != null
+				&& (string.contains("isEqualTo") || string.contains("matches") || string.contains("isNull"));
 	}
 
 	@Override
