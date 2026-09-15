@@ -956,6 +956,27 @@ class JsonToJsonPathsConverterTests {
 		});
 	}
 
+	@Test
+	void shouldConvertAJsonNumberRoot() {
+		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(4000);
+
+		assertThat(pathAndValues).singleElement().satisfies((entry) -> {
+			assertThat(entry.method()).isEqualTo(".isEqualTo(4000)");
+			assertThat(entry.jsonPath()).isEqualTo("[?(@. == 4000)]");
+		});
+	}
+
+	@Test
+	void shouldConvertAJsonStringRoot() {
+		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
+			.transformToJsonPathWithTestsSideValues("Hello Stubborn");
+
+		assertThat(pathAndValues).singleElement().satisfies((entry) -> {
+			assertThat(entry.method()).isEqualTo(".isEqualTo(\"Hello Stubborn\")");
+			assertThat(entry.jsonPath()).isEqualTo("[?(@. == 'Hello Stubborn')]");
+		});
+	}
+
 	// ==================== Helpers ====================
 
 	private static BodyMatcher matcher(MatchingType matchingType, String jsonPath, Object value) {

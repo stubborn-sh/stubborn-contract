@@ -211,4 +211,15 @@ class JsonPathTraverserMutationTests {
 				"$[*][1] || .array().elementWithIndex(1).isEqualTo(6)");
 	}
 
+	@Test
+	void json_number_as_root_emits_isEqualTo() {
+		assertThat(unordered(4000)).containsExactly("[?(@. == 4000)] || .isEqualTo(4000)");
+	}
+
+	@Test
+	void json_string_as_root_emits_isEqualTo() {
+		assertThat(unordered("Hello stubborn"))
+			.containsExactly("[?(@. == 'Hello stubborn')] || .isEqualTo(\"Hello stubborn\")");
+	}
+
 }
