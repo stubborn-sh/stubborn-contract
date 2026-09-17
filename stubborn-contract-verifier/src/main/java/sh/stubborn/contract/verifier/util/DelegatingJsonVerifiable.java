@@ -216,7 +216,7 @@ class DelegatingJsonVerifiable implements MethodBufferingJsonVerifiable {
 
 	private static String lastMethod(LinkedList<String> methodsBuffer) {
 		String last = methodsBuffer.peekLast();
-		return last != null ? last : "";
+		return (last != null) ? last : "";
 	}
 
 	private boolean containsAnyMatcher(String string) {
