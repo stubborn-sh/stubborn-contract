@@ -379,7 +379,7 @@ The most common property you would set is the location of the running middleware
 
 There is a legitimate reason to run your contract tests against existing middleware. Some testing frameworks might give you false positive results — the test within your build passes whereas on production the communication fails.
 
-In Stubborn Contract docker images we give an option to connect to existing middleware. As presented in previous subsections we do support Kafka and RabbitMQ out of the box. However, via [Apache Camel Components](https://camel.apache.org/components/latest/index.html) we can support other middleware too.
+In Stubborn Contract docker images we give an option to connect to existing middleware. As presented in previous subsections we do support Kafka and RabbitMQ out of the box. However, via [Apache Camel Components](https://camel.apache.org/docs/) we can support other middleware too.
 
 ### Stubborn Contract Docker and Running Middleware
 
