@@ -126,7 +126,7 @@
 		  icu4j is pinned above CVE-2025-5222 (buffer overflow, fixed from ICU 77 onward); it
 		  leaks in as a deep transitive of the Eclipse WST xpath2 processor in stubborn-contract-xmlassert.
 		-->
-		<jetty.version>12.0.37</jetty.version>
+		<jetty.version>12.0.39</jetty.version>
 		<httpcore5.version>5.4.3</httpcore5.version>
 		<httpclient5.version>5.6.4</httpclient5.version>
 		<icu4j.version>78.3</icu4j.version>
