@@ -38,8 +38,7 @@
 		<spring-cloud-commons.version>5.0.3</spring-cloud-commons.version>
 		<jopt-simple.version>5.0.4</jopt-simple.version>
 		<cglib.version>3.3.0</cglib.version>
-		<spock-spring.version>2.3-groovy-4.0
-		</spock-spring.version> <!-- @releaser:version-check-off -->
+		<spock-spring.version>2.4-groovy-4.0</spock-spring.version> <!-- @releaser:version-check-off -->
 		<handlebars.version>4.5.4</handlebars.version>
 		<commons-text.version>1.14.0</commons-text.version>
 		<jgit.version>7.4.0.202509020913-r</jgit.version>
