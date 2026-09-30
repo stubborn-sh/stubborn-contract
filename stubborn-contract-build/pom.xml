@@ -113,7 +113,7 @@
 		<findsecbugs-plugin.version>1.13.0</findsecbugs-plugin.version>
 		<dependency-check-maven.version>12.1.1</dependency-check-maven.version>
 		<error-prone.version>2.36.0</error-prone.version>
-		<nullaway.version>0.12.7</nullaway.version>
+		<nullaway.version>0.14.2</nullaway.version>
 		<jspecify.version>1.0.1</jspecify.version>
 
 		<!--
