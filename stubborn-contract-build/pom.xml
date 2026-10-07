@@ -68,20 +68,20 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Kotlin (for stubborn-contract-extras/spec-kotlin) -->
-		<kotlin.version>2.4.10</kotlin.version>
+		<kotlin.version>2.4.20</kotlin.version>
 		<!-- Test dependencies -->
 		<archunit.version>1.4.2</archunit.version>
 
 		<!-- Maven plugin versions -->
-		<maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
 		<maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
-		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+		<maven-source-plugin.version>3.4.0</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
 		<maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
 		<maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
 		<maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
 		<maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
-		<maven-install-plugin.version>3.1.4</maven-install-plugin.version>
+		<maven-install-plugin.version>3.2.0</maven-install-plugin.version>
 		<maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
 		<maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
 		<maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
@@ -127,7 +127,7 @@
 		  leaks in as a deep transitive of the Eclipse WST xpath2 processor in stubborn-contract-xmlassert.
 		-->
 		<jetty.version>12.0.39</jetty.version>
-		<httpcore5.version>5.4.3</httpcore5.version>
+		<httpcore5.version>5.4.4</httpcore5.version>
 		<httpclient5.version>5.6.4</httpclient5.version>
 		<icu4j.version>78.3</icu4j.version>
 		<!--
@@ -162,7 +162,7 @@
 		  at ${tomcat.version} ahead of spring-boot-dependencies (see root pom / consumer BOM), since
 		  Tomcat has no published BOM to import. Remove once the Spring Boot BOM ships >= 11.0.24.
 		-->
-		<tomcat.version>11.0.25</tomcat.version>
+		<tomcat.version>11.0.26</tomcat.version>
 		<!--
 		  Zookeeper is pulled transitively by spring-cloud-starter-zookeeper-discovery (via Curator)
 		  and managed by the spring-cloud-zookeeper-dependencies BOM at 3.9.3, which carries
