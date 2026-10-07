@@ -148,11 +148,16 @@
 		  DoS / OCSP-bypass CVEs matched against the netty:netty CPE (CVE-2026-56820 [9.1],
 		  CVE-2026-55851 [8.7], CVE-2026-56745 [8.7], CVE-2026-56817 [8.3], CVE-2026-56819 [7.5],
 		  CVE-2026-44891 [7.5], CVE-2026-55833 [7.5], CVE-2026-55831 [7.5], CVE-2026-56816 [7.5]).
-		  All are fixed in 4.2.16.Final (same 4.2.x line). Realigned reactor-wide by importing
-		  io.netty:netty-bom:${netty.version} ahead of spring-boot-dependencies (see root pom /
-		  consumer BOM). Remove once the Spring Boot BOM ships >= 4.2.16.Final.
+		  Those were fixed in 4.2.16.Final, but a second batch then landed against 4.2.0.Final
+		  through 4.2.16.Final (CVE-2026-75595 [9.1] mTLS auth bypass via fragmented TLS,
+		  CVE-2026-75596 [8.7] quadratic CPU on fragmented ClientHello, CVE-2026-59902 [7.5]
+		  SctpMessageCompletionHandler memory exhaustion, CVE-2026-59903 [7.5] netty-codec-http
+		  cache poisoning), all fixed in 4.2.17.Final. Pin the latest patched 4.2.x. Realigned
+		  reactor-wide by importing io.netty:netty-bom:${netty.version} ahead of
+		  spring-boot-dependencies (see root pom / consumer BOM). Remove once the Spring Boot BOM
+		  ships >= 4.2.19.Final.
 		-->
-		<netty.version>4.2.16.Final</netty.version>
+		<netty.version>4.2.19.Final</netty.version>
 		<!--
 		  Tomcat is managed by the Spring Boot 4.1 BOM at 11.0.22, which carries a batch of
 		  high-severity CVEs matched against the apache:tomcat CPE (CVE-2026-55276 [9.1],

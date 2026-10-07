@@ -23,12 +23,13 @@
 	<dependencyManagement>
 		<dependencies>
 			<!--
-			  Security override: import netty-bom at the patched ${netty.version} (4.2.16.Final) so
+			  Security override: import netty-bom at the patched ${netty.version} (4.2.19.Final) so
 			  consumers importing this BOM get every io.netty artifact off the vulnerable 4.2.15.Final
 			  managed by the Spring Boot 4.1 BOM (netty:netty CVE-2026-56820, -55851, -56745, -56817,
-			  -56819, -44891, -55833, -55831, -56816). As with the Jetty pins below, this relies on
-			  consumers importing stubborn-contract-dependencies ahead of spring-boot-dependencies.
-			  Remove once the Spring Boot BOM ships >= 4.2.16.Final.
+			  -56819, -44891, -55833, -55831, -56816) and off the 4.2.16.Final-and-earlier batch
+			  (CVE-2026-75595, -75596, -59902, -59903) fixed in 4.2.17.Final. As with the Jetty pins
+			  below, this relies on consumers importing stubborn-contract-dependencies ahead of
+			  spring-boot-dependencies. Remove once the Spring Boot BOM ships >= 4.2.19.Final.
 			-->
 			<dependency>
 				<groupId>io.netty</groupId>

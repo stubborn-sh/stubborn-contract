@@ -121,9 +121,9 @@
 		<dependencies>
 			<!--
 			  Security override: pull every io.netty artifact up to the patched ${netty.version}
-			  (4.2.16.Final). Imported BEFORE spring-boot-dependencies so the netty-bom entries win
+			  (4.2.19.Final). Imported BEFORE spring-boot-dependencies so the netty-bom entries win
 			  over the Boot BOM's vulnerable 4.2.15.Final for the whole reactor. See the CVE list on
-			  the netty.version property in stubborn-contract-build/pom.xml. Remove once Boot ships >= 4.2.16.
+			  the netty.version property in stubborn-contract-build/pom.xml. Remove once Boot ships >= 4.2.19.
 			-->
 			<dependency>
 				<groupId>io.netty</groupId>
