@@ -53,15 +53,19 @@
 		<!--
 		  CVE-2026-27446 (CVSS 9.3) against org.apache.activemq:artemis-* (apache:artemis CPE).
 		  The Spring Boot 4.1 BOM imports artemis-bom at 2.53.0 (still in the affected range); the
-		  fix ships on the same 2.x line, so pin the latest patched 2.55.0. Realigned reactor-wide by
+		  fix ships on the same 2.x line. A further batch then landed against 2.50.0 through 2.56.0:
+		  CVE-2026-57967 (9.8, unauthenticated CORE SESSION_REATTACH session theft), CVE-2026-49364
+		  (9.1, handshake auth bypass leaking cluster credentials), CVE-2026-67593 (9.1, Openwire
+		  RemoveSubscriptionInfo deletes a queue pre-auth), CVE-2026-49362 (7.5) and CVE-2026-49363
+		  (7.5) — all fixed in 2.57.0, so pin the latest patched 2.57.0. Realigned reactor-wide by
 		  importing org.apache.activemq:artemis-bom:${artemis.version} ahead of spring-boot-dependencies
 		  below, so every artemis-* artifact wins over the Boot BOM's 2.53.0. Artemis reaches this
 		  build only through the JMS/Artemis test-and-sample harness (tests/samples-messaging-jms,
 		  tests/stubborn-contract-stub-runner-jms) — it is NOT shipped in any published runtime
 		  artifact — but we bump it anyway since a patched release exists. Remove once the Spring Boot
-		  BOM ships artemis >= 2.54.
+		  BOM ships artemis >= 2.57.
 		-->
-		<artemis.version>2.55.0</artemis.version>
+		<artemis.version>2.57.0</artemis.version>
 		<testcontainers.version>1.21.4</testcontainers.version>
 		<hamcrest.version>3.0</hamcrest.version>
 
@@ -133,10 +137,12 @@
 				<scope>import</scope>
 			</dependency>
 			<!--
-			  Security override: import artemis-bom at the patched ${artemis.version} (2.55.0)
+			  Security override: import artemis-bom at the patched ${artemis.version} (2.57.0)
 			  BEFORE spring-boot-dependencies so every org.apache.activemq:artemis-* artifact wins
-			  over the Boot BOM's vulnerable 2.53.0 (CVE-2026-27446, CVSS 9.3). See the artemis.version
-			  property above. Remove once the Spring Boot BOM ships artemis >= 2.54.
+			  over the Boot BOM's vulnerable 2.53.0 (CVE-2026-27446, CVSS 9.3) and over the
+			  2.56.0-and-earlier batch (CVE-2026-57967, CVE-2026-49364, CVE-2026-67593, CVE-2026-49362,
+			  CVE-2026-49363). See the artemis.version property above. Remove once the Spring Boot BOM
+			  ships artemis >= 2.57.
 			-->
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
@@ -188,12 +194,13 @@
 				<version>${tomcat.version}</version>
 			</dependency>
 			<!--
-			  Security override: pin Zookeeper up to the patched ${zookeeper.version} (3.9.5).
+			  Security override: pin Zookeeper up to the patched ${zookeeper.version} (3.9.6).
 			  Declared here in the security-override section (ahead of every BOM import below,
 			  including spring-cloud-zookeeper-dependencies which manages the vulnerable 3.9.3) so it
-			  wins reactor-wide over CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5). zookeeper and
+			  wins reactor-wide over CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5) and over the later
+			  3.9.5-and-earlier batch CVE-2026-79993 / -59739 / -59969 (7.5 each). zookeeper and
 			  zookeeper-jute are versioned together. See the zookeeper.version property in
-			  stubborn-contract-build/pom.xml. Remove once spring-cloud-zookeeper ships >= 3.9.4.
+			  stubborn-contract-build/pom.xml. Remove once spring-cloud-zookeeper ships >= 3.9.6.
 			-->
 			<dependency>
 				<groupId>org.apache.zookeeper</groupId>
@@ -204,6 +211,18 @@
 				<groupId>org.apache.zookeeper</groupId>
 				<artifactId>zookeeper-jute</artifactId>
 				<version>${zookeeper.version}</version>
+			</dependency>
+			<!--
+			  Security override: pin Freemarker up to the patched ${freemarker.version} (2.3.35).
+			  No BOM we import manages it, so spring-cloud-netflix-eureka-server (optional, Eureka's
+			  dashboard templates) otherwise resolves 2.3.34 and trips CVE-2026-84939 (9.1). Declared
+			  here so it wins reactor-wide. See the freemarker.version property in
+			  stubborn-contract-build/pom.xml. Remove once Spring Cloud manages freemarker >= 2.3.35.
+			-->
+			<dependency>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker</artifactId>
+				<version>${freemarker.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>

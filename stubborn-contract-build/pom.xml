@@ -171,13 +171,27 @@
 		<!--
 		  Zookeeper is pulled transitively by spring-cloud-starter-zookeeper-discovery (via Curator)
 		  and managed by the spring-cloud-zookeeper-dependencies BOM at 3.9.3, which carries
-		  CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5). Both are fixed on the same 3.9.x line; pin
-		  the latest patched 3.9.5. Realigned by declaring explicit org.apache.zookeeper:zookeeper /
-		  zookeeper-jute dependencyManagement entries at ${zookeeper.version} in the security-override
-		  section of the root pom (and the consumer BOM), ahead of the spring-cloud BOM imports.
-		  Remove once spring-cloud-zookeeper ships >= 3.9.4.
+		  CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5). A later batch then landed against 3.9.0
+		  through 3.9.5 — CVE-2026-79993 (7.5, missing ACL check on the deleteContainer opcode),
+		  CVE-2026-59739 (7.5) and CVE-2026-59969 (7.5) — all fixed in 3.9.6. Everything is on the
+		  same 3.9.x line; pin the latest patched 3.9.6. Realigned by declaring explicit
+		  org.apache.zookeeper:zookeeper / zookeeper-jute dependencyManagement entries at
+		  ${zookeeper.version} in the security-override section of the root pom (and the consumer
+		  BOM), ahead of the spring-cloud BOM imports.
+		  Remove once spring-cloud-zookeeper ships >= 3.9.6.
 		-->
-		<zookeeper.version>3.9.5</zookeeper.version>
+		<zookeeper.version>3.9.6</zookeeper.version>
+		<!--
+		  Freemarker reaches this build only through spring-cloud-netflix-eureka-server (Eureka's
+		  dashboard templates), declared <optional>true</optional> in
+		  stubborn-contract-stub-runner-spring-cloud, so it is NOT transitive to consumers and is
+		  never on the stub-serving path. It is not managed by any BOM we import, so it resolves to
+		  2.3.34, which carries CVE-2026-84939 (9.1) — path traversal in template loading when
+		  localized lookup (the default) is handed a malformed locale. Fixed in 2.3.35; pinned via an
+		  explicit org.freemarker:freemarker dependencyManagement entry in the security-override
+		  section of the root pom. Remove once Eureka/Spring Cloud manages freemarker >= 2.3.35.
+		-->
+		<freemarker.version>2.3.35</freemarker.version>
 		<!--
 		  CVE-2025-67030 (CVSS 8.8): Directory Traversal in plexus-utils Expand.extractFile.
 		  maven-embedder 3.9.16 (used by stubborn-contract-stub-runner to resolve stubs) pulls
