@@ -212,14 +212,13 @@ class JsonPathTraverserMutationTests {
 	}
 
 	@Test
-	void json_number_as_root_emits_isEqualTo() {
-		assertThat(unordered(4000)).containsExactly("[?(@. == 4000)] || .isEqualTo(4000)");
+	void json_number_as_root_emits_no_json_path() {
+		assertThat(unordered(4000)).isEmpty();
 	}
 
 	@Test
-	void json_string_as_root_emits_isEqualTo() {
-		assertThat(unordered("Hello stubborn"))
-			.containsExactly("[?(@. == 'Hello stubborn')] || .isEqualTo(\"Hello stubborn\")");
+	void json_string_as_root_emits_no_json_path() {
+		assertThat(unordered("Hello stubborn")).isEmpty();
 	}
 
 }
