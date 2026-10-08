@@ -142,17 +142,22 @@
 		  <optional>true</optional> in stubborn-contract-verifier) and our usage is limited to a few
 		  stable core APIs (CamelContext, Message, DefaultMessage), so the blast radius is low.
 		-->
-		<camel.version>4.22.0</camel.version>
+		<camel.version>4.22.1</camel.version>
 		<!--
 		  Netty is managed by the Spring Boot 4.1 BOM at 4.2.15.Final, which carries a batch of
 		  DoS / OCSP-bypass CVEs matched against the netty:netty CPE (CVE-2026-56820 [9.1],
 		  CVE-2026-55851 [8.7], CVE-2026-56745 [8.7], CVE-2026-56817 [8.3], CVE-2026-56819 [7.5],
 		  CVE-2026-44891 [7.5], CVE-2026-55833 [7.5], CVE-2026-55831 [7.5], CVE-2026-56816 [7.5]).
-		  All are fixed in 4.2.16.Final (same 4.2.x line). Realigned reactor-wide by importing
-		  io.netty:netty-bom:${netty.version} ahead of spring-boot-dependencies (see root pom /
-		  consumer BOM). Remove once the Spring Boot BOM ships >= 4.2.16.Final.
+		  Those were fixed in 4.2.16.Final, but a second batch then landed against 4.2.0.Final
+		  through 4.2.16.Final (CVE-2026-75595 [9.1] mTLS auth bypass via fragmented TLS,
+		  CVE-2026-75596 [8.7] quadratic CPU on fragmented ClientHello, CVE-2026-59902 [7.5]
+		  SctpMessageCompletionHandler memory exhaustion, CVE-2026-59903 [7.5] netty-codec-http
+		  cache poisoning), all fixed in 4.2.17.Final. Pin the latest patched 4.2.x. Realigned
+		  reactor-wide by importing io.netty:netty-bom:${netty.version} ahead of
+		  spring-boot-dependencies (see root pom / consumer BOM). Remove once the Spring Boot BOM
+		  ships >= 4.2.19.Final.
 		-->
-		<netty.version>4.2.16.Final</netty.version>
+		<netty.version>4.2.19.Final</netty.version>
 		<!--
 		  Tomcat is managed by the Spring Boot 4.1 BOM at 11.0.22, which carries a batch of
 		  high-severity CVEs matched against the apache:tomcat CPE (CVE-2026-55276 [9.1],
@@ -166,13 +171,27 @@
 		<!--
 		  Zookeeper is pulled transitively by spring-cloud-starter-zookeeper-discovery (via Curator)
 		  and managed by the spring-cloud-zookeeper-dependencies BOM at 3.9.3, which carries
-		  CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5). Both are fixed on the same 3.9.x line; pin
-		  the latest patched 3.9.5. Realigned by declaring explicit org.apache.zookeeper:zookeeper /
-		  zookeeper-jute dependencyManagement entries at ${zookeeper.version} in the security-override
-		  section of the root pom (and the consumer BOM), ahead of the spring-cloud BOM imports.
-		  Remove once spring-cloud-zookeeper ships >= 3.9.4.
+		  CVE-2026-24281 (7.4) and CVE-2026-24308 (7.5). A later batch then landed against 3.9.0
+		  through 3.9.5 — CVE-2026-79993 (7.5, missing ACL check on the deleteContainer opcode),
+		  CVE-2026-59739 (7.5) and CVE-2026-59969 (7.5) — all fixed in 3.9.6. Everything is on the
+		  same 3.9.x line; pin the latest patched 3.9.6. Realigned by declaring explicit
+		  org.apache.zookeeper:zookeeper / zookeeper-jute dependencyManagement entries at
+		  ${zookeeper.version} in the security-override section of the root pom (and the consumer
+		  BOM), ahead of the spring-cloud BOM imports.
+		  Remove once spring-cloud-zookeeper ships >= 3.9.6.
 		-->
-		<zookeeper.version>3.9.5</zookeeper.version>
+		<zookeeper.version>3.9.6</zookeeper.version>
+		<!--
+		  Freemarker reaches this build only through spring-cloud-netflix-eureka-server (Eureka's
+		  dashboard templates), declared <optional>true</optional> in
+		  stubborn-contract-stub-runner-spring-cloud, so it is NOT transitive to consumers and is
+		  never on the stub-serving path. It is not managed by any BOM we import, so it resolves to
+		  2.3.34, which carries CVE-2026-84939 (9.1) — path traversal in template loading when
+		  localized lookup (the default) is handed a malformed locale. Fixed in 2.3.35; pinned via an
+		  explicit org.freemarker:freemarker dependencyManagement entry in the security-override
+		  section of the root pom. Remove once Eureka/Spring Cloud manages freemarker >= 2.3.35.
+		-->
+		<freemarker.version>2.3.35</freemarker.version>
 		<!--
 		  CVE-2025-67030 (CVSS 8.8): Directory Traversal in plexus-utils Expand.extractFile.
 		  maven-embedder 3.9.16 (used by stubborn-contract-stub-runner to resolve stubs) pulls

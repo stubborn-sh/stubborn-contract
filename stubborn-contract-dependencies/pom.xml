@@ -23,12 +23,13 @@
 	<dependencyManagement>
 		<dependencies>
 			<!--
-			  Security override: import netty-bom at the patched ${netty.version} (4.2.16.Final) so
+			  Security override: import netty-bom at the patched ${netty.version} (4.2.19.Final) so
 			  consumers importing this BOM get every io.netty artifact off the vulnerable 4.2.15.Final
 			  managed by the Spring Boot 4.1 BOM (netty:netty CVE-2026-56820, -55851, -56745, -56817,
-			  -56819, -44891, -55833, -55831, -56816). As with the Jetty pins below, this relies on
-			  consumers importing stubborn-contract-dependencies ahead of spring-boot-dependencies.
-			  Remove once the Spring Boot BOM ships >= 4.2.16.Final.
+			  -56819, -44891, -55833, -55831, -56816) and off the 4.2.16.Final-and-earlier batch
+			  (CVE-2026-75595, -75596, -59902, -59903) fixed in 4.2.17.Final. As with the Jetty pins
+			  below, this relies on consumers importing stubborn-contract-dependencies ahead of
+			  spring-boot-dependencies. Remove once the Spring Boot BOM ships >= 4.2.19.Final.
 			-->
 			<dependency>
 				<groupId>io.netty</groupId>
@@ -81,11 +82,12 @@
 				<version>${tomcat.version}</version>
 			</dependency>
 			<!--
-			  Security override: pin Zookeeper up to the patched ${zookeeper.version} (3.9.5), off the
+			  Security override: pin Zookeeper up to the patched ${zookeeper.version} (3.9.6), off the
 			  vulnerable 3.9.3 managed by the spring-cloud-zookeeper-dependencies BOM (CVE-2026-24281,
-			  CVE-2026-24308). Relies on consumers importing stubborn-contract-dependencies ahead of
+			  CVE-2026-24308) and off the 3.9.5-and-earlier batch (CVE-2026-79993, CVE-2026-59739,
+			  CVE-2026-59969). Relies on consumers importing stubborn-contract-dependencies ahead of
 			  the spring-cloud BOMs. zookeeper and zookeeper-jute are versioned together. Remove once
-			  spring-cloud-zookeeper ships >= 3.9.4.
+			  spring-cloud-zookeeper ships >= 3.9.6.
 			-->
 			<dependency>
 				<groupId>org.apache.zookeeper</groupId>

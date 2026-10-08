@@ -13,12 +13,17 @@
 	  (vmware / pivotal / springsource spring products + wiremock), and (b) the pre-1.0 0.x line
 	  only. A CVE against our own code (matched by packageUrl/CVE, or under any other vendor CPE)
 	  is now evaluated, and the whole rule re-opens for review at 1.0.
+	  Extended 2026-10-07: NVD now publishes the former VMware/Pivotal Spring products under the
+	  broadcom vendor (Broadcom acquired VMware), so the same mis-match reappeared as
+	  cpe:/a:broadcom:spring_tools on stubborn-contract-converters, pulling in
+	  CVE-2026-47873 / -47882 / -47858. Added broadcom to the vendor list; the 0.x scope is
+	  unchanged, so this stays as narrow as before.
 	  REVIEW/REMOVE at the 1.0 release, or sooner if OSS-Index/NVD stops the name-token mis-match.
 	-->
 	<suppress>
-		<notes><![CDATA[ First-party sh.stubborn 0.x artifacts are matched to third-party spring/wiremock product CPEs purely on name tokens + the low version, inheriting those products' CVEs. Our own jars are never those products. Scoped to the observed mis-attributing vendors (vmware/pivotal/springsource/wiremock) and the 0.x line only, so genuine CVEs (matched by packageUrl/CVE or any other CPE) stay evaluated and the rule re-opens at 1.0. Narrowed 2026-08-05. ]]></notes>
+		<notes><![CDATA[ First-party sh.stubborn 0.x artifacts are matched to third-party spring/wiremock product CPEs purely on name tokens + the low version, inheriting those products' CVEs. Our own jars are never those products. Scoped to the observed mis-attributing vendors (vmware/pivotal/springsource/broadcom/wiremock) and the 0.x line only, so genuine CVEs (matched by packageUrl/CVE or any other CPE) stay evaluated and the rule re-opens at 1.0. Narrowed 2026-08-05. ]]></notes>
 		<packageUrl regex="true">^pkg:maven/sh\.stubborn/.*@0\..*$</packageUrl>
-		<cpe regex="true">^cpe:/a:(vmware|pivotal_software|pivotal|springsource|wiremock):.*$</cpe>
+		<cpe regex="true">^cpe:/a:(vmware|pivotal_software|pivotal|springsource|broadcom|wiremock):.*$</cpe>
 	</suppress>
 
 	<!--
