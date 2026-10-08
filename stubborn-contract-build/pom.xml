@@ -113,7 +113,7 @@
 		<findsecbugs-plugin.version>1.13.0</findsecbugs-plugin.version>
 		<dependency-check-maven.version>12.1.1</dependency-check-maven.version>
 		<error-prone.version>2.36.0</error-prone.version>
-		<nullaway.version>0.12.7</nullaway.version>
+		<nullaway.version>0.14.2</nullaway.version>
 		<jspecify.version>1.0.1</jspecify.version>
 
 		<!--
@@ -288,6 +288,16 @@
 						<compilerArgs>
 							<arg>-XDcompilePolicy=simple</arg>
 							<arg>--should-stop=ifError=FLOW</arg>
+							<!--
+							  NullAway's JSpecify mode (-XepOpt:NullAway:JSpecifyMode=true below) reads type-use
+							  annotations off symbols, which javac only records for JDK 22+ unless this internal
+							  flag is set. From NullAway 0.14.0 the check is enforced: without the flag it throws
+							  IllegalStateException on the first compilation unit and every module fails to
+							  compile. We build and release on JDK 17 (java.version), so the flag is required.
+							  Drop it once the build baseline moves to JDK 22+.
+							  https://github.com/uber/NullAway/wiki/JSpecify-Support#supported-jdk-versions
+							-->
+							<arg>-XDaddTypeAnnotationsToSymbol=true</arg>
 							<arg>-Xplugin:ErrorProne -XepExcludedPaths:.*/(generated-sources|generated-test-sources)/.* -Xep:NullAway:ERROR -XepOpt:NullAway:JSpecifyMode=true -XepOpt:NullAway:AnnotatedPackages=sh.stubborn</arg>
 						</compilerArgs>
 						<annotationProcessorPaths>
