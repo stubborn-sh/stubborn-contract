@@ -53,7 +53,29 @@ class JsonPathTraverser {
 	 */
 	void traverse(Object json, MethodBufferingJsonVerifiable rootKey,
 			Consumer<MethodBufferingJsonVerifiable> collector) {
+		// A bare scalar document ("text", 1, true, a regex) has no JSON path to assert
+		// on: JsonPath rejects the "$[?(@. ...)]" filter it would produce. Such a body is
+		// verified as text instead, as Spring Cloud Contract did.
+		if (isScalarRoot(json)) {
+			return;
+		}
 		processValue(rootKey, json, collector);
+	}
+
+	private boolean isScalarRoot(Object json) {
+		Object value = ContentUtils.returnParsedObject(json);
+		if (value instanceof Map || value instanceof List) {
+			return false;
+		}
+		if (value instanceof String s && !s.isEmpty()) {
+			try {
+				return !(this.parsingFunction.apply(s) instanceof Map);
+			}
+			catch (Exception ex) {
+				return true;
+			}
+		}
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")

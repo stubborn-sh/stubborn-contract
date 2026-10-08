@@ -957,24 +957,27 @@ class JsonToJsonPathsConverterTests {
 	}
 
 	@Test
-	void shouldConvertAJsonNumberRoot() {
+	void shouldNotConvertAJsonNumberRoot() {
+		// JsonPath rejects "[?(@. == 4000)]" at runtime, the body is checked as text
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter().transformToJsonPathWithTestsSideValues(4000);
 
-		assertThat(pathAndValues).singleElement().satisfies((entry) -> {
-			assertThat(entry.method()).isEqualTo(".isEqualTo(4000)");
-			assertThat(entry.jsonPath()).isEqualTo("[?(@. == 4000)]");
-		});
+		assertThat(pathAndValues).isEmpty();
 	}
 
 	@Test
-	void shouldConvertAJsonStringRoot() {
+	void shouldNotConvertAJsonStringRoot() {
 		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
 			.transformToJsonPathWithTestsSideValues("Hello Stubborn");
 
-		assertThat(pathAndValues).singleElement().satisfies((entry) -> {
-			assertThat(entry.method()).isEqualTo(".isEqualTo(\"Hello Stubborn\")");
-			assertThat(entry.jsonPath()).isEqualTo("[?(@. == 'Hello Stubborn')]");
-		});
+		assertThat(pathAndValues).isEmpty();
+	}
+
+	@Test
+	void shouldNotConvertARegexRoot() {
+		JsonPaths pathAndValues = new JsonToJsonPathsConverter()
+			.transformToJsonPathWithTestsSideValues(Pattern.compile("\"not-found\""));
+
+		assertThat(pathAndValues).isEmpty();
 	}
 
 	// ==================== Helpers ====================

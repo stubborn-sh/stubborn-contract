@@ -1916,6 +1916,27 @@ class SpringTestMethodBodyBuildersTests implements WireMockStubVerifier {
 		else {
 			assertThat(test).contains("assertThat(responseBody).matches(\"true|false\");");
 		}
+		assertThat(test).doesNotContain("assertThatJson(parsedJson)");
+		SyntaxChecker.tryToCompile(methodBuilderName, test);
+	}
+
+	@ParameterizedTest
+	@MethodSource("sixBuilders")
+	void should_not_assert_json_paths_on_a_bare_json_string_body_for(String methodBuilderName, TestFramework framework,
+			TestMode testMode) {
+		Contract contractDsl = parseContract("""
+				Contract.make {
+					request { method 'GET'; url '/foo' }
+					response {
+						status BAD_REQUEST()
+						headers { contentType(applicationJson()) }
+						body($(consumer('"not-found"'), producer(regex('"not-found"'))))
+					}
+				}
+				""");
+		applyBuilder(framework, testMode);
+		String test = singleTestGenerator(contractDsl);
+		assertThat(test).doesNotContain("assertThatJson(parsedJson)");
 		SyntaxChecker.tryToCompile(methodBuilderName, test);
 	}
 
