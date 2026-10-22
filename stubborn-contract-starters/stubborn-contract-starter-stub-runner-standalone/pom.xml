@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013-present the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>sh.stubborn</groupId>
+		<artifactId>stubborn-contract-starters</artifactId>
+		<version>0.1.4-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>stubborn-contract-starter-stub-runner-standalone</artifactId>
+	<packaging>jar</packaging>
+	<name>Stubborn Contract Stub Runner Starter Standalone</name>
+	<description>Stubborn Contract Stub Runner Starter that runs the stub server on WireMock's
+		shaded standalone build, so the stub server's Jetty is isolated from the application's.
+	</description>
+
+	<!--
+	  WHY THIS STARTER EXISTS
+
+	  The ordinary stub runner starter uses org.wiremock:wiremock plus wiremock-jetty12,
+	  which put Jetty on the application's classpath. That is fine until the application
+	  manages a different Jetty. Spring Boot 4.1 aligns Jetty core to 12.1.x and imports
+	  jetty-ee11-bom, while wiremock-jetty12 brings jetty-ee10 12.0.x. The two load
+	  together and the stub server dies the moment it touches a changed Jetty class:
+
+	      java.lang.NoSuchMethodError:
+	      org.eclipse.jetty.util.component.Environment.ensure(java.lang.String)
+
+	  No version pin fixes that. There is no ee10 release compatible with Jetty core 12.1
+	  (12.1 ships ee11), and pinning core back down to 12.0.x breaks every application
+	  using spring-boot-starter-jetty. See stubborn-sh/stubborn#142.
+
+	  So this starter stops sharing a Jetty at all. org.wiremock:wiremock-standalone is
+	  shaded: every Jetty class is relocated under wiremock.org.eclipse.jetty and the jar
+	  contains no unrelocated org/eclipse/jetty classes. The application and the stub
+	  server each get their own Jetty and cannot collide — two versions on one JVM, which
+	  Maven cannot express but shading can.
+
+	  TRADE-OFFS, so the choice is informed:
+	    * the shaded jar is ~19.5 MB, against a few hundred KB for the unshaded pair;
+	    * it also relocates Jackson and Guava, so a WireMock extension that reaches for
+	      those classes, or anything relying on WireMock's transitive dependencies, will
+	      not find them.
+
+	  Prefer stubborn-contract-starter-stub-runner unless the application manages its own
+	  Jetty. Reach for this one when it does.
+	-->
+
+	<dependencies>
+		<dependency>
+			<groupId>sh.stubborn</groupId>
+			<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
+			<exclusions>
+				<!--
+				  The unshaded pair is what puts Jetty on the application classpath.
+				  Both must go: wiremock-jetty12 brings jetty-ee10, and org.wiremock:wiremock
+				  would duplicate every com.github.tomakehurst class that the shaded jar
+				  already carries. The enforcer rule below fails the build if either one
+				  finds its way back in through another path.
+				-->
+				<exclusion>
+					<groupId>org.wiremock</groupId>
+					<artifactId>wiremock</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.wiremock</groupId>
+					<artifactId>wiremock-jetty12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.wiremock</groupId>
+			<artifactId>wiremock-standalone</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!--
+			  Guards the one way this starter can be silently broken: if org.wiremock:wiremock
+			  or wiremock-jetty12 comes back through another path, every
+			  com.github.tomakehurst class exists twice (once shaded, once not) and whichever
+			  the classloader picks decides whether the stub server works — a far harder
+			  failure to read than the NoSuchMethodError this starter exists to avoid. Banning
+			  the cause is better than detecting the symptom: banDuplicateClasses was tried
+			  first and is unusable here, because wiremock-standalone bundles jspecify
+			  unrelocated and this project uses jspecify throughout, so it fired on every
+			  build for reasons that had nothing to do with WireMock.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>ban-unshaded-wiremock</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<bannedDependencies>
+									<searchTransitive>true</searchTransitive>
+									<excludes>
+										<exclude>org.wiremock:wiremock</exclude>
+										<exclude>org.wiremock:wiremock-jetty12</exclude>
+									</excludes>
+									<message>The unshaded WireMock must not reach this starter's classpath: it would duplicate every com.github.tomakehurst class that wiremock-standalone already carries, and put Jetty back on the application's classpath. If you want the unshaded stub server, use stubborn-contract-starter-stub-runner instead.</message>
+								</bannedDependencies>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
