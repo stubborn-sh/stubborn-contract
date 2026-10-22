@@ -181,16 +181,6 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-contract-starter-stub-runner-standalone</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>sh.stubborn</groupId>
-				<artifactId>stubborn-contract-starter-stub-runner-unshaded</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -239,6 +229,132 @@
 				<groupId>org.wiremock</groupId>
 				<artifactId>wiremock-standalone</artifactId>
 				<version>${wiremock.version}</version>
+			</dependency>
+			<!--
+			  THE ONE DELIBERATE EXCEPTION TO THIS BOM'S SCOPE.
+			  Everything else Spring Boot manages was removed from here (see the comment above
+			  <dependencyManagement>, and stubborn-sh/stubborn#142). This block is the exception,
+			  kept knowingly, because without it the stub runner does not work on Spring Boot 4.1
+			  at all.
+			  wiremock-jetty12:3.13.2 is built against Jetty 12.0 / ee10 and calls APIs that only
+			  exist there (ByteBufferPool.acquire(int,boolean), Environment.ensure(String)).
+			  spring-boot-dependencies version-manages every org.eclipse.jetty:* artifact to 12.1.x,
+			  including the ee10 jars wiremock-jetty12 drags in, and the stub server then dies on
+			  NoSuchMethodError. There is no version to pin to instead: no ee10 release works against
+			  Jetty core 12.1, and 3.13.2 is the newest wiremock-jetty12 on Central.
+			  WireMock's shaded standalone build was tried as the way out and does not work either:
+			  it relocates Handlebars to wiremock.com.github.jknack.handlebars.*, so Stubborn's own
+			  response-template helpers (HandlebarsJsonPathHelper, HandlebarsEscapeHelper) cannot be
+			  registered with it — WireMock casts helpers to its relocated interface and every stub
+			  server fails on construction with a ClassCastException.
+			  THE COST, STATED PLAINLY: a consumer importing this BOM gets Jetty 12.0.x in their own
+			  dependencyManagement, which beats their platform BOM. A spring-boot-starter-jetty
+			  application therefore runs on 12.0.x rather than Boot's 12.1.x. That is exactly the
+			  complaint in #142, accepted here as the lesser evil against a stub runner that cannot
+			  start.
+			  REMOVE THIS WHOLE BLOCK as soon as either is true: WireMock publishes a stub server
+			  built against Jetty 12.1/ee11, or Stubborn ships its own shaded WireMock that relocates
+			  only org.eclipse.jetty and leaves Handlebars alone.
+			-->
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-util</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-io</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-http</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-server</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-security</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-session</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-xml</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-alpn-server</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-alpn-java-server</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-alpn-client</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-alpn-java-client</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-proxy</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-client</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.http2</groupId>
+				<artifactId>jetty-http2-server</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.http2</groupId>
+				<artifactId>jetty-http2-common</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.http2</groupId>
+				<artifactId>jetty-http2-hpack</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-servlet</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-servlets</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty.ee10</groupId>
+				<artifactId>jetty-ee10-webapp</artifactId>
+				<version>${jetty.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-ee</artifactId>
+				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.rest-assured</groupId>
