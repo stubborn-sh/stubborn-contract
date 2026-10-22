@@ -23,7 +23,7 @@
 		  (io.quarkus.test.common.QuarkusTestResourceLifecycleManager, stable across the whole 3.x
 		  line), pinning that one artifact's version is both sufficient and safer.
 		-->
-		<quarkus.version>3.38.1</quarkus.version>
+		<quarkus.version>3.40.1</quarkus.version>
 	</properties>
 
 	<dependencies>
