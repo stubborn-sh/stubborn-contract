@@ -235,6 +235,11 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-contract-starter-stub-runner-standalone</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>

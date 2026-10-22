@@ -12,29 +12,51 @@
 	<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner Starter Jetty</name>
-	<description>Stubborn Contract Stub Runner Jetty runs wiremock stubs with "native"
-		jetty. Don't use this in a Spring Boot app with its own embedded container.
+	<description>Stubborn Contract Stub Runner Jetty runs wiremock stubs with "native" jetty,
+		on WireMock's shaded standalone build so the stub server's Jetty is isolated from the
+		application's.
 	</description>
+
+	<!--
+	  REPURPOSED — this starter used to pin jetty-ee10 12.0.39 directly.
+
+	  That pin was what made it unusable in exactly the situation it was meant for. Spring
+	  Boot 4.1 aligns Jetty core to 12.1.x and imports jetty-ee11-bom; ee10 12.0.x loaded
+	  beside core 12.1.x and the stub server died with
+
+	      java.lang.NoSuchMethodError:
+	      org.eclipse.jetty.util.component.Environment.ensure(java.lang.String)
+
+	  and the old warning — "don't use this in a Spring Boot app with its own embedded
+	  container" — was really a symptom of sharing one Jetty between the application and
+	  the stub server. See stubborn-sh/stubborn#142.
+
+	  It now builds on stubborn-contract-starter-stub-runner-standalone, whose shaded
+	  WireMock keeps its Jetty relocated under wiremock.org.eclipse.jetty. Nothing is
+	  shared, so there is no version to pin and no container to avoid: this starter is
+	  safe alongside an embedded Tomcat or Jetty. See that starter for the trade-offs
+	  (~19.5 MB, Jackson and Guava relocated too).
+	-->
 	<dependencies>
+		<!--
+		  The shaded stub server replaces the hardcoded jetty-ee10 pins. Servlet support
+		  comes from inside the shaded jar, so nothing needs to be aligned with whatever
+		  Jetty the application is on.
+		-->
 		<dependency>
 			<groupId>sh.stubborn</groupId>
-			<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
+			<artifactId>stubborn-contract-starter-stub-runner-standalone</artifactId>
 			<exclusions>
+				<!--
+				  Kept from the original starter: this one does not bring a servlet stack of
+				  its own, so an application that wants no embedded container does not get
+				  one. The shaded stub server needs nothing from spring-boot-starter-web.
+				-->
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-web</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty.ee10</groupId>
-			<artifactId>jetty-ee10-servlet</artifactId>
-			<version>12.0.39</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty.ee10</groupId>
-			<artifactId>jetty-ee10-servlets</artifactId>
-			<version>12.0.39</version>
 		</dependency>
 	</dependencies>
 	<build>

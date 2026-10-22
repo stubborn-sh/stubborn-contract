@@ -19,6 +19,7 @@
 
 	<modules>
 		<module>stubborn-contract-starter-stub-runner</module>
+		<module>stubborn-contract-starter-stub-runner-standalone</module>
 		<module>stubborn-contract-starter-stub-runner-jetty</module>
 		<module>stubborn-contract-starter-verifier</module>
 	</modules>
