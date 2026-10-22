@@ -17,7 +17,7 @@
 	<description>Stubborn Contract Dependencies</description>
 	<properties>
 		<wiremock.version>3.13.2</wiremock.version>
-		<rest-assured.version>6.0.1</rest-assured.version>
+		<rest-assured.version>6.2.0</rest-assured.version>
 	</properties>
 	<!--
 	  SCOPE OF THIS BOM — deliberately narrow.
