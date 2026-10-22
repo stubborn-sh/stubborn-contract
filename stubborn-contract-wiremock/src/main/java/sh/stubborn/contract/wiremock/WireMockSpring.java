@@ -42,7 +42,18 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 public abstract class WireMockSpring {
 
 	public static WireMockConfiguration options() {
-		return new WireMockConfiguration();
+		// Plaintext HTTP/2 is off deliberately. The stub server now runs on WireMock's
+		// shaded standalone build, which — unlike the thin wiremock-jetty12 artifact —
+		// bundles jetty-http2-server, so h2c becomes available and a
+		// JDK-HttpClient-backed
+		// RestClient tries to upgrade. A POST that carries a body cannot be upgraded, and
+		// the request dies as "Received RST_STREAM: Stream cancelled" or
+		// "EOF reached while reading". A stub server has no use for HTTP/2, so turning
+		// h2c
+		// off keeps the behaviour consumers already had. Call http2PlainDisabled(false)
+		// on
+		// the returned configuration if you do want it.
+		return new WireMockConfiguration().http2PlainDisabled(true);
 	}
 
 }

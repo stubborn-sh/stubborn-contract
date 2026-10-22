@@ -91,7 +91,7 @@ public class WireMockHttpServerStub implements HttpServerStub {
 		if (isPresent("sh.stubborn.contract.wiremock.WireMockSpring")) {
 			return WireMockSpring.options().extensions(responseTransformers());
 		}
-		return new WireMockConfiguration().extensions(responseTransformers());
+		return new WireMockConfiguration().http2PlainDisabled(true).extensions(responseTransformers());
 	}
 
 	private Extension[] responseTransformers() {
