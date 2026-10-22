@@ -42,5 +42,16 @@ jobs:
         continue-on-error: true
         run: ./mvnw -B -ntp -pl tests/stubborn-contract-stub-runner-context-path dependency:tree
 
-      - name: Run only the failing test, trace to stdout
-        run: ./mvnw -B -ntp -pl tests/stubborn-contract-stub-runner-context-path -Dsurefire.useFile=false -DtrimStackTrace=false test
+      - name: Run only the failing test
+        continue-on-error: true
+        run: ./mvnw -B -ntp -pl tests/stubborn-contract-stub-runner-context-path -DtrimStackTrace=false test
+
+      # The console summary only carries the top-level IllegalStateException; the
+      # Caused-by chain lives in the surefire report. Print the causes LAST so they are
+      # the end of the log.
+      - name: Dump the root cause
+        run: |
+          echo '===== Caused by chain ====='
+          grep -h -A6 'Caused by' tests/stubborn-contract-stub-runner-context-path/target/surefire-reports/*.txt || echo 'no Caused by found'
+          echo '===== full report ====='
+          cat tests/stubborn-contract-stub-runner-context-path/target/surefire-reports/*.txt | head -120
