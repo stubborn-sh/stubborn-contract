@@ -96,37 +96,36 @@
 	<build>
 		<plugins>
 			<!--
-			  Getting this half right is worse than not doing it at all: with both the
-			  shaded and the unshaded WireMock present, every com.github.tomakehurst class
-			  exists twice and whichever the classloader happens to pick decides whether
-			  the stub server works. That failure is far harder to read than the
-			  NoSuchMethodError this starter exists to avoid, so it is turned into a build
-			  failure at validate time instead.
+			  Guards the one way this starter can be silently broken: if org.wiremock:wiremock
+			  or wiremock-jetty12 comes back through another path, every
+			  com.github.tomakehurst class exists twice (once shaded, once not) and whichever
+			  the classloader picks decides whether the stub server works — a far harder
+			  failure to read than the NoSuchMethodError this starter exists to avoid. Banning
+			  the cause is better than detecting the symptom: banDuplicateClasses was tried
+			  first and is unusable here, because wiremock-standalone bundles jspecify
+			  unrelocated and this project uses jspecify throughout, so it fired on every
+			  build for reasons that had nothing to do with WireMock.
 			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>extra-enforcer-rules</artifactId>
-						<version>${extra-enforcer-rules.version}</version>
-					</dependency>
-				</dependencies>
 				<executions>
 					<execution>
-						<id>ban-duplicate-wiremock</id>
+						<id>ban-unshaded-wiremock</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>enforce</goal>
 						</goals>
 						<configuration>
 							<rules>
-								<banDuplicateClasses>
-									<findAllDuplicates>true</findAllDuplicates>
-									<!-- Identical bytes on both sides are harmless; only real divergence matters. -->
-									<ignoreWhenIdentical>true</ignoreWhenIdentical>
-								</banDuplicateClasses>
+								<bannedDependencies>
+									<searchTransitive>true</searchTransitive>
+									<excludes>
+										<exclude>org.wiremock:wiremock</exclude>
+										<exclude>org.wiremock:wiremock-jetty12</exclude>
+									</excludes>
+									<message>The unshaded WireMock must not reach this starter's classpath: it would duplicate every com.github.tomakehurst class that wiremock-standalone already carries, and put Jetty back on the application's classpath. If you want the unshaded stub server, use stubborn-contract-starter-stub-runner instead.</message>
+								</bannedDependencies>
 							</rules>
 						</configuration>
 					</execution>
