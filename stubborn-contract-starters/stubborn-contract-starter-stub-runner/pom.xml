@@ -30,14 +30,60 @@
 	<packaging>jar</packaging>
 	<name>Stubborn Contract Stub Runner Starter</name>
 	<description>Stubborn Contract Stub Runner Starter</description>
+	<!--
+	  WHY THIS STARTER USES THE SHADED WIREMOCK
+	  wiremock-jetty12:3.13.2 is built against Jetty 12.0 / ee10. Spring Boot 4.1 ships Jetty
+	  12.1 and, more to the point, spring-boot-dependencies version-manages every
+	  org.eclipse.jetty:* artifact to 12.1.x — including the jetty-ee10 jars that
+	  wiremock-jetty12 drags in. The stub server then dies on
+	  `NoSuchMethodError: org.eclipse.jetty.util.component.Environment.ensure(String)`.
+	  No pin fixes it: there is no ee10 release compatible with Jetty core 12.1, and
+	  wiremock-jetty12:3.13.2 is the newest build on Central.
+	  wiremock-standalone relocates every Jetty class to wiremock.org.eclipse.jetty.*, so
+	  WireMock runs its Jetty and the application runs Boot's, in one JVM, with no overlap.
+	  WireMock's own API (com.github.tomakehurst.*) is NOT relocated, so anything compiled
+	  against WireMock keeps working.
+	  The cost is a ~19.5 MB jar that also relocates Jackson and Guava. If you need the
+	  unshaded stub server — you are not on Boot 4.1, or you pin Jetty yourself, or you reach
+	  into WireMock's Jetty internals — use stubborn-contract-starter-stub-runner-unshaded.
+	-->
 	<dependencies>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-stub-runner-spring-boot</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.wiremock</groupId>
+					<artifactId>wiremock</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.wiremock</groupId>
+					<artifactId>wiremock-jetty12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-wiremock</artifactId>
+			<exclusions>
+				<!--
+				  stubborn-contract-wiremock declares the unshaded pair directly, so excluding
+				  them only on the stub-runner path is not enough — both routes have to be cut
+				  or the unrelocated Jetty comes back in through here.
+				-->
+				<exclusion>
+					<groupId>org.wiremock</groupId>
+					<artifactId>wiremock</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.wiremock</groupId>
+					<artifactId>wiremock-jetty12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.wiremock</groupId>
+			<artifactId>wiremock-standalone</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
@@ -48,6 +94,38 @@
 				<configuration>
 					<failIfNoTests>false</failIfNoTests>
 				</configuration>
+			</plugin>
+			<!--
+			  Guards the one way this starter can be silently broken: if org.wiremock:wiremock or
+			  wiremock-jetty12 comes back through a path we have not excluded, every
+			  com.github.tomakehurst class exists twice (once shaded, once not) and whichever the
+			  classloader picks decides whether the stub server works — a far harder failure to
+			  read than the NoSuchMethodError this starter exists to avoid.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>ban-unshaded-wiremock</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<bannedDependencies>
+									<searchTransitive>true</searchTransitive>
+									<excludes>
+										<exclude>org.wiremock:wiremock</exclude>
+										<exclude>org.wiremock:wiremock-jetty12</exclude>
+									</excludes>
+									<message>The unshaded WireMock must not reach this starter's classpath: it would duplicate every com.github.tomakehurst class that wiremock-standalone already carries, and put unrelocated Jetty back on the application's classpath. If you want the unshaded stub server, use stubborn-contract-starter-stub-runner-unshaded instead.</message>
+								</bannedDependencies>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

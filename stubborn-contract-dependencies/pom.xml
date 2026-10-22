@@ -18,6 +18,7 @@
 	<properties>
 		<wiremock.version>3.13.2</wiremock.version>
 		<rest-assured.version>6.2.0</rest-assured.version>
+		<spring-cloud-stream.version>5.0.3</spring-cloud-stream.version>
 	</properties>
 	<!--
 	  SCOPE OF THIS BOM — deliberately narrow.
@@ -186,6 +187,11 @@
 			</dependency>
 			<dependency>
 				<groupId>sh.stubborn</groupId>
+				<artifactId>stubborn-contract-starter-stub-runner-unshaded</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>sh.stubborn</groupId>
 				<artifactId>stubborn-contract-starter-stub-runner-jetty</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -239,6 +245,25 @@
 				<groupId>io.rest-assured</groupId>
 				<artifactId>rest-assured</artifactId>
 				<version>${rest-assured.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!--
+			  Spring Cloud Stream is NOT managed by spring-boot-dependencies — Spring Cloud ships
+			  its own release train — so a consumer who declares spring-cloud-stream alongside
+			  stubborn-contract-verifier-spring-cloud gets no version at all unless this BOM
+			  supplies one. It was dropped here when the BOM was narrowed, which broke the
+			  stream sample outright; it belongs in the "libraries Boot does not manage" set
+			  that this BOM exists to cover.
+			-->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-stream</artifactId>
+				<version>${spring-cloud-stream.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-stream-test-binder</artifactId>
+				<version>${spring-cloud-stream.version}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
