@@ -29,7 +29,8 @@ jobs:
         run: ./mvnw -B -ntp -pl tests/stubborn-contract-stub-runner-context-path -am -DskipTests -Dspring-javaformat.skip=true install
 
       - name: Print the resolved stub-runner classpath
-        run: ./mvnw -B -ntp -pl tests/stubborn-contract-stub-runner-context-path dependency:tree -Dscope=test
+        continue-on-error: true
+        run: ./mvnw -B -ntp -pl tests/stubborn-contract-stub-runner-context-path dependency:tree
 
       - name: Run only the failing test, trace to stdout
         run: ./mvnw -B -ntp -pl tests/stubborn-contract-stub-runner-context-path -Dsurefire.useFile=false -DtrimStackTrace=false test
