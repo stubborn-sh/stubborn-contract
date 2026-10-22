@@ -6,7 +6,8 @@ name: Diagnose context-path stub runner
 # failure is the last thing in a short log, with surefire printing to the console.
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ claude/diagnose-ctxpath ]
 
 permissions:
   contents: read
