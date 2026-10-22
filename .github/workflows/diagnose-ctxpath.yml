@@ -25,6 +25,16 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # Mirrors ci.yaml: the parent POM and the BOM are outside the main reactor, so
+      # they have to be installed before anything resolves against 0.1.4-SNAPSHOT.
+      - name: Build stubborn-contract-build parent
+        run: ./mvnw install -f stubborn-contract-build/pom.xml -DskipTests --no-transfer-progress -q
+
+      - name: Install BOM (stubborn-contract-dependencies)
+        run: |
+          find ~/.m2/repository/sh/stubborn -name "*.lastUpdated" -delete 2>/dev/null || true
+          ./mvnw install -N -f stubborn-contract-dependencies/pom.xml -DskipTests --no-transfer-progress -q
+
       - name: Install the module's dependencies
         run: ./mvnw -B -ntp -pl tests/stubborn-contract-stub-runner-context-path -am -DskipTests -Dspring-javaformat.skip=true install
 
