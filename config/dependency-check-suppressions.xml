@@ -180,6 +180,44 @@
 	</suppress>
 
 	<!--
+	  HANDLEBARS.JS inside the handlebars.java jar — CVE-2026-106445 (prototype/constructor
+	  access through lookupProperty) and CVE-2026-106446 (AST-validation bypass in
+	  compile()/precompile()), both critical, published 2026-10-06 and fixed only in
+	  handlebars.js 4.7.10.
+	  The flagged artifact is NOT a JavaScript dependency of this build: com.github.jknack:handlebars
+	  (the Java templating engine) ships a copy of the handlebars.js source as a jar resource
+	  (handlebars-v4.7.9.js), which dependency-check fingerprints as pkg:javascript/handlebars@4.7.9.
+	  That resource exists for handlebars.java's optional JS-precompile helper, which hands the script
+	  to a JS engine. Stubborn Contract never does: every call site is the Java API with a template
+	  name or string — `new Handlebars(new ClassPathTemplateLoader("/templates/java", ".hbs"))` and
+	  `new Handlebars()` in the generator's renderers and HandlebarsTemplateProcessor — and there is no
+	  precompile(), no pre-parsed AST input and no ScriptEngine/Nashorn/Rhino anywhere in the reactor.
+	  Both CVEs need the JavaScript engine: CVE-2026-106446 requires passing a pre-parsed AST object
+	  to compile()/precompile() (string templates are unaffected) and CVE-2026-106445 requires
+	  allowProtoMethodsByDefault plus a controlled template in handlebars.js. Neither path is
+	  reachable from any artifact we publish.
+	  Nothing to bump to: the vendored copy is upstream's, and handlebars.java 4.5.5 (2026-09-14,
+	  already taken here for its own ClasspathResourceLoader path-traversal fix, GHSA-pvrx-3g7m-fpgv)
+	  predates the handlebars.js advisories, so it still carries 4.7.9.
+	  Pinned to the exact vendored version and to these two CVEs, so a handlebars.java release that
+	  bundles 4.7.10 — or any further handlebars.js CVE — stops matching and re-surfaces.
+	  REMOVE once handlebars.java ships a build vendoring handlebars.js >= 4.7.10.
+	-->
+	<suppress>
+		<notes><![CDATA[
+			handlebars-v4.7.9.js is a jar resource vendored inside com.github.jknack:handlebars (the Java
+			engine), there for its optional JS-precompile helper. Stubborn Contract uses only the Java API
+			with template names/strings — no precompile(), no pre-parsed AST, no ScriptEngine anywhere in
+			the reactor — so neither CVE's path is reachable from a published artifact. handlebars.java
+			4.5.5 predates the advisories and still vendors 4.7.9, so there is nothing to bump to. Pinned
+			to @4.7.9 and to these two CVEs so a vendored 4.7.10 re-surfaces the finding.
+		]]></notes>
+		<packageUrl regex="true">^pkg:javascript/handlebars@4\.7\.9$</packageUrl>
+		<cve>CVE-2026-106445</cve>
+		<cve>CVE-2026-106446</cve>
+	</suppress>
+
+	<!--
 	  NOTE: the previously separate per-module self-CPE suppressions —
 	    * sh.stubborn *wiremock* jars -> cpe:/a:wiremock:wiremock (CVE-2018-9116)
 	    * sh.stubborn:stubborn-contract-converters -> cpe:/a:vmware:* (legacy Spring CVEs)
