@@ -132,8 +132,13 @@ jobs:
         # Dispatches to stubborn-samples so it pins every sample to this release and
         # verifies against it (opens an auto-merging PR there). Best effort: the
         # samples bump can also be run by hand and never fails the release.
+        #
+        # RELEASE_PAT, not a SAMPLES_DISPATCH_TOKEN: that secret never existed, so this
+        # step has silently done nothing on every release so far — bump-samples.sh exits 0
+        # when GH_TOKEN is empty, and the step still reports success. RELEASE_PAT is an
+        # org secret scoped to All repositories, so it actually reaches this public repo.
         env:
-          GH_TOKEN: ${{ secrets.SAMPLES_DISPATCH_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_PAT }}
         run: scripts/release/bump-samples.sh "${{ inputs.version }}"
 
       - name: Set next SNAPSHOT version
