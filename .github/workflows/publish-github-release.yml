@@ -18,9 +18,21 @@ jobs:
     name: GitHub Release
     runs-on: ubuntu-latest
     steps:
+      # The tagged sources, so the executable jar is built from exactly what was released.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           ref: "v${{ inputs.version }}"
+
+      # The release tooling as it is NOW, which is not the same thing. Checking out only
+      # the tag means a fix to these scripts can never be applied to an already-cut
+      # release: re-dispatching just re-runs whatever shipped inside the tag. That is
+      # exactly what happened to v0.2.0 — the body could not be rewritten with the real
+      # release notes because the tag carried the older create-github-release.sh, and the
+      # run reported success while changing nothing.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: .release-tooling
 
       - name: Set up JDK ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v4
@@ -40,11 +52,14 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: scripts/release/create-github-release.sh "${{ inputs.version }}"
+          # changelog/<version>.md may have been written after the tag was cut, so read it
+          # from the default-branch checkout rather than from the tagged tree.
+          NOTES_DIR: .release-tooling/changelog
+        run: .release-tooling/scripts/release/create-github-release.sh "${{ inputs.version }}"
 
       - name: Announce the release on stubborn.sh
         # Turns the release notes into a blog post. Best effort: the website
         # also sweeps published releases on a schedule.
         env:
           GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
-        run: scripts/release/announce-website.sh stubborn-contract "${{ inputs.version }}"
+        run: .release-tooling/scripts/release/announce-website.sh stubborn-contract "${{ inputs.version }}"
