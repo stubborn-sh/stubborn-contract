@@ -1889,7 +1889,16 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 				r.method("POST");
 				r.urlPath("/api/categories");
 				r.body(List.of(List.of("Programming", "Java"), List.of("Programming", "Java", "Spring", "Boot")));
-				r.headers((h) -> h.header("Content-Type", "application/json;charset=UTF-8"));
+				// Lower-case charset deliberately. This stub is served by a real WireMock
+				// below,
+				// and Jetty 12.1's HttpParser normalises the charset parameter of a known
+				// header
+				// to lower case before WireMock ever sees it - callApiCategories() sends
+				// "charset=UTF-8" on the wire and the server reads "charset=utf-8". An
+				// equalTo
+				// matcher built from an upper-case contract therefore cannot match a live
+				// request.
+				r.headers((h) -> h.header("Content-Type", "application/json;charset=utf-8"));
 			});
 			c.response((r) -> {
 				r.status(200);
@@ -1906,7 +1915,7 @@ class WireMockGroovyDslTests implements WireMockStubVerifier {
 						    "method" : "POST",
 						    "headers" : {
 						      "Content-Type" : {
-						        "equalTo" : "application/json;charset=UTF-8"
+						        "equalTo" : "application/json;charset=utf-8"
 						      }
 						    },
 						    "bodyPatterns" : [ {
