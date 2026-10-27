@@ -643,98 +643,17 @@
 				<version>${httpclient5.version}</version>
 			</dependency>
 			<!--
-			  wiremock-jetty12:3.13.2 uses jetty-ee10-*:12.0.37 which calls APIs only present in
-			  Jetty 12.0.x (e.g. ByteBufferPool.acquire(int,boolean), Environment.ensure(String)).
-			  Spring Boot 4 imports spring-boot-dependencies which forces all org.eclipse.jetty:* to
-			  12.1.x. Direct entries below override the BOM import so WireMock works on test classpath.
-			-->
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-util</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-io</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-http</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-server</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-security</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-session</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-xml</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-alpn-server</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-alpn-java-server</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-alpn-client</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-alpn-java-client</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-proxy</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-client</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty.http2</groupId>
-				<artifactId>jetty-http2-server</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty.http2</groupId>
-				<artifactId>jetty-http2-common</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty.http2</groupId>
-				<artifactId>jetty-http2-hpack</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<!--
-			  wiremock-jetty12:3.13.2 also pulls the Jakarta EE 10 servlet layer
-			  (org.eclipse.jetty.ee10:jetty-ee10-*) and org.eclipse.jetty:jetty-ee, which it
-			  declares at 12.0.30 - a version the core jetty.version pins above do NOT reach
-			  (different groupId / artifacts). 12.0.30 carries CVE-2026-2332 (9.1), CVE-2026-5795
-			  (7.4), CVE-2026-1605 (7.5) and CVE-2026-10051 (6.9). Pin these to ${jetty.version}
-			  (12.0.37, same 12.0.x line wiremock-jetty12 requires) so they move off 12.0.30 too.
+			  wiremock-jetty12:3.13.2 - the stub server used across the reactor's tests - is built
+			  against Jetty's Jakarta EE 10 servlet layer (org.eclipse.jetty.ee10:*), which it
+			  declares at 12.0.30. spring-boot-dependencies manages Jetty CORE (jetty-bom) and the
+			  ee11 layer, but not ee10, so without the pins below the build mixes an ee10 12.0.30
+			  with Boot's 12.1.x core - one product across two groupIds - and every stub server
+			  fails in ServletContextHandler's static initializer on Environment.ensure
+			  (stubborn-sh/stubborn#142). Pinning ee10 to ${jetty.version}, which tracks Boot's
+			  Jetty line, closes that gap and also moves these jars off 12.0.30 and its
+			  CVE-2026-2332 (9.1), CVE-2026-5795 (7.4), CVE-2026-1605 (7.5) and CVE-2026-10051 (6.9).
+			  Core Jetty is deliberately NOT pinned here: Boot's version wins, for this build and
+			  for consumers alike.
 			-->
 			<dependency>
 				<groupId>org.eclipse.jetty.ee10</groupId>
@@ -751,10 +670,24 @@
 				<artifactId>jetty-ee10-webapp</artifactId>
 				<version>${jetty.version}</version>
 			</dependency>
+			<!--
+			  Null-safety and static-analysis annotations used across the modules. These live
+			  here, in the reactor parent, rather than in stubborn-contract-build: the consumer
+			  BOM (stubborn-contract-dependencies) is a direct child of that build parent, so
+			  anything declared there leaks into the BOM we publish and lands in consumers'
+			  dependencyManagement ahead of their platform BOM. Spring Boot manages jspecify
+			  itself, which is exactly the kind of silent override stubborn-sh/stubborn#142
+			  was about.
+			-->
 			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-ee</artifactId>
-				<version>${jetty.version}</version>
+				<groupId>org.jspecify</groupId>
+				<artifactId>jspecify</artifactId>
+				<version>${jspecify.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.errorprone</groupId>
+				<artifactId>error_prone_annotations</artifactId>
+				<version>${error-prone.version}</version>
 			</dependency>
 			<!--
 			  CVE-2025-5222 (CVSS 7.0): icu4j 4.6 is a deep transitive of the Eclipse WST xpath2

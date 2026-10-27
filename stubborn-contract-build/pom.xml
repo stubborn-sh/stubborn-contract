@@ -119,14 +119,27 @@
 		<!--
 		  Security-pinned third-party library versions. Defined here (the common build
 		  parent) so the reactor pom, the consumer BOM, and every module share one source of
-		  truth. Jetty is held on the 12.0.x line that WireMock 3.13.2 requires (12.1.x
-		  removed APIs wiremock-jetty12 calls); httpcore5 is pinned above its vulnerable 5.4.2.
+		  truth. httpcore5 is pinned above its vulnerable 5.4.2.
 		  httpclient5 is pinned above 5.6.1 (CVE-2026-71290, CVSS 9.1) — it leaks in as a
 		  transitive of Apache HttpClient5 / WireMock and is not managed by the Spring Boot BOM.
 		  icu4j is pinned above CVE-2025-5222 (buffer overflow, fixed from ICU 77 onward); it
 		  leaks in as a deep transitive of the Eclipse WST xpath2 processor in stubborn-contract-xmlassert.
 		-->
-		<jetty.version>12.0.39</jetty.version>
+		<!--
+		  Jetty: used ONLY for the org.eclipse.jetty.ee10:* servlet layer that
+		  wiremock-jetty12 needs and that Spring Boot does not manage. Keep it on the same
+		  minor line as the Jetty that spring-boot-dependencies imports (Boot 4.1 -> 12.1.x),
+		  because the ee10 jars and the Jetty core jars are one product split across two
+		  groupIds: mixing an ee10 12.0.x with a core 12.1.x is what broke
+		  stubborn-sh/stubborn#142
+		  (ServletContextHandler's static initializer calls Environment.ensure, whose
+		  signature changed between the two lines, so the stub server dies on
+		  NoSuchMethodError). Jetty 12.1.x still publishes ee10, so there is no need to hold
+		  the 12.0 line for WireMock: wiremock-jetty12:3.13.2 runs on ee10 12.1.x.
+		  Core Jetty itself is NOT pinned anywhere for consumers - Boot manages it
+		  (stubborn-sh/stubborn#142).
+		-->
+		<jetty.version>12.1.14</jetty.version>
 		<httpcore5.version>5.4.4</httpcore5.version>
 		<httpclient5.version>5.6.4</httpclient5.version>
 		<icu4j.version>78.3</icu4j.version>
@@ -247,21 +260,6 @@
 		-->
 		<stubborn.no-groovy-transform.skip>true</stubborn.no-groovy-transform.skip>
 	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.jspecify</groupId>
-				<artifactId>jspecify</artifactId>
-				<version>${jspecify.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.errorprone</groupId>
-				<artifactId>error_prone_annotations</artifactId>
-				<version>${error-prone.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<distributionManagement>
 		<snapshotRepository>

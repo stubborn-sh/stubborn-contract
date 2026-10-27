@@ -26,15 +26,20 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!--
+			The ee10 servlet layer wiremock-jetty12 is built against. Spring Boot manages
+			Jetty core and ee11 but not ee10, so these are version-managed by the reactor
+			parent at ${jetty.version}, which tracks Boot's Jetty line - an ee10 on a
+			different minor than the core Jetty on the classpath is the
+			stubborn-sh/stubborn#142 breakage.
+		-->
 		<dependency>
 			<groupId>org.eclipse.jetty.ee10</groupId>
 			<artifactId>jetty-ee10-servlet</artifactId>
-			<version>12.0.39</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.ee10</groupId>
 			<artifactId>jetty-ee10-servlets</artifactId>
-			<version>12.0.39</version>
 		</dependency>
 	</dependencies>
 	<build>
