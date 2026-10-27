@@ -130,12 +130,14 @@
 		  wiremock-jetty12 needs and that Spring Boot does not manage. Keep it on the same
 		  minor line as the Jetty that spring-boot-dependencies imports (Boot 4.1 -> 12.1.x),
 		  because the ee10 jars and the Jetty core jars are one product split across two
-		  groupIds: mixing an ee10 12.0.x with a core 12.1.x is what broke gh-142
+		  groupIds: mixing an ee10 12.0.x with a core 12.1.x is what broke
+		  stubborn-sh/stubborn#142
 		  (ServletContextHandler's static initializer calls Environment.ensure, whose
 		  signature changed between the two lines, so the stub server dies on
 		  NoSuchMethodError). Jetty 12.1.x still publishes ee10, so there is no need to hold
 		  the 12.0 line for WireMock: wiremock-jetty12:3.13.2 runs on ee10 12.1.x.
-		  Core Jetty itself is NOT pinned anywhere for consumers - Boot manages it (gh-142).
+		  Core Jetty itself is NOT pinned anywhere for consumers - Boot manages it
+		  (stubborn-sh/stubborn#142).
 		-->
 		<jetty.version>12.1.14</jetty.version>
 		<httpcore5.version>5.4.4</httpcore5.version>

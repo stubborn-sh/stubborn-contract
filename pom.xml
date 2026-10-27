@@ -676,7 +676,8 @@
 			  BOM (stubborn-contract-dependencies) is a direct child of that build parent, so
 			  anything declared there leaks into the BOM we publish and lands in consumers'
 			  dependencyManagement ahead of their platform BOM. Spring Boot manages jspecify
-			  itself, which is exactly the kind of silent override gh-142 was about.
+			  itself, which is exactly the kind of silent override stubborn-sh/stubborn#142
+			  was about.
 			-->
 			<dependency>
 				<groupId>org.jspecify</groupId>
