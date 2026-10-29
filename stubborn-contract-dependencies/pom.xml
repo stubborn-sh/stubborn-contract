@@ -266,9 +266,33 @@
 				<artifactId>jetty-ee10-webapp</artifactId>
 				<version>${jetty.version}</version>
 			</dependency>
+			<!--
+			  REST Assured, all three modules a generated contract test can be compiled
+			  against: `spring-mock-mvc` for MOCKMVC (the default), `spring-web-test-client`
+			  for WEBTESTCLIENT and `rest-assured` for EXPLICIT. (JAXRSCLIENT generates
+			  JAX-RS code and needs no REST Assured module.)
+
+			  Boot manages none of them, so a consumer who switches testMode to WEBTESTCLIENT
+			  used to hit "'dependencies.dependency.version' ... is missing" on the module the
+			  generated test needs (stubborn-sh/stubborn#147). Managing all three together
+			  also keeps them on one REST Assured version: they share internals and are not
+			  supported mixed across versions.
+			-->
 			<dependency>
 				<groupId>io.rest-assured</groupId>
 				<artifactId>rest-assured</artifactId>
+				<version>${rest-assured.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.rest-assured</groupId>
+				<artifactId>spring-mock-mvc</artifactId>
+				<version>${rest-assured.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.rest-assured</groupId>
+				<artifactId>spring-web-test-client</artifactId>
 				<version>${rest-assured.version}</version>
 				<scope>test</scope>
 			</dependency>

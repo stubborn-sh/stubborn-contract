@@ -66,8 +66,10 @@ class ConsumerBomScopeTests {
 	 * <ul>
 	 * <li>{@code org.wiremock:*} — WireMock is part of Stubborn's API surface (stub
 	 * mappings, the stub server) and Boot does not manage it.</li>
-	 * <li>{@code io.rest-assured:rest-assured} — generated contract tests compile against
-	 * it; Boot does not manage it.</li>
+	 * <li>{@code io.rest-assured:rest-assured}, {@code :spring-mock-mvc},
+	 * {@code :spring-web-test-client} — a generated contract test compiles against one of
+	 * these, picked by {@code testMode}; Boot manages none of them
+	 * (stubborn-sh/stubborn#147).</li>
 	 * <li>{@code org.eclipse.jetty.ee10:*} — the servlet layer wiremock-jetty12 is built
 	 * against. Boot imports {@code jetty-bom} and {@code jetty-ee11-bom}, so it manages
 	 * Jetty core and ee11 but NOT ee10; left unmanaged these resolve to the 12.0.x
@@ -98,6 +100,55 @@ class ConsumerBomScopeTests {
 				+ "stubborn-contract-build/pom.xml instead; if Stubborn genuinely cannot work without "
 				+ "it and Spring Boot does not manage it, add the groupId to ALLOWED_THIRD_PARTY with " + "the reason.")
 			.isEmpty();
+	}
+
+	/**
+	 * The flip side of the scope rule: REST Assured is in the allowlist because a
+	 * generated contract test cannot compile without it, and which module it needs is
+	 * decided by {@code testMode} — {@code spring-mock-mvc} for MOCKMVC,
+	 * {@code spring-web-test-client} for WEBTESTCLIENT, {@code rest-assured} for
+	 * EXPLICIT. Boot manages none of them, so a module missing here is a consumer who
+	 * declares the dependency the generated test needs and gets
+	 * {@code 'dependencies.dependency.version' ... is missing}
+	 * (stubborn-sh/stubborn#147). JAXRSCLIENT is the one mode that needs none of them: it
+	 * generates JAX-RS code.
+	 */
+	@Test
+	void bomManagesEveryRestAssuredModuleAGeneratedTestCanNeed() {
+		List<String> managed = new ArrayList<>();
+		for (String[] coordinate : managedDependencies()) {
+			if (coordinate[0].equals("io.rest-assured")) {
+				managed.add(coordinate[1]);
+			}
+		}
+		assertThat(managed)
+			.as("stubborn-contract-dependencies must manage every REST Assured module a generated "
+					+ "contract test can be compiled against, so a consumer can declare the one their "
+					+ "testMode needs without a version (stubborn-sh/stubborn#147).")
+			.contains("rest-assured", "spring-mock-mvc", "spring-web-test-client");
+	}
+
+	/**
+	 * All three REST Assured modules share internals and are not supported mixed across
+	 * versions, so they must resolve to one version rather than being pinned
+	 * individually.
+	 */
+	@Test
+	void restAssuredModulesAreManagedAtOneVersion() {
+		String managed = dependencyManagementOf(read(this.repoRoot.resolve("stubborn-contract-dependencies/pom.xml")));
+		Set<String> versions = new LinkedHashSet<>();
+		Matcher m = Pattern
+			.compile("<groupId>io\\.rest-assured</groupId>\\s*<artifactId>[^<]+</artifactId>"
+					+ "\\s*<version>([^<]+)</version>")
+			.matcher(managed);
+		while (m.find()) {
+			versions.add(m.group(1));
+		}
+		assertThat(versions)
+			.as("the REST Assured modules in stubborn-contract-dependencies are managed at "
+					+ "different versions. They share internals and are not supported mixed, so they must all "
+					+ "use the same property.")
+			.hasSize(1);
 	}
 
 	/**

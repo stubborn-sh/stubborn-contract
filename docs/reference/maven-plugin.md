@@ -18,7 +18,7 @@ To add the Stubborn Contract BOM, include the following section in your `pom.xml
 </dependencyManagement>
 ```
 
-The BOM manages compatible versions of `spring-cloud-stream`, `rest-assured`, and the Spring Boot 4.x split modules (`spring-boot-restclient`, `spring-boot-http-client`) so you do not need to declare those versions separately.
+The BOM manages every `sh.stubborn:*` artifact, plus the few third-party libraries that Stubborn's API surface needs and Spring Boot does not manage (WireMock and REST Assured), so you do not declare those versions separately. It deliberately manages nothing Spring Boot already manages — your platform BOM keeps those choices.
 
 Next, add the Stubborn Contract Verifier Maven plugin:
 
@@ -59,15 +59,29 @@ Sometimes, regardless of the picked IDE, you can see that the `target/generated-
 
 ## Maven and REST Assured
 
-The `stubborn-contract-dependencies` BOM manages `io.rest-assured:rest-assured:6.0.1` so you do not need to specify the version in your project. Add the dependency without a `<version>`:
+A generated HTTP contract test is compiled against REST Assured, and which module it needs
+depends on the plugin's `testMode`:
+
+| `testMode` | REST Assured module |
+|---|---|
+| `MOCKMVC` (default) | `io.rest-assured:spring-mock-mvc` |
+| `WEBTESTCLIENT` | `io.rest-assured:spring-web-test-client` |
+| `EXPLICIT` | `io.rest-assured:rest-assured` |
+| `JAXRSCLIENT` | none — it generates JAX-RS code, so it needs a JAX-RS client instead |
+
+The `stubborn-contract-dependencies` BOM manages all three, so add the one you need without a
+`<version>`:
 
 ```xml
 <dependency>
     <groupId>io.rest-assured</groupId>
-    <artifactId>rest-assured</artifactId>
+    <artifactId>spring-web-test-client</artifactId>
     <scope>test</scope>
 </dependency>
 ```
+
+`stubborn-contract-starter-verifier` already brings `rest-assured` and `spring-mock-mvc`, so on
+the default `MOCKMVC` mode there is nothing to add. `WEBTESTCLIENT` needs the declaration above.
 
 ## Using Snapshot Versions for Maven
 
