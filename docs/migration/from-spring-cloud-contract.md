@@ -262,15 +262,18 @@ The `stubborn-contract-dependencies` BOM manages compatible versions of:
 
 | Artifact | Managed version |
 |---|---|
-| `spring-cloud-stream` | 5.0.2 |
-| `spring-cloud-stream-test-binder` | 5.0.2 |
-| `io.rest-assured:rest-assured` | 6.0.0 |
-| `spring-boot-restclient` | (tracks Spring Boot BOM) |
-| `spring-boot-http-client` | (tracks Spring Boot BOM) |
 | All `sh.stubborn:*` artifacts | (the imported BOM version) |
+| `org.wiremock:wiremock`, `:wiremock-jetty12`, `:wiremock-standalone` | (the version Stubborn builds against) |
+| `io.rest-assured:rest-assured`, `:spring-mock-mvc`, `:spring-web-test-client` | (the version Stubborn builds against) |
+| `org.eclipse.jetty.ee10:*` | (the Jetty version Spring Boot manages) |
 
 You do not need to declare versions for any of these — the single `stubborn-contract-dependencies`
 import is sufficient.
+
+That is the whole list. Unlike `spring-cloud-contract-dependencies`, this BOM does **not** manage
+anything Spring Boot already manages — not `spring-cloud-stream`, not the Spring Boot 4.x split
+modules, not Tomcat or Netty or httpclient5. Those are your platform BOM's decision, and leaving
+them there means importing this BOM ahead of `spring-boot-dependencies` cannot change them.
 
 ---
 

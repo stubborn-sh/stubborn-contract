@@ -35,10 +35,13 @@ dependencies {
 
 :::
 
-The BOM also manages compatible versions of the third-party libraries the tooling relies on
-(for example `spring-cloud-stream`, `io.rest-assured:rest-assured`, and the Spring Boot 4.x
-split modules `spring-boot-restclient` / `spring-boot-http-client`), so you do not declare
-those versions either.
+The BOM also manages the few third-party libraries that are part of Stubborn's API surface and
+that Spring Boot does not manage — WireMock, and the REST Assured modules a generated contract
+test is compiled against (`rest-assured`, `spring-mock-mvc`, `spring-web-test-client`) — so you
+do not declare those versions either.
+
+It manages nothing Spring Boot already manages. Import order therefore does not matter: this
+BOM cannot replace a version your platform BOM has chosen.
 
 ## 2. Add the snapshot repository (for `-SNAPSHOT` builds)
 

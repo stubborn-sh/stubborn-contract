@@ -101,12 +101,23 @@ Running `./mvnw clean install` automatically generates tests that verify the app
 
 The generated tests may differ depending on which framework and test type you set up in your plugin. Stubborn Contract supports:
 
-- **MockMvc** (default): the default test mode for HTTP contracts
-- **JaxRsClient**: a JAX-RS client with the `JAXRS` test mode
-- **WebTestClient**: recommended for reactive, WebFlux-based applications, set with the `WEBTESTCLIENT` test mode
+- **MockMvc** (default): the default test mode for HTTP contracts, compiled against `io.rest-assured:spring-mock-mvc`
+- **JaxRsClient**: a JAX-RS client with the `JAXRSCLIENT` test mode, compiled against `javax.ws.rs` rather than REST Assured
+- **WebTestClient**: recommended for reactive, WebFlux-based applications, set with the `WEBTESTCLIENT` test mode and compiled against `io.rest-assured:spring-web-test-client`
 
 ::: info
-You need only one of these test frameworks. MockMvc is the default. To use one of the other frameworks, add its library to your classpath.
+You need only one of these test frameworks. MockMvc is the default, and
+`stubborn-contract-starter-verifier` already puts it on your test classpath. To use WebTestClient
+instead, declare its module yourself — no `<version>`, the `stubborn-contract-dependencies` BOM
+manages every REST Assured module:
+
+```xml
+<dependency>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>spring-web-test-client</artifactId>
+    <scope>test</scope>
+</dependency>
+```
 :::
 
 **MockMvc example (generated test):**
