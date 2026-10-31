@@ -137,6 +137,11 @@ jobs:
         # step has silently done nothing on every release so far — bump-samples.sh exits 0
         # when GH_TOKEN is empty, and the step still reports success. RELEASE_PAT is an
         # org secret scoped to All repositories, so it actually reaches this public repo.
+        # continue-on-error: the artifacts are already on Central by this point, so a bump
+        # that cannot be dispatched must not fail the release — but it must be visible.
+        # bump-samples.sh now exits non-zero rather than shrugging, so this step goes red
+        # and the run carries an ::error:: instead of a green tick over nothing.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PAT }}
         run: scripts/release/bump-samples.sh "${{ inputs.version }}"
