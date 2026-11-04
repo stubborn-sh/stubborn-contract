@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<properties>
 		<stubborn.no-spring.skip>false</stubborn.no-spring.skip>
-		<automaton.version>1.12-4</automaton.version>
+		<automaton.version>1.13-1</automaton.version>
 	</properties>
 	<parent>
 		<groupId>sh.stubborn</groupId>
