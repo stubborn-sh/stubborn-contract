@@ -112,7 +112,7 @@
 		<spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
 		<findsecbugs-plugin.version>1.13.0</findsecbugs-plugin.version>
 		<dependency-check-maven.version>12.1.1</dependency-check-maven.version>
-		<error-prone.version>2.36.0</error-prone.version>
+		<error-prone.version>2.51.0</error-prone.version>
 		<nullaway.version>0.12.7</nullaway.version>
 		<jspecify.version>1.0.1</jspecify.version>
 
