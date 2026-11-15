@@ -19,11 +19,15 @@ package sh.stubborn.contract.wiremock;
 import java.io.File;
 import java.nio.file.Files;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.matching.MultiValuePattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.BDDAssertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import sh.stubborn.contract.wiremock.WiremockServerWebTestClientApplicationTests.TestConfiguration;
+import sh.stubborn.contract.wiremock.restdocs.WireMockWebTestClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
@@ -36,6 +40,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,6 +99,26 @@ public class WiremockServerWebTestClientApplicationTests {
 		BDDAssertions.then(stubMapping.getResponse().getTransformers()).contains("response-template");
 	}
 
+	@Test
+	public void stubsDecodeQueryParams() throws Exception {
+		File file = new File("target/snippets/webtestclient/stubs", "sorted.json");
+		FileSystemUtils.deleteRecursively(file);
+
+		this.client.get()
+			.uri((builder) -> builder.path("/sorted").queryParam("sort", "{value}").build("externalId,asc"))
+			.exchange()
+			.expectBody()
+			.consumeWith(WireMockWebTestClient.verify()
+				.wiremock(WireMock.get(WireMock.urlPathEqualTo("/sorted"))
+					.withQueryParam("sort", WireMock.equalTo("externalId,asc"))))
+			.consumeWith(document("sorted"));
+
+		BDDAssertions.then(file).exists();
+		StubMapping stubMapping = WireMockStubMapping.buildFrom(Files.readString(file.toPath()));
+		BDDAssertions.then(stubMapping.getRequest().getQueryParameters())
+			.containsOnly(Assertions.entry("sort", MultiValuePattern.of(WireMock.equalTo("externalId,asc"))));
+	}
+
 	@Configuration
 	@RestController
 	protected static class TestConfiguration {
@@ -110,6 +135,18 @@ public class WiremockServerWebTestClientApplicationTests {
 				.adaptFromForwardedHeaders(request.getURI(), request.getHeaders())
 				.build();
 			return "link: " + uriComponents.toUriString();
+		}
+
+		@ResponseBody
+		@RequestMapping("/sorted")
+		public String sorted(ServerHttpRequest request) {
+			// the raw query must reach the snippet percent-encoded for this test to mean
+			// anything, so fail loudly here rather than silently passing
+			String rawQuery = request.getURI().getRawQuery();
+			if (!"sort=externalId%2Casc".equals(rawQuery)) {
+				throw new IllegalStateException("expected an encoded query, got: " + rawQuery);
+			}
+			return "Hello Sorted";
 		}
 
 		@RequestMapping("/status")

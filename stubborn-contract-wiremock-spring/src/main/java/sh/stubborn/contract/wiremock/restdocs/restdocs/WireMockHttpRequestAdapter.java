@@ -17,9 +17,9 @@
 package sh.stubborn.contract.wiremock.restdocs;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.tomakehurst.wiremock.common.Urls;
 import com.github.tomakehurst.wiremock.http.Body;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.github.tomakehurst.wiremock.http.Cookie;
@@ -152,27 +153,13 @@ class WireMockHttpRequestAdapter implements Request {
 
 	@Override
 	public @Nullable QueryParameter queryParameter(String key) {
-		String query = this.result.getUrl().getRawQuery();
-		if (query == null) {
+		URI url = this.result.getUrl();
+		if (!StringUtils.hasText(url.getRawQuery())) {
 			return null;
 		}
-		List<String> values = new ArrayList<>();
-		String[] strings = StringUtils.split(query, "&");
-		if (strings == null) {
-			return null;
-		}
-		for (String name : strings) {
-			if (name.equals(key)) {
-				values.add("");
-			}
-			else if (name.startsWith(key + "=")) {
-				values.add(name.substring(name.indexOf("=") + 1));
-			}
-		}
-		if (values.isEmpty()) {
-			return null;
-		}
-		return new QueryParameter(key, values);
+		// WireMock compares query parameters against their decoded values, so the query
+		// is split with WireMock's own parser
+		return Urls.splitQuery(url).get(key);
 	}
 
 	// ===== Helpers for application/x-www-form-urlencoded parsing =====
