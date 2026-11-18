@@ -206,6 +206,8 @@ If you want to download your contract definitions from a Maven repository, you c
 
 We cache only non-snapshot, explicitly provided versions (for example `+` or `1.0.0.BUILD-SNAPSHOT` do not get cached). By default, this feature is turned on.
 
+With `contractsMode` set to `LOCAL`, the plugin resolves the contract dependency through the local repository that Maven itself is configured with. That includes a [split local repository](https://maven.apache.org/resolver/local-repository.html#split-local-repository) (`-Daether.enhancedLocalRepository.split=true`), under which `mvn install` places the artifact below the `installed` prefix. Only the configured layout is searched, so an artifact left over from a previously used layout is ignored.
+
 The following list describes experimental features that you can turn on in the plugin:
 
 - `convertToYaml`: Converts all DSLs to the declarative YAML format. This can be extremely useful when you use external libraries in your Groovy DSLs. By turning this feature on (by setting it to `true`), you need not add the library dependency on the consumer side.

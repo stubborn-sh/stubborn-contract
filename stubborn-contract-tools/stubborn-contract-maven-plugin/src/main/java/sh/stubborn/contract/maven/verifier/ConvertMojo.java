@@ -215,6 +215,7 @@ public class ConvertMojo extends AbstractMojo {
 		config.setExcludeBuildFolders(this.excludeBuildFolders);
 		// download contracts, unzip them and pass as output directory
 		AetherStubDownloader.setRepositorySystemFromMaven(this.repositorySystem);
+		AetherStubDownloader.setRepositorySystemSessionFromMaven(this.repoSession);
 		File contractsDirectory = contractSubfolderIfPresent(locationOfContracts(config));
 
 		if (this.incrementalContractStubs

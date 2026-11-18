@@ -274,6 +274,7 @@ public class GenerateTestsMojo extends AbstractMojo {
 		config.setFailOnInProgress(this.failOnInProgress);
 		// download contracts, unzip them and pass as output directory
 		AetherStubDownloader.setRepositorySystemFromMaven(this.repositorySystem);
+		AetherStubDownloader.setRepositorySystemSessionFromMaven(this.repoSession);
 		File contractsDirectory = new MavenContractsDownloader(this.project, this.contractDependency,
 				this.contractsPath, this.contractsRepositoryUrl, this.contractsMode, getLog(),
 				this.contractsRepositoryUsername, this.contractsRepositoryPassword, this.contractsRepositoryProxyHost,
