@@ -18,10 +18,12 @@ package sh.stubborn.contract.wiremock.restdocs;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -30,8 +32,10 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.Json;
+import com.github.tomakehurst.wiremock.common.Urls;
 import com.github.tomakehurst.wiremock.http.HttpHeader;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
+import com.github.tomakehurst.wiremock.http.QueryParameter;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.jspecify.annotations.Nullable;
@@ -145,14 +149,18 @@ public class WireMockSnippet implements Snippet {
 	}
 
 	private MappingBuilder queryParams(MappingBuilder request, Operation operation) {
-		String rawQuery = operation.getRequest().getUri().getRawQuery();
-		if (!StringUtils.hasText(rawQuery)) {
+		URI uri = operation.getRequest().getUri();
+		if (!StringUtils.hasText(uri.getRawQuery())) {
 			return request;
 		}
-		for (String queryPair : rawQuery.split("&")) {
-			String[] splitQueryPair = queryPair.split("=");
-			String value = (splitQueryPair.length > 1) ? splitQueryPair[1] : "";
-			request = request.withQueryParam(splitQueryPair[0], WireMock.equalTo(value));
+		// WireMock matches query parameters against their decoded values, so the query is
+		// split with WireMock's own parser. That keeps the generated stub matching the
+		// request the test has just sent, whatever the value contains: reserved
+		// characters, percent escapes or an "=" of its own.
+		for (Map.Entry<String, QueryParameter> queryParam : Urls.splitQuery(uri).entrySet()) {
+			QueryParameter parameter = queryParam.getValue();
+			String value = (parameter.isPresent() && !parameter.values().isEmpty()) ? parameter.firstValue() : "";
+			request = request.withQueryParam(queryParam.getKey(), WireMock.equalTo(value));
 		}
 		return request;
 	}

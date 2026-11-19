@@ -6,13 +6,15 @@
 #
 # Usage: bump-samples.sh <version>
 #
-# This never fails a release: the samples bump is a follow-up convenience, and it
-# can also be run by hand (workflow_dispatch on the samples workflow). A missing
-# token or a failed dispatch is reported and shrugged off.
+# This exits non-zero when the dispatch does not happen, and the release workflow marks
+# the step continue-on-error. So a release that has already published is never failed
+# retroactively, but the step goes red rather than reporting success over a bump that did
+# nothing — which is what happened for 0.2.2: the dispatch failed, the `|| echo` swallowed
+# it, the step was green, and the samples stayed on 0.2.1.
 #
 # Environment:
 #   GH_TOKEN      token with permission to dispatch to the samples repo
-#                 (secrets.SAMPLES_DISPATCH_TOKEN); skipped when unset
+#                 (secrets.RELEASE_PAT); a missing token is an error, not a skip
 #   SAMPLES_REPO  override the target repository (default stubborn-sh/stubborn-samples)
 #   GH            override the gh binary (tests)
 #
@@ -24,9 +26,9 @@ GH="${GH:-gh}"
 VERSION="${VERSION#v}"
 
 if [[ -z "${GH_TOKEN:-}" ]]; then
-	echo "No GH_TOKEN — skipping the stubborn-samples bump to ${VERSION}."
-	echo "Run the samples 'Bump stubborn-contract version' workflow by hand to pin them."
-	exit 0
+	echo "::error::No GH_TOKEN — the stubborn-samples bump to ${VERSION} did not happen." >&2
+	echo "Run the samples 'Bump stubborn-contract version' workflow by hand to pin them." >&2
+	exit 1
 fi
 
 payload="$(jq -n --arg version "$VERSION" \
@@ -34,8 +36,9 @@ payload="$(jq -n --arg version "$VERSION" \
 
 if printf '%s' "$payload" | "$GH" api "repos/${SAMPLES_REPO}/dispatches" --method POST --input -; then
 	echo "Asked ${SAMPLES_REPO} to pin the samples to ${VERSION}."
-else
-	echo "Could not dispatch the samples bump to ${SAMPLES_REPO} — pin them by hand." >&2
+	exit 0
 fi
 
-exit 0
+echo "::error::Could not dispatch the samples bump to ${SAMPLES_REPO} — pin them by hand" \
+	"(workflow_dispatch on the samples 'Bump stubborn-contract version' workflow, version ${VERSION})." >&2
+exit 1

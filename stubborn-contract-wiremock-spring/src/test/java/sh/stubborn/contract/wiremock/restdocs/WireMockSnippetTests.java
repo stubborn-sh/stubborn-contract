@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.http.ImmutableRequest;
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.http.RequestMethod;
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 import com.github.tomakehurst.wiremock.matching.EqualToXmlPattern;
 import com.github.tomakehurst.wiremock.matching.MultiValuePattern;
@@ -183,6 +187,49 @@ public class WireMockSnippetTests {
 	}
 
 	@Test
+	public void should_url_decode_query_param_values_when_generating_stub() throws IOException {
+		String url = "https://foo/bar?sort=externalId%2Casc";
+		this.operation = operation(requestGet(url), response(), this.context);
+		WireMockSnippet snippet = new WireMockSnippet();
+
+		snippet.document(this.operation);
+
+		StubMapping stubMapping = writtenStubMapping();
+		assertThat(stubMapping.getRequest().getQueryParameters())
+			.containsOnly(Assertions.entry("sort", MultiValuePattern.of(WireMock.equalTo("externalId,asc"))));
+		assertThatStubMatchesRequestTo(stubMapping, url);
+	}
+
+	@Test
+	public void should_url_decode_query_param_names_and_values_with_reserved_characters() throws IOException {
+		String url = "https://foo/bar?my%20param=a%3Db&q=hello+world";
+		this.operation = operation(requestGet(url), response(), this.context);
+		WireMockSnippet snippet = new WireMockSnippet();
+
+		snippet.document(this.operation);
+
+		StubMapping stubMapping = writtenStubMapping();
+		assertThat(stubMapping.getRequest().getQueryParameters()).containsOnly(
+				Assertions.entry("my param", MultiValuePattern.of(WireMock.equalTo("a=b"))),
+				Assertions.entry("q", MultiValuePattern.of(WireMock.equalTo("hello world"))));
+		assertThatStubMatchesRequestTo(stubMapping, url);
+	}
+
+	@Test
+	public void should_keep_the_plus_of_an_iso_date_time_query_param_value() throws IOException {
+		String url = "https://foo/bar?from=2020-01-01T00:00:00+01:00";
+		this.operation = operation(requestGet(url), response(), this.context);
+		WireMockSnippet snippet = new WireMockSnippet();
+
+		snippet.document(this.operation);
+
+		StubMapping stubMapping = writtenStubMapping();
+		assertThat(stubMapping.getRequest().getQueryParameters()).containsOnly(
+				Assertions.entry("from", MultiValuePattern.of(WireMock.equalTo("2020-01-01T00:00:00+01:00"))));
+		assertThatStubMatchesRequestTo(stubMapping, url);
+	}
+
+	@Test
 	public void should_accept_request_cookies() throws IOException {
 		this.operation = operation(requestGetWithCookie(), response(), this.context);
 		WireMockSnippet snippet = new WireMockSnippet();
@@ -213,6 +260,19 @@ public class WireMockSnippetTests {
 		assertThat(contract).exists();
 		String contractText = new String(Files.readAllBytes(contract.toPath()));
 		assertThat(contractText).contains("cookies {").contains("cookie('''test_user''', '''free''')");
+	}
+
+	private StubMapping writtenStubMapping() throws IOException {
+		File stub = new File(this.outputFolder, "stubs/foo.json");
+		assertThat(stub).exists();
+		return WireMockStubMapping.buildFrom(new String(Files.readAllBytes(stub.toPath()), StandardCharsets.UTF_8));
+	}
+
+	private void assertThatStubMatchesRequestTo(StubMapping stubMapping, String url) {
+		Request request = ImmutableRequest.create().withAbsoluteUrl(url).withMethod(RequestMethod.GET).build();
+		assertThat(stubMapping.getRequest().match(request).isExactMatch())
+			.as("the generated stub does not match the documented request")
+			.isTrue();
 	}
 
 	private Operation operation(OperationRequest request, OperationResponse response,
@@ -520,6 +580,45 @@ public class WireMockSnippetTests {
 			@Override
 			public URI getUri() {
 				return URI.create("https://foo/bar?myParam=myValue");
+			}
+
+			@Override
+			public Collection<RequestCookie> getCookies() {
+				return Collections.emptySet();
+			}
+		};
+	}
+
+	private OperationRequest requestGet(String uri) {
+		return new OperationRequest() {
+			@Override
+			public byte[] getContent() {
+				return new byte[0];
+			}
+
+			@Override
+			public String getContentAsString() {
+				return "";
+			}
+
+			@Override
+			public HttpHeaders getHeaders() {
+				return new HttpHeaders();
+			}
+
+			@Override
+			public HttpMethod getMethod() {
+				return HttpMethod.GET;
+			}
+
+			@Override
+			public Collection<OperationRequestPart> getParts() {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public URI getUri() {
+				return URI.create(uri);
 			}
 
 			@Override
