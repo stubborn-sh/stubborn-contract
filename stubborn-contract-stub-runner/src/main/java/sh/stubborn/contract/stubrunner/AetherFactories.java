@@ -19,6 +19,9 @@ package sh.stubborn.contract.stubrunner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 
 import org.apache.commons.logging.Log;
@@ -69,6 +72,8 @@ final class AetherFactories {
 	private static final Log log = LogFactory.getLog(AetherFactories.class);
 
 	private static final String MAVEN_LOCAL_REPOSITORY_LOCATION = "maven.repo.local";
+
+	private static final String RESOLVER_CONFIGURATION_PREFIX = "aether.";
 
 	private static final String MAVEN_USER_SETTINGS_LOCATION = "org.apache.maven.user-settings";
 
@@ -193,6 +198,36 @@ final class AetherFactories {
 	}
 
 	/**
+	 * Create the session to resolve stubs with. When we work offline and Maven injected
+	 * its own session, we derive from that session so that Maven's configured local
+	 * repository manager is used - that manager knows about the local repository layout,
+	 * e.g. the split local repository
+	 * ({@code -Daether.enhancedLocalRepository.split=true}) under which Maven installs
+	 * artifacts below the {@code installed} prefix.
+	 * @param system the repository system
+	 * @param workOffline whether to work offline
+	 * @param mavenSessionOrNull the Maven-injected session, or {@code null}
+	 * @return the session to resolve stubs with
+	 */
+	static RepositorySystemSession newSession(RepositorySystem system, boolean workOffline,
+			@Nullable RepositorySystemSession mavenSessionOrNull) {
+		if (!workOffline || mavenSessionOrNull == null) {
+			return newSession(system, workOffline);
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("Deriving an offline session from the Maven-injected one, local repository ["
+					+ mavenSessionOrNull.getLocalRepository() + "], local repository manager ["
+					+ mavenSessionOrNull.getLocalRepositoryManager().getClass().getName() + "]");
+		}
+		DefaultRepositorySystemSession session = new DefaultRepositorySystemSession(mavenSessionOrNull);
+		session.setOffline(true);
+		// stubs are resolved from the local repository only - a reactor module that has
+		// not been packaged yet would otherwise be handed over as a directory
+		session.setWorkspaceReader(null);
+		return session;
+	}
+
+	/**
 	 * Create a new {@link RepositorySystemSession}, controlling offline/update/checksum
 	 * policies.
 	 * @param system the repository system
@@ -201,6 +236,7 @@ final class AetherFactories {
 	 */
 	static RepositorySystemSession newSession(RepositorySystem system, boolean workOffline) {
 		DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+		session.setConfigProperties(resolverConfiguration());
 		session.setOffline(workOffline);
 		if (!workOffline) {
 			session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS);
@@ -215,6 +251,27 @@ final class AetherFactories {
 		LocalRepository localRepo = new LocalRepository(localRepositoryDirectory);
 		session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
 		return session;
+	}
+
+	/**
+	 * Maven seeds the resolver configuration from the command line, so the
+	 * {@code aether.*} system properties are the configuration of the local repository we
+	 * are about to read - among others {@code aether.enhancedLocalRepository.split},
+	 * which moves installed artifacts below the {@code installed} prefix.
+	 * @return the resolver configuration to apply to a session we create ourselves
+	 */
+	private static Map<String, Object> resolverConfiguration() {
+		Properties systemProperties = System.getProperties();
+		Map<String, Object> configuration = new HashMap<>();
+		for (String name : systemProperties.stringPropertyNames()) {
+			if (name.startsWith(RESOLVER_CONFIGURATION_PREFIX)) {
+				configuration.put(name, systemProperties.getProperty(name));
+			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("Resolver configuration taken from the system properties " + configuration);
+		}
+		return configuration;
 	}
 
 	/**

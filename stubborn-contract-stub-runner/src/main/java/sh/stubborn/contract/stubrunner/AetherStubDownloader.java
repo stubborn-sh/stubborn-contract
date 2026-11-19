@@ -71,6 +71,9 @@ public class AetherStubDownloader implements StubDownloader {
 	// In order to allow to pass the injected values from Maven
 	private static @Nullable RepositorySystem repositorySystemFromMaven;
 
+	// In order to allow to pass the injected values from Maven
+	private static @Nullable RepositorySystemSession repositorySystemSessionFromMaven;
+
 	private final List<RemoteRepository> remoteRepos;
 
 	private final RepositorySystem repositorySystem;
@@ -108,7 +111,8 @@ public class AetherStubDownloader implements StubDownloader {
 		}
 		this.repositorySystem = AetherFactories.repositorySystemOr(repositorySystemFromMaven);
 		this.workOffline = stubRunnerOptions.stubsMode == StubsMode.LOCAL;
-		this.session = AetherFactories.newSession(this.repositorySystem, this.workOffline);
+		this.session = AetherFactories.newSession(this.repositorySystem, this.workOffline,
+				repositorySystemSessionFromMaven);
 		registerShutdownHook();
 	}
 
@@ -288,6 +292,17 @@ public class AetherStubDownloader implements StubDownloader {
 	 */
 	public static void setRepositorySystemFromMaven(RepositorySystem fromMaven) {
 		repositorySystemFromMaven = fromMaven;
+	}
+
+	/**
+	 * Use this if you're in Maven and have the {@link RepositorySystemSession} injected
+	 * to you through the {@code Parameter} annotation. The injected session carries
+	 * Maven's configured local repository manager, which is required to resolve stubs
+	 * installed into a split local repository.
+	 * @param fromMaven session injected to you by Maven
+	 */
+	public static void setRepositorySystemSessionFromMaven(@Nullable RepositorySystemSession fromMaven) {
+		repositorySystemSessionFromMaven = fromMaven;
 	}
 
 }
