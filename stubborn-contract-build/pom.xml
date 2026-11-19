@@ -555,6 +555,17 @@
 						<failWhenNoMutations>false</failWhenNoMutations>
 						<mutationThreshold>${pitest.mutationThreshold}</mutationThreshold>
 						<coverageThreshold>0</coverageThreshold>
+						<!-- Name the TEST classes by their *Test / *Tests suffix. PIT's default here is
+						     the group id ("sh.stubborn.*"), which also matches the production classes of
+						     the upstream reactor modules on the classpath, and PIT hands every match to
+						     JUnit for discovery. A class behind an optional dependency (okhttp, camel:
+						     absent from a downstream module's classpath) then fails to load, and PIT
+						     aborts the run with "tests did not pass without mutation" before it mutates
+						     anything - which is what the stub-runner gate hit in stubborn-sh/stubborn-contract#266. -->
+						<targetTests>
+							<param>sh.stubborn.*Tests</param>
+							<param>sh.stubborn.*Test</param>
+						</targetTests>
 						<!-- ArchUnit boundary tests (NoSpringArchTests, NoGroovyArchTests, ...) verify
 						     architecture, not behaviour: they kill no mutants and their whole-classpath
 						     scan does not survive PIT's isolated harness ("did not pass without mutation").

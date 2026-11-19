@@ -94,9 +94,16 @@ even while the module-wide default stays in warn mode.
 scripts/quality/changed-core-classes.sh origin/main | while IFS=$'\t' read -r module classes; do
   ./mvnw -pl "${module}" -am test-compile \
     org.pitest:pitest-maven:mutationCoverage \
-    -DtargetClasses="${classes}" -DtargetTests='sh.stubborn.*' -DmutationThreshold=90
+    -DtargetClasses="${classes}" -DmutationThreshold=90
 done
 ```
+
+`targetTests` is **not** passed on the command line: the managed configuration names the
+test classes by their `*Test` / `*Tests` suffix. PIT's own default is the group id
+(`sh.stubborn.*`), which also matches production classes of upstream reactor modules on
+the classpath; the ones behind an optional dependency (okhttp, camel) cannot load in a
+downstream module, JUnit discovery fails on them, and PIT aborts with "tests did not pass
+without mutation" before mutating anything.
 
 HTML + CSV reports land in each module's `target/pit-reports/`.
 

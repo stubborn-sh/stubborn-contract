@@ -32,7 +32,7 @@
 		-->
 		<jsch-agent.version>0.0.9</jsch-agent.version>
 		<spring-cloud-zookeeper.version>5.0.2</spring-cloud-zookeeper.version>
-		<spring-cloud-stream.version>5.0.3</spring-cloud-stream.version>
+		<spring-cloud-stream.version>5.0.4</spring-cloud-stream.version>
 		<spring-cloud-netflix.version>5.0.2</spring-cloud-netflix.version>
 		<spring-cloud-consul.version>5.0.2</spring-cloud-consul.version>
 		<spring-cloud-commons.version>5.0.3</spring-cloud-commons.version>
@@ -43,7 +43,7 @@
 		<commons-text.version>1.14.0</commons-text.version>
 		<jgit.version>7.4.0.202509020913-r</jgit.version>
 		<json-unit-assertj.version>6.2.0</json-unit-assertj.version>
-		<rest-assured.version>6.2.0</rest-assured.version>
+		<rest-assured.version>6.3.0</rest-assured.version>
 		<slf4j.version>[2.0.0,)</slf4j.version>
 		<thin-jar.version>1.0.31.RELEASE</thin-jar.version>
 		<junit-vintage.version>6.0.3</junit-vintage.version>
