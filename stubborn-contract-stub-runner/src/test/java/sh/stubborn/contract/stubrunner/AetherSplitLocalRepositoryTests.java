@@ -118,6 +118,18 @@ class AetherSplitLocalRepositoryTests {
 	}
 
 	@Test
+	void shouldNotUseTheMavenInjectedSessionWhenNotWorkingOffline() throws Exception {
+		Path localRepository = localRepository();
+		RepositorySystem system = AetherFactories.repositorySystemOr(null);
+		DefaultRepositorySystemSession mavenSession = splitSession(system, localRepository);
+
+		RepositorySystemSession session = AetherFactories.newSession(system, false, mavenSession);
+
+		then(session.getLocalRepository().getBasedir()).isNotEqualTo(localRepository.toFile());
+		then(session.isOffline()).isFalse();
+	}
+
+	@Test
 	void shouldHonorTheSplitPropertyWhenNoSessionWasInjected() throws Exception {
 		Path localRepository = localRepository();
 		System.setProperty(LOCAL_REPOSITORY_PROPERTY, localRepository.toString());
