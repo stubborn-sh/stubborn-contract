@@ -15,6 +15,9 @@ setup() {
 		#!/usr/bin/env bash
 		printf '%s\n' "$*" >"$GH_ARGS_FILE"
 		cat >"$GH_BODY_FILE"
+		# GH_MESSAGE stands in for what gh says on the way out — "gh: Bad credentials
+		# (HTTP 401)" and the like, which is the part worth surfacing.
+		[ -n "${GH_MESSAGE:-}" ] && printf '%s\n' "$GH_MESSAGE" >&2
 		exit "${GH_EXIT:-0}"
 	STUB
 	chmod +x "$TMP/gh"
@@ -22,6 +25,10 @@ setup() {
 	export GH="$TMP/gh"
 	export GH_ARGS_FILE="$TMP/args"
 	export GH_BODY_FILE="$TMP/body"
+
+	# Stands in for the file GitHub gives a step; the script appends markdown to it.
+	export GITHUB_STEP_SUMMARY="$TMP/summary"
+	: >"$GITHUB_STEP_SUMMARY"
 }
 
 teardown() {
@@ -62,4 +69,54 @@ teardown() {
 	GH_TOKEN=token SAMPLES_REPO=acme/samples run "$SCRIPT" 0.2.2
 	[ "$status" -eq 0 ]
 	grep -q "repos/acme/samples/dispatches" "$GH_ARGS_FILE"
+}
+
+# The job summary is the point of these: a continue-on-error step reports its conclusion
+# as success through the API and the run's step list whatever the script's exit code, so
+# the summary is the only place a failed bump shows without opening the raw log.
+
+@test "bump-samples: a failed dispatch says so in the job summary" {
+	GH_TOKEN=token GH_EXIT=1 GH_MESSAGE="gh: Bad credentials (HTTP 401)" run "$SCRIPT" 0.2.3
+	[ "$status" -ne 0 ]
+
+	grep -q "NOT bumped to 0.2.3" "$GITHUB_STEP_SUMMARY"
+	grep -q "Pin them by hand" "$GITHUB_STEP_SUMMARY"
+	grep -q "bump-stubborn-version.yml" "$GITHUB_STEP_SUMMARY"
+}
+
+@test "bump-samples: the summary carries the reason gh gave" {
+	GH_TOKEN=token GH_EXIT=1 GH_MESSAGE="gh: Bad credentials (HTTP 401)" run "$SCRIPT" 0.2.3
+	[ "$status" -ne 0 ]
+
+	grep -q "Bad credentials (HTTP 401)" "$GITHUB_STEP_SUMMARY"
+	# and it still reaches the log, as it did before
+	[[ "$output" == *"Bad credentials (HTTP 401)"* ]]
+}
+
+@test "bump-samples: a missing token says so in the job summary too" {
+	run env -u GH_TOKEN "$SCRIPT" 0.2.3
+	[ "$status" -ne 0 ]
+
+	grep -q "NOT bumped to 0.2.3" "$GITHUB_STEP_SUMMARY"
+	grep -q "GH_TOKEN" "$GITHUB_STEP_SUMMARY"
+}
+
+@test "bump-samples: a successful dispatch is recorded in the job summary" {
+	GH_TOKEN=token run "$SCRIPT" 0.2.3
+	[ "$status" -eq 0 ]
+
+	grep -q "asked to pin the samples to 0.2.3" "$GITHUB_STEP_SUMMARY"
+	! grep -q "NOT bumped" "$GITHUB_STEP_SUMMARY"
+}
+
+@test "bump-samples: names the right repository in the summary when SAMPLES_REPO is set" {
+	GH_TOKEN=token GH_EXIT=1 SAMPLES_REPO=acme/samples run "$SCRIPT" 0.2.3
+	[ "$status" -ne 0 ]
+	grep -q "acme/samples" "$GITHUB_STEP_SUMMARY"
+}
+
+@test "bump-samples: works with no GITHUB_STEP_SUMMARY at all" {
+	GH_TOKEN=token run env -u GITHUB_STEP_SUMMARY "$SCRIPT" 0.2.3
+	[ "$status" -eq 0 ]
+	grep -q "repos/stubborn-sh/stubborn-samples/dispatches" "$GH_ARGS_FILE"
 }
