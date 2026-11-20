@@ -159,7 +159,7 @@ public class StubbornContractGradlePlugin implements Plugin<Project> {
 			});
 
 			contractTestSuite.sources(sourceSet -> {
-				configureSourceSets(extension, javaExtension, sourceSet);
+				configureSourceSets(extension, javaExtension, sourceSet, generateServerTestsTaskProvider);
 
 				project.getTasks().named(sourceSet.getProcessResourcesTaskName(), processContractTestResourcesTask -> {
 					processContractTestResourcesTask.dependsOn(generateServerTestsTaskProvider);
@@ -193,16 +193,23 @@ public class StubbornContractGradlePlugin implements Plugin<Project> {
 		project.getDependencies().add(CONTRACT_TEST_GENERATOR_RUNTIME_CLASSPATH_CONFIGURATION_NAME, "sh.stubborn:stubborn-contract-generator:" + STUBBORN_VERSION);
 	}
 
-	private SourceSet configureSourceSets(ContractVerifierExtension extension, JavaPluginExtension javaExtension, SourceSet contractTest) {
+	private SourceSet configureSourceSets(ContractVerifierExtension extension, JavaPluginExtension javaExtension,
+			SourceSet contractTest, TaskProvider<GenerateServerTestsTask> generateServerTests) {
 		SourceSetContainer sourceSets = javaExtension.getSourceSets();
 		ConfigurationContainer configurations = project.getConfigurations();
 		ObjectFactory objects = project.getObjects();
-		contractTest.getJava().srcDirs(extension.getGeneratedTestJavaSourcesDir());
+		// Register the generated dirs through the task provider (map, not flatMap, so the
+		// task stays the producer): anything that consumes the contractTest source set
+		// (sources jars, kapt/ksp, linters, IDE sync) then depends on generateContractTests
+		// without an explicit dependsOn.
+		contractTest.getJava()
+			.srcDir(generateServerTests.map(task -> extension.getGeneratedTestJavaSourcesDir().get()));
 		project.getPlugins().withType(GroovyPlugin.class, groovyPlugin -> {
 			GroovySourceDirectorySet groovy = contractTest.getExtensions().getByType(GroovySourceDirectorySet.class);
-			groovy.srcDirs(extension.getGeneratedTestGroovySourcesDir());
+			groovy.srcDir(generateServerTests.map(task -> extension.getGeneratedTestGroovySourcesDir().get()));
 		});
-		contractTest.getResources().srcDirs(extension.getGeneratedTestResourcesDir());
+		contractTest.getResources()
+			.srcDir(generateServerTests.map(task -> extension.getGeneratedTestResourcesDir().get()));
 
 		SourceSetOutput mainOutput = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME).getOutput();
 		SourceSetOutput testOutput = sourceSets.getByName(SourceSet.TEST_SOURCE_SET_NAME).getOutput();
@@ -328,6 +335,9 @@ public class StubbornContractGradlePlugin implements Plugin<Project> {
 			publishStubsToScmTask.getFailOnNoContracts().convention(extension.getFailOnNoContracts());
 			publishStubsToScmTask.getContractsProperties().convention(extension.getContractsProperties());
 			publishStubsToScmTask.getStubsDir().convention(extension.getStubsOutputDir());
+			publishStubsToScmTask.getProjectGroup().convention(projectGroup());
+			publishStubsToScmTask.getProjectName().convention(projectName());
+			publishStubsToScmTask.getProjectVersion().convention(projectVersion());
 			publishStubsToScmTask.dependsOn(generateClientStubs);
 		});
 	}
@@ -414,12 +424,28 @@ public class StubbornContractGradlePlugin implements Plugin<Project> {
 					contractsCopyTask.getClasspath()
 							.from(project.getConfigurations().getByName(CONTRACT_TEST_GENERATOR_RUNTIME_CLASSPATH_CONFIGURATION_NAME));
 
+					contractsCopyTask.getProjectGroup().convention(projectGroup());
+					contractsCopyTask.getProjectName().convention(projectName());
+					contractsCopyTask.getProjectVersion().convention(projectVersion());
+
 					contractsCopyTask.getCopiedContractsFolder()
 							.convention(extension.getStubsOutputDir().dir(buildRootPath(ContractsCopyTask.CONTRACTS)));
 					contractsCopyTask.getBackupContractsFolder()
 							.convention(extension.getStubsOutputDir().dir(buildRootPath(ContractsCopyTask.BACKUP)));
 				});
 		return task;
+	}
+
+	private Provider<String> projectGroup() {
+		return providers.provider(() -> project.getGroup().toString());
+	}
+
+	private Provider<String> projectName() {
+		return providers.provider(project::getName);
+	}
+
+	private Provider<String> projectVersion() {
+		return providers.provider(() -> project.getVersion().toString());
 	}
 
 	private Provider<String> buildRootPath(String path) {

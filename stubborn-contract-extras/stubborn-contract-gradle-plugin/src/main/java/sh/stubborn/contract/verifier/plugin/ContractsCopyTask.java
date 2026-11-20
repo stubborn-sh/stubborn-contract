@@ -19,16 +19,11 @@ package sh.stubborn.contract.verifier.plugin;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
-import java.net.URI;
-import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.io.NullOutputStream;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -54,13 +49,11 @@ import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecOperations;
 import sh.stubborn.contract.stubrunner.ContractDownloader;
-import sh.stubborn.contract.stubrunner.ScmStubDownloaderBuilder;
 import sh.stubborn.contract.stubrunner.StubConfiguration;
 import sh.stubborn.contract.stubrunner.StubDownloader;
 import sh.stubborn.contract.stubrunner.StubDownloaderBuilderProvider;
 import sh.stubborn.contract.stubrunner.StubRunnerOptions;
 import sh.stubborn.contract.stubrunner.StubRunnerOptionsBuilder;
-import sh.stubborn.contract.stubrunner.StubRunnerPropertyUtils;
 import sh.stubborn.contract.stubrunner.StubsMode;
 
 // TODO: Convert to incremental task: https://docs.gradle.org/current/userguide/custom_tasks.html#incremental_tasks
@@ -140,12 +133,19 @@ class ContractsCopyTask extends DefaultTask {
 		contractRepository = objects.newInstance(Repository.class);
 		contractsMode = objects.property(StubsMode.class);
 		contractsProperties = objects.mapProperty(String.class, String.class);
-		allContractsProperties = contractsProperties.flatMap(contractsProps -> {
-			MapProperty<String, String> allProps = objects.mapProperty(String.class, String.class);
-			allProps.putAll(contractsProps);
-			String gitCommitId = this.discoverGitCommitId(contractsProps);
-			if (hasText(gitCommitId)) {
-				allProps.put("git.commit", gitCommitId);
+		// The git commit id comes from a ValueSource so that the configuration cache
+		// re-checks it on every build instead of freezing the value it had when the
+		// cache entry was stored.
+		Provider<String> gitCommitId = providers.of(GitCommitIdValueSource.class, spec -> {
+			spec.getParameters().getRepositoryUrl().set(contractRepository.getRepositoryUrl());
+			spec.getParameters().getBranch().set(contractsProperties.getting("git.branch"));
+			spec.getParameters().getUsername().set(contractRepository.getUsername());
+			spec.getParameters().getPassword().set(contractRepository.getPassword());
+		});
+		allContractsProperties = contractsProperties.zip(gitCommitId.orElse(""), (contractsProps, commitId) -> {
+			Map<String, String> allProps = new LinkedHashMap<>(contractsProps);
+			if (hasText(commitId)) {
+				allProps.put("git.commit", commitId);
 			}
 			return allProps;
 		});
@@ -157,9 +157,10 @@ class ContractsCopyTask extends DefaultTask {
 		copiedContractsFolder = objects.directoryProperty();
 		backupContractsFolder = objects.directoryProperty();
 
-		projectGroup = objects.property(String.class).convention(providers.provider(() -> getProject().getGroup().toString()));
-		projectName = objects.property(String.class).convention(providers.provider(() -> getProject().getName()));
-		projectVersion = objects.property(String.class).convention(providers.provider(() -> getProject().getVersion().toString()));
+		// set by the plugin - the task must not reach for getProject()
+		projectGroup = objects.property(String.class);
+		projectName = objects.property(String.class);
+		projectVersion = objects.property(String.class);
 
 		this.getOutputs().upToDateWhen(task -> !(this.shouldDownloadContracts()
 				&& this.getContractDependency().toStubConfiguration().isVersionChanging()));
@@ -522,42 +523,6 @@ class ContractsCopyTask extends DefaultTask {
 			options = options.withProxy(contractRepository.proxyHost.getOrNull(), contractRepository.proxyPort.get());
 		}
 		return options.build();
-	}
-
-	private String discoverGitCommitId(Map<String, String> props) {
-		String repositoryUrl = contractRepository.getRepositoryUrl().getOrNull();
-		if (repositoryUrl != null && ScmStubDownloaderBuilder.isProtocolAccepted(repositoryUrl)) {
-			String branch = StubRunnerPropertyUtils.getProperty(props, "git.branch");
-			branch = hasText(branch) ? branch : "master";
-			UsernamePasswordCredentialsProvider provider = null;
-			if (hasText(contractRepository.getUsername().getOrNull())) {
-				provider = new UsernamePasswordCredentialsProvider(contractRepository.getUsername().get(),
-						contractRepository.getPassword().get());
-			}
-			try {
-				String repoUrl;
-				URI repoUri = URI.create(repositoryUrl);
-				String part = repoUri.getSchemeSpecificPart();
-				if (part == null || part.isEmpty()) {
-					repoUrl = part;
-				}
-				else {
-					repoUrl = part.startsWith("//") ? part.substring(2) : part;
-				}
-				Collection<Ref> refs = Git.lsRemoteRepository().setRemote(repoUrl).setCredentialsProvider(provider)
-						.call();
-				for (Ref ref : refs) {
-					if (ref.getName().equals(branch) || ref.getName().equals("refs/heads/" + branch)
-							|| ref.getName().equals("refs/tags/" + branch)) {
-						return ref.getObjectId().name();
-					}
-				}
-			}
-			catch (GitAPIException e) {
-				ContractsCopyTask.this.getLogger().warn("Unable to determine git repository commit id", e);
-			}
-		}
-		return null;
 	}
 
 	private static boolean hasText(String s) {

@@ -54,6 +54,20 @@ class CopyContractsFromProducedDirectoryTest extends ContractVerifierIntegration
 					id 'sh.stubborn.contract'
 				}
 
+				repositories {
+					mavenLocal()
+					mavenCentral()
+				}
+
+				// under TestKit the plugin has no jar manifest to read its own version from
+				configurations.configureEach {
+					resolutionStrategy.eachDependency {
+						if (requested.group == 'sh.stubborn') {
+							useVersion('%s')
+						}
+					}
+				}
+
 				def unpackContracts = tasks.register('unpackContracts', Sync) {
 					from(layout.projectDirectory.dir('contracts-source'))
 					into(layout.buildDirectory.dir('unpacked'))
@@ -63,7 +77,7 @@ class CopyContractsFromProducedDirectoryTest extends ContractVerifierIntegration
 					// no explicit dependsOn on copyContracts - it must be inferred
 					contractsDslDir = layout.dir(unpackContracts.map { it.destinationDir })
 				}
-				""");
+				""".formatted(System.getProperty("stubbornVersion")));
 
 		BuildResult result = run("copyContracts", "--stacktrace");
 

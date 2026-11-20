@@ -19,9 +19,12 @@ package sh.stubborn.contract.verifier.plugin;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.internal.project.DefaultProject;
@@ -30,6 +33,9 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.GroovySourceDirectorySet;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.Sync;
+import org.gradle.api.tasks.TaskDependency;
+import org.gradle.api.tasks.TaskProvider;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
@@ -256,6 +262,61 @@ class ContractVerifierTest {
 		then(task.getContractRepository().getPassword().get()).isEqualTo("password2");
 		then(task.getContractRepository().getProxyHost().get()).isEqualTo("host2");
 		then(task.getContractRepository().getProxyPort().get()).isEqualTo(8081);
+	}
+
+	@Test
+	@DisplayName("copyContracts should depend on the task that produces contractsDslDir without an explicit dependsOn (#272)")
+	void copyContractsShouldInferDependencyOnContractsDslDirProducer() {
+		TaskProvider<Sync> unpack = project().getTasks().register("unpackContracts", Sync.class, sync -> {
+			sync.from(project().getLayout().getProjectDirectory().dir("contracts-source"));
+			sync.into(project().getLayout().getBuildDirectory().dir("unpacked"));
+		});
+		ContractVerifierExtension extension = project().getExtensions().getByType(ContractVerifierExtension.class);
+		extension.getContractsDslDir().set(project().getLayout().dir(unpack.map(Sync::getDestinationDir)));
+
+		ContractsCopyTask copyContracts = (ContractsCopyTask) project().getTasks().getByName("copyContracts");
+
+		then(dependencies(copyContracts.getTaskDependencies())).contains(unpack.get());
+		then(copyContracts.getContractsDirectory().get().getAsFile())
+			.as("a directory that does not exist yet must still be wired")
+			.doesNotExist()
+			.isEqualTo(unpack.get().getDestinationDir());
+	}
+
+	@Test
+	@DisplayName("contractTest sources and resources should carry the generateContractTests task dependency")
+	void contractTestSourcesShouldCarryGenerateContractTestsDependency() {
+		project().getPlugins().apply(GroovyPlugin.class);
+		SourceSet contractTest = Objects.requireNonNull(project().getExtensions().findByType(JavaPluginExtension.class))
+			.getSourceSets()
+			.getByName("contractTest");
+		Task generateContractTests = project().getTasks().getByName("generateContractTests");
+
+		then(dependencies(contractTest.getJava().getBuildDependencies())).contains(generateContractTests);
+		then(dependencies(contractTest.getExtensions().getByType(GroovySourceDirectorySet.class).getBuildDependencies()))
+			.contains(generateContractTests);
+		then(dependencies(contractTest.getResources().getBuildDependencies())).contains(generateContractTests);
+	}
+
+	@Test
+	@DisplayName("copyContracts and publishStubsToScm should take the project coordinates from the plugin")
+	void tasksShouldTakeProjectCoordinatesFromThePlugin() {
+		project().setGroup("com.example");
+		project().setVersion("1.2.3");
+
+		ContractsCopyTask copyContracts = (ContractsCopyTask) project().getTasks().getByName("copyContracts");
+		PublishStubsToScmTask publish = (PublishStubsToScmTask) project().getTasks().getByName("publishStubsToScm");
+
+		then(copyContracts.getProjectGroup().get()).isEqualTo("com.example");
+		then(copyContracts.getProjectName().get()).isEqualTo(project().getName());
+		then(copyContracts.getProjectVersion().get()).isEqualTo("1.2.3");
+		then(publish.getProjectGroup().get()).isEqualTo("com.example");
+		then(publish.getProjectName().get()).isEqualTo(project().getName());
+		then(publish.getProjectVersion().get()).isEqualTo("1.2.3");
+	}
+
+	private static Set<Task> dependencies(TaskDependency dependency) {
+		return new HashSet<>(dependency.getDependencies(null));
 	}
 
 }
