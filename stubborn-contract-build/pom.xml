@@ -85,6 +85,7 @@
 		<maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
 		<maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
 		<maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
+		<versions-maven-plugin.version>2.25.2</versions-maven-plugin.version>
 		<flatten-maven-plugin.version>1.7.3</flatten-maven-plugin.version>
 		<central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
 		<!--
@@ -389,6 +390,21 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
 					<version>${maven-antrun-plugin.version}</version>
+				</plugin>
+				<!--
+				  Release-only, but pinned here all the same: scripts/release/set-release-version.sh
+				  invokes versions:set from the command line, where an unmanaged plugin makes Maven
+				  resolve its version from the plugin repositories on every run. The 0.2.3 release
+				  failed that way after 1.2 seconds — "Error resolving version for plugin
+				  'org.codehaus.mojo:versions-maven-plugin': Plugin not found in any plugin
+				  repository" — on the step that sets the release version, before anything was
+				  built or published. A managed version removes that lookup, so the release no
+				  longer depends on a metadata fetch succeeding at exactly that moment.
+				-->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>${versions-maven-plugin.version}</version>
 				</plugin>
 				<!--
 				  POM flattening: expands parent refs and removes CI-unfriendly elements
