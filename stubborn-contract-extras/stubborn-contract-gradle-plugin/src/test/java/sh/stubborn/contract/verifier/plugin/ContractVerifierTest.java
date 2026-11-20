@@ -293,7 +293,8 @@ class ContractVerifierTest {
 		Task generateContractTests = project().getTasks().getByName("generateContractTests");
 
 		then(dependencies(contractTest.getJava().getBuildDependencies())).contains(generateContractTests);
-		then(dependencies(contractTest.getExtensions().getByType(GroovySourceDirectorySet.class).getBuildDependencies()))
+		then(dependencies(
+				contractTest.getExtensions().getByType(GroovySourceDirectorySet.class).getBuildDependencies()))
 			.contains(generateContractTests);
 		then(dependencies(contractTest.getResources().getBuildDependencies())).contains(generateContractTests);
 	}

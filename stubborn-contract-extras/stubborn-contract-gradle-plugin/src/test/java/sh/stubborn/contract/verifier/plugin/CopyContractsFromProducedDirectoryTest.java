@@ -30,8 +30,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.BDDAssertions.then;
 
 /**
- * Regression test for <a href=
- * "https://github.com/stubborn-sh/stubborn-contract/issues/272">#272</a>: when
+ * Regression test for
+ * <a href= "https://github.com/stubborn-sh/stubborn-contract/issues/272">#272</a>: when
  * {@code contractsDslDir} points to a directory created by another task of the build,
  * {@code copyContracts} must find the contracts on a clean build with the configuration
  * cache enabled, and must depend on the producing task without an explicit
@@ -44,8 +44,8 @@ class CopyContractsFromProducedDirectoryTest extends ContractVerifierIntegration
 	void shouldCopyContractsFromProducedDirectoryWithConfigurationCache() throws IOException {
 		File root = getTestProjectDir();
 		write(root.toPath().resolve("settings.gradle"), "rootProject.name = 'produced-contracts'\n");
-		write(root.toPath().resolve("gradle.properties"), "org.gradle.configuration-cache=true\n"
-				+ "org.gradle.configuration-cache.problems=fail\n");
+		write(root.toPath().resolve("gradle.properties"),
+				"org.gradle.configuration-cache=true\n" + "org.gradle.configuration-cache.problems=fail\n");
 		write(root.toPath().resolve("contracts-source/contracts/shouldReturnFoo.yml"),
 				"request:\n  method: GET\n  url: /foo\nresponse:\n  status: 200\n");
 		write(root.toPath().resolve("build.gradle"), """
