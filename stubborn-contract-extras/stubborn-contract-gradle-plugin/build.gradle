@@ -16,7 +16,10 @@ ext {
 	repoPass = System.getenv('REPO_PASSWORD') ?: project.findProperty('REPO_PASSWORD') ?: ''
 
 	testSystemProperties = [
-			"WORK_OFFLINE": gradle.startParameter.isOffline() ? 'TRUE' : 'FALSE'
+			"WORK_OFFLINE": gradle.startParameter.isOffline() ? 'TRUE' : 'FALSE',
+			// TestKit loads the plugin from class directories (no jar manifest), so the
+			// version of the sh.stubborn artifacts the plugin adds is passed explicitly
+			"stubbornVersion": findProperty('verifierVersion')
 	]
 	JavaVersion javaVer = JavaVersion.current()
 	println "Current Java version equal to [${javaVer}]"
