@@ -380,15 +380,12 @@ public class StubbornContractGradlePlugin implements Plugin<Project> {
 
 					contractsCopyTask.getConvertToYaml().convention(extension.getConvertToYaml());
 					contractsCopyTask.getFailOnNoContracts().convention(extension.getFailOnNoContracts());
-					contractsCopyTask.getContractsDirectory()
-							.convention(extension.getContractsDslDir().flatMap(contractsDslDir -> {
-								return providers.provider(() -> {
-									if (contractsDslDir.getAsFile().exists()) {
-										return contractsDslDir;
-									}
-									return null;
-								});
-							}));
+					// Keep the directory lazy: it may be created by another task of the build
+					// (e.g. a Sync that unpacks contracts), so it must not be checked for
+					// existence at configuration time - that breaks with the configuration
+					// cache and drops the producing task dependency. A missing or empty
+					// directory is reported at execution time by the task itself.
+					contractsCopyTask.getContractsDirectory().convention(extension.getContractsDslDir());
 					contractsCopyTask.getContractDependency().getGroupId()
 							.convention(extension.getContractDependency().getGroupId());
 					contractsCopyTask.getContractDependency().getArtifactId()

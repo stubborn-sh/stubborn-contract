@@ -43,7 +43,8 @@ import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.IgnoreEmptyDirectories;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
@@ -313,8 +314,12 @@ class ContractsCopyTask extends DefaultTask {
 		return failOnNoContracts;
 	}
 
-	@InputDirectory
+	// @InputFiles rather than @InputDirectory: the directory may not exist (it can be
+	// produced by another task, or be absent when contracts are downloaded), and
+	// Gradle rejects a missing @InputDirectory.
+	@InputFiles
 	@Optional
+	@IgnoreEmptyDirectories
 	@PathSensitive(PathSensitivity.RELATIVE)
 	DirectoryProperty getContractsDirectory() {
 		return contractsDirectory;
