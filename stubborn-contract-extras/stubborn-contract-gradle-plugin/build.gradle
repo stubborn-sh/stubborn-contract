@@ -101,7 +101,8 @@ test {
 		exceptionFormat = 'full'
 	}
 	systemProperties = testSystemProperties
-	enabled = !project.hasProperty('fast')
+	// -Pfast, or -DskipTests on the Maven build (passed through as -PskipTests=true)
+	enabled = !project.hasProperty('fast') && findProperty('skipTests') != 'true'
 }
 
 groovydoc {

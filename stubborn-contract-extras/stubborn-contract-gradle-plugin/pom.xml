@@ -22,6 +22,8 @@
 		<gradle.task>build</gradle.task>
 		<build-helper-maven-plugin.phase>package</build-helper-maven-plugin.phase>
 		<gradle.publish-plugins.task>publishPlugins</gradle.publish-plugins.task>
+		<!-- passed to Gradle so that -DskipTests skips the plugin's tests too -->
+		<skipTests>false</skipTests>
 	</properties>
 
 	<dependencies>
@@ -174,6 +176,7 @@
 										<argument>${gradle.task}</argument>
 										<!--<argument>jacocoTestReport</argument>-->
 										<argument>-PverifierVersion=${project.version}</argument>
+										<argument>-PskipTests=${skipTests}</argument>
 									</arguments>
 								</configuration>
 								<goals>
@@ -207,6 +210,7 @@
 										<argument>${gradle.task}</argument>
 										<!--<argument>jacocoTestReport</argument>-->
 										<argument>-PverifierVersion=${project.version}</argument>
+										<argument>-PskipTests=${skipTests}</argument>
 									</arguments>
 								</configuration>
 								<goals>
@@ -242,6 +246,7 @@
 										<argument>${gradle.task}</argument>
 										<!--<argument>jacocoTestReport</argument>-->
 										<argument>-PverifierVersion=${project.version}</argument>
+										<argument>-PskipTests=${skipTests}</argument>
 									</arguments>
 								</configuration>
 								<goals>
@@ -276,6 +281,7 @@
 										<!--<argument>jacocoTestReport</argument>-->
 										<argument>-Pfast</argument>
 										<argument>-PverifierVersion=${project.version}</argument>
+										<argument>-PskipTests=${skipTests}</argument>
 									</arguments>
 								</configuration>
 								<goals>
@@ -322,6 +328,7 @@
 										<argument>clean</argument>
 										<argument>${gradle.task}</argument>
 										<argument>-PverifierVersion=${project.version}</argument>
+										<argument>-PskipTests=${skipTests}</argument>
 										<argument>-Pcentral</argument>
 										<argument>-PsonatypeUsername=${env.SONATYPE_USER}</argument>
 										<argument>-PsonatypePassword=${env.SONATYPE_PASSWORD}</argument>
@@ -379,6 +386,7 @@
 										<argument>${gradle.task}</argument>
 										<!--<argument>jacocoTestReport</argument>-->
 										<argument>-PverifierVersion=${project.version}</argument>
+										<argument>-PskipTests=${skipTests}</argument>
 									</arguments>
 								</configuration>
 								<goals>
