@@ -89,9 +89,10 @@ class PublishStubsToScmTask extends DefaultTask {
 		this.contractsProperties = objects.mapProperty(String.class, String.class);
 		this.stubsDir = objects.directoryProperty();
 
-		projectGroup = objects.property(String.class).convention(providers.provider(() -> getProject().getGroup().toString()));
-		projectName = objects.property(String.class).convention(providers.provider(() -> getProject().getName()));
-		projectVersion = objects.property(String.class).convention(providers.provider(() -> getProject().getVersion().toString()));
+		// set by the plugin - the task must not reach for getProject()
+		projectGroup = objects.property(String.class);
+		projectName = objects.property(String.class);
+		projectVersion = objects.property(String.class);
 
 		this.onlyIf(task -> {
 			String contractRepoUrl = contractRepository.repositoryUrl.getOrElse("");
