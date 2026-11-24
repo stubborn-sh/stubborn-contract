@@ -21,7 +21,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.BodyMatchers;
-import sh.stubborn.jsonassert.JsonAssertion;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class XmlBodyVerificationBuilderTests {
 
@@ -38,12 +39,9 @@ public class XmlBodyVerificationBuilderTests {
 		builder.addXmlResponseBodyCheck(blockBuilder, xml, matchers, xml, true);
 		// Then
 		String test = blockBuilder.toString();
-		JsonAssertion.assertThat(test)
-			.contains("DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();")
-			.contains("builderFactory.setNamespaceAware(true);")
-			.contains("DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();")
-			.contains("Document parsedXml = documentBuilder.parse(new InputSource(new StringReader(")
-			.contains(xml);
+		assertThat(test).contains("Document parsedXml = parseXml(" + xml + ");")
+			.doesNotContain("DocumentBuilderFactory")
+			.doesNotContain("documentBuilder.parse");
 	}
 
 }

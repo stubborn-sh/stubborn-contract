@@ -252,6 +252,35 @@ class XmlMethodBodyBuilderTests {
 		SyntaxChecker.tryToCompile(methodBuilderName, test);
 	}
 
+	@ParameterizedTest(name = "should parse xml with hardened parser and index repeated parents [{0}]")
+	@MethodSource("methodBuilderVariants")
+	void shouldParseXmlWithHardenedParserAndIndexRepeatedParentElements(String methodBuilderName,
+			TestFramework framework, TestMode mode) {
+		applyMethodBuilder(framework, mode);
+		Contract contractDsl = Contract.make((contract) -> {
+			contract.request((request) -> {
+				request.method(request.GET());
+				request.urlPath("/sitemap.xml");
+			});
+			contract.response((response) -> {
+				response.status(response.OK());
+				response.headers((headers) -> headers.contentType(headers.applicationXml()));
+				response.body("<urlset><url><loc>https://a</loc></url><url><loc>https://b</loc></url>"
+						+ "<url><loc>https://c</loc></url></urlset>");
+			});
+		});
+		String test = singleTestGenerator(contractDsl);
+		assertThat(test).contains("Document parsedXml = parseXml(")
+			.doesNotContain("DocumentBuilderFactory")
+			.doesNotContain("documentBuilder.parse")
+			.contains("assertThat(valueFromXPath(parsedXml, \"/urlset/url/loc/text()\")).isEqualTo(\"https://a\")")
+			.contains("assertThat(valueFromXPath(parsedXml, \"/urlset/url[2]/loc/text()\")).isEqualTo(\"https://b\")")
+			.contains("assertThat(valueFromXPath(parsedXml, \"/urlset/url[3]/loc/text()\")).isEqualTo(\"https://c\")")
+			.doesNotContain("loc[2]")
+			.doesNotContain(".isEqualTo(\"\")");
+		SyntaxChecker.tryToCompile(methodBuilderName, test);
+	}
+
 	@ParameterizedTest(name = "should generate correct verification from xml with namespace [{0}]")
 	@MethodSource("methodBuilderVariants")
 	void shouldGenerateCorrectVerificationFromXmlWithNamespace(String methodBuilderName, TestFramework framework,

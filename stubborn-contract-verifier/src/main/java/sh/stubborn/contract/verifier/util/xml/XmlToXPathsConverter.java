@@ -219,7 +219,7 @@ public class XmlToXPathsConverter {
 			List<NodePath> valueNodePaths = transformListEntries(valueNodes);
 			for (NodePath nodePath : valueNodePaths) {
 				if (!isPathToDefaultXmlnsAttributeNode(nodePath)) {
-					matchers.add(new PathBodyMatcher(buildXPath(nodePath.fromChildToParents(), nodePath.index),
+					matchers.add(new PathBodyMatcher(buildXPath(nodePath.fromChildToParents()),
 							new MatchingTypeValue(MatchingType.EQUALITY, nodePath.path.get(0).getNodeValue())));
 				}
 			}
@@ -261,11 +261,16 @@ public class XmlToXPathsConverter {
 		return nodes.stream().map(Node::getNodeName).collect(Collectors.toList());
 	}
 
+	/**
+	 * Builds an XPath for the given root-to-leaf list of nodes. Every element step that
+	 * is not the first of its same-named siblings gets a positional predicate, so that
+	 * repeated sibling elements (e.g. {@code <url>} entries of a sitemap) are addressed
+	 * on the element that actually repeats ({@code /urlset/url[2]/loc/text()}) rather
+	 * than on the leaf.
+	 * @param nodes nodes from the document element down to the value node
+	 * @return the XPath expression
+	 */
 	public static String buildXPath(@Nullable List<Node> nodes) {
-		return buildXPath(nodes, 1);
-	}
-
-	public static String buildXPath(@Nullable List<Node> nodes, int index) {
 		XmlVerifiable xmlVerifiable = XPathBuilder.builder();
 		// Groovy `if (!nodes)` was truthy-false for both null and empty.
 		if (nodes == null || nodes.isEmpty()) {
@@ -277,16 +282,50 @@ public class XmlToXPathsConverter {
 			}
 			else {
 				xmlVerifiable = processNode(xmlVerifiable, node);
+				int position = positionAmongSameNamedSiblings(node);
+				if (position != 1) {
+					xmlVerifiable = xmlVerifiable.index(position);
+				}
 			}
 		}
 		Node closingNode = nodes.get(nodes.size() - 1);
 		if (closingNode instanceof Attr attribute) {
-			xmlVerifiable = processClosingNode(xmlVerifiable, attribute, index);
+			xmlVerifiable = processNode(xmlVerifiable, attribute);
 		}
 		else {
-			xmlVerifiable = processClosingNode(xmlVerifiable, closingNode, index);
+			xmlVerifiable = xmlVerifiable.text();
 		}
 		return xmlVerifiable.xPath();
+	}
+
+	/**
+	 * Builds an XPath for the given root-to-leaf list of nodes.
+	 * @param nodes nodes from the document element down to the value node
+	 * @param index ignored - positional predicates are now derived from the DOM for every
+	 * element step
+	 * @return the XPath expression
+	 * @deprecated use {@link #buildXPath(List)}; the leaf-level index produced wrong
+	 * XPaths for repeated parent elements
+	 */
+	@Deprecated
+	public static String buildXPath(@Nullable List<Node> nodes, int index) {
+		return buildXPath(nodes);
+	}
+
+	private static int positionAmongSameNamedSiblings(Node node) {
+		if (node.getNodeType() != Node.ELEMENT_NODE) {
+			return 1;
+		}
+		int position = 1;
+		Node sibling = node.getPreviousSibling();
+		while (sibling != null) {
+			if (sibling.getNodeType() == Node.ELEMENT_NODE
+					&& Objects.equals(sibling.getNodeName(), node.getNodeName())) {
+				position++;
+			}
+			sibling = sibling.getPreviousSibling();
+		}
+		return position;
 	}
 
 	private static XmlVerifiable processNode(XmlVerifiable xmlVerifiable, Node node) {
@@ -341,17 +380,6 @@ public class XmlToXPathsConverter {
 
 	private static XmlVerifiable processNode(XmlVerifiable xmlVerifiable, Attr attribute) {
 		return xmlVerifiable.withAttribute(attribute.getNodeName());
-	}
-
-	private static XmlVerifiable processClosingNode(XmlVerifiable xmlVerifiable, Node node, int index) {
-		return (index != 1) ? xmlVerifiable.index(index).text() : xmlVerifiable.text();
-	}
-
-	private static XmlVerifiable processClosingNode(XmlVerifiable xmlVerifiable, Attr attribute, int index) {
-		if (index != 1) {
-			xmlVerifiable.index(index);
-		}
-		return processNode(xmlVerifiable, attribute);
 	}
 
 	private static List<List<Node>> getValueNodesWithParents(Node node) {

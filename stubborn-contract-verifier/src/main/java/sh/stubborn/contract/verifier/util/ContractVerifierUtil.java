@@ -18,6 +18,7 @@ package sh.stubborn.contract.verifier.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -28,6 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -39,6 +44,8 @@ import org.jspecify.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.converter.YamlContractConverter;
 import sh.stubborn.contract.verifier.util.xml.DOMNamespaceContext;
@@ -81,6 +88,37 @@ public final class ContractVerifierUtil {
 		}
 		catch (IOException | URISyntaxException ex) {
 			throw new IllegalStateException(ex);
+		}
+	}
+
+	/**
+	 * Parses an XML response body into a namespace-aware {@link Document} with a parser
+	 * hardened against XML External Entity (XXE) attacks: DOCTYPE declarations are
+	 * rejected, external general / parameter entities and external DTD loading are
+	 * disabled, XInclude is off, entity references are not expanded and
+	 * {@link XMLConstants#FEATURE_SECURE_PROCESSING} is enabled. Generated tests use this
+	 * instead of a bare {@link DocumentBuilderFactory}.
+	 * @param xml - the XML content to parse
+	 * @return parsed {@link Document}
+	 * @throws IllegalArgumentException if the content cannot be parsed
+	 * @since 0.2.5
+	 */
+	public static Document parseXml(String xml) {
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			factory.setXIncludeAware(false);
+			factory.setExpandEntityReferences(false);
+			DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+			return documentBuilder.parse(new InputSource(new StringReader(xml)));
+		}
+		catch (ParserConfigurationException | SAXException | IOException ex) {
+			throw new IllegalArgumentException("Failed to parse XML: " + ex.getMessage(), ex);
 		}
 	}
 
