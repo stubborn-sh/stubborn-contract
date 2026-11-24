@@ -46,6 +46,30 @@ public class ContractVerifierUtilTests {
 			+ "</addr:gps>" + "</address>" + "</contact-info>\n" + "</ns1:customer>";
 
 	@Test
+	void parseXml_parses_namespace_aware_document() {
+		Document document = ContractVerifierUtil
+			.parseXml("<ns:root xmlns:ns=\"urn:x\"><ns:child>c</ns:child></ns:root>");
+
+		assertThat(document.getDocumentElement().getLocalName()).isEqualTo("root");
+		assertThat(document.getDocumentElement().getNamespaceURI()).isEqualTo("urn:x");
+	}
+
+	@Test
+	void parseXml_rejects_doctype_to_prevent_xxe() {
+		String xxe = "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>"
+				+ "<foo>&xxe;</foo>";
+
+		assertThatThrownBy(() -> ContractVerifierUtil.parseXml(xxe)).isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("DOCTYPE");
+	}
+
+	@Test
+	void parseXml_rejects_malformed_xml() {
+		assertThatThrownBy(() -> ContractVerifierUtil.parseXml("<unclosed>"))
+			.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@Test
 	public void shouldGetValueFromXPath() {
 		// Given
 		Document parsedXml = parsedXml(this.unnamedXml);

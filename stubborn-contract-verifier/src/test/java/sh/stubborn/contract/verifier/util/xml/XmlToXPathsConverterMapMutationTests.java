@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
+import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,6 +64,58 @@ class XmlToXPathsConverterMapMutationTests {
 	void repeated_elements_get_positional_index() {
 		assertThat(matchers("<root><item>a</item><item>b</item></root>"))
 			.containsExactlyInAnyOrder("/root/item/text() = a", "/root/item[2]/text() = b");
+	}
+
+	@Test
+	void repeated_parent_elements_get_index_on_the_repeating_element() {
+		String sitemap = "<urlset><url><loc>a</loc></url><url><loc>b</loc></url><url><loc>c</loc></url></urlset>";
+
+		assertThat(matchers(sitemap)).containsExactly("/urlset/url/loc/text() = a", "/urlset/url[2]/loc/text() = b",
+				"/urlset/url[3]/loc/text() = c");
+	}
+
+	@Test
+	void repeated_parent_elements_resolve_to_their_own_values() {
+		String sitemap = "<urlset><url><loc>a</loc></url><url><loc>b</loc></url><url><loc>c</loc></url></urlset>";
+
+		for (BodyMatcher matcher : XmlToXPathsConverter.mapToMatchers(sitemap)) {
+			assertThat(XmlToXPathsConverter.retrieveValueFromBody(matcher.path(), sitemap)).isNotEmpty()
+				.isEqualTo(String.valueOf(matcher.value()));
+		}
+	}
+
+	@Test
+	void index_is_applied_at_every_repeating_level() {
+		String xml = "<root><a><x>1</x></a><a><x>2</x><x>3</x></a></root>";
+
+		assertThat(matchers(xml)).containsExactly("/root/a/x/text() = 1", "/root/a[2]/x/text() = 2",
+				"/root/a[2]/x[2]/text() = 3");
+	}
+
+	@Test
+	void attribute_of_repeated_parent_is_indexed_on_its_owner() {
+		assertThat(matchers("<root><item id=\"1\"/><item id=\"2\"/></root>"))
+			.containsExactlyInAnyOrder("/root/item/@id = 1", "/root/item[2]/@id = 2");
+	}
+
+	@Test
+	void cdata_section_is_a_value_node() {
+		assertThat(matchers("<root><a><![CDATA[x<y]]></a></root>")).containsExactly("/root/a/text() = x<y");
+	}
+
+	@Test
+	void deprecated_index_overload_ignores_index_and_derives_positions_from_dom() {
+		Document document = ContractVerifierUtil.parseXml("<root><item>a</item><item>b</item></root>");
+		Node secondText = document.getDocumentElement().getChildNodes().item(1).getFirstChild();
+		List<Node> path = List.of(document.getDocumentElement(), secondText.getParentNode(), secondText);
+
+		assertThat(XmlToXPathsConverter.buildXPath(path)).isEqualTo("/root/item[2]/text()");
+		assertThat(XmlToXPathsConverter.buildXPath(path, 7)).isEqualTo("/root/item[2]/text()");
+	}
+
+	@Test
+	void null_node_path_is_not_a_default_xmlns_attribute() {
+		assertThat(XmlToXPathsConverter.isPathToDefaultXmlnsAttributeNode(null)).isFalse();
 	}
 
 	@Test

@@ -16,6 +16,7 @@
 
 package sh.stubborn.contract.verifier.dsl.wiremock;
 
+import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.junit.jupiter.api.Test;
 import sh.stubborn.contract.spec.Contract;
@@ -30,6 +31,34 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Olga Maciaszek-Sharma
  */
 class WireMockXmlStubStrategyTests implements WireMockStubVerifier {
+
+	@Test
+	void should_index_repeated_parent_elements_so_the_stub_matches_its_own_request() {
+		String sitemap = "<urlset><url><loc>https://a</loc></url><url><loc>https://b</loc></url>"
+				+ "<url><loc>https://c</loc></url></urlset>";
+		Contract contractDsl = Contract.make((c) -> {
+			c.request((r) -> {
+				r.method("POST");
+				r.urlPath("/sitemap");
+				r.body(sitemap);
+				r.headers((h) -> h.contentType(h.applicationXml()));
+			});
+			c.response((r) -> r.status(r.OK()));
+		});
+		StubMapping wireMockStub = new WireMockStubStrategy("Test",
+				new ContractMetadata(null, false, 0, null, contractDsl), contractDsl)
+			.toWireMockClientStub();
+		stubMappingIsValidWireMockStub(wireMockStub);
+		String stub = wireMockStub.toString().replaceAll("\\s", "");
+		assertThat(stub).contains("\"expression\":\"/urlset/url[2]/loc/text()\",\"equalTo\":\"https://b\"")
+			.contains("\"expression\":\"/urlset/url[3]/loc/text()\",\"equalTo\":\"https://c\"")
+			.doesNotContain("loc[2]")
+			.doesNotContain("\"equalTo\":\"\"");
+		assertThat(wireMockStub.getRequest().getBodyPatterns())
+			.allSatisfy((pattern) -> assertThat(((StringValuePattern) pattern).match(sitemap).isExactMatch())
+				.as(pattern.toString())
+				.isTrue());
+	}
 
 	@Test
 	void should_generate_stubs_with_plain_xml_request_body() {
