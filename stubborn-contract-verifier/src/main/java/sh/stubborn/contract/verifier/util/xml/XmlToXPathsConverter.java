@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.IntFunction;
-import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -216,8 +215,8 @@ public class XmlToXPathsConverter {
 			Document parsedXml = documentBuilder.parse(new InputSource(new StringReader(xml.toString())));
 			List<List<Node>> valueNodes = getValueNodesWithParents(parsedXml);
 			List<BodyMatcher> matchers = new ArrayList<>();
-			List<NodePath> valueNodePaths = transformListEntries(valueNodes);
-			for (NodePath nodePath : valueNodePaths) {
+			for (List<Node> valueNode : valueNodes) {
+				NodePath nodePath = new NodePath(valueNode);
 				if (!isPathToDefaultXmlnsAttributeNode(nodePath)) {
 					matchers.add(new PathBodyMatcher(buildXPath(nodePath.fromChildToParents()),
 							new MatchingTypeValue(MatchingType.EQUALITY, nodePath.path.get(0).getNodeValue())));
@@ -236,29 +235,6 @@ public class XmlToXPathsConverter {
 		}
 		Node node = nodePath.path.get(0);
 		return isAttributeNode(node) && "xmlns".equals(node.getNodeName());
-	}
-
-	public static List<NodePath> transformListEntries(List<List<Node>> nodeLists) {
-		List<PathOccurrenceCounter> pathOccurrenceCounters = new ArrayList<>();
-		List<NodePath> nodePaths = new ArrayList<>();
-		for (List<Node> nodeList : nodeLists) {
-			List<Node> parentNodesList = nodeList.subList(1, nodeList.size());
-			int elementIndex = pathOccurrenceCounters.stream()
-				.filter((counter) -> nodeNames(counter.path).equals(nodeNames(parentNodesList)))
-				.findFirst()
-				.map((counter) -> ++counter.counter)
-				.orElseGet(() -> {
-					PathOccurrenceCounter pathCounter = new PathOccurrenceCounter(parentNodesList);
-					pathOccurrenceCounters.add(pathCounter);
-					return pathCounter.counter;
-				});
-			nodePaths.add(new NodePath(nodeList, elementIndex));
-		}
-		return nodePaths;
-	}
-
-	private static List<String> nodeNames(List<Node> nodes) {
-		return nodes.stream().map(Node::getNodeName).collect(Collectors.toList());
 	}
 
 	/**
@@ -313,9 +289,6 @@ public class XmlToXPathsConverter {
 	}
 
 	private static int positionAmongSameNamedSiblings(Node node) {
-		if (node.getNodeType() != Node.ELEMENT_NODE) {
-			return 1;
-		}
 		int position = 1;
 		Node sibling = node.getPreviousSibling();
 		while (sibling != null) {
@@ -479,30 +452,14 @@ public class XmlToXPathsConverter {
 
 		private final List<Node> path;
 
-		private final int index;
-
-		NodePath(List<Node> path, int index) {
+		NodePath(List<Node> path) {
 			this.path = path;
-			this.index = index;
 		}
 
 		List<Node> fromChildToParents() {
 			List<Node> reversed = new ArrayList<>(this.path);
 			Collections.reverse(reversed);
 			return reversed;
-		}
-
-	}
-
-	private static final class PathOccurrenceCounter {
-
-		private final List<Node> path;
-
-		private int counter;
-
-		PathOccurrenceCounter(List<Node> path) {
-			this.path = path;
-			this.counter = 1;
 		}
 
 	}

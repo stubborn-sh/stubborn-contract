@@ -262,6 +262,28 @@
 		</dependencies>
 	</dependencyManagement>
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.revapi</groupId>
+					<artifactId>revapi-maven-plugin</artifactId>
+					<configuration>
+						<analysisConfiguration>
+							<revapi.differences>
+								<ignore>true</ignore>
+								<differences>
+									<item>
+										<code>java.method.removed</code>
+										<old>method java.util.List&lt;sh.stubborn.contract.verifier.util.xml.XmlToXPathsConverter.NodePath&gt; sh.stubborn.contract.verifier.util.xml.XmlToXPathsConverter::transformListEntries(java.util.List&lt;java.util.List&lt;org.w3c.dom.Node&gt;&gt;)</old>
+										<justification>Unusable outside the class: it returns the private XmlToXPathsConverter.NodePath. It only computed the leaf-level occurrence index that produced wrong XPaths for repeated parent elements (#270); positions are now derived from the DOM in buildXPath.</justification>
+									</item>
+								</differences>
+							</revapi.differences>
+						</analysisConfiguration>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.gmavenplus</groupId>

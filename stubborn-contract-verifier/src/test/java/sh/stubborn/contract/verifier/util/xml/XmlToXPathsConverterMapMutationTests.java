@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import sh.stubborn.contract.spec.internal.BodyMatcher;
+import sh.stubborn.contract.verifier.util.ContractVerifierUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -93,6 +96,26 @@ class XmlToXPathsConverterMapMutationTests {
 	void attribute_of_repeated_parent_is_indexed_on_its_owner() {
 		assertThat(matchers("<root><item id=\"1\"/><item id=\"2\"/></root>"))
 			.containsExactlyInAnyOrder("/root/item/@id = 1", "/root/item[2]/@id = 2");
+	}
+
+	@Test
+	void cdata_section_is_a_value_node() {
+		assertThat(matchers("<root><a><![CDATA[x<y]]></a></root>")).containsExactly("/root/a/text() = x<y");
+	}
+
+	@Test
+	void deprecated_index_overload_ignores_index_and_derives_positions_from_dom() {
+		Document document = ContractVerifierUtil.parseXml("<root><item>a</item><item>b</item></root>");
+		Node secondText = document.getDocumentElement().getChildNodes().item(1).getFirstChild();
+		List<Node> path = List.of(document.getDocumentElement(), secondText.getParentNode(), secondText);
+
+		assertThat(XmlToXPathsConverter.buildXPath(path)).isEqualTo("/root/item[2]/text()");
+		assertThat(XmlToXPathsConverter.buildXPath(path, 7)).isEqualTo("/root/item[2]/text()");
+	}
+
+	@Test
+	void null_node_path_is_not_a_default_xmlns_attribute() {
+		assertThat(XmlToXPathsConverter.isPathToDefaultXmlnsAttributeNode(null)).isFalse();
 	}
 
 	@Test
