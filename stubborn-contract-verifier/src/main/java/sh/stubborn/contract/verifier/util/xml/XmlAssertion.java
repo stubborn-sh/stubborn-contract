@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.wst.xml.xpath2.processor.DOMLoader;
-import org.eclipse.wst.xml.xpath2.processor.XercesLoader;
 import org.w3c.dom.Document;
 
 /**
@@ -60,8 +58,7 @@ public final class XmlAssertion {
 		if (cachedObjects == null && !empty(xml)) {
 			try {
 				InputStream inputXml = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
-				DOMLoader loader = new XercesLoader();
-				Document document = loader.load(inputXml);
+				Document document = SecureXmlLoader.load(inputXml);
 				cachedObjects = new XmlCachedObjects(document, xml);
 			}
 			catch (Exception ex) {
