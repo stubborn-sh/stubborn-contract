@@ -18,8 +18,6 @@ package sh.stubborn.contract.verifier.builder;
 
 import java.util.Arrays;
 
-import sh.stubborn.contract.verifier.file.SingleContractMetadata;
-
 class DefaultJsonStaticImports implements Imports {
 
 	private final BlockBuilder blockBuilder;
@@ -44,7 +42,8 @@ class DefaultJsonStaticImports implements Imports {
 		return this.generatedClassMetaData.listOfFiles.stream()
 			.anyMatch((metadata) -> metadata.getConvertedContractWithMetadata()
 				.stream()
-				.anyMatch(SingleContractMetadata::isJson));
+				.anyMatch((contract) -> contract.isJson()
+						&& !GenericAvroBodyThen.appliesTo(this.generatedClassMetaData.configProperties, contract)));
 	}
 
 }

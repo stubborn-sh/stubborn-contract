@@ -135,6 +135,14 @@ public class ContractVerifierExtension implements Serializable {
 	private final Property<Boolean> assertJsonSize;
 
 	/**
+	 * Incubating feature. For a messaging contract that declares
+	 * {@code metadata.kafka.avro.schema}, generates typed assertions on the received Avro
+	 * record instead of comparing its JSON form. If not turned on explicitly will be
+	 * disabled.
+	 */
+	private final Property<Boolean> assertAvroTypes;
+
+	/**
 	 * When enabled, this flag will tell stub runner to throw an exception when no stubs /
 	 * contracts were found.
 	 */
@@ -244,6 +252,7 @@ public class ContractVerifierExtension implements Serializable {
 		this.stubsOutputDir = objects.directoryProperty().convention(layout.getBuildDirectory().dir("stubs"));
 		this.stubsSuffix = objects.property(String.class).convention("stubs");
 		this.assertJsonSize = objects.property(Boolean.class).convention(false);
+		this.assertAvroTypes = objects.property(Boolean.class).convention(false);
 		this.failOnNoContracts = objects.property(Boolean.class).convention(true);
 		this.failOnInProgress = objects.property(Boolean.class).convention(true);
 		this.contractRepository = objects.newInstance(ContractRepository.class);
@@ -411,6 +420,14 @@ public class ContractVerifierExtension implements Serializable {
 
 	public void setAssertJsonSize(boolean assertJsonSize) {
 		this.assertJsonSize.set(assertJsonSize);
+	}
+
+	public Property<Boolean> getAssertAvroTypes() {
+		return assertAvroTypes;
+	}
+
+	public void setAssertAvroTypes(boolean assertAvroTypes) {
+		this.assertAvroTypes.set(assertAvroTypes);
 	}
 
 	public Property<Boolean> getFailOnNoContracts() {

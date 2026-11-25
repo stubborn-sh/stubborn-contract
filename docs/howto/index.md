@@ -18,5 +18,6 @@ See the [Reference section](../reference/maven-plugin).
 - [How to Do Stubs Versioning?](./stubs-versioning) — API versioning, JAR versioning, dev/prod stubs
 - [How Can I Use Stubborn Contract Without the JVM?](./non-jvm) — Node.js consumers and producers using `@stubborn-sh` npm packages
 - [How Can I Mark that a Contract Is in Progress?](./mark-in-progress) — Managing in-progress contracts
+- [How Can I Verify an Avro Message the Way Its Consumer Reads It?](./avro-typed-assertions) — Read a received Avro record with the contract schema, then check its values
 - [How Can I Work with Transitive Dependencies?](./transitive) — Managing transitive dependencies in stubs
 

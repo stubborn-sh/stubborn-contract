@@ -17,15 +17,20 @@
 package sh.stubborn.contract.verifier.builder;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import sh.stubborn.contract.spec.Contract;
 import sh.stubborn.contract.spec.internal.GroovyContractConverter;
@@ -35,6 +40,7 @@ import sh.stubborn.contract.verifier.file.ContractMetadata;
 import sh.stubborn.contract.verifier.util.SyntaxChecker;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author Marcin Grzejszczak
@@ -539,6 +545,206 @@ class MessagingMethodBodyBuilderTests {
 		assertThat(test).doesNotContain("cursor");
 		assertThat(test).doesNotContain("REGEXP>>");
 		assertThat(test.trim()).isEqualTo(expectedTest.trim());
+	}
+
+	private static final String ORDER_CREATED_SCHEMA = "{\"type\":\"record\",\"name\":\"OrderCreated\",\"namespace\":\"com.example.orders\",\"fields\":["
+			+ "{\"name\":\"orderId\",\"type\":\"string\"},{\"name\":\"quantity\",\"type\":\"int\"},"
+			+ "{\"name\":\"createdAt\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}},"
+			+ "{\"name\":\"total\",\"type\":{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":10,\"scale\":2}},"
+			+ "{\"name\":\"status\",\"type\":{\"type\":\"enum\",\"name\":\"OrderStatus\",\"symbols\":[\"NEW\",\"PAID\"]}},"
+			+ "{\"name\":\"customer\",\"type\":{\"type\":\"record\",\"name\":\"Customer\",\"fields\":["
+			+ "{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"vip\",\"type\":\"boolean\"}]}},"
+			+ "{\"name\":\"lines\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"OrderLine\",\"fields\":["
+			+ "{\"name\":\"sku\",\"type\":\"string\"},{\"name\":\"price\",\"type\":\"double\"}]}}},"
+			+ "{\"name\":\"attributes\",\"type\":{\"type\":\"map\",\"values\":\"string\"}},"
+			+ "{\"name\":\"signature\",\"type\":\"bytes\"},"
+			+ "{\"name\":\"note\",\"type\":[\"null\",\"string\"],\"default\":null},"
+			+ "{\"name\":\"coupon\",\"type\":[\"null\",\"string\"],\"default\":null}]}";
+
+	private static final String ORDER_CREATED_BODY = "\t\tbody([\n" + "\t\t\torderId: 'o-1',\n" + "\t\t\tquantity: 2,\n"
+			+ "\t\t\tcreatedAt: 1700000000000L,\n" + "\t\t\ttotal: 19.99,\n" + "\t\t\tstatus: 'PAID',\n"
+			+ "\t\t\tcustomer: [name: 'Ada', vip: true],\n" + "\t\t\tlines: [[sku: 'A-1', price: 9.5]],\n"
+			+ "\t\t\tattributes: [channel: 'web'],\n" + "\t\t\tsignature: 'c2ln',\n" + "\t\t\tnote: null,\n"
+			+ "\t\t\tcoupon: 'WELCOME'\n" + "\t\t])\n";
+
+	private static String avroContract(String body, String schema) {
+		return "sh.stubborn.contract.spec.Contract.make {\n" + "\tlabel 'order_created'\n"
+				+ "\tinput {\n\t\ttriggeredBy('toString()')\n\t}\n" + "\toutputMessage {\n" + "\t\tsentTo('orders')\n"
+				+ body + "\t}\n" + "\tmetadata([kafka: [avro: [schema: '" + schema + "']]])\n" + "}";
+	}
+
+	private String typedTest(String body) {
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setAssertAvroTypes(true);
+		return singleTestGenerator(contractFromGroovy(avroContract(body, ORDER_CREATED_SCHEMA)));
+	}
+
+	@Test
+	void should_keep_the_json_body_check_for_an_avro_contract_when_typed_assertions_are_off() {
+		Contract contractDsl = contractFromGroovy(avroContract(ORDER_CREATED_BODY, ORDER_CREATED_SCHEMA));
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+
+		String test = singleTestGenerator(contractDsl);
+
+		assertThat(test).contains("assertThatJson(parsedJson).field(\"['orderId']\").isEqualTo(\"o-1\");");
+		assertThat(test).doesNotContain("assertThatAvro");
+	}
+
+	static Stream<Arguments> shouldGenerateTypedAvroAssertions() {
+		List<String> java = List.of("import sh.stubborn.contract.verifier.messaging.avro.GenericRecordAssert;",
+				"import static sh.stubborn.contract.verifier.messaging.avro.GenericRecordAssert.assertThatAvro;",
+				"GenericRecordAssert avroRecord = assertThatAvro(response.getPayload()).readWith(\"{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"OrderCreated\\\"",
+				"avroRecord.field(\"orderId\").isEqualTo(\"o-1\");", "avroRecord.field(\"quantity\").isEqualTo(2);",
+				"avroRecord.field(\"createdAt\").isEqualTo(1700000000000L);",
+				"avroRecord.field(\"total\").isEqualTo(new java.math.BigDecimal(\"19.99\"));",
+				"avroRecord.field(\"status\").isEqualTo(\"PAID\");",
+				"avroRecord.field(\"customer.name\").isEqualTo(\"Ada\");",
+				"avroRecord.field(\"customer.vip\").isEqualTo(true);",
+				"avroRecord.field(\"lines[0].sku\").isEqualTo(\"A-1\");",
+				"avroRecord.field(\"lines[0].price\").isEqualTo(9.5d);",
+				"avroRecord.field(\"attributes['channel']\").isEqualTo(\"web\");",
+				"avroRecord.field(\"signature\").isNotNull();", "avroRecord.field(\"note\").isNull();",
+				"avroRecord.field(\"coupon\").isEqualTo(\"WELCOME\");");
+		List<String> groovy = List.of("import sh.stubborn.contract.verifier.messaging.avro.GenericRecordAssert\n",
+				"import static sh.stubborn.contract.verifier.messaging.avro.GenericRecordAssert.assertThatAvro\n",
+				"GenericRecordAssert avroRecord = assertThatAvro(response.getPayload()).readWith(",
+				"avroRecord.field('orderId').isEqualTo('o-1')\n", "avroRecord.field('quantity').isEqualTo(2)\n",
+				"avroRecord.field('createdAt').isEqualTo(1700000000000L)\n",
+				"avroRecord.field('total').isEqualTo(new java.math.BigDecimal('19.99'))\n",
+				"avroRecord.field('status').isEqualTo('PAID')\n", "avroRecord.field('customer.vip').isEqualTo(true)\n",
+				"avroRecord.field('lines[0].price').isEqualTo(9.5d)\n",
+				"avroRecord.field('''attributes['channel']''').isEqualTo('web')\n",
+				"avroRecord.field('note').isNull()\n");
+		return Stream.of(Arguments.of("junit", TestFramework.JUNIT5, java),
+				Arguments.of("testng", TestFramework.TESTNG, java), Arguments.of("spock", TestFramework.SPOCK, groovy));
+	}
+
+	@ParameterizedTest(name = "{1}")
+	@MethodSource("shouldGenerateTypedAvroAssertions")
+	void should_read_the_record_with_the_contract_schema_and_assert_every_named_field(String methodBuilderName,
+			TestFramework testFramework, List<String> expectedLines) {
+		Contract contractDsl = contractFromGroovy(avroContract(ORDER_CREATED_BODY, ORDER_CREATED_SCHEMA));
+		this.properties.setTestFramework(testFramework);
+		this.properties.setAssertAvroTypes(true);
+
+		String test = singleTestGenerator(contractDsl);
+
+		assertThat(test).contains(expectedLines);
+		assertThat(test).doesNotContain("assertThatJson").doesNotContain("parsedJson").doesNotContain("JsonPath");
+		if (testFramework != TestFramework.TESTNG) {
+			SyntaxChecker.tryToCompile(methodBuilderName, test);
+		}
+	}
+
+	@Test
+	void should_generate_typed_avro_assertions_honouring_body_matchers() {
+		String test = typedTest("\t\tbody([orderId: 'o-1', quantity: 2, lines: [[sku: 'A-1', price: 9.5]]])\n"
+				+ "\t\tbodyMatchers {\n" + "\t\t\tjsonPath('$.orderId', byRegex('o-[0-9]+'))\n"
+				+ "\t\t\tjsonPath('$.quantity', byType())\n"
+				+ "\t\t\tjsonPath('$.lines[*].sku', byRegex('[A-Z]-[0-9]+'))\n" + "\t\t}\n");
+
+		assertThat(test).contains("avroRecord.field(\"orderId\").matches(\"o-[0-9]+\");",
+				"avroRecord.field(\"quantity\").isNotNull();",
+				"avroRecord.field(\"lines[0].sku\").matches(\"[A-Z]-[0-9]+\");",
+				"avroRecord.field(\"lines[0].price\").isEqualTo(9.5d);");
+		SyntaxChecker.tryToCompile("junit", test);
+	}
+
+	@Test
+	void should_check_array_sizes_of_by_type_matchers() {
+		String test = typedTest("\t\tbody([lines: [[sku: 'A-1', price: 9.5]]])\n" + "\t\tbodyMatchers {\n"
+				+ "\t\t\tjsonPath('$.lines', byType { minOccurrence(1); maxOccurrence(3) })\n" + "\t\t}\n");
+
+		assertThat(test).contains("avroRecord.field(\"lines\").isNotNull().hasSizeBetween(1, 3);");
+		SyntaxChecker.tryToCompile("junit", test);
+	}
+
+	@Test
+	void should_apply_child_matchers_below_a_by_type_container_and_compare_no_values_there() {
+		String test = typedTest("\t\tbody([lines: [[sku: 'A-1', price: 9.5]]])\n" + "\t\tbodyMatchers {\n"
+				+ "\t\t\tjsonPath('$.lines', byType { minOccurrence(1) })\n"
+				+ "\t\t\tjsonPath('$.lines[*].sku', byRegex('[A-Z]-[0-9]+'))\n" + "\t\t}\n");
+
+		assertThat(test)
+			.contains("avroRecord.field(\"lines\").isNotNull().hasSizeGreaterThanOrEqualTo(1);",
+					"avroRecord.field(\"lines[0].sku\").matches(\"[A-Z]-[0-9]+\");")
+			.doesNotContain("lines[0].price");
+		SyntaxChecker.tryToCompile("junit", test);
+	}
+
+	@Test
+	void should_generate_typed_avro_assertions_for_command_and_null_matchers() {
+		String test = typedTest("\t\tbody([orderId: 'o-1', note: null])\n" + "\t\tbodyMatchers {\n"
+				+ "\t\t\tjsonPath('$.orderId', byCommand('java.util.Objects.requireNonNull($it)'))\n"
+				+ "\t\t\tjsonPath('$.note', byNull())\n" + "\t\t}\n");
+
+		assertThat(test).contains("java.util.Objects.requireNonNull(avroRecord.field(\"orderId\").value());",
+				"avroRecord.field(\"note\").isNull();");
+		SyntaxChecker.tryToCompile("junit", test);
+	}
+
+	@Test
+	void should_require_a_record_or_map_the_contract_states_without_fields() {
+		String test = typedTest("\t\tbody([customer: [:], attributes: [:]])\n");
+
+		assertThat(test).contains("avroRecord.field(\"customer\").isNotNull();",
+				"avroRecord.field(\"attributes\").isNotNull();");
+	}
+
+	@ParameterizedTest(name = "{0}")
+	@CsvSource({ "timestamp-millis,long,2023-11-14T22:13:20Z,1700000000000L",
+			"timestamp-micros,long,2023-11-14T22:13:20Z,1700000000000000L",
+			"local-timestamp-millis,long,2023-11-14T22:13:20,1700000000000L", "date,int,2023-11-14,19675" })
+	void should_take_iso_text_for_a_temporal_field(String logicalType, String type, String text, String literal) {
+		String schema = "{\"type\":\"record\",\"name\":\"Timed\",\"fields\":[{\"name\":\"at\",\"type\":{\"type\":\""
+				+ type + "\",\"logicalType\":\"" + logicalType + "\"}}]}";
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setAssertAvroTypes(true);
+
+		String test = singleTestGenerator(contractFromGroovy(avroContract("\t\tbody([at: '" + text + "'])\n", schema)));
+
+		assertThat(test).contains("avroRecord.field(\"at\").isEqualTo(" + literal + ");");
+	}
+
+	@Test
+	void should_read_the_avro_schema_from_a_file(@TempDir Path directory) throws IOException {
+		Path schema = Files.writeString(directory.resolve("order-created.avsc"), ORDER_CREATED_SCHEMA);
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setAssertAvroTypes(true);
+
+		String test = singleTestGenerator(
+				contractFromGroovy(avroContract("\t\tbody([orderId: 'o-1'])\n", schema.toString().replace('\\', '/'))));
+
+		assertThat(test).contains("avroRecord.field(\"orderId\").isEqualTo(\"o-1\");");
+	}
+
+	@Test
+	void should_fail_generation_naming_the_contract_when_a_matcher_matches_no_field() {
+		assertThatThrownBy(() -> typedTest(
+				"\t\tbody([orderId: 'o-1'])\n" + "\t\tbodyMatchers {\n" + "\t\t\tjsonPath('$.missing', byType())\n"
+						+ "\t\t\tjsonPath(\"\\$['orderId']\", byRegex('o-1'))\n" + "\t\t}\n"))
+			.hasStackTraceContaining("Contract [")
+			.hasStackTraceContaining("Body matchers [$.missing, $['orderId']] match no field of the contract body");
+	}
+
+	@Test
+	void should_read_the_avro_schema_from_the_classpath() {
+		Contract contractDsl = contractFromGroovy(
+				avroContract("\t\tbody([orderId: 'o-1', quantity: 2])\n", "classpath:avro/order-created.avsc"));
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+		this.properties.setAssertAvroTypes(true);
+
+		String test = singleTestGenerator(contractDsl);
+
+		assertThat(test).contains("readWith(\"{\\\"type\\\":\\\"record\\\",\\\"name\\\":\\\"OrderCreated\\\"",
+				"avroRecord.field(\"quantity\").isEqualTo(2);");
+	}
+
+	@Test
+	void should_fail_generation_when_the_contract_body_does_not_fit_the_avro_schema() {
+		assertThatThrownBy(() -> typedTest("\t\tbody([orderId: 'o-1', quantity: 'two'])\n"))
+			.hasStackTraceContaining("Contract [")
+			.hasStackTraceContaining("Contract body field [quantity] does not fit Avro type [int]: two");
 	}
 
 }
