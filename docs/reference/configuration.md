@@ -51,6 +51,7 @@ These are the key configuration properties for Stubborn Contract Verifier (Maven
 | `incrementalContractStubs` | `true` | Only generate stubs when contracts change |
 | `convertToYaml` | `false` | Converts all DSLs to YAML format |
 | `assertJsonSize` | `false` | Checks the size of JSON arrays in generated tests |
+| `assertAvroTypes` | `false` | Reads the received Avro record with the contract's schema, under Schema Registry's resolution rules, for messaging contracts that declare `metadata.kafka.avro.schema` (see [Avro typed assertions](../howto/avro-typed-assertions)) |
 | `contractsMode` | — | Mode for downloading contracts (`CLASSPATH`, `LOCAL`, `REMOTE`) |
 | `contractDependency` | — | The contract dependency that contains all packaged contracts |
 | `contractsPath` | — | Path to the concrete contracts in the JAR with packaged contracts |

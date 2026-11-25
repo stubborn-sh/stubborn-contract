@@ -109,6 +109,14 @@ class ContractVerifierConfigPropertiesMutationTests {
 	}
 
 	@Test
+	void assert_avro_types_is_off_by_default_and_round_trips() {
+		ContractVerifierConfigProperties props = new ContractVerifierConfigProperties();
+		assertThat(props.getAssertAvroTypes()).isFalse();
+		props.setAssertAvroTypes(true);
+		assertThat(props.getAssertAvroTypes()).isTrue();
+	}
+
+	@Test
 	void base_class_mappings_round_trip() {
 		ContractVerifierConfigProperties props = new ContractVerifierConfigProperties();
 		Map<String, String> mappings = new HashMap<>();

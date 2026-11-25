@@ -1,0 +1,49 @@
+package com.example;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import org.springframework.beans.factory.annotation.Autowired;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
+import sh.stubborn.contract.verifier.messaging.avro.GenericRecordAssert;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes;
+import static sh.stubborn.contract.verifier.messaging.avro.GenericRecordAssert.assertThatAvro;
+
+@SuppressWarnings("rawtypes")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
+	@Autowired ContractVerifierMessaging contractVerifierMessaging;
+	@Autowired ContractVerifierObjectMapper contractVerifierObjectMapper;
+
+	@Test
+	@Disabled
+	public void validate_contract() throws Exception {
+		// when:
+			createOrder();
+
+		// then:
+			ContractVerifierMessage response = contractVerifierMessaging.receive("orders",
+					contract(this, "contract.yml"));
+			assertThat(response).isNotNull();
+
+		// and:
+			GenericRecordAssert avroRecord = assertThatAvro(response.getPayload()).readWith("{/"type/":/"record/",/"name/":/"OrderCreated/",/"namespace/":/"com.example.orders/",/"fields/":[{/"name/":/"orderId/",/"type/":/"string/"},{/"name/":/"quantity/",/"type/":/"int/"},{/"name/":/"createdAt/",/"type/":{/"type/":/"long/",/"logicalType/":/"timestamp-millis/"}},{/"name/":/"status/",/"type/":{/"type/":/"enum/",/"name/":/"OrderStatus/",/"symbols/":[/"NEW/",/"PAID/"]}},{/"name/":/"customer/",/"type/":{/"type/":/"record/",/"name/":/"Customer/",/"fields/":[{/"name/":/"name/",/"type/":/"string/"}]}},{/"name/":/"lines/",/"type/":{/"type/":/"array/",/"items/":{/"type/":/"record/",/"name/":/"OrderLine/",/"fields/":[{/"name/":/"sku/",/"type/":/"string/"}]}}},{/"name/":/"note/",/"type/":[/"null/",/"string/"],/"default/":null}]}");
+			avroRecord.field("orderId").matches("o-[0-9]+");
+			avroRecord.field("quantity").isEqualTo(2);
+			avroRecord.field("createdAt").isEqualTo(1795601730000L);
+			avroRecord.field("status").isEqualTo("PAID");
+			avroRecord.field("customer.name").isEqualTo("Ada");
+			avroRecord.field("lines").isNotNull().hasSizeGreaterThanOrEqualTo(1);
+			avroRecord.field("note").isNull();
+	}
+
+}
+

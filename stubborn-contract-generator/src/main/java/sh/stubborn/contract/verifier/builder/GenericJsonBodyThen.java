@@ -191,6 +191,9 @@ class GenericJsonBodyThen implements Then {
 
 	@Override
 	public boolean accept(SingleContractMetadata metadata) {
+		if (GenericAvroBodyThen.appliesTo(this.generatedClassMetaData.configProperties, metadata)) {
+			return false;
+		}
 		Object responseBody = Objects.requireNonNull(this.bodyParser.responseBody(metadata)).getServerValue();
 		if (responseBody instanceof FromFileProperty) {
 			return !((FromFileProperty) responseBody).isByte();

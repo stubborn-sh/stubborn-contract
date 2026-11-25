@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "com.example.orders",
+  "fields": [
+    {"name": "orderId", "type": "string"},
+    {"name": "quantity", "type": "int"}
+  ]
+}

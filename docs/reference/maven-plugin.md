@@ -212,6 +212,7 @@ The following list describes experimental features that you can turn on in the p
 
 - `convertToYaml`: Converts all DSLs to the declarative YAML format. This can be extremely useful when you use external libraries in your Groovy DSLs. By turning this feature on (by setting it to `true`), you need not add the library dependency on the consumer side.
 - `assertJsonSize`: You can check the size of JSON arrays in the generated tests. This feature is disabled by default.
+- `assertAvroTypes`: For a messaging contract that declares `metadata.kafka.avro.schema`, reads the received Avro record with that schema, under Schema Registry's resolution rules, and checks its values instead of comparing its JSON form. This feature is disabled by default. See [How Can I Verify an Avro Message the Way Its Consumer Reads It?](../howto/avro-typed-assertions).
 
 ## Single Base Class for All Tests
 

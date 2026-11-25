@@ -285,6 +285,7 @@ public class StubbornContractGradlePlugin implements Plugin<Project> {
 			generateServerTestsTask.getBaseClassMappings()
 					.convention(extension.getBaseClassMappings().getBaseClassMappings());
 			generateServerTestsTask.getAssertJsonSize().convention(extension.getAssertJsonSize());
+			generateServerTestsTask.getAssertAvroTypes().convention(extension.getAssertAvroTypes());
 			generateServerTestsTask.getFailOnInProgress().convention(extension.getFailOnInProgress());
 			generateServerTestsTask.getClasspath()
 					.from(project.getConfigurations().getByName(CONTRACT_TEST_GENERATOR_RUNTIME_CLASSPATH_CONFIGURATION_NAME));

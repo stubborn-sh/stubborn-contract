@@ -43,6 +43,7 @@ class MessagingBodyThen implements Then, BodyMethodVisitor {
 				new GenericBinaryBodyThen(blockBuilder, metaData, this.bodyParser, this.comparisonBuilder),
 				new GenericTextBodyThen(blockBuilder, metaData, this.bodyParser, this.comparisonBuilder),
 				new GenericJsonBodyThen(blockBuilder, metaData, this.bodyParser, this.comparisonBuilder),
+				new GenericAvroBodyThen(blockBuilder, metaData, this.bodyParser),
 				new GenericXmlBodyThen(blockBuilder, this.bodyParser)));
 	}
 

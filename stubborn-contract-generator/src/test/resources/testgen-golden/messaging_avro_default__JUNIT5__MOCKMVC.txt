@@ -1,0 +1,45 @@
+package com.example;
+
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import org.springframework.beans.factory.annotation.Autowired;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierObjectMapper;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessage;
+import sh.stubborn.contract.verifier.messaging.internal.ContractVerifierMessaging;
+
+import static sh.stubborn.contract.verifier.assertion.SpringCloudContractAssertions.assertThat;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.*;
+import static sh.stubborn.jsonassert.JsonAssertion.assertThatJson;
+import static sh.stubborn.contract.verifier.messaging.util.ContractVerifierMessagingUtil.headers;
+import static sh.stubborn.contract.verifier.util.ContractVerifierUtil.fileToBytes;
+
+@SuppressWarnings("rawtypes")
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class ContractTest {
+	@Autowired ContractVerifierMessaging contractVerifierMessaging;
+	@Autowired ContractVerifierObjectMapper contractVerifierObjectMapper;
+
+	@Test
+	@Disabled
+	public void validate_contract() throws Exception {
+		// when:
+			createOrder();
+
+		// then:
+			ContractVerifierMessage response = contractVerifierMessaging.receive("orders",
+					contract(this, "contract.yml"));
+			assertThat(response).isNotNull();
+
+		// and:
+			DocumentContext parsedJson = JsonPath.parse(contractVerifierObjectMapper.writeValueAsString(response.getPayload()));
+			assertThatJson(parsedJson).field("['orderId']").isEqualTo("o-1");
+			assertThatJson(parsedJson).field("['quantity']").isEqualTo(2);
+	}
+
+}
+

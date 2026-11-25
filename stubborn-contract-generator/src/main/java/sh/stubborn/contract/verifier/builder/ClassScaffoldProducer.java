@@ -77,6 +77,7 @@ final class ClassScaffoldProducer {
 		imports.add(new SpockOrderImports(bb, this.metaData));
 		imports.add(new XmlImports(bb, this.metaData));
 		imports.add(new MessagingImports(bb, this.metaData));
+		imports.add(AvroImports.type(bb, this.metaData));
 		imports.add(new MockMvcRestAssuredImports(bb, this.metaData));
 		imports.add(new ExplicitRestAssuredImports(bb, this.metaData));
 		imports.add(new WebTestClientRestAssuredImports(bb, this.metaData));
@@ -88,6 +89,7 @@ final class ClassScaffoldProducer {
 		staticImports.add(new CustomModeStaticImports(bb, this.metaData));
 		staticImports.add(new DefaultJsonStaticImports(bb, this.metaData));
 		staticImports.add(new MessagingStaticImports(bb, this.metaData));
+		staticImports.add(AvroImports.entryPoint(bb, this.metaData));
 		staticImports.add(new MockMvcRestAssuredStaticImports(bb, this.metaData));
 		staticImports.add(new ExplicitRestAssuredStaticImports(bb, this.metaData));
 		staticImports.add(new WebTestClientRestAssured3StaticImports(bb, this.metaData));

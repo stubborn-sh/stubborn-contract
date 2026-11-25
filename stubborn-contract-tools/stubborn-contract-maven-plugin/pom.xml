@@ -254,6 +254,18 @@
 			<artifactId>stubborn-contract-generator</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>1.12.1</version>
+			<!-- Avro's jackson-annotations is older than the one the contract YAML reader needs -->
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>sh.stubborn</groupId>
 			<artifactId>stubborn-contract-converters</artifactId>
 			<exclusions>

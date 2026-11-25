@@ -140,6 +140,14 @@ public class ContractVerifierConfigProperties {
 	private Boolean assertJsonSize = false;
 
 	/**
+	 * Incubating feature. For a messaging contract that declares
+	 * {@code metadata.kafka.avro.schema}, generates typed assertions on the received Avro
+	 * record instead of comparing its JSON form. If not turned on explicitly will be
+	 * disabled.
+	 */
+	private Boolean assertAvroTypes = false;
+
+	/**
 	 * A regular expression that matches contracts. Especially useful when using a single
 	 * JAR containing all the contracts in the system. In this case you'd like to take
 	 * into consideration only some of them. Defaults to picking all files.
@@ -335,6 +343,14 @@ public class ContractVerifierConfigProperties {
 
 	public void setAssertJsonSize(Boolean assertJsonSize) {
 		this.assertJsonSize = assertJsonSize;
+	}
+
+	public Boolean getAssertAvroTypes() {
+		return this.assertAvroTypes;
+	}
+
+	public void setAssertAvroTypes(Boolean assertAvroTypes) {
+		this.assertAvroTypes = assertAvroTypes;
 	}
 
 	public String getIncludedContracts() {

@@ -53,7 +53,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * them after an intentional change, run with {@code -Dtestgen.golden.update=true}; the
  * test then writes the current output to the golden files and passes. Without the flag it
  * compares and fails on any difference. A missing golden always fails (unless updating)
- * so new corpus entries can't silently pass.
+ * so new corpus entries can't silently pass. Entries whose name ends with {@code _typed}
+ * are generated with {@code assertAvroTypes} on.
  *
  * @author Marcin Grzejszczak
  */
@@ -71,7 +72,7 @@ class TestGenerationGoldenMasterTests {
 	 * Representative corpus. Keep each contract small and focused on one shape; breadth
 	 * comes from the framework/mode matrix. Expand as the migration ports more surface.
 	 */
-	private static final Map<String, String> CONTRACTS = Map.of("http_json_put", """
+	private static final Map<String, String> CONTRACTS = Map.ofEntries(Map.entry("http_json_put", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'PUT'
@@ -85,7 +86,7 @@ class TestGenerationGoldenMasterTests {
 					body([status: 'ok'])
 				}
 			}
-			""", "http_get_headers", """
+			"""), Map.entry("http_get_headers", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'GET'
@@ -98,7 +99,7 @@ class TestGenerationGoldenMasterTests {
 					body([id: 1, name: 'widget'])
 				}
 			}
-			""", "http_get_query_cookie", """
+			"""), Map.entry("http_get_query_cookie", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'GET'
@@ -116,7 +117,7 @@ class TestGenerationGoldenMasterTests {
 					body([id: 1])
 				}
 			}
-			""", "http_async", """
+			"""), Map.entry("http_async", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'GET'
@@ -128,7 +129,7 @@ class TestGenerationGoldenMasterTests {
 					body([status: 'ok'])
 				}
 			}
-			""", "http_multipart", """
+			"""), Map.entry("http_multipart", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'PUT'
@@ -148,7 +149,7 @@ class TestGenerationGoldenMasterTests {
 					status OK()
 				}
 			}
-			""", "http_resp_pattern_header", """
+			"""), Map.entry("http_resp_pattern_header", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'GET'
@@ -162,7 +163,7 @@ class TestGenerationGoldenMasterTests {
 					body([id: 1])
 				}
 			}
-			""", "http_resp_execproperty_header", """
+			"""), Map.entry("http_resp_execproperty_header", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'GET'
@@ -175,7 +176,7 @@ class TestGenerationGoldenMasterTests {
 					}
 				}
 			}
-			""", "http_resp_cookie", """
+			"""), Map.entry("http_resp_cookie", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'GET'
@@ -189,7 +190,7 @@ class TestGenerationGoldenMasterTests {
 					body([id: 1])
 				}
 			}
-			""", "http_file_body", """
+			"""), Map.entry("http_file_body", """
 			sh.stubborn.contract.spec.Contract.make {
 				request {
 					method 'PUT'
@@ -201,7 +202,40 @@ class TestGenerationGoldenMasterTests {
 					status OK()
 				}
 			}
-			""");
+			"""),
+			Map.entry("messaging_avro_default",
+					"""
+							sh.stubborn.contract.spec.Contract.make {
+								label 'order_created'
+								input {
+									triggeredBy('createOrder()')
+								}
+								outputMessage {
+									sentTo('orders')
+									body([orderId: 'o-1', quantity: 2])
+								}
+								metadata([kafka: [avro: [schema: '{"type":"record","name":"OrderCreated","namespace":"com.example.orders","fields":[{"name":"orderId","type":"string"},{"name":"quantity","type":"int"}]}']]])
+							}
+							"""),
+			Map.entry("messaging_avro_typed",
+					"""
+							sh.stubborn.contract.spec.Contract.make {
+								label 'order_created'
+								input {
+									triggeredBy('createOrder()')
+								}
+								outputMessage {
+									sentTo('orders')
+									body([orderId: 'o-1', quantity: 2, createdAt: '2026-11-25T10:15:30Z', status: 'PAID',
+										customer: [name: 'Ada'], lines: [[sku: 'A-1']], note: null])
+									bodyMatchers {
+										jsonPath('$.orderId', byRegex('o-[0-9]+'))
+										jsonPath('$.lines', byType { minOccurrence(1) })
+									}
+								}
+								metadata([kafka: [avro: [schema: '{"type":"record","name":"OrderCreated","namespace":"com.example.orders","fields":[{"name":"orderId","type":"string"},{"name":"quantity","type":"int"},{"name":"createdAt","type":{"type":"long","logicalType":"timestamp-millis"}},{"name":"status","type":{"type":"enum","name":"OrderStatus","symbols":["NEW","PAID"]}},{"name":"customer","type":{"type":"record","name":"Customer","fields":[{"name":"name","type":"string"}]}},{"name":"lines","type":{"type":"array","items":{"type":"record","name":"OrderLine","fields":[{"name":"sku","type":"string"}]}}},{"name":"note","type":["null","string"],"default":null}]}']]])
+							}
+							"""));
 
 	@TempDir
 	File tmp;
@@ -228,14 +262,20 @@ class TestGenerationGoldenMasterTests {
 			// throws
 			// "Multipart is not yet supported"), so that one combination is not
 			// generable.
-			.filter((args) -> !("http_multipart".equals(args.get()[0]) && args.get()[2] == TestMode.CUSTOM));
+			.filter((args) -> !("http_multipart".equals(args.get()[0]) && args.get()[2] == TestMode.CUSTOM))
+			// A messaging test body does not depend on the test mode, so messaging
+			// contracts
+			// pin one Java and one Groovy rendering.
+			.filter((args) -> !args.get()[0].toString().startsWith("messaging_")
+					|| (args.get()[2] == TestMode.MOCKMVC && args.get()[1] != TestFramework.TESTNG));
 	}
 
 	@ParameterizedTest(name = "{0} [{1}/{2}]")
 	@MethodSource("corpus")
 	void generator_output_matches_golden(String contractName, TestFramework framework, TestMode mode)
 			throws IOException {
-		String generated = normalize(generate(CONTRACTS.get(contractName), framework, mode));
+		String generated = normalize(
+				generate(CONTRACTS.get(contractName), framework, mode, contractName.endsWith("_typed")));
 
 		Path golden = GOLDEN_DIR.resolve(contractName + "__" + framework + "__" + mode + ".txt");
 		if (UPDATE) {
@@ -250,13 +290,15 @@ class TestGenerationGoldenMasterTests {
 		assertThat(generated).as("Generated output drifted from golden %s", golden).isEqualTo(expected);
 	}
 
-	private String generate(String contractDsl, TestFramework framework, TestMode mode) throws IOException {
+	private String generate(String contractDsl, TestFramework framework, TestMode mode, boolean assertAvroTypes)
+			throws IOException {
 		File contractFile = new File(this.tmp, "contract.groovy");
 		Files.writeString(contractFile.toPath(), contractDsl, StandardCharsets.UTF_8);
 
 		ContractVerifierConfigProperties properties = new ContractVerifierConfigProperties();
 		properties.setTestFramework(framework);
 		properties.setTestMode(mode);
+		properties.setAssertAvroTypes(assertAvroTypes);
 		// Needed by contracts whose body reads a file (body(file('request.json'))): the
 		// generator writes the referenced fixture into these dirs as a side effect.
 		properties.setGeneratedTestSourcesDir(this.tmp);

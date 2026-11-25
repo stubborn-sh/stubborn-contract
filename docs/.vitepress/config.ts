@@ -137,6 +137,7 @@ export default withMermaid({
             { text: 'Non-JVM Providers', link: '/howto/non-jvm' },
             { text: 'Stubs Versioning', link: '/howto/stubs-versioning' },
             { text: 'Mark Contract In-Progress', link: '/howto/mark-in-progress' },
+            { text: 'Avro Typed Assertions', link: '/howto/avro-typed-assertions' },
             { text: 'Transitive Dependencies', link: '/howto/transitive' },
           ],
         },

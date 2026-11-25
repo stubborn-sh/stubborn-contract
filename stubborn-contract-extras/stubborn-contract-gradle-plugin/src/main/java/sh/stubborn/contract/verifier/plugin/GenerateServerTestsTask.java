@@ -89,6 +89,8 @@ class GenerateServerTestsTask extends DefaultTask {
 
 	private final Property<Boolean> assertJsonSize;
 
+	private final Property<Boolean> assertAvroTypes;
+
 	private final Property<Boolean> failOnInProgress;
 
 	private final ConfigurableFileCollection classpath;
@@ -120,6 +122,7 @@ class GenerateServerTestsTask extends DefaultTask {
 		this.testFramework = objects.property(TestFramework.class);
 		this.baseClassMappings = objects.mapProperty(String.class, String.class);
 		this.assertJsonSize = objects.property(Boolean.class);
+		this.assertAvroTypes = objects.property(Boolean.class);
 		this.failOnInProgress = objects.property(Boolean.class);
 		this.classpath = objects.fileCollection();
 		this.generatedTestSourcesDir = objects.directoryProperty();
@@ -244,6 +247,11 @@ class GenerateServerTestsTask extends DefaultTask {
 	}
 
 	@Input
+	Property<Boolean> getAssertAvroTypes() {
+		return assertAvroTypes;
+	}
+
+	@Input
 	Property<Boolean> getFailOnInProgress() {
 		return failOnInProgress;
 	}
@@ -289,6 +297,7 @@ class GenerateServerTestsTask extends DefaultTask {
 		properties.setTestFramework(testFramework.get());
 		properties.setBaseClassMappings(baseClassMappings.get());
 		properties.setAssertJsonSize(assertJsonSize.get());
+		properties.setAssertAvroTypes(assertAvroTypes.get());
 		properties.setFailOnInProgress(failOnInProgress.get());
 		return properties;
 	}

@@ -127,6 +127,15 @@ public class GenerateTestsMojo extends AbstractMojo {
 	private boolean assertJsonSize;
 
 	/**
+	 * Incubating feature. For a messaging contract that declares
+	 * {@code metadata.kafka.avro.schema}, generates typed assertions on the received Avro
+	 * record instead of comparing its JSON form. If not turned on explicitly will be
+	 * disabled.
+	 */
+	@Parameter(property = "stubborn.contract.verifier.assert.avro-types", defaultValue = "false")
+	private boolean assertAvroTypes;
+
+	/**
 	 * Patterns for which Spring Cloud Contract Verifier should generate @Ignored tests.
 	 */
 	@Parameter
@@ -348,6 +357,7 @@ public class GenerateTestsMojo extends AbstractMojo {
 		config.setExcludedFiles(this.excludedFiles);
 		config.setIncludedFiles(this.includedFiles);
 		config.setAssertJsonSize(this.assertJsonSize);
+		config.setAssertAvroTypes(this.assertAvroTypes);
 		config.setPackageWithBaseClasses(this.packageWithBaseClasses);
 		if (this.baseClassMappings != null) {
 			config.setBaseClassMappings(mappingsToMap());
