@@ -123,6 +123,65 @@ public abstract class MessagingBase {
 }
 ```
 
+### Record keys and tombstones (compacted topics)
+
+On a compacted topic the record key is the identity of a record, and a tombstone (a
+record with a key and a `null` value) deletes it. Kafka-specific details like these live
+in the contract's `metadata.kafka.outputMessage` section, so the contract itself stays
+transport-neutral:
+
+```yaml
+label: productCreated
+input:
+  triggeredBy: createProduct()
+outputMessage:
+  sentTo: product.events
+  body:
+    sku: SKU-12345
+    name: Coffee mug
+metadata:
+  kafka:
+    outputMessage:
+      key: SKU-12345
+```
+
+```yaml
+label: productDeleted
+input:
+  triggeredBy: deleteProduct()
+outputMessage:
+  sentTo: product.events
+metadata:
+  kafka:
+    outputMessage:
+      key: SKU-12345
+      tombstone: true
+```
+
+| Entry | Producer side (generated test) | Consumer side (stub runner) |
+|-------|-------------------------------|-----------------------------|
+| `key` | Only a record with this key is checked; records with other keys are skipped | The stub is published under this key |
+| `tombstone: true` | Only a record with a `null` value is checked (leave out `body`) | The stub is published with a `null` value |
+
+When a contract sets a `key` and is not a tombstone, a `null`-value record with that key
+is skipped too. Without either entry the first record on the topic is checked, as before.
+
+Because a contract selects its record, one trigger that publishes several records is
+covered by several contracts with the same `triggeredBy`. Renaming a SKU, for example,
+publishes a tombstone for the old SKU and a record for the new one: one contract with the
+old key and `tombstone: true`, one with the new key and the new body.
+
+The receiver also exposes the key as the `kafka_receivedMessageKey` header (the name
+Spring Kafka uses). Keys are plain UTF-8 strings.
+
+The topic is read from the beginning, so a record left on it by an earlier test can still
+match a key. Use a fresh broker per test run (Testcontainers) or keys that are unique to a
+test.
+
+This is supported by the Spring-free Kafka building block
+(`stubborn-contract-messaging-kafka`), which `@AutoConfigureMessageVerifier` and the
+stub runner use for Kafka.
+
 ## Spring Cloud Stream
 
 With Spring Cloud Stream, the `sentTo` value maps to a **binding name** (not a topic name):

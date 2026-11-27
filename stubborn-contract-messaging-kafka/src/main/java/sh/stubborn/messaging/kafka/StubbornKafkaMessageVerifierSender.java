@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
+import sh.stubborn.contract.verifier.messaging.kafka.KafkaMetadata;
 
 /**
  * A Spring-free {@link MessageVerifierSender} for Apache Kafka, built directly on the
@@ -59,6 +60,11 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierSender;
  * UTF-8 encoded record headers. Sends are acknowledged by all in-sync replicas
  * ({@code acks=all}) and awaited synchronously, so a real-broker round-trip is
  * deterministic rather than flaky.
+ *
+ * <p>
+ * The record key and tombstones come from the contract's {@code kafka.outputMessage}
+ * metadata, not from the message itself: {@code key} sets the record key, and
+ * {@code tombstone: true} publishes a {@code null} value.
  *
  * @author Marcin Grzejszczak
  * @since 1.0.0
@@ -94,17 +100,22 @@ public final class StubbornKafkaMessageVerifierSender implements MessageVerifier
 
 	@Override
 	public void send(KafkaMessage message, String destination, @Nullable YamlContract contract) {
-		sendRecord(message.getPayload(), message.getHeaders(), destination);
+		sendRecord(message.getPayload(), message.getHeaders(), destination, contract);
 	}
 
 	@Override
 	public <T> void send(T payload, @Nullable Map<String, Object> headers, String destination,
 			@Nullable YamlContract contract) {
-		sendRecord(payload, headers, destination);
+		sendRecord(payload, headers, destination, contract);
 	}
 
-	private void sendRecord(@Nullable Object payload, @Nullable Map<String, Object> headers, String destination) {
-		byte[] value = (payload != null) ? MessagePayloads.toByteArray(payload) : null;
+	private void sendRecord(@Nullable Object payload, @Nullable Map<String, Object> headers, String destination,
+			@Nullable YamlContract contract) {
+		KafkaMetadata.MessageKafkaMetadata metadata = outputMessageMetadata(contract);
+		String recordKey = metadata.getKey();
+		// A tombstone carries no value, whatever the stub runner passed for the absent
+		// body (it passes the JSON text "null").
+		byte[] value = (payload != null && !metadata.isTombstone()) ? MessagePayloads.toByteArray(payload) : null;
 		Map<String, Object> outHeaders = new LinkedHashMap<>();
 		if (headers != null) {
 			outHeaders.putAll(headers);
@@ -113,14 +124,14 @@ public final class StubbornKafkaMessageVerifierSender implements MessageVerifier
 		// the
 		// same type; a contract-provided contentType is never overridden.
 		outHeaders.putIfAbsent(MessagePayloads.CONTENT_TYPE_HEADER, MessagePayloads.defaultContentType(payload));
-		ProducerRecord<String, byte[]> record = new ProducerRecord<>(destination, value);
+		ProducerRecord<String, byte[]> record = new ProducerRecord<>(destination, recordKey, value);
 		outHeaders.forEach((key, headerValue) -> {
 			if (headerValue != null) {
 				record.headers().add(key, headerValue.toString().getBytes(StandardCharsets.UTF_8));
 			}
 		});
-		log.info("Sending message to Kafka topic '{}' ({} byte value)", destination,
-				(value != null) ? value.length : 0);
+		log.info("Sending message to Kafka topic '{}' with key '{}' ({})", destination, recordKey,
+				(value != null) ? value.length + " byte value" : "null value");
 		try {
 			this.producer.send(record).get(this.sendTimeout.toMillis(), TimeUnit.MILLISECONDS);
 			this.producer.flush();
@@ -132,6 +143,14 @@ public final class StubbornKafkaMessageVerifierSender implements MessageVerifier
 		catch (Exception ex) {
 			throw new IllegalStateException("Failed to send to Kafka topic '" + destination + "'", ex);
 		}
+	}
+
+	static KafkaMetadata.MessageKafkaMetadata outputMessageMetadata(@Nullable YamlContract contract) {
+		if (contract == null || contract.metadata == null
+				|| !contract.metadata.containsKey(KafkaMetadata.METADATA_KEY)) {
+			return new KafkaMetadata.MessageKafkaMetadata();
+		}
+		return KafkaMetadata.fromMetadata(contract.metadata).getOutputMessage();
 	}
 
 	private static Properties producerProperties(String bootstrapServers) {

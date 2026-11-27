@@ -42,6 +42,13 @@ import sh.stubborn.contract.verifier.messaging.ContractMessage;
  */
 public final class KafkaMessage implements ContractMessage {
 
+	/**
+	 * Header under which the receiver exposes the record key, the same name Spring Kafka
+	 * uses ({@code KafkaHeaders.RECEIVED_KEY}).
+	 * @since 0.2.5
+	 */
+	public static final String RECEIVED_KEY_HEADER = "kafka_receivedMessageKey";
+
 	private final @Nullable Object payload;
 
 	private final Map<String, Object> headers;

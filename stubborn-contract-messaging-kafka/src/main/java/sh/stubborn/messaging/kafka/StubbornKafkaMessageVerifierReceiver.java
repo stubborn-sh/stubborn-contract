@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessagePayloads;
 import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
+import sh.stubborn.contract.verifier.messaging.kafka.KafkaMetadata;
 
 /**
  * A Spring-free {@link MessageVerifierReceiver} for Apache Kafka, built directly on the
@@ -54,6 +55,14 @@ import sh.stubborn.contract.verifier.messaging.MessageVerifierReceiver;
  * poll), and {@code isolation.level=read_committed} so only fully written records are
  * surfaced. Testcontainers topics are single-partition, so the first polled record is the
  * earliest produced — a stable positional guarantee.
+ *
+ * <p>
+ * A contract can select the record it checks through its {@code kafka.outputMessage}
+ * metadata: with a {@code key}, records with another key are skipped, and with
+ * {@code tombstone: true} only a record with a {@code null} value is accepted (see
+ * {@link #matches}). This lets several contracts share a {@code triggeredBy} that
+ * publishes several records, such as a tombstone for an old key and a record for a new
+ * one. The record key is exposed as the {@value KafkaMessage#RECEIVED_KEY_HEADER} header.
  *
  * @author Marcin Grzejszczak
  * @since 1.0.0
@@ -91,6 +100,8 @@ public final class StubbornKafkaMessageVerifierReceiver implements MessageVerifi
 	public @Nullable KafkaMessage receive(String destination, long timeout, TimeUnit timeUnit,
 			@Nullable YamlContract contract) {
 		long timeoutMs = timeUnit.toMillis(timeout);
+		KafkaMetadata.MessageKafkaMetadata metadata = StubbornKafkaMessageVerifierSender
+			.outputMessageMetadata(contract);
 		log.info("Receiving message from Kafka topic '{}' with timeout {}ms", destination, timeoutMs);
 		try (KafkaConsumer<String, byte[]> consumer = new KafkaConsumer<>(consumerProperties(),
 				new StringDeserializer(), new ByteArrayDeserializer())) {
@@ -100,6 +111,11 @@ public final class StubbornKafkaMessageVerifierReceiver implements MessageVerifi
 				long remaining = Math.max(deadline - System.currentTimeMillis(), 100L);
 				ConsumerRecords<String, byte[]> records = consumer.poll(Duration.ofMillis(remaining));
 				for (ConsumerRecord<String, byte[]> record : records) {
+					if (!matches(record, metadata)) {
+						log.debug("Skipping record with key '{}' from '{}': it is not the record the contract selects",
+								record.key(), destination);
+						continue;
+					}
 					KafkaMessage message = toMessage(record);
 					log.info("Received message from '{}': {}", destination, message.getPayload());
 					return message;
@@ -115,10 +131,35 @@ public final class StubbornKafkaMessageVerifierReceiver implements MessageVerifi
 		return receive(destination, this.defaultReceiveTimeout.toSeconds(), TimeUnit.SECONDS, contract);
 	}
 
+	/**
+	 * Whether the record is the one the contract selects. Without a key or a tombstone in
+	 * the contract's {@code kafka.outputMessage} metadata, the first record is accepted.
+	 * With a key, only a record with that key is accepted; a tombstone only accepts a
+	 * {@code null} value, and a contract with a key that is not a tombstone only accepts
+	 * a non-{@code null} value.
+	 * @param record the consumed record
+	 * @param metadata the contract's output message Kafka metadata
+	 * @return {@code true} if the contract checks this record
+	 */
+	static boolean matches(ConsumerRecord<String, byte[]> record, KafkaMetadata.MessageKafkaMetadata metadata) {
+		String key = metadata.getKey();
+		if (key == null && !metadata.isTombstone()) {
+			return true;
+		}
+		if (key != null && !key.equals(record.key())) {
+			return false;
+		}
+		return metadata.isTombstone() == (record.value() == null);
+	}
+
 	private static KafkaMessage toMessage(ConsumerRecord<String, byte[]> record) {
 		Map<String, Object> headers = new LinkedHashMap<>();
 		for (Header header : record.headers()) {
 			headers.put(header.key(), new String(header.value(), StandardCharsets.UTF_8));
+		}
+		if (record.key() != null) {
+			// Same header name as Spring Kafka, so a contract can match on the key.
+			headers.put(KafkaMessage.RECEIVED_KEY_HEADER, record.key());
 		}
 		byte[] value = record.value();
 		// Reconstruct the payload in the same form it was sent (text vs binary), decided

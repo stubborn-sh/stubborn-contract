@@ -126,12 +126,28 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 	 *
 	 * @since 1.0.0
 	 */
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public static final class MessageKafkaMetadata {
 
 		/**
 		 * Properties related to connecting to a real broker.
 		 */
 		private ConnectToBroker connectToBroker = new ConnectToBroker();
+
+		/**
+		 * Record key (plain UTF-8 text). The sender publishes the record under this key
+		 * and the receiver only accepts a record with this key, so a contract checks the
+		 * record it describes even when one trigger publishes several records.
+		 */
+		private @Nullable String key;
+
+		/**
+		 * If {@code true}, the message is a tombstone: a record with a key and a
+		 * {@code null} value. The sender publishes a {@code null} value and the receiver
+		 * only accepts a record whose value is {@code null}.
+		 */
+		@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+		private boolean tombstone;
 
 		/**
 		 * Returns the broker connection properties.
@@ -147,6 +163,42 @@ public final class KafkaMetadata implements SpringCloudContractMetadata {
 		 */
 		public void setConnectToBroker(final ConnectToBroker value) {
 			this.connectToBroker = value;
+		}
+
+		/**
+		 * Returns the record key.
+		 * @return the record key, or {@code null} if the contract does not set one
+		 * @since 0.2.5
+		 */
+		public @Nullable String getKey() {
+			return this.key;
+		}
+
+		/**
+		 * Sets the record key.
+		 * @param value the record key
+		 * @since 0.2.5
+		 */
+		public void setKey(final @Nullable String value) {
+			this.key = value;
+		}
+
+		/**
+		 * Returns whether the message is a tombstone (a {@code null} record value).
+		 * @return {@code true} for a tombstone
+		 * @since 0.2.5
+		 */
+		public boolean isTombstone() {
+			return this.tombstone;
+		}
+
+		/**
+		 * Sets whether the message is a tombstone (a {@code null} record value).
+		 * @param value {@code true} for a tombstone
+		 * @since 0.2.5
+		 */
+		public void setTombstone(final boolean value) {
+			this.tombstone = value;
 		}
 
 	}

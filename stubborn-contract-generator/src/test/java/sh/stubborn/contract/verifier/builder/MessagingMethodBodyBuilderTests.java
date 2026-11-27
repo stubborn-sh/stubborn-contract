@@ -160,6 +160,26 @@ class MessagingMethodBodyBuilderTests {
 	}
 
 	@Test
+	void should_generate_a_test_for_a_kafka_tombstone_without_body_assertions() {
+		Contract contractDsl = contractFromGroovy("sh.stubborn.contract.spec.Contract.make {\n" + "\tname \"foo\"\n"
+				+ "\tlabel 'product_deleted'\n" + "\tinput {\n" + "\t\ttriggeredBy('deleteProduct()')\n" + "\t}\n"
+				+ "\toutputMessage {\n" + "\t\tsentTo 'product.events'\n" + "\t}\n"
+				+ "\tmetadata([kafka: [outputMessage: [key: 'SKU-12345', tombstone: true]]])\n" + "}");
+		this.properties.setTestFramework(TestFramework.JUNIT5);
+
+		String test = singleTestGenerator(contractDsl);
+
+		// the receiver selects the tombstone through the contract's Kafka metadata, so a
+		// non-null response is the whole assertion
+		assertThat(test).contains("deleteProduct();")
+			.contains("contractVerifierMessaging.receive(\"product.events\",")
+			.contains("contract(this, \"foo.yml\"));")
+			.contains("assertThat(response).isNotNull();")
+			.doesNotContain("parsedJson")
+			.doesNotContain("getPayload()");
+	}
+
+	@Test
 	void should_generate_tests_with_message_headers_containing_regular_expression_for_JUnit() {
 		Contract contractDsl = contractFromGroovy("sh.stubborn.contract.spec.Contract.make {\n" + "\tname \"foo\"\n"
 				+ "\tlabel 'trigger_event'\n" + "\tinput {\n" + "\t\ttriggeredBy('requestIsCalled()')\n" + "\t}\n"

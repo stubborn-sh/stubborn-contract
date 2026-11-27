@@ -36,7 +36,9 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
+import sh.stubborn.contract.verifier.converter.YamlContract;
 import sh.stubborn.contract.verifier.messaging.MessagePayloads;
+import sh.stubborn.contract.verifier.messaging.kafka.KafkaMetadata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -219,6 +221,101 @@ class StubbornKafkaMessagingMutationTests {
 		assertThat(props).isNotNull();
 		assertThat(props.getProperty("bootstrap.servers")).isEqualTo("broker:9092");
 		assertThat(props.getProperty("acks")).isEqualTo("all");
+	}
+
+	private static YamlContract contractWithKafkaOutput(Map<String, Object> outputMessage) {
+		YamlContract contract = new YamlContract();
+		contract.metadata = new LinkedHashMap<>(
+				Map.of(KafkaMetadata.METADATA_KEY, Map.of("outputMessage", outputMessage)));
+		return contract;
+	}
+
+	private static KafkaMetadata.MessageKafkaMetadata selector(String key, boolean tombstone) {
+		KafkaMetadata.MessageKafkaMetadata metadata = new KafkaMetadata.MessageKafkaMetadata();
+		metadata.setKey(key);
+		metadata.setTombstone(tombstone);
+		return metadata;
+	}
+
+	private static ConsumerRecord<String, byte[]> keyed(String key, byte[] value) {
+		return new ConsumerRecord<>("topic", 0, 0L, key, value);
+	}
+
+	@Test
+	void sendUsesKeyFromContractMetadata() throws Exception {
+		try (StubbornKafkaMessageVerifierSender sender = new StubbornKafkaMessageVerifierSender("localhost:9092")) {
+			MockProducer<String, byte[]> mock = swapInMockProducer(sender);
+			sender.send("{\"sku\":\"SKU-1\"}", new LinkedHashMap<>(), "dest",
+					contractWithKafkaOutput(Map.of("key", "SKU-1")));
+			ProducerRecord<String, byte[]> sent = mock.history().get(0);
+			assertThat(sent.key()).isEqualTo("SKU-1");
+			assertThat(sent.value()).isEqualTo("{\"sku\":\"SKU-1\"}".getBytes(StandardCharsets.UTF_8));
+		}
+	}
+
+	@Test
+	void sendTombstonePublishesNullValueUnderKey() throws Exception {
+		try (StubbornKafkaMessageVerifierSender sender = new StubbornKafkaMessageVerifierSender("localhost:9092")) {
+			MockProducer<String, byte[]> mock = swapInMockProducer(sender);
+			// the stub runner passes the JSON text "null" for a contract without a body
+			sender.send("null", new LinkedHashMap<>(), "dest",
+					contractWithKafkaOutput(Map.of("key", "SKU-1", "tombstone", true)));
+			ProducerRecord<String, byte[]> sent = mock.history().get(0);
+			assertThat(sent.key()).isEqualTo("SKU-1");
+			assertThat(sent.value()).isNull();
+		}
+	}
+
+	@Test
+	void sendWithoutKafkaMetadataHasNoKey() throws Exception {
+		try (StubbornKafkaMessageVerifierSender sender = new StubbornKafkaMessageVerifierSender("localhost:9092")) {
+			MockProducer<String, byte[]> mock = swapInMockProducer(sender);
+			sender.send("x", new LinkedHashMap<>(), "dest", new YamlContract());
+			assertThat(mock.history().get(0).key()).isNull();
+		}
+	}
+
+	@Test
+	void toMessageExposesRecordKeyAsHeader() throws Exception {
+		KafkaMessage message = toMessage(keyed("SKU-1", "x".getBytes(StandardCharsets.UTF_8)));
+		assertThat(message.getHeaders()).containsEntry(KafkaMessage.RECEIVED_KEY_HEADER, "SKU-1");
+	}
+
+	@Test
+	void toMessageWithoutKeyHasNoKeyHeader() throws Exception {
+		KafkaMessage message = toMessage(keyed(null, "x".getBytes(StandardCharsets.UTF_8)));
+		assertThat(message.getHeaders()).doesNotContainKey(KafkaMessage.RECEIVED_KEY_HEADER);
+	}
+
+	@Test
+	void recordWithoutSelectorAlwaysMatches() {
+		KafkaMetadata.MessageKafkaMetadata none = new KafkaMetadata.MessageKafkaMetadata();
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("a", new byte[] { 1 }), none)).isTrue();
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed(null, null), none)).isTrue();
+	}
+
+	@Test
+	void keySelectorMatchesOnlyNonNullRecordWithThatKey() {
+		KafkaMetadata.MessageKafkaMetadata selector = selector("SKU-1", false);
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("SKU-1", new byte[] { 1 }), selector)).isTrue();
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("SKU-2", new byte[] { 1 }), selector)).isFalse();
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed(null, new byte[] { 1 }), selector)).isFalse();
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("SKU-1", null), selector)).isFalse();
+	}
+
+	@Test
+	void tombstoneSelectorMatchesOnlyNullRecordWithThatKey() {
+		KafkaMetadata.MessageKafkaMetadata selector = selector("SKU-1", true);
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("SKU-1", null), selector)).isTrue();
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("SKU-1", new byte[] { 1 }), selector)).isFalse();
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("SKU-2", null), selector)).isFalse();
+	}
+
+	@Test
+	void tombstoneSelectorWithoutKeyMatchesAnyNullRecord() {
+		KafkaMetadata.MessageKafkaMetadata selector = selector(null, true);
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("SKU-1", null), selector)).isTrue();
+		assertThat(StubbornKafkaMessageVerifierReceiver.matches(keyed("SKU-1", new byte[] { 1 }), selector)).isFalse();
 	}
 
 	private static String headerValue(ProducerRecord<String, byte[]> record, String key) {

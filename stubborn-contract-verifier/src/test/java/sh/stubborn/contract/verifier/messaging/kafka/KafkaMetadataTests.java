@@ -43,4 +43,29 @@ class KafkaMetadataTests {
 		BDDAssertions.then(serialized).isEqualToNormalizingPunctuationAndWhitespace(yamlEntry.replace("kafka:\n", ""));
 	}
 
+	@Test
+	void should_parse_record_key_and_tombstone() {
+		// @formatter:off
+		String yamlEntry = "kafka:\n"
+				+ "  outputMessage:\n"
+				+ "    key: SKU-12345\n"
+				+ "    tombstone: true";
+		// @formatter:on
+
+		KafkaMetadata metadata = KafkaMetadata
+			.fromMetadata(this.mapper.readerForMapOf(Object.class).readValue(yamlEntry));
+
+		BDDAssertions.then(metadata.getOutputMessage().getKey()).isEqualTo("SKU-12345");
+		BDDAssertions.then(metadata.getOutputMessage().isTombstone()).isTrue();
+		BDDAssertions.then(metadata.getInput().getKey()).isNull();
+		BDDAssertions.then(metadata.getInput().isTombstone()).isFalse();
+	}
+
+	@Test
+	void should_not_serialize_unset_key_and_tombstone() {
+		String serialized = this.mapper.writer().forType(KafkaMetadata.class).writeValueAsString(new KafkaMetadata());
+
+		BDDAssertions.then(serialized).doesNotContain("key").doesNotContain("tombstone");
+	}
+
 }
